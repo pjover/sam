@@ -25,13 +25,14 @@ import (
 // dirCmd represents the dir command
 var dirCmd = &cobra.Command{
 	Use:   "dir",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "Crea el directori de treball",
+	Long: `Crea el directori de treball per a les factures del mes
+   - Comprova que al directori actual existeixi el fitxer de configuració general sam.yaml
+     - si no el crea amb els valors per defecte i surt
+   - Crea el directori
+   - Si no s'especifica el mes, agafa l'actual
+   - Crea el fitxer de configuració local sam-local.yaml al directori de treball
+   - Canvia al nou directori`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("dir called")
 	},
@@ -48,5 +49,8 @@ func init() {
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// dirCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	//dirCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+
+	dirCmd.Flags().StringP("mes", "m", "", "Mes a facturar, si no s'especifica el mes, agafa l'actual")
+
 }
