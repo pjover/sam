@@ -17,40 +17,37 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 package cmd
 
 import (
-	"fmt"
+	"sam/amd"
 
 	"github.com/spf13/cobra"
 )
 
-// dirCmd represents the dir command
+var previousMonth bool
+var nextMonth bool
+
 var dirCmd = &cobra.Command{
 	Use:   "dir",
 	Short: "Crea el directori de treball",
 	Long: `Crea el directori de treball per a les factures del mes
-   - Comprova que al directori actual existeixi el fitxer de configuració general sam.yaml
-     - si no el crea amb els valors per defecte i surt
-   - Crea el directori
-   - Si no s'especifica el mes, agafa l'actual
-   - Crea el fitxer de configuració local sam-local.yaml al directori de treball
-   - Canvia al nou directori`,
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("dir called")
+	- Si no s'especifica el mes, agafa el mes actual
+	- Crea el directori
+	- Canvia al nou directori
+	- Crea el fitxer de configuració`,
+	RunE: func(cmd *cobra.Command, args []string) error {
+		if err := runDir(); err != nil {
+			return err
+		} else {
+			return nil
+		}
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(dirCmd)
+	dirCmd.Flags().BoolVarP(&previousMonth, "anterior", "a", false, "Es treballa al mes anterior al mes actual")
+	dirCmd.Flags().BoolVarP(&nextMonth, "seguent", "s", false, "Es treballa al mes següent al mes actual")
+}
 
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// dirCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	//dirCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-
-	dirCmd.Flags().StringP("mes", "m", "", "Mes a facturar, si no s'especifica el mes, agafa l'actual")
-
+func runDir() error {
+	return amd.Run(previousMonth, nextMonth)
 }
