@@ -20,7 +20,7 @@ func WorkingDir(workingTime time.Time) string {
 		"November":  "de Novembre",
 		"December":  "de Decembre",
 	}
-	layout := "0601-Factures del mes January"
+	layout := "060100-Factures del mes January"
 	dirName := workingTime.Format(layout)
 	englishMonth := workingTime.Month().String()
 	catalanMonth := m[englishMonth]

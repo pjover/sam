@@ -10,55 +10,49 @@ import (
 )
 
 func Run(previousMonth bool, nextMonth bool) error {
-	workingTime := getWorkingTime(previousMonth, nextMonth)
-	dir, err := createDir(workingTime)
+	dirName := GetCurrentDirName(previousMonth, nextMonth)
+	err := createDir(dirName)
 	if err != nil {
 		return err
 	}
 
-	err = updateConfigFile(dir)
+	err = updateConfig(dirName)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func getWorkingTime(previousMonth bool, nextMonth bool) time.Time {
+func GetCurrentDirName(previousMonth bool, nextMonth bool) string {
 	workingTime := time.Now()
 	if previousMonth {
 		workingTime = workingTime.AddDate(0, -1, 0)
 	} else if nextMonth {
 		workingTime = workingTime.AddDate(0, 1, 0)
 	}
-	return workingTime
+	return catalan.WorkingDir(workingTime)
 }
 
-func createDir(workingTime time.Time) (string, error) {
-	dirName := catalan.WorkingDir(workingTime)
-
-	parentDir, err := os.Getwd()
-	if err != nil {
-		return "", err
-	}
-
+func createDir(dirName string) error {
+	parentDir := viper.GetString("dirs.home")
 	dirPath := path.Join(parentDir, dirName)
 	exists, err := fileExists(dirPath)
 	if err != nil {
-		return "", err
+		return err
 	}
 
 	if exists {
 		fmt.Println("El directori de treball", dirPath, "ja existeix")
-		return dirPath, nil
+		return nil
 	}
 
-	err = os.Mkdir(dirPath, 0755)
+	err = os.MkdirAll(dirPath, 0755)
 	if err != nil {
-		return "", err
+		return err
 	}
 
 	fmt.Println("Creat el directori de treball", dirPath, "...")
-	return dirPath, nil
+	return nil
 }
 
 func fileExists(path string) (bool, error) {
@@ -72,8 +66,8 @@ func fileExists(path string) (bool, error) {
 	return false, err
 }
 
-func updateConfigFile(dir string) error {
-	viper.Set("dir", dir)
+func updateConfig(dirName string) error {
+	viper.Set("dirs.current", dirName)
 	err := viper.WriteConfig()
 	if err != nil {
 		return err

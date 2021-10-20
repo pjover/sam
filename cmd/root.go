@@ -21,7 +21,9 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"os"
+	"path"
 
+	"sam/amd"
 	"sam/comm"
 )
 
@@ -52,14 +54,14 @@ func init() {
 
 // initConfig reads in config file and ENV variables if set.
 func initConfig() {
+	// Find home directory.
+	home, err := os.UserHomeDir()
+	cobra.CheckErr(err)
+
 	if cfgFile != "" {
 		// Use config file from the flag.
 		viper.SetConfigFile(cfgFile)
 	} else {
-		// Find home directory.
-		home, err := os.UserHomeDir()
-		cobra.CheckErr(err)
-
 		// Search config in home directory with name ".sam" (without extension).
 		viper.AddConfigPath(home)
 		viper.SetConfigName(".sam")
@@ -68,8 +70,12 @@ func initConfig() {
 
 	viper.AutomaticEnv() // read in environment variables that match
 
-	err := viper.ReadInConfig() // Find and read the config file
-	if err != nil {             // Handle errors reading the config file
+	err = viper.ReadInConfig() // Find and read the config file
+	if err != nil {            // Handle errors reading the config file
 		panic(fmt.Errorf("Fatal error config file: %w \n", err))
 	}
+
+	dirHome := path.Join(home, "Sam")
+	viper.SetDefault("dirs.home", dirHome)
+	viper.SetDefault("dirs.current", amd.GetCurrentDirName(false, false))
 }

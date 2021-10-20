@@ -29,10 +29,10 @@ var dirCmd = &cobra.Command{
 	Use:   "dir",
 	Short: "Crea el directori de treball",
 	Long: `Crea el directori de treball per a les factures del mes
-	- Si no s'especifica el mes, agafa el mes actual
-	- Crea el directori
-	- Canvia al nou directori
-	- Crea el fitxer de configuració`,
+   - Si no s'especifica el mes, agafa l'actual
+   - Si no existeix el directori, el crea
+   - Actualitza la configuració amb el directori de treball
+   - La configuració del directori romandrà activa fins que es torni a executar aquesta comanda de nou`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if err := runDir(); err != nil {
 			return err
