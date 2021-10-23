@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-func Run(previousMonth bool, nextMonth bool) error {
+func CreateDirectory(previousMonth bool, nextMonth bool) error {
 	dirName := GetCurrentDirName(previousMonth, nextMonth)
 	err := createDir(dirName)
 	if err != nil {

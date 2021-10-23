@@ -22,11 +22,7 @@ var dirCmd = &cobra.Command{
    dir -s    Crea el directori de treball per al mes següent`,
 	Annotations: map[string]string{"ADM": "Comandes d'adminitració"},
 	RunE: func(cmd *cobra.Command, args []string) error {
-		if err := runDir(); err != nil {
-			return err
-		} else {
-			return nil
-		}
+		return adm.CreateDirectory(previousMonth, nextMonth)
 	},
 }
 
@@ -34,8 +30,4 @@ func init() {
 	rootCmd.AddCommand(dirCmd)
 	dirCmd.Flags().BoolVarP(&previousMonth, "anterior", "a", false, "Es treballa al mes anterior al mes actual")
 	dirCmd.Flags().BoolVarP(&nextMonth, "seguent", "s", false, "Es treballa al mes següent al mes actual")
-}
-
-func runDir() error {
-	return adm.Run(previousMonth, nextMonth)
 }

@@ -1,23 +1,23 @@
 package cmd
 
 import (
-	"fmt"
+	"sam/adm"
 
 	"github.com/spf13/cobra"
 )
 
-// mcliCmd represents the mcli command
+var CustomerCode int
+var ChildCode int
+
 var mcliCmd = &cobra.Command{
 	Use:   "mcli",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("mcli called")
+	Short: "Mostra les dades d'un client",
+	Long:  "Mostra les dades d'un client, se pot indicar el client o l'infant",
+	Example: `   mcli -i 1520    Mostra les dades del client de l'infant 1520
+   mcli -c 152     Mostra les dades del client 152`,
+	Annotations: map[string]string{"ADM": "Comandes d'adminitració"},
+	RunE: func(cmd *cobra.Command, args []string) error {
+		return runMcli()
 	},
 }
 
@@ -33,4 +33,11 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// mcliCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+}
+
+func runMcli() error {
+	if ChildCode > 0 {
+		CustomerCode = ChildCode / 10
+	}
+	return adm.DisplayCustomer(CustomerCode)
 }
