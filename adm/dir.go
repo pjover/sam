@@ -1,4 +1,4 @@
-package amd
+package adm
 
 import (
 	"fmt"

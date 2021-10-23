@@ -23,7 +23,7 @@ import (
 	"os"
 	"path"
 
-	"sam/amd"
+	"sam/adm"
 	"sam/comm"
 )
 
@@ -77,5 +77,5 @@ func initConfig() {
 
 	dirHome := path.Join(home, "Sam")
 	viper.SetDefault("dirs.home", dirHome)
-	viper.SetDefault("dirs.current", amd.GetCurrentDirName(false, false))
+	viper.SetDefault("dirs.current", adm.GetCurrentDirName(false, false))
 }

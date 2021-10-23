@@ -17,7 +17,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 package cmd
 
 import (
-	"sam/amd"
+	"sam/adm"
 
 	"github.com/spf13/cobra"
 )
@@ -33,6 +33,9 @@ var dirCmd = &cobra.Command{
    - Si no existeix el directori, el crea
    - Actualitza la configuració amb el directori de treball
    - La configuració del directori romandrà activa fins que es torni a executar aquesta comanda de nou`,
+	Example: `   dir       Crea el directori de treball per al mes actual
+   dir -a    Crea el directori de treball per al mes anterior
+   dir -s    Crea el directori de treball per al mes següent`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if err := runDir(); err != nil {
 			return err
@@ -49,5 +52,5 @@ func init() {
 }
 
 func runDir() error {
-	return amd.Run(previousMonth, nextMonth)
+	return adm.Run(previousMonth, nextMonth)
 }
