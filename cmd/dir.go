@@ -36,6 +36,7 @@ var dirCmd = &cobra.Command{
 	Example: `   dir       Crea el directori de treball per al mes actual
    dir -a    Crea el directori de treball per al mes anterior
    dir -s    Crea el directori de treball per al mes següent`,
+	Annotations: map[string]string{"ADM": "Comandes d'adminitració"},
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if err := runDir(); err != nil {
 			return err
