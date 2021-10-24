@@ -1,11 +1,11 @@
-package comm
+package cmd
 
 import (
 	"fmt"
 	"strconv"
 )
 
-func ValidateCode(args []string) error {
+func validateCode(args []string) error {
 	if len(args) != 1 {
 		return fmt.Errorf("Introdueix un sol codi, s'han introduit %d arguments", len(args))
 	}
