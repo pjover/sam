@@ -1,16 +1,17 @@
 package cmd
 
 import (
+	"fmt"
 	"sam/adm"
 
 	"github.com/spf13/cobra"
 )
 
-var CustomerCode int
-var ChildCode int
+var customerCode int
+var childCode int
 
 var mcliCmd = &cobra.Command{
-	Use:   "mcli",
+	Use:   "mcli {-c 123 | -i 1230}",
 	Short: "Mostra les dades d'un client",
 	Long:  "Mostra les dades d'un client, se pot indicar el client o l'infant",
 	Example: `   mcli -i 1520    Mostra les dades del client de l'infant 1520
@@ -23,21 +24,19 @@ var mcliCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(mcliCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// mcliCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// mcliCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	mcliCmd.Flags().IntVarP(&customerCode, "client", "c", 0, "Codi del client")
+	mcliCmd.Flags().IntVarP(&childCode, "infant", "i", 0, "Codi de l'infant")
 }
 
 func runMcli() error {
-	if ChildCode > 0 {
-		CustomerCode = ChildCode / 10
+	if childCode > 0 && customerCode > 0 {
+		return fmt.Errorf("Indicar el codi del client o del infant, no els dos a l'hora")
+	} else if childCode == 0 && customerCode == 0 {
+		return fmt.Errorf("És necesari indicar el codi del client o del infant")
 	}
-	return adm.DisplayCustomer(CustomerCode)
+
+	if childCode > 0 {
+		customerCode = childCode / 10
+	}
+	return adm.DisplayCustomer(customerCode)
 }
