@@ -14,7 +14,7 @@ var mcliCmd = &cobra.Command{
 	Example:     `   mcli 152     Mostra les dades del client 152`,
 	Annotations: map[string]string{"ADM": "Comandes d'adminitració"},
 	Args: func(cmd *cobra.Command, args []string) error {
-		return validateCode(args)
+		return validateCustomerCode(args)
 	},
 	RunE: func(cmd *cobra.Command, args []string) error {
 		customerCode, _ := strconv.Atoi(args[0])

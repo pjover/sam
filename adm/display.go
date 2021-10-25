@@ -15,6 +15,11 @@ func DisplayCustomer(customerCode int) error {
 	return display(url)
 }
 
+func DisplayProduct(productCode string) error {
+	url := fmt.Sprintf("http://localhost:8080/products/%s", productCode)
+	return display(url)
+}
+
 func display(url string) error {
 	body, err := getBody(url)
 	if err != nil {
@@ -53,10 +58,10 @@ func closeBody(body io.ReadCloser) {
 }
 
 func printYaml(json []byte) {
-	yaml, err := yaml.JSONToYAML(json)
+	y, err := yaml.JSONToYAML(json)
 	if err != nil {
 		fmt.Printf("err: %v\n", err)
 		return
 	}
-	fmt.Println(string(yaml))
+	fmt.Println(string(y))
 }
