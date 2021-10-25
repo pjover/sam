@@ -20,6 +20,11 @@ func DisplayProduct(productCode string) error {
 	return display(url)
 }
 
+func DisplayInvoice(invoiceCode string) error {
+	url := fmt.Sprintf("http://localhost:8080/invoices/%s", invoiceCode)
+	return display(url)
+}
+
 func display(url string) error {
 	body, err := getBody(url)
 	if err != nil {
