@@ -1,12 +1,15 @@
 package comm
 
 import (
+	"errors"
 	"fmt"
 	"github.com/ghodss/yaml"
 	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os/exec"
+	"runtime"
 )
 
 func PrintUrl(url string) error {
@@ -53,4 +56,18 @@ func printYaml(json []byte) {
 		return
 	}
 	fmt.Println(string(y))
+}
+
+func OpenUrl(url string) error {
+
+	switch runtime.GOOS {
+	case "linux":
+		return exec.Command("xdg-open", url).Start()
+	case "windows":
+		return exec.Command("rundll32", "url.dll,FileProtocolHandler", url).Start()
+	case "darwin":
+		return exec.Command("open", url).Start()
+	default:
+		return errors.New("Unsupported platform")
+	}
 }
