@@ -13,6 +13,7 @@ var mfacCmd = &cobra.Command{
 	Long:        "Mostra les dades d'uan factura indicant el seu codi",
 	Example:     `   mfac f-3945     Mostra les dades de la factura F-3945`,
 	Annotations: map[string]string{"ADM": "Comandes d'adminitració"},
+	Aliases:     []string{"mostra-factura"},
 	Args: func(cmd *cobra.Command, args []string) error {
 		return validateNumberOfArgs(1, args)
 	},

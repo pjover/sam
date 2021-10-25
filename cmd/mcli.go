@@ -13,6 +13,7 @@ var mcliCmd = &cobra.Command{
 	Long:        "Mostra les dades d'un client indicant el seu codi",
 	Example:     `   mcli 152     Mostra les dades del client 152`,
 	Annotations: map[string]string{"ADM": "Comandes d'adminitració"},
+	Aliases:     []string{"mostra-client"},
 	Args: func(cmd *cobra.Command, args []string) error {
 		return validateCustomerCode(args)
 	},
