@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"errors"
 	"fmt"
 	"strconv"
 )
@@ -31,6 +32,13 @@ func validateProductCode(args []string) error {
 func validateNumberOfArgs(number int, args []string) error {
 	if len(args) != number {
 		return fmt.Errorf("Introdueix %d arguments, s'han introduit %d arguments", number, len(args))
+	}
+	return nil
+}
+
+func validateArgsExists(args []string) error {
+	if len(args) == 0 {
+		return errors.New("Introdueix els arguments, s'ha introduit cap argument")
 	}
 	return nil
 }
