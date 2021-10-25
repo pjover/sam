@@ -13,6 +13,7 @@ var mproCmd = &cobra.Command{
 	Long:        "Mostra les dades d'un producte indicant el seu codi",
 	Example:     `   mpro age     Mostra les dades del producte AGE`,
 	Annotations: map[string]string{"ADM": "Comandes d'adminitració"},
+	Aliases:     []string{"mostra-producte"},
 	Args: func(cmd *cobra.Command, args []string) error {
 		return validateProductCode(args)
 	},
