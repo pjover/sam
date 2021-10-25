@@ -6,6 +6,8 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+
+	"github.com/ghodss/yaml"
 )
 
 func DisplayCustomer(customerCode int) error {
@@ -14,26 +16,33 @@ func DisplayCustomer(customerCode int) error {
 }
 
 func display(url string) error {
-	resp, err := http.Get(url)
+	body, err := getBody(url)
 	if err != nil {
 		return err
+	}
+	printYaml(body)
+	return nil
+}
+
+func getBody(url string) ([]byte, error) {
+	resp, err := http.Get(url)
+	if err != nil {
+		return nil, err
 	}
 
 	defer closeBody(resp.Body)
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	bodyText := string(body)
-	if bodyText == "" {
-		bodyText = "<empty>"
-	}
-
 	if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf("Error %d (%s) al cridar a %s", resp.StatusCode, bodyText, url)
+		bodyText := string(body)
+		if bodyText == "" {
+			bodyText = "<empty>"
+		}
+		return nil, fmt.Errorf("Error %d (%s) al cridar a %s", resp.StatusCode, bodyText, url)
 	}
-	fmt.Println(bodyText)
-	return nil
+	return body, nil
 }
 
 func closeBody(body io.ReadCloser) {
@@ -41,4 +50,13 @@ func closeBody(body io.ReadCloser) {
 	if err != nil {
 		log.Fatal(err)
 	}
+}
+
+func printYaml(json []byte) {
+	yaml, err := yaml.JSONToYAML(json)
+	if err != nil {
+		fmt.Printf("err: %v\n", err)
+		return
+	}
+	fmt.Println(string(yaml))
 }
