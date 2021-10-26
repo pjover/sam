@@ -11,7 +11,7 @@ var ecliCmd = &cobra.Command{
 	Short:       "Edita les dades d'un client",
 	Long:        "Obri un navegador per a editar les dades d'un client indicant el seu codi",
 	Example:     `   ecli 152     Edita les dades del client 152`,
-	Annotations: map[string]string{"ADM": "Comandes d'adminitració"},
+	Annotations: map[string]string{"ADM": "Comandes d'administració"},
 	Aliases:     []string{"edita-client"},
 	Args: func(cmd *cobra.Command, args []string) error {
 		return validateCustomerCode(args)
