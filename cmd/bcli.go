@@ -10,7 +10,7 @@ var bcliCmd = &cobra.Command{
 	Short:       "Busca els clients que tenguin 'nomDelClient'",
 	Long:        "Busca els clients que tenguin 'nomDelClient' al camps de texte",
 	Example:     `   mcli maria     Mostra les dades del clients amb 'maria'`,
-	Annotations: map[string]string{"ADM": "Comandes d'adminitració"},
+	Annotations: map[string]string{"ADM": "Comandes d'administració"},
 	Aliases:     []string{"busca-client"},
 	Args: func(cmd *cobra.Command, args []string) error {
 		return validateArgsExists(args)
