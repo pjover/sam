@@ -27,3 +27,13 @@ func ListCustomers() error {
 func ListChildren() error {
 	return comm.PrintUrl("http://localhost:8080/lists/children")
 }
+
+func ListAllCustomersConsumptions() error {
+	fmt.Println("Llistant els consums de tots els clients")
+	return nil
+}
+
+func ListCustomerConsumptions(customerCode int) error {
+	fmt.Println("Llistant els consums del client", customerCode)
+	return nil
+}
