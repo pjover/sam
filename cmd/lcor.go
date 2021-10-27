@@ -20,6 +20,7 @@ var lcorCmd = &cobra.Command{
    lcor -ei1    Llista els correus electrònics del curs EI1
    lcor -ei1 -ei2    Llista els correus electrònics del cursos EI1 i EI2`,
 	Annotations: map[string]string{"ADM": "Comandes de llistats"},
+	Aliases:     []string{"llista-correus"},
 	RunE: func(cmd *cobra.Command, args []string) error {
 		return adm.ListEmails(ei1, ei2, ei3)
 	},

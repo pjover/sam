@@ -19,3 +19,7 @@ func ListEmails(ei1 bool, ei2 bool, ei3 bool) error {
 	url := fmt.Sprintf("http://localhost:8080/lists/emails/%s", group)
 	return comm.PrintUrl(url)
 }
+
+func ListCustomers() error {
+	return comm.PrintUrl("http://localhost:8080/lists/customers")
+}
