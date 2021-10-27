@@ -23,3 +23,7 @@ func ListEmails(ei1 bool, ei2 bool, ei3 bool) error {
 func ListCustomers() error {
 	return comm.PrintUrl("http://localhost:8080/lists/customers")
 }
+
+func ListChildren() error {
+	return comm.PrintUrl("http://localhost:8080/lists/children")
+}
