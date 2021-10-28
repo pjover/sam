@@ -29,11 +29,12 @@ func ListChildren() error {
 }
 
 func ListAllCustomersConsumptions() error {
-	fmt.Println("Llistant els consums de tots els clients")
-	return nil
+	fmt.Println("Llistat dels consums pendents de tots els clients")
+	return comm.PrintUrl("http://localhost:8080/consumptions")
 }
 
 func ListCustomerConsumptions(customerCode int) error {
-	fmt.Println("Llistant els consums del client", customerCode)
-	return nil
+	fmt.Println("Llistat dels consums pendents del client", customerCode)
+	url := fmt.Sprintf("http://localhost:8080/consumptions/%d", customerCode)
+	return comm.PrintUrl(url)
 }
