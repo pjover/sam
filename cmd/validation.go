@@ -3,7 +3,9 @@ package cmd
 import (
 	"errors"
 	"fmt"
+	"sam/comm"
 	"strconv"
+	"time"
 )
 
 func validateCustomerCode(args []string) error {
@@ -11,11 +13,8 @@ func validateCustomerCode(args []string) error {
 	if err != nil {
 		return err
 	}
-	_, err = strconv.Atoi(args[0])
-	if err != nil {
-		return fmt.Errorf("El codi introduit és invàlid: %s", args[0])
-	}
-	return nil
+	_, err = parseIntegerCode(args[0])
+	return err
 }
 
 func validateProductCode(args []string) error {
@@ -36,9 +35,9 @@ func validateNumberOfArgsEqualsTo(number int, args []string) error {
 	return nil
 }
 
-func validateNumberOfArgsGreaterThan(number int, args []string) error {
-	if len(args) > number {
-		return fmt.Errorf("Introdueix fins a %d arguments, s'han introduit %d arguments", number, len(args))
+func validateNumberOfArgsBetween(min int, max int, args []string) error {
+	if len(args) < min && len(args) > max {
+		return fmt.Errorf("Introdueix des de %d fins a %d arguments, has introduit %d arguments", min, max, len(args))
 	}
 	return nil
 }
@@ -48,4 +47,20 @@ func validateArgsExists(args []string) error {
 		return errors.New("Introdueix els arguments, no s'ha introduit cap argument")
 	}
 	return nil
+}
+
+func parseIntegerCode(customCode string) (int, error) {
+	code, err := strconv.Atoi(customCode)
+	if err != nil {
+		return 0, fmt.Errorf("El codi introduit és invàlid: %s", customCode)
+	}
+	return code, nil
+}
+
+func parseYearMonth(yearMonth string) (time.Time, error) {
+	ym, err := time.Parse(comm.YearMonthLayout, yearMonth)
+	if err != nil {
+		return time.Time{}, errors.New("Error al introduïr el mes: " + err.Error())
+	}
+	return ym, nil
 }
