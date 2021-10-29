@@ -1,9 +1,10 @@
 package comm
 
 import (
+	"bytes"
+	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/ghodss/yaml"
 	"io"
 	"io/ioutil"
 	"log"
@@ -17,7 +18,11 @@ func PrintUrl(url string) error {
 	if err != nil {
 		return err
 	}
-	printYaml(body)
+
+	err = printJson(body)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -49,13 +54,13 @@ func closeBody(body io.ReadCloser) {
 	}
 }
 
-func printYaml(json []byte) {
-	y, err := yaml.JSONToYAML(json)
-	if err != nil {
-		fmt.Printf("err: %v\n", err)
-		return
+func printJson(body []byte) error {
+	var prettyJSON bytes.Buffer
+	if err := json.Indent(&prettyJSON, body, "", "    "); err != nil {
+		return err
 	}
-	fmt.Println(string(y))
+	fmt.Println(prettyJSON.String())
+	return nil
 }
 
 func OpenUrl(url string) error {
