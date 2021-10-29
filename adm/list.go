@@ -59,3 +59,8 @@ func ListCustomerYearMonthInvoices(customerCode int, yearMonth time.Time) error 
 	url := fmt.Sprintf("http://localhost:8080/invoices/search/findByCustomerIdAndYearMonthIn?customerId=%d&yearMonths=%s", customerCode, ym)
 	return comm.PrintUrl(url)
 }
+
+func ListProducts() error {
+	fmt.Println("Llistat de tots els productes")
+	return comm.PrintUrl("http://localhost:8080/products?page=0&size=100")
+}
