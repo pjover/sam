@@ -7,7 +7,7 @@ import (
 )
 
 func validateCustomerCode(args []string) error {
-	err := validateNumberOfArgs(1, args)
+	err := validateNumberOfArgsEqualsTo(1, args)
 	if err != nil {
 		return err
 	}
@@ -19,7 +19,7 @@ func validateCustomerCode(args []string) error {
 }
 
 func validateProductCode(args []string) error {
-	err := validateNumberOfArgs(1, args)
+	err := validateNumberOfArgsEqualsTo(1, args)
 	if err != nil {
 		return err
 	}
@@ -29,16 +29,23 @@ func validateProductCode(args []string) error {
 	return nil
 }
 
-func validateNumberOfArgs(number int, args []string) error {
+func validateNumberOfArgsEqualsTo(number int, args []string) error {
 	if len(args) != number {
 		return fmt.Errorf("Introdueix %d arguments, s'han introduit %d arguments", number, len(args))
 	}
 	return nil
 }
 
+func validateNumberOfArgsGreaterThan(number int, args []string) error {
+	if len(args) > number {
+		return fmt.Errorf("Introdueix fins a %d arguments, s'han introduit %d arguments", number, len(args))
+	}
+	return nil
+}
+
 func validateArgsExists(args []string) error {
 	if len(args) == 0 {
-		return errors.New("Introdueix els arguments, s'ha introduit cap argument")
+		return errors.New("Introdueix els arguments, no s'ha introduit cap argument")
 	}
 	return nil
 }

@@ -1,8 +1,10 @@
 package adm
 
 import (
+	"errors"
 	"fmt"
 	"sam/comm"
+	"time"
 )
 
 func ListEmails(ei1 bool, ei2 bool, ei3 bool) error {
@@ -36,5 +38,20 @@ func ListAllCustomersConsumptions() error {
 func ListCustomerConsumptions(customerCode int) error {
 	fmt.Println("Llistat dels consums pendents del client", customerCode)
 	url := fmt.Sprintf("http://localhost:8080/consumptions/%d", customerCode)
+	return comm.PrintUrl(url)
+}
+
+func ListYearMonthInvoices(yearMonth string) error {
+	const layout = "2006-01"
+	if yearMonth == "" {
+		yearMonth = time.Now().Format(layout)
+	} else {
+		_, err := time.Parse(layout, yearMonth)
+		if err != nil {
+			return errors.New("Error al introduir el mes: " + err.Error())
+		}
+	}
+	fmt.Println("Llistat de les factures del mes", yearMonth)
+	url := fmt.Sprintf("http://localhost:8080/invoices/search/findByYearMonthIn?yearMonths=%s", yearMonth)
 	return comm.PrintUrl(url)
 }
