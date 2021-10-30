@@ -35,7 +35,7 @@ func init() {
 
 func parseInsertConsumptionsArgs(args []string, noteArg string) (cons.InsertConsumptionsArgs, error) {
 
-	customerCode, err := parseInteger(args[0])
+	code, err := parseInteger(args[0])
 	if err != nil {
 		return cons.InsertConsumptionsArgs{}, err
 	}
@@ -46,7 +46,7 @@ func parseInsertConsumptionsArgs(args []string, noteArg string) (cons.InsertCons
 	consCode := args[2]
 
 	ica := cons.InsertConsumptionsArgs{
-		Code:         customerCode,
+		Code:         code,
 		Consumptions: map[string]float64{consCode: consUnits},
 		Note:         noteArg,
 	}

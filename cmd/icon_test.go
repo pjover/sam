@@ -24,6 +24,14 @@ func TestParseInsertConsumptionsArgs(t *testing.T) {
 				Note:         testNote,
 			},
 		},
+		{
+			args: []string{"2220", "0.5", "MME", "2", "AGE"},
+			expected: cons.InsertConsumptionsArgs{
+				Code:         2220,
+				Consumptions: map[string]float64{"MME": 0.5, "AGE": 2},
+				Note:         testNote,
+			},
+		},
 	}
 	for _, test := range tests {
 		var actual, err = parseInsertConsumptionsArgs(test.args, testNote)
