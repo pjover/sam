@@ -17,9 +17,6 @@ var iconCmd = &cobra.Command{
    icon 1520 1 QME -n "Això és una nota"    Inserta un consum per l'infant 1520 d'un QME amb una nota`,
 	Annotations: map[string]string{"CON": "Comandes de consum"},
 	Aliases:     []string{"inserta-consum"},
-	Args: func(cmd *cobra.Command, args []string) error {
-		return validateNumberOfArgsGreaterThan(3, args)
-	},
 	RunE: func(cmd *cobra.Command, args []string) error {
 		ica, err := parseInsertConsumptionsArgs(args, note)
 		if err != nil {
@@ -35,6 +32,10 @@ func init() {
 }
 
 func parseInsertConsumptionsArgs(args []string, noteArg string) (cons.InsertConsumptionsArgs, error) {
+	err := validateNumberOfArgsGreaterThan(3, args)
+	if err != nil {
+		return cons.InsertConsumptionsArgs{}, err
+	}
 
 	code, err := parseInteger(args[0])
 	if err != nil {
@@ -42,7 +43,6 @@ func parseInsertConsumptionsArgs(args []string, noteArg string) (cons.InsertCons
 	}
 
 	var consMap = make(map[string]float64)
-
 	for i := 1; i < len(args); i = i + 2 {
 		consUnits, err := parseFloat(args[i])
 		if err != nil {
@@ -52,10 +52,5 @@ func parseInsertConsumptionsArgs(args []string, noteArg string) (cons.InsertCons
 		consMap[consCode] = consUnits
 	}
 
-	ica := cons.InsertConsumptionsArgs{
-		Code:         code,
-		Consumptions: consMap,
-		Note:         noteArg,
-	}
-	return ica, nil
+	return cons.InsertConsumptionsArgs{Code: code, Consumptions: consMap, Note: noteArg}, nil
 }
