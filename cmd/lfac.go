@@ -36,7 +36,7 @@ func parseListInvoicesArgs(args []string) error {
 	case 0:
 		return adm.ListYearMonthInvoices(time.Now())
 	case 1:
-		customerCode, err := parseIntegerCode(args[0])
+		customerCode, err := parseInteger(args[0])
 		if err == nil {
 			return adm.ListCustomerInvoices(customerCode)
 		}
@@ -46,7 +46,7 @@ func parseListInvoicesArgs(args []string) error {
 		}
 		return err
 	case 2:
-		customerCode, err := parseIntegerCode(args[0])
+		customerCode, err := parseInteger(args[0])
 		if err != nil {
 			return err
 		}

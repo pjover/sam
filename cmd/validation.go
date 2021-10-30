@@ -13,7 +13,7 @@ func validateCustomerCode(args []string) error {
 	if err != nil {
 		return err
 	}
-	_, err = parseIntegerCode(args[0])
+	_, err = parseInteger(args[0])
 	return err
 }
 
@@ -35,6 +35,12 @@ func validateNumberOfArgsEqualsTo(number int, args []string) error {
 	return nil
 }
 
+func validateNumberOfArgsGreaterThan(min int, args []string) error {
+	if len(args) < min {
+		return fmt.Errorf("Introdueix més de %d arguments, has introduit %d arguments", min, len(args))
+	}
+	return nil
+}
 func validateNumberOfArgsBetween(min int, max int, args []string) error {
 	if len(args) < min && len(args) > max {
 		return fmt.Errorf("Introdueix des de %d fins a %d arguments, has introduit %d arguments", min, max, len(args))
@@ -49,12 +55,20 @@ func validateArgsExists(args []string) error {
 	return nil
 }
 
-func parseIntegerCode(customCode string) (int, error) {
+func parseInteger(customCode string) (int, error) {
 	code, err := strconv.Atoi(customCode)
 	if err != nil {
 		return 0, fmt.Errorf("El codi introduit és invàlid: %s", customCode)
 	}
 	return code, nil
+}
+
+func parseFloat(value string) (float64, error) {
+	float, err := strconv.ParseFloat(value, 64)
+	if err != nil {
+		return 0, fmt.Errorf("El número introduit és invàlid: %s", value)
+	}
+	return float, nil
 }
 
 func parseYearMonth(yearMonth string) (time.Time, error) {

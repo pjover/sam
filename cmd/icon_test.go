@@ -22,18 +22,10 @@ func TestParseInsertConsumptionsArgs(t *testing.T) {
 				Note:         "",
 			},
 		},
-		{
-			args: []string{"1552", "1", "QME"},
-			expected: cons.InsertConsumptionsArgs{
-				Code:         1552,
-				Consumptions: map[string]float64{"QME": 1},
-				Note:         "",
-			},
-		},
 	}
 	for _, test := range tests {
 		var actual, err = parseInsertConsumptionsArgs(test.args)
 		assert.Equal(t, test.expected, actual)
-		assert.NotNil(t, err)
+		assert.Nil(t, err)
 	}
 }
