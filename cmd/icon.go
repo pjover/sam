@@ -48,11 +48,17 @@ func parseInsertConsumptionsArgs(args []string, noteArg string) (cons.InsertCons
 		if i >= len(args)-1 {
 			return cons.InsertConsumptionsArgs{}, errors.New("No s'ha indroduit el codi del darrer consum")
 		}
+
 		consUnits, err := parseFloat(args[i])
 		if err != nil {
 			return cons.InsertConsumptionsArgs{}, err
 		}
+
 		consCode := strings.ToUpper(args[i+1])
+		if _, ok := consMap[consCode]; ok {
+			return cons.InsertConsumptionsArgs{}, errors.New("Hi ha un codi de consum repetit")
+		}
+
 		consMap[consCode] = consUnits
 	}
 

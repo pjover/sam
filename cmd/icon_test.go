@@ -61,6 +61,11 @@ func TestParseInsertConsumptionsArgs(t *testing.T) {
 			expectedValue: cons.InsertConsumptionsArgs{},
 			expectedError: errors.New("No s'ha indroduit el codi del darrer consum"),
 		},
+		{
+			args:          []string{"2220", "0.5", "MME", "2", "MME"},
+			expectedValue: cons.InsertConsumptionsArgs{},
+			expectedError: errors.New("Hi ha un codi de consum repetit"),
+		},
 	}
 	for i, test := range tests {
 		fmt.Println("Test", i)
