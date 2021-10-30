@@ -46,6 +46,11 @@ func TestParseInsertConsumptionsArgs(t *testing.T) {
 			expectedValue: cons.InsertConsumptionsArgs{},
 			expectedError: errors.New("El número introduit és invàlid: 0,5"),
 		},
+		{
+			args:          []string{"2220", "0.5", "MME", "2"},
+			expectedValue: cons.InsertConsumptionsArgs{},
+			expectedError: errors.New("El número introduit és invàlid: 0,5"),
+		},
 	}
 	for _, test := range tests {
 		var actual, err = parseInsertConsumptionsArgs(test.args, testNote)
