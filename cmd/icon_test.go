@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"errors"
+	"fmt"
 	"github.com/stretchr/testify/assert"
 	"sam/cons"
 	"testing"
@@ -42,6 +43,15 @@ func TestParseInsertConsumptionsArgs(t *testing.T) {
 			expectedError: nil,
 		},
 		{
+			args: []string{"2220", "0.5", "MME", "2", "AGE", "1", "QME", "1", "BAB"},
+			expectedValue: cons.InsertConsumptionsArgs{
+				Code:         2220,
+				Consumptions: map[string]float64{"MME": 0.5, "AGE": 2, "QME": 1, "BAB": 1},
+				Note:         testNote,
+			},
+			expectedError: nil,
+		},
+		{
 			args:          []string{"2220", "0,5", "MME", "2", "AGE"},
 			expectedValue: cons.InsertConsumptionsArgs{},
 			expectedError: errors.New("El número introduit és invàlid: 0,5"),
@@ -52,7 +62,8 @@ func TestParseInsertConsumptionsArgs(t *testing.T) {
 			expectedError: errors.New("No s'ha indroduit el codi del darrer consum"),
 		},
 	}
-	for _, test := range tests {
+	for i, test := range tests {
+		fmt.Println("Test", i)
 		var actual, err = parseInsertConsumptionsArgs(test.args, testNote)
 		assert.Equal(t, test.expectedValue, actual)
 		assert.Equal(t, test.expectedError, err)
