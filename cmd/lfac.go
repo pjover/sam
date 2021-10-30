@@ -23,34 +23,38 @@ var lfacCmd = &cobra.Command{
 		return validateNumberOfArgsBetween(0, 2, args)
 	},
 	RunE: func(cmd *cobra.Command, args []string) error {
-		switch len(args) {
-		case 0:
-			return adm.ListYearMonthInvoices(time.Now())
-		case 1:
-			customerCode, err := parseIntegerCode(args[0])
-			if err == nil {
-				return adm.ListCustomerInvoices(customerCode)
-			}
-			yearMonth, err := parseYearMonth(args[0])
-			if err == nil {
-				return adm.ListYearMonthInvoices(yearMonth)
-			}
-			return err
-		case 2:
-			customerCode, err := parseIntegerCode(args[0])
-			if err != nil {
-				return err
-			}
-			yearMonth, err := parseYearMonth(args[1])
-			if err != nil {
-				return err
-			}
-			return adm.ListCustomerYearMonthInvoices(customerCode, yearMonth)
-		}
-		return errors.New("Unknown error")
+		return parseListInvoicesArgs(args)
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(lfacCmd)
+}
+
+func parseListInvoicesArgs(args []string) error {
+	switch len(args) {
+	case 0:
+		return adm.ListYearMonthInvoices(time.Now())
+	case 1:
+		customerCode, err := parseIntegerCode(args[0])
+		if err == nil {
+			return adm.ListCustomerInvoices(customerCode)
+		}
+		yearMonth, err := parseYearMonth(args[0])
+		if err == nil {
+			return adm.ListYearMonthInvoices(yearMonth)
+		}
+		return err
+	case 2:
+		customerCode, err := parseIntegerCode(args[0])
+		if err != nil {
+			return err
+		}
+		yearMonth, err := parseYearMonth(args[1])
+		if err != nil {
+			return err
+		}
+		return adm.ListCustomerYearMonthInvoices(customerCode, yearMonth)
+	}
+	return errors.New("Unknown error")
 }
