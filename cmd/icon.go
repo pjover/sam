@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"errors"
 	"github.com/spf13/cobra"
 	"sam/cons"
 	"strings"
@@ -44,6 +45,9 @@ func parseInsertConsumptionsArgs(args []string, noteArg string) (cons.InsertCons
 
 	var consMap = make(map[string]float64)
 	for i := 1; i < len(args); i = i + 2 {
+		if i+1 >= len(args) {
+			return cons.InsertConsumptionsArgs{}, errors.New("No s'ha indroduit el codi del darrer consum")
+		}
 		consUnits, err := parseFloat(args[i])
 		if err != nil {
 			return cons.InsertConsumptionsArgs{}, err
