@@ -3,6 +3,7 @@ package cmd
 import (
 	"github.com/spf13/cobra"
 	"sam/cons"
+	"strings"
 )
 
 var note string
@@ -39,15 +40,21 @@ func parseInsertConsumptionsArgs(args []string, noteArg string) (cons.InsertCons
 	if err != nil {
 		return cons.InsertConsumptionsArgs{}, err
 	}
-	consUnits, err := parseFloat(args[1])
-	if err != nil {
-		return cons.InsertConsumptionsArgs{}, err
+
+	var consMap = make(map[string]float64)
+
+	for i := 1; i < len(args); i = i + 2 {
+		consUnits, err := parseFloat(args[i])
+		if err != nil {
+			return cons.InsertConsumptionsArgs{}, err
+		}
+		consCode := strings.ToUpper(args[i+1])
+		consMap[consCode] = consUnits
 	}
-	consCode := args[2]
 
 	ica := cons.InsertConsumptionsArgs{
 		Code:         code,
-		Consumptions: map[string]float64{consCode: consUnits},
+		Consumptions: consMap,
 		Note:         noteArg,
 	}
 	return ica, nil
