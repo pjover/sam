@@ -11,6 +11,8 @@ type testData struct {
 	expected cons.InsertConsumptionsArgs
 }
 
+var testNote = "Test note"
+
 func TestParseInsertConsumptionsArgs(t *testing.T) {
 
 	tests := []testData{
@@ -19,12 +21,12 @@ func TestParseInsertConsumptionsArgs(t *testing.T) {
 			expected: cons.InsertConsumptionsArgs{
 				Code:         1552,
 				Consumptions: map[string]float64{"QME": 1},
-				Note:         "",
+				Note:         testNote,
 			},
 		},
 	}
 	for _, test := range tests {
-		var actual, err = parseInsertConsumptionsArgs(test.args)
+		var actual, err = parseInsertConsumptionsArgs(test.args, testNote)
 		assert.Equal(t, test.expected, actual)
 		assert.Nil(t, err)
 	}

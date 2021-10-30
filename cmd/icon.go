@@ -5,7 +5,7 @@ import (
 	"sam/cons"
 )
 
-var note bool
+var note string
 
 var iconCmd = &cobra.Command{
 	Use:   "icon codiInfant unitats codiProducte [-n nota]",
@@ -20,7 +20,7 @@ var iconCmd = &cobra.Command{
 		return validateNumberOfArgsGreaterThan(3, args)
 	},
 	RunE: func(cmd *cobra.Command, args []string) error {
-		ica, err := parseInsertConsumptionsArgs(args)
+		ica, err := parseInsertConsumptionsArgs(args, note)
 		if err != nil {
 			return err
 		}
@@ -30,10 +30,10 @@ var iconCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(iconCmd)
-	iconCmd.Flags().BoolVarP(&note, "nota", "n", false, "Afegeix una nota al consum")
+	iconCmd.Flags().StringVarP(&note, "nota", "n", "", "Afegeix una nota al consum")
 }
 
-func parseInsertConsumptionsArgs(args []string) (cons.InsertConsumptionsArgs, error) {
+func parseInsertConsumptionsArgs(args []string, noteArg string) (cons.InsertConsumptionsArgs, error) {
 
 	customerCode, err := parseInteger(args[0])
 	if err != nil {
@@ -48,7 +48,7 @@ func parseInsertConsumptionsArgs(args []string) (cons.InsertConsumptionsArgs, er
 	ica := cons.InsertConsumptionsArgs{
 		Code:         customerCode,
 		Consumptions: map[string]float64{consCode: consUnits},
-		Note:         "",
+		Note:         noteArg,
 	}
 	return ica, nil
 }
