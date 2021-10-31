@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"sam/comm"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -15,17 +16,6 @@ func validateCustomerCode(args []string) error {
 	}
 	_, err = parseInteger(args[0], "de client")
 	return err
-}
-
-func validateProductCode(args []string) error {
-	err := validateNumberOfArgsEqualsTo(1, args)
-	if err != nil {
-		return err
-	}
-	if len(args[0]) != 3 {
-		return fmt.Errorf("El codi introduit és invàlid: %s", args[0])
-	}
-	return nil
 }
 
 func validateNumberOfArgsEqualsTo(number int, args []string) error {
@@ -77,4 +67,11 @@ func parseYearMonth(yearMonth string) (time.Time, error) {
 		return time.Time{}, errors.New("Error al introduïr el mes: " + err.Error())
 	}
 	return ym, nil
+}
+
+func parseProductCode(code string) (string, error) {
+	if len(code) != 3 {
+		return "", fmt.Errorf("El codi de producte introduit és invàlid: %s", code)
+	}
+	return strings.ToUpper(code), nil
 }

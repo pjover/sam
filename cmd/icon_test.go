@@ -2,91 +2,69 @@ package cmd
 
 import (
 	"errors"
-	"fmt"
 	"github.com/stretchr/testify/assert"
 	"sam/cons"
 	"testing"
 )
 
-type testData struct {
-	args          []string
-	expectedValue cons.InsertConsumptionsArgs
-	expectedError error
-}
-
 var testNote = "Test note"
 
-func TestParseInsertConsumptionsArgs(t *testing.T) {
+func TestParseInsertConsumptionsArgs_3_args_minimum(t *testing.T) {
+	var actual, err = parseInsertConsumptionsArgs([]string{"1552"}, testNote)
+	assert.Equal(t, cons.InsertConsumptionsArgs{}, actual)
+	assert.Equal(t, errors.New("Introdueix més de 3 arguments, has introduit 1 arguments"), err)
+}
 
-	tests := []testData{
-		{
-			args:          []string{"1552"},
-			expectedValue: cons.InsertConsumptionsArgs{},
-			expectedError: errors.New("Introdueix més de 3 arguments, has introduit 1 arguments"),
-		},
-		{
-			args: []string{"1552", "1", "QME"},
-			expectedValue: cons.InsertConsumptionsArgs{
-				Code:         1552,
-				Consumptions: map[string]float64{"QME": 1},
-				Note:         testNote,
-			},
-			expectedError: nil,
-		},
-		{
-			args: []string{"2220", "0.5", "MME", "2", "AGE"},
-			expectedValue: cons.InsertConsumptionsArgs{
-				Code:         2220,
-				Consumptions: map[string]float64{"MME": 0.5, "AGE": 2},
-				Note:         testNote,
-			},
-			expectedError: nil,
-		},
-		{
-			args: []string{"2220", "0.5", "MME", "2", "AGE", "1", "QME", "1", "BAB"},
-			expectedValue: cons.InsertConsumptionsArgs{
-				Code:         2220,
-				Consumptions: map[string]float64{"MME": 0.5, "AGE": 2, "QME": 1, "BAB": 1},
-				Note:         testNote,
-			},
-			expectedError: nil,
-		},
-		{
-			args:          []string{"2220", "0,5", "MME", "2", "AGE"},
-			expectedValue: cons.InsertConsumptionsArgs{},
-			expectedError: errors.New("El número introduit és invàlid: 0,5"),
-		},
-		{
-			args:          []string{"2220", "MME", "2"},
-			expectedValue: cons.InsertConsumptionsArgs{},
-			expectedError: errors.New("El número introduit és invàlid: MME"),
-		},
-		{
-			args:          []string{"2220", "0.5", "MME", "2"},
-			expectedValue: cons.InsertConsumptionsArgs{},
-			expectedError: errors.New("No s'ha indroduit el codi del darrer consum"),
-		},
-		{
-			args:          []string{"2220", "0.5", "MME", "2", "MME"},
-			expectedValue: cons.InsertConsumptionsArgs{},
-			expectedError: errors.New("Hi ha un codi de consum repetit"),
-		},
-		{
-			args:          []string{"0.5", "MME", "2", "MME"},
-			expectedValue: cons.InsertConsumptionsArgs{},
-			expectedError: errors.New("El codi d'infant introduit és invàlid: 0.5"),
-		},
-		{
-			args:          []string{"2220", "2", "MMME"},
-			expectedValue: cons.InsertConsumptionsArgs{},
-			expectedError: errors.New("El codi introduit és invàlid: MMME"),
-		},
-	}
+func TestParseInsertConsumptionsArgs_invalid_child_code(t *testing.T) {
+	var actual, err = parseInsertConsumptionsArgs([]string{"0.5", "MME", "2", "MME"}, testNote)
+	assert.Equal(t, cons.InsertConsumptionsArgs{}, actual)
+	assert.Equal(t, errors.New("El codi d'infant introduit és invàlid: 0.5"), err)
+}
 
-	for i, test := range tests {
-		fmt.Println("Test", i)
-		var actual, err = parseInsertConsumptionsArgs(test.args, testNote)
-		assert.Equal(t, test.expectedValue, actual)
-		assert.Equal(t, test.expectedError, err)
-	}
+func TestParseInsertConsumptionsArgs_invalid_unit_format_1(t *testing.T) {
+	var actual, err = parseInsertConsumptionsArgs([]string{"2220", "0,5", "MME", "2", "AGE"}, testNote)
+	assert.Equal(t, cons.InsertConsumptionsArgs{}, actual)
+	assert.Equal(t, errors.New("El número introduit és invàlid: 0,5"), err)
+}
+
+func TestParseInsertConsumptionsArgs_invalid_unit_format_2(t *testing.T) {
+	var actual, err = parseInsertConsumptionsArgs([]string{"2220", "MME", "2"}, testNote)
+	assert.Equal(t, cons.InsertConsumptionsArgs{}, actual)
+	assert.Equal(t, errors.New("El número introduit és invàlid: MME"), err)
+}
+
+func TestParseInsertConsumptionsArgs_invalid_product_code(t *testing.T) {
+	var actual, err = parseInsertConsumptionsArgs([]string{"2220", "2", "MMME"}, testNote)
+	assert.Equal(t, cons.InsertConsumptionsArgs{}, actual)
+	assert.Equal(t, errors.New("El codi de producte introduit és invàlid: MMME"), err)
+}
+
+func TestParseInsertConsumptionsArgs_missing_last_product_code(t *testing.T) {
+	var actual, err = parseInsertConsumptionsArgs([]string{"2220", "0.5", "MME", "2"}, testNote)
+	assert.Equal(t, cons.InsertConsumptionsArgs{}, actual)
+	assert.Equal(t, errors.New("No s'ha indroduit el codi del darrer producte"), err)
+}
+
+func TestParseInsertConsumptionsArgs_duplicated_product_code(t *testing.T) {
+	var actual, err = parseInsertConsumptionsArgs([]string{"2220", "0.5", "MME", "2", "MME"}, testNote)
+	assert.Equal(t, cons.InsertConsumptionsArgs{}, actual)
+	assert.Equal(t, errors.New("Hi ha un codi de producte repetit"), err)
+}
+
+func TestParseInsertConsumptionsArgs_ok_1_consumption(t *testing.T) {
+	var actual, err = parseInsertConsumptionsArgs([]string{"1552", "1", "QME"}, testNote)
+	assert.Equal(t, cons.InsertConsumptionsArgs{Code: 1552, Consumptions: map[string]float64{"QME": 1}, Note: testNote}, actual)
+	assert.Nil(t, err)
+}
+
+func TestParseInsertConsumptionsArgs_ok_2_consumption(t *testing.T) {
+	var actual, err = parseInsertConsumptionsArgs([]string{"2220", "0.5", "MME", "2", "AGE"}, testNote)
+	assert.Equal(t, cons.InsertConsumptionsArgs{Code: 2220, Consumptions: map[string]float64{"MME": 0.5, "AGE": 2}, Note: testNote}, actual)
+	assert.Nil(t, err)
+}
+
+func TestParseInsertConsumptionsArgs_ok_3_consumption(t *testing.T) {
+	var actual, err = parseInsertConsumptionsArgs([]string{"2220", "0.5", "MME", "2", "AGE", "1", "QME", "1", "BAB"}, testNote)
+	assert.Equal(t, cons.InsertConsumptionsArgs{Code: 2220, Consumptions: map[string]float64{"MME": 0.5, "AGE": 2, "QME": 1, "BAB": 1}, Note: testNote}, actual)
+	assert.Nil(t, err)
 }
