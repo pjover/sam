@@ -76,6 +76,11 @@ func TestParseInsertConsumptionsArgs(t *testing.T) {
 			expectedValue: cons.InsertConsumptionsArgs{},
 			expectedError: errors.New("El codi d'infant introduit és invàlid: 0.5"),
 		},
+		{
+			args:          []string{"2220", "2", "MMME"},
+			expectedValue: cons.InsertConsumptionsArgs{},
+			expectedError: errors.New("El codi introduit és invàlid: MMME"),
+		},
 	}
 
 	for i, test := range tests {
