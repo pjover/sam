@@ -11,5 +11,5 @@ func SearchCustomer(args []string) error {
 	params := url.Values{}
 	params.Add("text", text)
 	_url := fmt.Sprintf("http://localhost:8080/search/customer?%s", params.Encode())
-	return comm.PrintUrl(_url)
+	return comm.PrintGet(_url)
 }

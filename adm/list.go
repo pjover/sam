@@ -18,49 +18,49 @@ func ListEmails(ei1 bool, ei2 bool, ei3 bool) error {
 		group = "ALL"
 	}
 	url := fmt.Sprintf("http://localhost:8080/lists/emails/%s", group)
-	return comm.PrintUrl(url)
+	return comm.PrintGet(url)
 }
 
 func ListCustomers() error {
-	return comm.PrintUrl("http://localhost:8080/lists/customers")
+	return comm.PrintGet("http://localhost:8080/lists/customers")
 }
 
 func ListChildren() error {
-	return comm.PrintUrl("http://localhost:8080/lists/children")
+	return comm.PrintGet("http://localhost:8080/lists/children")
 }
 
 func ListAllCustomersConsumptions() error {
 	fmt.Println("Llistat dels consums pendents de tots els clients")
-	return comm.PrintUrl("http://localhost:8080/consumptions")
+	return comm.PrintGet("http://localhost:8080/consumptions")
 }
 
 func ListCustomerConsumptions(customerCode int) error {
 	fmt.Println("Llistat dels consums pendents del client", customerCode)
 	url := fmt.Sprintf("http://localhost:8080/consumptions/%d", customerCode)
-	return comm.PrintUrl(url)
+	return comm.PrintGet(url)
 }
 
 func ListYearMonthInvoices(yearMonth time.Time) error {
 	ym := yearMonth.Format(comm.YearMonthLayout)
 	fmt.Println("Llistat de les factures del mes", ym)
 	url := fmt.Sprintf("http://localhost:8080/invoices/search/findByYearMonthIn?yearMonths=%s", ym)
-	return comm.PrintUrl(url)
+	return comm.PrintGet(url)
 }
 
 func ListCustomerInvoices(customerCode int) error {
 	fmt.Println("Llistat de les factures del client", customerCode)
 	url := fmt.Sprintf("http://localhost:8080/invoices/search/findByCustomerId?customerId=%d", customerCode)
-	return comm.PrintUrl(url)
+	return comm.PrintGet(url)
 }
 
 func ListCustomerYearMonthInvoices(customerCode int, yearMonth time.Time) error {
 	ym := yearMonth.Format(comm.YearMonthLayout)
 	fmt.Println("Llistat de les factures del client", customerCode, "del mes", ym)
 	url := fmt.Sprintf("http://localhost:8080/invoices/search/findByCustomerIdAndYearMonthIn?customerId=%d&yearMonths=%s", customerCode, ym)
-	return comm.PrintUrl(url)
+	return comm.PrintGet(url)
 }
 
 func ListProducts() error {
 	fmt.Println("Llistat de tots els productes")
-	return comm.PrintUrl("http://localhost:8080/products?page=0&size=100")
+	return comm.PrintGet("http://localhost:8080/products?page=0&size=100")
 }

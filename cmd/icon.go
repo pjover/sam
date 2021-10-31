@@ -3,7 +3,7 @@ package cmd
 import (
 	"errors"
 	"github.com/spf13/cobra"
-	"sam/cons"
+	"sam/adm"
 )
 
 var note string
@@ -22,7 +22,7 @@ var iconCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		return cons.InsertConsumptions(ica)
+		return adm.InsertConsumptions(ica)
 	},
 }
 
@@ -31,39 +31,39 @@ func init() {
 	iconCmd.Flags().StringVarP(&note, "nota", "n", "", "Afegeix una nota al consum")
 }
 
-func parseInsertConsumptionsArgs(args []string, noteArg string) (cons.InsertConsumptionsArgs, error) {
+func parseInsertConsumptionsArgs(args []string, noteArg string) (adm.InsertConsumptionsArgs, error) {
 	err := validateNumberOfArgsGreaterThan(3, args)
 	if err != nil {
-		return cons.InsertConsumptionsArgs{}, err
+		return adm.InsertConsumptionsArgs{}, err
 	}
 
 	code, err := parseInteger(args[0], "d'infant")
 	if err != nil {
-		return cons.InsertConsumptionsArgs{}, err
+		return adm.InsertConsumptionsArgs{}, err
 	}
 
 	var consMap = make(map[string]float64)
 	for i := 1; i < len(args); i = i + 2 {
 		if i >= len(args)-1 {
-			return cons.InsertConsumptionsArgs{}, errors.New("No s'ha indroduit el codi del darrer producte")
+			return adm.InsertConsumptionsArgs{}, errors.New("No s'ha indroduit el codi del darrer producte")
 		}
 
 		consUnits, err := parseFloat(args[i])
 		if err != nil {
-			return cons.InsertConsumptionsArgs{}, err
+			return adm.InsertConsumptionsArgs{}, err
 		}
 
 		productCode, err := parseProductCode(args[i+1])
 		if err != nil {
-			return cons.InsertConsumptionsArgs{}, err
+			return adm.InsertConsumptionsArgs{}, err
 		}
 
 		if _, ok := consMap[productCode]; ok {
-			return cons.InsertConsumptionsArgs{}, errors.New("Hi ha un codi de producte repetit")
+			return adm.InsertConsumptionsArgs{}, errors.New("Hi ha un codi de producte repetit")
 		}
 
 		consMap[productCode] = consUnits
 	}
 
-	return cons.InsertConsumptionsArgs{Code: code, Consumptions: consMap, Note: noteArg}, nil
+	return adm.InsertConsumptionsArgs{Code: code, Consumptions: consMap, Note: noteArg}, nil
 }
