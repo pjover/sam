@@ -14,7 +14,7 @@ import (
 )
 
 func PrintUrl(url string) error {
-	body, err := getBody(url)
+	body, err := getBytes(url)
 	if err != nil {
 		return err
 	}
@@ -26,23 +26,25 @@ func PrintUrl(url string) error {
 	return nil
 }
 
-func getBody(url string) ([]byte, error) {
-	resp, err := http.Get(url)
-	if err != nil {
-		return nil, err
-	}
+var httpClient = &http.Client{Timeout: httpClientTimeout}
 
-	defer closeBody(resp.Body)
-	body, err := ioutil.ReadAll(resp.Body)
+func getBytes(url string) ([]byte, error) {
+	response, err := httpClient.Get(url)
 	if err != nil {
 		return nil, err
 	}
-	if resp.StatusCode != http.StatusOK {
+	defer closeBody(response.Body)
+
+	body, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		return nil, err
+	}
+	if response.StatusCode != http.StatusOK {
 		bodyText := string(body)
 		if bodyText == "" {
 			bodyText = "<empty>"
 		}
-		return nil, fmt.Errorf("Error %d (%s) al cridar a %s", resp.StatusCode, bodyText, url)
+		return nil, fmt.Errorf("Error %d (%s) al cridar a %s", response.StatusCode, bodyText, url)
 	}
 	return body, nil
 }
