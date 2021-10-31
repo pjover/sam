@@ -26,7 +26,8 @@ func InsertConsumptions(args InsertConsumptionsArgs) error {
 		return err
 	}
 
-	err = comm.PrintPost("http://localhost:8080/consumptions", data)
+	url := fmt.Sprintf("%s/consumptions", viper.GetString("urls.hobbit"))
+	err = comm.PrintPost(url, data)
 	if err != nil {
 		return err
 	}

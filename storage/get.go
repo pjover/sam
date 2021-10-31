@@ -2,12 +2,13 @@ package storage
 
 import (
 	"fmt"
+	"github.com/spf13/viper"
 	"sam/comm"
 	"sam/model"
 )
 
 func GetChild(childCode int) (model.Child, error) {
-	url := fmt.Sprintf("http://localhost:8080/customers/%d", childCode/10)
+	url := fmt.Sprintf("%s/customers/%d", viper.GetString("urls.hobbit"), childCode/10)
 	customer := new(model.Customer)
 	err := comm.GetType(url, customer)
 	if err != nil {
