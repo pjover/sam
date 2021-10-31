@@ -57,6 +57,11 @@ func TestParseInsertConsumptionsArgs(t *testing.T) {
 			expectedError: errors.New("El número introduit és invàlid: 0,5"),
 		},
 		{
+			args:          []string{"2220", "MME", "2"},
+			expectedValue: cons.InsertConsumptionsArgs{},
+			expectedError: errors.New("El número introduit és invàlid: MME"),
+		},
+		{
 			args:          []string{"2220", "0.5", "MME", "2"},
 			expectedValue: cons.InsertConsumptionsArgs{},
 			expectedError: errors.New("No s'ha indroduit el codi del darrer consum"),
@@ -66,7 +71,13 @@ func TestParseInsertConsumptionsArgs(t *testing.T) {
 			expectedValue: cons.InsertConsumptionsArgs{},
 			expectedError: errors.New("Hi ha un codi de consum repetit"),
 		},
+		{
+			args:          []string{"0.5", "MME", "2", "MME"},
+			expectedValue: cons.InsertConsumptionsArgs{},
+			expectedError: errors.New("El codi d'infant introduit és invàlid: 0.5"),
+		},
 	}
+
 	for i, test := range tests {
 		fmt.Println("Test", i)
 		var actual, err = parseInsertConsumptionsArgs(test.args, testNote)

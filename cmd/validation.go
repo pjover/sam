@@ -13,7 +13,7 @@ func validateCustomerCode(args []string) error {
 	if err != nil {
 		return err
 	}
-	_, err = parseInteger(args[0])
+	_, err = parseInteger(args[0], "de client")
 	return err
 }
 
@@ -55,10 +55,10 @@ func validateArgsExists(args []string) error {
 	return nil
 }
 
-func parseInteger(customCode string) (int, error) {
+func parseInteger(customCode string, codeType string) (int, error) {
 	code, err := strconv.Atoi(customCode)
 	if err != nil {
-		return 0, fmt.Errorf("El codi introduit és invàlid: %s", customCode)
+		return 0, fmt.Errorf("El codi %s introduit és invàlid: %s", codeType, customCode)
 	}
 	return code, nil
 }

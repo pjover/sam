@@ -38,7 +38,7 @@ func parseInsertConsumptionsArgs(args []string, noteArg string) (cons.InsertCons
 		return cons.InsertConsumptionsArgs{}, err
 	}
 
-	code, err := parseInteger(args[0])
+	code, err := parseInteger(args[0], "d'infant")
 	if err != nil {
 		return cons.InsertConsumptionsArgs{}, err
 	}
