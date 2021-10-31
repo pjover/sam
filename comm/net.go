@@ -13,22 +13,11 @@ import (
 	"runtime"
 )
 
-func PrintUrl(url string) error {
-	body, err := getBytes(url)
-	if err != nil {
-		return err
-	}
-
-	err = printJson(body)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
 var httpClient = &http.Client{Timeout: httpClientTimeout}
 
-func getBytes(url string) ([]byte, error) {
+const contentType = "application/json; charset=UTF-8"
+
+func Get(url string) ([]byte, error) {
 	response, err := httpClient.Get(url)
 	if err != nil {
 		return nil, err
@@ -39,12 +28,8 @@ func getBytes(url string) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	if response.StatusCode != http.StatusOK {
-		bodyText := string(body)
-		if bodyText == "" {
-			bodyText = "<empty>"
-		}
-		return nil, fmt.Errorf("Error %d (%s) al cridar a %s", response.StatusCode, bodyText, url)
+	if isKo(response) {
+		return processError(url, body, response)
 	}
 	return body, nil
 }
@@ -56,6 +41,31 @@ func closeBody(body io.ReadCloser) {
 	}
 }
 
+func isKo(response *http.Response) bool {
+	return response.StatusCode < http.StatusOK || response.StatusCode >= http.StatusBadRequest
+}
+
+func processError(url string, body []byte, response *http.Response) ([]byte, error) {
+	bodyText := string(body)
+	if bodyText == "" {
+		bodyText = "<empty>"
+	}
+	return nil, fmt.Errorf("Error %d (%s) al cridar a %s", response.StatusCode, bodyText, url)
+}
+
+func PrintGet(url string) error {
+	body, err := Get(url)
+	if err != nil {
+		return err
+	}
+
+	err = printJson(body)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func printJson(body []byte) error {
 	var prettyJSON bytes.Buffer
 	if err := json.Indent(&prettyJSON, body, "", "    "); err != nil {
@@ -65,7 +75,47 @@ func printJson(body []byte) error {
 	return nil
 }
 
-func OpenUrl(url string) error {
+func GetType(url string, target interface{}) error {
+	response, err := httpClient.Get(url)
+	if err != nil {
+		return err
+	}
+	defer closeBody(response.Body)
+
+	return json.NewDecoder(response.Body).Decode(target)
+}
+
+func Post(url string, data []byte) ([]byte, error) {
+	response, err := httpClient.Post(url, contentType, bytes.NewBuffer(data))
+	if err != nil {
+		return nil, err
+	}
+	defer closeBody(response.Body)
+
+	body, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		return nil, err
+	}
+	if isKo(response) {
+		return processError(url, body, response)
+	}
+	return body, nil
+}
+
+func PrintPost(url string, data []byte) error {
+	body, err := Post(url, data)
+	if err != nil {
+		return err
+	}
+
+	err = printJson(body)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func OpenOnBrowser(url string) error {
 
 	switch runtime.GOOS {
 	case "linux":
@@ -75,6 +125,6 @@ func OpenUrl(url string) error {
 	case "darwin":
 		return exec.Command("open", url).Start()
 	default:
-		return errors.New("Unsupported platform")
+		return errors.New("unsupported platform")
 	}
 }
