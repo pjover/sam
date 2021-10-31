@@ -58,5 +58,7 @@ func initConfig() {
 
 	dirHome := path.Join(home, "Sam")
 	viper.SetDefault("dirs.home", dirHome)
-	viper.SetDefault("dirs.current", adm.GetCurrentDirName(false, false))
+	yearMonth, dirName := adm.GetDirConfig(false, false)
+	viper.SetDefault("dirs.current", dirName)
+	viper.SetDefault("yearMonth", yearMonth)
 }

@@ -10,27 +10,30 @@ import (
 )
 
 func CreateDirectory(previousMonth bool, nextMonth bool) error {
-	dirName := GetCurrentDirName(previousMonth, nextMonth)
+	yearMonth, dirName := GetDirConfig(previousMonth, nextMonth)
+
 	err := createDir(dirName)
 	if err != nil {
 		return err
 	}
 
-	err = updateConfig(dirName)
+	err = updateConfig(yearMonth, dirName)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func GetCurrentDirName(previousMonth bool, nextMonth bool) string {
+func GetDirConfig(previousMonth bool, nextMonth bool) (string, string) {
 	workingTime := time.Now()
 	if previousMonth {
 		workingTime = workingTime.AddDate(0, -1, 0)
 	} else if nextMonth {
 		workingTime = workingTime.AddDate(0, 1, 0)
 	}
-	return catalan.WorkingDir(workingTime)
+	yearMonth := workingTime.Format("2006-01")
+	dirName := catalan.WorkingDir(workingTime)
+	return yearMonth, dirName
 }
 
 func createDir(dirName string) error {
@@ -66,7 +69,9 @@ func fileExists(path string) (bool, error) {
 	return false, err
 }
 
-func updateConfig(dirName string) error {
+func updateConfig(yearMonth string, dirName string) error {
+
+	viper.Set("yearMonth", yearMonth)
 	viper.Set("dirs.current", dirName)
 	err := viper.WriteConfig()
 	if err != nil {
