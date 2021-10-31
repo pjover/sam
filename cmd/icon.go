@@ -4,7 +4,6 @@ import (
 	"errors"
 	"github.com/spf13/cobra"
 	"sam/cons"
-	"strings"
 )
 
 var note string
@@ -46,7 +45,7 @@ func parseInsertConsumptionsArgs(args []string, noteArg string) (cons.InsertCons
 	var consMap = make(map[string]float64)
 	for i := 1; i < len(args); i = i + 2 {
 		if i >= len(args)-1 {
-			return cons.InsertConsumptionsArgs{}, errors.New("No s'ha indroduit el codi del darrer consum")
+			return cons.InsertConsumptionsArgs{}, errors.New("No s'ha indroduit el codi del darrer producte")
 		}
 
 		consUnits, err := parseFloat(args[i])
@@ -54,12 +53,16 @@ func parseInsertConsumptionsArgs(args []string, noteArg string) (cons.InsertCons
 			return cons.InsertConsumptionsArgs{}, err
 		}
 
-		consCode := strings.ToUpper(args[i+1])
-		if _, ok := consMap[consCode]; ok {
-			return cons.InsertConsumptionsArgs{}, errors.New("Hi ha un codi de consum repetit")
+		productCode, err := parseProductCode(args[i+1])
+		if err != nil {
+			return cons.InsertConsumptionsArgs{}, err
 		}
 
-		consMap[consCode] = consUnits
+		if _, ok := consMap[productCode]; ok {
+			return cons.InsertConsumptionsArgs{}, errors.New("Hi ha un codi de producte repetit")
+		}
+
+		consMap[productCode] = consUnits
 	}
 
 	return cons.InsertConsumptionsArgs{Code: code, Consumptions: consMap, Note: noteArg}, nil
