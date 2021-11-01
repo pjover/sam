@@ -3,7 +3,7 @@ package cmd
 import (
 	"errors"
 	"fmt"
-	"sam/comm"
+	"sam/util"
 	"strconv"
 	"strings"
 	"time"
@@ -62,7 +62,7 @@ func parseFloat(value string) (float64, error) {
 }
 
 func parseYearMonth(yearMonth string) (time.Time, error) {
-	ym, err := time.Parse(comm.YearMonthLayout, yearMonth)
+	ym, err := time.Parse(util.YearMonthLayout, yearMonth)
 	if err != nil {
 		return time.Time{}, errors.New("Error al introduïr el mes: " + err.Error())
 	}

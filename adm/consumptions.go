@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/spf13/viper"
-	"sam/comm"
 	"sam/storage"
+	"sam/util"
 )
 
 type InsertConsumptionsArgs struct {
@@ -27,7 +27,7 @@ func InsertConsumptions(args InsertConsumptionsArgs) error {
 	}
 
 	url := fmt.Sprintf("%s/consumptions", viper.GetString("urls.hobbit"))
-	err = comm.PrintPost(url, data)
+	err = util.PrintPost(url, data)
 	if err != nil {
 		return err
 	}

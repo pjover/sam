@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/spf13/viper"
 	"net/url"
-	"sam/comm"
+	"sam/util"
 )
 
 func SearchCustomer(args []string) error {
@@ -12,5 +12,5 @@ func SearchCustomer(args []string) error {
 	params := url.Values{}
 	params.Add("text", text)
 	_url := fmt.Sprintf("%s/search/customer?%s", viper.GetString("urls.hobbit"), params.Encode())
-	return comm.PrintGet(_url)
+	return util.PrintGet(_url)
 }

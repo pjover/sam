@@ -8,7 +8,7 @@ import (
 	"path"
 
 	"sam/adm"
-	"sam/comm"
+	"sam/util"
 )
 
 var cfgFile string
@@ -19,7 +19,7 @@ var rootCmd = &cobra.Command{
 	Short: "A Command Line Interface to Hobbit service",
 	Long: `A Command Line Interface to Hobbit service in Go.
 	Complete documentation is available at https://github.com/pjover/sam`,
-	Version: comm.Version,
+	Version: util.Version,
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
