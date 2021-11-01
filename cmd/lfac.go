@@ -34,7 +34,7 @@ func init() {
 func parseListInvoicesArgs(args []string) error {
 	switch len(args) {
 	case 0:
-		var workingTime = util.SamTimer{}.Now()
+		var workingTime = util.SamTimeManager{}.Now()
 		return adm.ListYearMonthInvoices(workingTime)
 	case 1:
 		customerCode, err := parseInteger(args[0], "de client")
