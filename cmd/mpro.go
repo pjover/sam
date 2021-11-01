@@ -1,10 +1,8 @@
 package cmd
 
 import (
-	"sam/adm"
-	"strings"
-
 	"github.com/spf13/cobra"
+	"sam/adm"
 )
 
 var mproCmd = &cobra.Command{
@@ -15,10 +13,13 @@ var mproCmd = &cobra.Command{
 	Annotations: map[string]string{"ADM": "Comandes d'administració"},
 	Aliases:     []string{"mostra-producte"},
 	Args: func(cmd *cobra.Command, args []string) error {
-		return validateProductCode(args)
+		return validateNumberOfArgsEqualsTo(1, args)
 	},
 	RunE: func(cmd *cobra.Command, args []string) error {
-		productCode := strings.ToUpper(args[0])
+		productCode, err := parseProductCode(args[0])
+		if err != nil {
+			return err
+		}
 		return adm.DisplayProduct(productCode)
 	},
 }

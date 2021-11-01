@@ -2,7 +2,8 @@ package adm
 
 import (
 	"fmt"
-	"sam/comm"
+	"github.com/spf13/viper"
+	"sam/util"
 	"time"
 )
 
@@ -17,50 +18,55 @@ func ListEmails(ei1 bool, ei2 bool, ei3 bool) error {
 	} else {
 		group = "ALL"
 	}
-	url := fmt.Sprintf("http://localhost:8080/lists/emails/%s", group)
-	return comm.PrintUrl(url)
+
+	url := fmt.Sprintf("%s/lists/emails/%s", viper.GetString("urls.hobbit"), group)
+	return util.PrintGet(url)
 }
 
 func ListCustomers() error {
-	return comm.PrintUrl("http://localhost:8080/lists/customers")
+	url := fmt.Sprintf("%s/lists/customers", viper.GetString("urls.hobbit"))
+	return util.PrintGet(url)
 }
 
 func ListChildren() error {
-	return comm.PrintUrl("http://localhost:8080/lists/children")
+	url := fmt.Sprintf("%s/lists/children", viper.GetString("urls.hobbit"))
+	return util.PrintGet(url)
 }
 
 func ListAllCustomersConsumptions() error {
 	fmt.Println("Llistat dels consums pendents de tots els clients")
-	return comm.PrintUrl("http://localhost:8080/consumptions")
+	url := fmt.Sprintf("%s/consumptions", viper.GetString("urls.hobbit"))
+	return util.PrintGet(url)
 }
 
 func ListCustomerConsumptions(customerCode int) error {
 	fmt.Println("Llistat dels consums pendents del client", customerCode)
-	url := fmt.Sprintf("http://localhost:8080/consumptions/%d", customerCode)
-	return comm.PrintUrl(url)
+	url := fmt.Sprintf("%s/consumptions/%d", viper.GetString("urls.hobbit"), customerCode)
+	return util.PrintGet(url)
 }
 
 func ListYearMonthInvoices(yearMonth time.Time) error {
-	ym := yearMonth.Format(comm.YearMonthLayout)
+	ym := yearMonth.Format(util.YearMonthLayout)
 	fmt.Println("Llistat de les factures del mes", ym)
-	url := fmt.Sprintf("http://localhost:8080/invoices/search/findByYearMonthIn?yearMonths=%s", ym)
-	return comm.PrintUrl(url)
+	url := fmt.Sprintf("%s/invoices/search/findByYearMonthIn?yearMonths=%s", viper.GetString("urls.hobbit"), ym)
+	return util.PrintGet(url)
 }
 
 func ListCustomerInvoices(customerCode int) error {
 	fmt.Println("Llistat de les factures del client", customerCode)
-	url := fmt.Sprintf("http://localhost:8080/invoices/search/findByCustomerId?customerId=%d", customerCode)
-	return comm.PrintUrl(url)
+	url := fmt.Sprintf("%s/invoices/search/findByCustomerId?customerId=%d", viper.GetString("urls.hobbit"), customerCode)
+	return util.PrintGet(url)
 }
 
 func ListCustomerYearMonthInvoices(customerCode int, yearMonth time.Time) error {
-	ym := yearMonth.Format(comm.YearMonthLayout)
+	ym := yearMonth.Format(util.YearMonthLayout)
 	fmt.Println("Llistat de les factures del client", customerCode, "del mes", ym)
-	url := fmt.Sprintf("http://localhost:8080/invoices/search/findByCustomerIdAndYearMonthIn?customerId=%d&yearMonths=%s", customerCode, ym)
-	return comm.PrintUrl(url)
+	url := fmt.Sprintf("%s/invoices/search/findByCustomerIdAndYearMonthIn?customerId=%d&yearMonths=%s", viper.GetString("urls.hobbit"), customerCode, ym)
+	return util.PrintGet(url)
 }
 
 func ListProducts() error {
 	fmt.Println("Llistat de tots els productes")
-	return comm.PrintUrl("http://localhost:8080/products?page=0&size=100")
+	url := fmt.Sprintf("%s/products?page=0&size=100", viper.GetString("urls.hobbit"))
+	return util.PrintGet(url)
 }

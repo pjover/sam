@@ -3,7 +3,6 @@ package cmd
 import (
 	"github.com/spf13/cobra"
 	"sam/adm"
-	"strings"
 )
 
 var eproCmd = &cobra.Command{
@@ -14,10 +13,13 @@ var eproCmd = &cobra.Command{
 	Annotations: map[string]string{"ADM": "Comandes d'administració"},
 	Aliases:     []string{"edita-producte"},
 	Args: func(cmd *cobra.Command, args []string) error {
-		return validateProductCode(args)
+		return validateNumberOfArgsEqualsTo(1, args)
 	},
 	RunE: func(cmd *cobra.Command, args []string) error {
-		productCode := strings.ToUpper(args[0])
+		productCode, err := parseProductCode(args[0])
+		if err != nil {
+			return err
+		}
 		return adm.EditProduct(productCode)
 	},
 }

@@ -8,7 +8,7 @@ import (
 	"path"
 
 	"sam/adm"
-	"sam/comm"
+	"sam/util"
 )
 
 var cfgFile string
@@ -19,7 +19,7 @@ var rootCmd = &cobra.Command{
 	Short: "A Command Line Interface to Hobbit service",
 	Long: `A Command Line Interface to Hobbit service in Go.
 	Complete documentation is available at https://github.com/pjover/sam`,
-	Version: comm.Version,
+	Version: util.Version,
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -58,5 +58,12 @@ func initConfig() {
 
 	dirHome := path.Join(home, "Sam")
 	viper.SetDefault("dirs.home", dirHome)
-	viper.SetDefault("dirs.current", adm.GetCurrentDirName(false, false))
+
+	dir := adm.Directories{Timer: util.SamTimeManager{}}
+	yearMonth, dirName := dir.GetDirConfig(false, false)
+	viper.SetDefault("dirs.current", dirName)
+	viper.SetDefault("yearMonth", yearMonth)
+
+	viper.SetDefault("urls.hobbit", "http://localhost:8080")
+	viper.SetDefault("urls.mongoExpress", "http://localhost:8081/db/hobbit_prod")
 }

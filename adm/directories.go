@@ -6,31 +6,44 @@ import (
 	"os"
 	"path"
 	"sam/translate/catalan"
+	"sam/util"
 	"time"
 )
 
-func CreateDirectory(previousMonth bool, nextMonth bool) error {
-	dirName := GetCurrentDirName(previousMonth, nextMonth)
+type Directories struct {
+	Timer util.TimeManager
+}
+
+func (d Directories) CreateDirectory(previousMonth bool, nextMonth bool) error {
+	yearMonth, dirName := d.GetDirConfig(previousMonth, nextMonth)
+
 	err := createDir(dirName)
 	if err != nil {
 		return err
 	}
 
-	err = updateConfig(dirName)
+	err = updateConfig(yearMonth, dirName)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func GetCurrentDirName(previousMonth bool, nextMonth bool) string {
-	workingTime := time.Now()
+func (d Directories) GetDirConfig(previousMonth bool, nextMonth bool) (string, string) {
+	var workingTime = d.getCurrentMonth()
 	if previousMonth {
 		workingTime = workingTime.AddDate(0, -1, 0)
 	} else if nextMonth {
 		workingTime = workingTime.AddDate(0, 1, 0)
 	}
-	return catalan.WorkingDir(workingTime)
+	yearMonth := workingTime.Format("2006-01")
+	dirName := catalan.WorkingDir(workingTime)
+	return yearMonth, dirName
+}
+
+func (d Directories) getCurrentMonth() time.Time {
+	var t = d.Timer.Now()
+	return time.Date(t.Year(), t.Month(), 1, 0, 0, 0, 0, time.Local)
 }
 
 func createDir(dirName string) error {
@@ -66,7 +79,9 @@ func fileExists(path string) (bool, error) {
 	return false, err
 }
 
-func updateConfig(dirName string) error {
+func updateConfig(yearMonth string, dirName string) error {
+
+	viper.Set("yearMonth", yearMonth)
 	viper.Set("dirs.current", dirName)
 	err := viper.WriteConfig()
 	if err != nil {
