@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"sam/adm"
+	"sam/util"
 
 	"github.com/spf13/cobra"
 )
@@ -22,7 +23,8 @@ var dirCmd = &cobra.Command{
    dir -s    Crea el directori de treball per al mes següent`,
 	Annotations: map[string]string{"ADM": "Comandes d'administració"},
 	RunE: func(cmd *cobra.Command, args []string) error {
-		return adm.CreateDirectory(previousMonth, nextMonth)
+		dir := adm.Directories{Timer: util.SamTimer{}}
+		return dir.CreateDirectory(previousMonth, nextMonth)
 	},
 }
 

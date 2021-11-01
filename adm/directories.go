@@ -7,10 +7,15 @@ import (
 	"path"
 	"sam/translate/catalan"
 	"sam/util"
+	"time"
 )
 
-func CreateDirectory(previousMonth bool, nextMonth bool) error {
-	yearMonth, dirName := GetDirConfig(previousMonth, nextMonth)
+type Directories struct {
+	Timer util.Timer
+}
+
+func (d Directories) CreateDirectory(previousMonth bool, nextMonth bool) error {
+	yearMonth, dirName := d.GetDirConfig(previousMonth, nextMonth)
 
 	err := createDir(dirName)
 	if err != nil {
@@ -24,8 +29,8 @@ func CreateDirectory(previousMonth bool, nextMonth bool) error {
 	return nil
 }
 
-func GetDirConfig(previousMonth bool, nextMonth bool) (string, string) {
-	var workingTime = util.SamClock{}.Now()
+func (d Directories) GetDirConfig(previousMonth bool, nextMonth bool) (string, string) {
+	var workingTime = d.getCurrentMonth()
 	if previousMonth {
 		workingTime = workingTime.AddDate(0, -1, 0)
 	} else if nextMonth {
@@ -34,6 +39,11 @@ func GetDirConfig(previousMonth bool, nextMonth bool) (string, string) {
 	yearMonth := workingTime.Format("2006-01")
 	dirName := catalan.WorkingDir(workingTime)
 	return yearMonth, dirName
+}
+
+func (d Directories) getCurrentMonth() time.Time {
+	var t = d.Timer.Now()
+	return time.Date(t.Year(), t.Month(), 1, 0, 0, 0, 0, time.Local)
 }
 
 func createDir(dirName string) error {

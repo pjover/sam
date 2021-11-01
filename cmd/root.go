@@ -58,9 +58,12 @@ func initConfig() {
 
 	dirHome := path.Join(home, "Sam")
 	viper.SetDefault("dirs.home", dirHome)
-	yearMonth, dirName := adm.GetDirConfig(false, false)
+
+	dir := adm.Directories{Timer: util.SamTimer{}}
+	yearMonth, dirName := dir.GetDirConfig(false, false)
 	viper.SetDefault("dirs.current", dirName)
 	viper.SetDefault("yearMonth", yearMonth)
+
 	viper.SetDefault("urls.hobbit", "http://localhost:8080")
 	viper.SetDefault("urls.mongoExpress", "http://localhost:8081/db/hobbit_prod")
 }
