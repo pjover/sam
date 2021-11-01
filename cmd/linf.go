@@ -14,7 +14,9 @@ var linfCmd = &cobra.Command{
 	Annotations: map[string]string{"ADM": "Comandes de llistats"},
 	Aliases:     []string{"llista-infants"},
 	RunE: func(cmd *cobra.Command, args []string) error {
-		return adm.ListChildren()
+		manager := adm.NewListManager()
+		_, err := manager.ListChildren()
+		return err
 	},
 }
 

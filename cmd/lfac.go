@@ -32,18 +32,22 @@ func init() {
 }
 
 func parseListInvoicesArgs(args []string) error {
+	manager := adm.NewListManager()
 	switch len(args) {
 	case 0:
 		var workingTime = util.SamTimeManager{}.Now()
-		return adm.ListYearMonthInvoices(workingTime)
+		_, err := manager.ListYearMonthInvoices(workingTime)
+		return err
 	case 1:
 		customerCode, err := parseInteger(args[0], "de client")
 		if err == nil {
-			return adm.ListCustomerInvoices(customerCode)
+			_, err := manager.ListCustomerInvoices(customerCode)
+			return err
 		}
 		yearMonth, err := parseYearMonth(args[0])
 		if err == nil {
-			return adm.ListYearMonthInvoices(yearMonth)
+			_, err := manager.ListYearMonthInvoices(yearMonth)
+			return err
 		}
 		return err
 	case 2:
@@ -55,7 +59,8 @@ func parseListInvoicesArgs(args []string) error {
 		if err != nil {
 			return err
 		}
-		return adm.ListCustomerYearMonthInvoices(customerCode, yearMonth)
+		_, err = manager.ListCustomerYearMonthInvoices(customerCode, yearMonth)
+		return err
 	}
 	return errors.New("Unknown error")
 }

@@ -19,7 +19,9 @@ var mcliCmd = &cobra.Command{
 	},
 	RunE: func(cmd *cobra.Command, args []string) error {
 		customerCode, _ := strconv.Atoi(args[0])
-		return adm.DisplayCustomer(customerCode)
+		manager := adm.NewDisplayManager()
+		_, err := manager.DisplayCustomer(customerCode)
+		return err
 	},
 }
 

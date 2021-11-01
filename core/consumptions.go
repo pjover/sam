@@ -8,30 +8,38 @@ import (
 	"sam/util"
 )
 
+type ConsumptionsManager struct {
+	PostManager     util.HttpPostManager
+	CustomerStorage storage.CustomerStorage
+}
+
+func NewConsumptionsManager() ConsumptionsManager {
+	return ConsumptionsManager{
+		util.NewHttpPostManager(),
+		storage.NewCustomerStorage(),
+	}
+}
+
 type InsertConsumptionsArgs struct {
 	Code         int
 	Consumptions map[string]float64
 	Note         string
 }
 
-func InsertConsumptions(args InsertConsumptionsArgs) error {
-	child, err := storage.GetChild(args.Code)
+func (c ConsumptionsManager) InsertConsumptions(args InsertConsumptionsArgs) (string, error) {
+	child, err := c.CustomerStorage.GetChild(args.Code)
 	if err != nil {
-		return err
+		return "", err
 	}
 	fmt.Println("Insertant consums de l'infant", child.Name, child.Surname)
 
 	data, err := getInsertConsumptionsJson(args)
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	url := fmt.Sprintf("%s/consumptions", viper.GetString("urls.hobbit"))
-	err = util.PrintPost(url, data)
-	if err != nil {
-		return err
-	}
-	return nil
+	return c.PostManager.PostPrint(url, data)
 }
 
 func getInsertConsumptionsJson(args InsertConsumptionsArgs) ([]byte, error) {

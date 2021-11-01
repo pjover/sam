@@ -19,7 +19,9 @@ var mfacCmd = &cobra.Command{
 	},
 	RunE: func(cmd *cobra.Command, args []string) error {
 		invoiceCode := strings.ToUpper(args[0])
-		return adm.DisplayInvoice(invoiceCode)
+		manager := adm.NewDisplayManager()
+		_, err := manager.DisplayInvoice(invoiceCode)
+		return err
 	},
 }
 

@@ -7,10 +7,21 @@ import (
 	"sam/util"
 )
 
-func GetChild(childCode int) (model.Child, error) {
+type CustomerStorage struct {
+	getManager util.HttpGetManager
+}
+
+func NewCustomerStorage() CustomerStorage {
+	return CustomerStorage{
+		new(util.SamHttpGetManager),
+	}
+}
+
+func (c CustomerStorage) GetChild(childCode int) (model.Child, error) {
 	url := fmt.Sprintf("%s/customers/%d", viper.GetString("urls.hobbit"), childCode/10)
 	customer := new(model.Customer)
-	err := util.GetType(url, customer)
+
+	err := c.getManager.GetType(url, customer)
 	if err != nil {
 		return model.Child{}, err
 	}

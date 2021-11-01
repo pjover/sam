@@ -22,7 +22,9 @@ var lcorCmd = &cobra.Command{
 	Annotations: map[string]string{"ADM": "Comandes de llistats"},
 	Aliases:     []string{"llista-correus"},
 	RunE: func(cmd *cobra.Command, args []string) error {
-		return adm.ListEmails(ei1, ei2, ei3)
+		manager := adm.NewListManager()
+		_, err := manager.ListEmails(ei1, ei2, ei3)
+		return err
 	},
 }
 

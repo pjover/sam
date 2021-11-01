@@ -22,7 +22,10 @@ var iconCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		return core.InsertConsumptions(ica)
+
+		manager := core.NewConsumptionsManager()
+		_, err = manager.InsertConsumptions(ica)
+		return err
 	},
 }
 
