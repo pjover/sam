@@ -6,7 +6,7 @@ import (
 	"os"
 	"path"
 	"sam/translate/catalan"
-	"time"
+	"sam/util"
 )
 
 func CreateDirectory(previousMonth bool, nextMonth bool) error {
@@ -25,7 +25,7 @@ func CreateDirectory(previousMonth bool, nextMonth bool) error {
 }
 
 func GetDirConfig(previousMonth bool, nextMonth bool) (string, string) {
-	workingTime := time.Now()
+	var workingTime = util.SamClock{}.Now()
 	if previousMonth {
 		workingTime = workingTime.AddDate(0, -1, 0)
 	} else if nextMonth {

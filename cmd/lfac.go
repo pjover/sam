@@ -4,7 +4,7 @@ import (
 	"errors"
 	"github.com/spf13/cobra"
 	"sam/adm"
-	"time"
+	"sam/util"
 )
 
 var lfacCmd = &cobra.Command{
@@ -34,7 +34,8 @@ func init() {
 func parseListInvoicesArgs(args []string) error {
 	switch len(args) {
 	case 0:
-		return adm.ListYearMonthInvoices(time.Now())
+		var workingTime = util.SamClock{}.Now()
+		return adm.ListYearMonthInvoices(workingTime)
 	case 1:
 		customerCode, err := parseInteger(args[0], "de client")
 		if err == nil {
