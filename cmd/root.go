@@ -59,7 +59,7 @@ func initConfig() {
 	dirHome := path.Join(home, "Sam")
 	viper.SetDefault("dirs.home", dirHome)
 
-	dir := adm.Directories{Timer: util.SamTimer{}}
+	dir := adm.Directories{Timer: util.SamTimeManager{}}
 	yearMonth, dirName := dir.GetDirConfig(false, false)
 	viper.SetDefault("dirs.current", dirName)
 	viper.SetDefault("yearMonth", yearMonth)

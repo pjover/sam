@@ -11,7 +11,7 @@ import (
 )
 
 type Directories struct {
-	Timer util.Timer
+	Timer util.TimeManager
 }
 
 func (d Directories) CreateDirectory(previousMonth bool, nextMonth bool) error {

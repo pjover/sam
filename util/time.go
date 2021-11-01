@@ -2,12 +2,12 @@ package util
 
 import "time"
 
-type Timer interface {
+type TimeManager interface {
 	Now() time.Time
 }
 
-type SamTimer struct{}
+type SamTimeManager struct{}
 
-func (SamTimer) Now() time.Time {
+func (SamTimeManager) Now() time.Time {
 	return time.Now()
 }

@@ -23,7 +23,7 @@ var dirCmd = &cobra.Command{
    dir -s    Crea el directori de treball per al mes següent`,
 	Annotations: map[string]string{"ADM": "Comandes d'administració"},
 	RunE: func(cmd *cobra.Command, args []string) error {
-		dir := adm.Directories{Timer: util.SamTimer{}}
+		dir := adm.Directories{Timer: util.SamTimeManager{}}
 		return dir.CreateDirectory(previousMonth, nextMonth)
 	},
 }
