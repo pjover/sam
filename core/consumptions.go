@@ -1,4 +1,4 @@
-package adm
+package core
 
 import (
 	"encoding/json"
