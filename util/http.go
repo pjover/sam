@@ -77,10 +77,10 @@ func (s SamHttpGetManager) GetPrettyJson(url string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return toPrettyJson(body)
+	return ToPrettyJson(body)
 }
 
-func toPrettyJson(body []byte) (string, error) {
+func ToPrettyJson(body []byte) (string, error) {
 	var prettyJSON bytes.Buffer
 	err := json.Indent(&prettyJSON, body, "", "    ")
 	if err != nil {
@@ -145,7 +145,7 @@ func (s SamHttpPostManager) PostPrettyJson(url string, data []byte) (string, err
 	if err != nil {
 		return "", err
 	}
-	return toPrettyJson(body)
+	return ToPrettyJson(body)
 }
 
 func (s SamHttpPostManager) PostPrint(url string, data []byte) (string, error) {
