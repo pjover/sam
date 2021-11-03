@@ -13,7 +13,7 @@ type CustomerStorage struct {
 
 func NewCustomerStorage() CustomerStorage {
 	return CustomerStorage{
-		new(util.SamHttpGetManager),
+		util.NewHttpGetManager(),
 	}
 }
 
