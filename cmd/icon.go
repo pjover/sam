@@ -14,7 +14,8 @@ var iconCmd = &cobra.Command{
 	Long: `Inserta consums per a un infant al mes de treball
    - El mes de treball és el determinat per a l'execució de la comanda dir`,
 	Example: `   icon 1520 1 QME 0.5 MME      Inserta un consum per l'infant 1520 d'un QME i mig MME
-   icon 1520 1 QME -n "Això és una nota"    Inserta un consum per l'infant 1520 d'un QME amb una nota`,
+   icon 1520 1 QME -n "Això és una nota"    Inserta un consum per l'infant 1520 d'un QME amb una nota
+   icon 1520 -- -5 GEN    Inserta un consum negatiu de -5 GEN (per posar un número negatiu s'han de possar dos guionets abans i no se poden posar notes)`,
 	Annotations: map[string]string{"CON": "Comandes de consum"},
 	Aliases:     []string{"inserta-consum"},
 	RunE: func(cmd *cobra.Command, args []string) error {
