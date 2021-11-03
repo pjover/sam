@@ -20,7 +20,10 @@ var mproCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		return adm.DisplayProduct(productCode)
+
+		manager := adm.NewDisplayManager()
+		_, err = manager.DisplayProduct(productCode)
+		return err
 	},
 }
 

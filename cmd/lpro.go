@@ -13,7 +13,9 @@ var lproCmd = &cobra.Command{
 	Annotations: map[string]string{"ADM": "Comandes de llistats"},
 	Aliases:     []string{"llista-producted"},
 	RunE: func(cmd *cobra.Command, args []string) error {
-		return adm.ListProducts()
+		manager := adm.NewListManager()
+		_, err := manager.ListProducts()
+		return err
 	},
 }
 

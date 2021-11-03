@@ -8,58 +8,73 @@ import (
 	"sam/util"
 )
 
+type ConsumptionsManager struct {
+	PostManager     util.HttpPostManager
+	CustomerStorage storage.CustomerStorage
+}
+
+func NewConsumptionsManager() ConsumptionsManager {
+	return ConsumptionsManager{
+		util.NewHttpPostManager(),
+		storage.NewCustomerStorage(),
+	}
+}
+
 type InsertConsumptionsArgs struct {
 	Code         int
 	Consumptions map[string]float64
 	Note         string
 }
 
-func InsertConsumptions(args InsertConsumptionsArgs) error {
-	child, err := storage.GetChild(args.Code)
+func (c ConsumptionsManager) InsertConsumptions(args InsertConsumptionsArgs) (string, error) {
+	child, err := c.CustomerStorage.GetChild(args.Code)
 	if err != nil {
-		return err
+		return "", err
 	}
 	fmt.Println("Insertant consums de l'infant", child.Name, child.Surname)
 
 	data, err := getInsertConsumptionsJson(args)
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	url := fmt.Sprintf("%s/consumptions", viper.GetString("urls.hobbit"))
-	err = util.PrintPost(url, data)
-	if err != nil {
-		return err
-	}
-	return nil
+	return c.PostManager.PostPrint(url, data)
 }
 
-func getInsertConsumptionsJson(args InsertConsumptionsArgs) ([]byte, error) {
-	type Consumption struct {
-		ProductID string  `json:"productId"`
-		Units     float64 `json:"units"`
-	}
-	type Child struct {
-		Code         int           `json:"code"`
-		Consumptions []Consumption `json:"consumptions"`
-	}
-	type InsertConsumptionsJson struct {
-		YearMonth string  `json:"yearMonth"`
-		Children  []Child `json:"children"`
-	}
+type ConsumptionBody struct {
+	ProductID string  `json:"productId"`
+	Units     float64 `json:"units"`
+	Note      string  `json:"note"`
+}
+type ChildBody struct {
+	Code         int               `json:"code"`
+	Consumptions []ConsumptionBody `json:"consumptions"`
+}
+type ConsumptionsBody struct {
+	YearMonth string      `json:"yearMonth"`
+	Children  []ChildBody `json:"children"`
+}
 
-	var consumptions []Consumption
+func buildConsumptionsBody(args InsertConsumptionsArgs) ConsumptionsBody {
+	var consumptions []ConsumptionBody
+	var note = args.Note
 	for key, val := range args.Consumptions {
-		consumptions = append(consumptions, Consumption{key, val})
+		consumptions = append(consumptions, ConsumptionBody{key, val, note})
+		note = ""
 	}
-	jsonText := InsertConsumptionsJson{
+	consumptionsBody := ConsumptionsBody{
 		YearMonth: viper.GetString("yearMonth"),
-		Children: []Child{
+		Children: []ChildBody{
 			{args.Code, consumptions},
 		},
 	}
+	return consumptionsBody
+}
 
-	bytes, err := json.Marshal(jsonText)
+func getInsertConsumptionsJson(args InsertConsumptionsArgs) ([]byte, error) {
+	consumptionsBody := buildConsumptionsBody(args)
+	bytes, err := json.Marshal(consumptionsBody)
 	if err != nil {
 		fmt.Println(err)
 		return nil, err

@@ -16,7 +16,9 @@ var bcliCmd = &cobra.Command{
 		return validateArgsExists(args)
 	},
 	RunE: func(cmd *cobra.Command, args []string) error {
-		return adm.SearchCustomer(args)
+		manager := adm.NewSearchManager()
+		_, err := manager.SearchCustomer(args)
+		return err
 	},
 }
 

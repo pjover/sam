@@ -6,17 +6,27 @@ import (
 	"sam/util"
 )
 
-func DisplayCustomer(customerCode int) error {
+type DisplayManager struct {
+	getManager util.HttpGetManager
+}
+
+func NewDisplayManager() DisplayManager {
+	return DisplayManager{
+		util.NewHttpGetManager(),
+	}
+}
+
+func (d DisplayManager) DisplayCustomer(customerCode int) (string, error) {
 	url := fmt.Sprintf("%s/customers/%d", viper.GetString("urls.hobbit"), customerCode)
-	return util.PrintGet(url)
+	return d.getManager.GetPrint(url)
 }
 
-func DisplayProduct(productCode string) error {
+func (d DisplayManager) DisplayProduct(productCode string) (string, error) {
 	url := fmt.Sprintf("%s/products/%s", viper.GetString("urls.hobbit"), productCode)
-	return util.PrintGet(url)
+	return d.getManager.GetPrint(url)
 }
 
-func DisplayInvoice(invoiceCode string) error {
+func (d DisplayManager) DisplayInvoice(invoiceCode string) (string, error) {
 	url := fmt.Sprintf("%s/invoices/%s", viper.GetString("urls.hobbit"), invoiceCode)
-	return util.PrintGet(url)
+	return d.getManager.GetPrint(url)
 }

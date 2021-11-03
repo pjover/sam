@@ -14,7 +14,9 @@ var lcliCmd = &cobra.Command{
 	Annotations: map[string]string{"ADM": "Comandes de llistats"},
 	Aliases:     []string{"llista-clients"},
 	RunE: func(cmd *cobra.Command, args []string) error {
-		return adm.ListCustomers()
+		manager := adm.NewListManager()
+		_, err := manager.ListCustomers()
+		return err
 	},
 }
 

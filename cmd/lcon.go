@@ -21,11 +21,14 @@ var lconCmd = &cobra.Command{
 		return validateCustomerCode(args)
 	},
 	RunE: func(cmd *cobra.Command, args []string) error {
+		manager := adm.NewListManager()
 		if len(args) != 0 {
 			customerCode, _ := strconv.Atoi(args[0])
-			return adm.ListCustomerConsumptions(customerCode)
+			_, err := manager.ListCustomerConsumptions(customerCode)
+			return err
 		} else {
-			return adm.ListAllCustomersConsumptions()
+			_, err := manager.ListAllCustomersConsumptions()
+			return err
 		}
 	},
 }
