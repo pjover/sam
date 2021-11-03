@@ -81,3 +81,19 @@ func getInsertConsumptionsJson(args InsertConsumptionsArgs) ([]byte, error) {
 	}
 	return bytes, nil
 }
+
+func (c ConsumptionsManager) RectifyConsumptions(args InsertConsumptionsArgs) (string, error) {
+	child, err := c.CustomerStorage.GetChild(args.Code)
+	if err != nil {
+		return "", err
+	}
+	fmt.Println("Rectificant els consums de l'infant", child.Name, child.Surname)
+
+	data, err := getInsertConsumptionsJson(args)
+	if err != nil {
+		return "", err
+	}
+
+	url := fmt.Sprintf("%s/consumptions/rectification", viper.GetString("urls.hobbit"))
+	return c.PostManager.PostPrint(url, data)
+}
