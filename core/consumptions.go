@@ -97,3 +97,8 @@ func (c ConsumptionsManager) RectifyConsumptions(args InsertConsumptionsArgs) (s
 	url := fmt.Sprintf("%s/consumptions/rectification", viper.GetString("urls.hobbit"))
 	return c.PostManager.PostPrint(url, data)
 }
+
+func (c ConsumptionsManager) BillConsumptions() error {
+	fmt.Println("Facturant els consums pendents de facturar de tots els infants")
+	return nil
+}
