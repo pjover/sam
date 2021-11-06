@@ -47,15 +47,26 @@ func RangeArgs(min int, max int) cobra.PositionalArgs {
 func MinimumNArgs(n int) cobra.PositionalArgs {
 	return func(cmd *cobra.Command, args []string) error {
 		if len(args) < n {
-			return fmt.Errorf("es requereixen al menys %d argument(s), només rebus %d", n, len(args))
+			return fmt.Errorf("es requereixen al menys %d argument(s), rebuts %d", n, len(args))
 		}
 		return nil
 	}
 }
-func parseInteger(customCode string, codeType string) (int, error) {
-	code, err := strconv.Atoi(customCode)
+
+// ExactArgs returns an error if there are not exactly n args.
+func ExactArgs(n int) cobra.PositionalArgs {
+	return func(cmd *cobra.Command, args []string) error {
+		if len(args) != n {
+			return fmt.Errorf("es requereix %d argument(s), rebuts %d", n, len(args))
+		}
+		return nil
+	}
+}
+
+func parseInteger(strCode string, codeType string) (int, error) {
+	code, err := strconv.Atoi(strCode)
 	if err != nil {
-		return 0, fmt.Errorf("El codi %s introduit és invàlid: %s", codeType, customCode)
+		return 0, fmt.Errorf("El codi %s introduit és invàlid: %s", codeType, strCode)
 	}
 	return code, nil
 }
