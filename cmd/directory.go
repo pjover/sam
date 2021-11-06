@@ -18,7 +18,7 @@ var directoryCmd = &cobra.Command{
    - Si no existeix el directori, el crea
    - Actualitza la configuració amb el directori de treball
    - La configuració del directori romandrà activa fins que es torni a executar aquesta comanda de nou`,
-	Example: `   dir       Crea el directori de treball per al mes actual
+	Example: `   dir             Crea el directori de treball per al mes actual
    directori -a    Crea el directori de treball per al mes anterior
    directori -s    Crea el directori de treball per al mes següent`,
 	Annotations: map[string]string{"ADM": "Comandes d'administració"},
