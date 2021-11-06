@@ -3,6 +3,7 @@ package cmd
 import (
 	"errors"
 	"fmt"
+	"github.com/spf13/cobra"
 	"sam/util"
 	"strconv"
 	"strings"
@@ -38,13 +39,15 @@ func validateNumberOfArgsBetween(min int, max int, args []string) error {
 	return nil
 }
 
-func validateArgsExists(args []string) error {
-	if len(args) == 0 {
-		return errors.New("Introdueix els arguments, no s'ha introduit cap argument")
+// MinimumNArgs returns an error if there is not at least N args.
+func MinimumNArgs(n int) cobra.PositionalArgs {
+	return func(cmd *cobra.Command, args []string) error {
+		if len(args) < n {
+			return fmt.Errorf("es requereixen al menys %d argument(s), només rebus %d", n, len(args))
+		}
+		return nil
 	}
-	return nil
 }
-
 func parseInteger(customCode string, codeType string) (int, error) {
 	code, err := strconv.Atoi(customCode)
 	if err != nil {

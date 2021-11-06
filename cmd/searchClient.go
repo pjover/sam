@@ -5,16 +5,19 @@ import (
 	"sam/adm"
 )
 
-var bcliCmd = &cobra.Command{
-	Use:         "bcli nomDelClient",
+var searchClientCmd = &cobra.Command{
+	Use:         "buscaClient nomDelClient",
 	Short:       "Busca els clients que tenguin 'nomDelClient'",
 	Long:        "Busca els clients que tenguin 'nomDelClient' al camps de texte",
-	Example:     `   mcli maria     Mostra les dades del clients amb 'maria'`,
+	Example:     `   buscaClient maria     Mostra les dades dels clients amb 'maria'`,
 	Annotations: map[string]string{"ADM": "Comandes d'administració"},
-	Aliases:     []string{"busca-client"},
-	Args: func(cmd *cobra.Command, args []string) error {
-		return validateArgsExists(args)
+	Aliases: []string{
+		"searchClient", "bcli",
+		"buscaclient", "busca-client",
+		"buscarclient", "buscarClient", "buscar-client",
+		"buscarclients", "buscarClients", "buscar-clients",
 	},
+	Args: MinimumNArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		manager := adm.NewSearchManager()
 		_, err := manager.SearchCustomer(args)
@@ -23,5 +26,5 @@ var bcliCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(bcliCmd)
+	rootCmd.AddCommand(searchClientCmd)
 }
