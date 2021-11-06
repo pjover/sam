@@ -32,11 +32,15 @@ func validateNumberOfArgsGreaterThan(min int, args []string) error {
 	}
 	return nil
 }
-func validateNumberOfArgsBetween(min int, max int, args []string) error {
-	if len(args) < min && len(args) > max {
-		return fmt.Errorf("Introdueix des de %d fins a %d arguments, has introduit %d arguments", min, max, len(args))
+
+// RangeArgs returns an error if the number of args is not within the expected range.
+func RangeArgs(min int, max int) cobra.PositionalArgs {
+	return func(cmd *cobra.Command, args []string) error {
+		if len(args) < min || len(args) > max {
+			return fmt.Errorf("han d'esser entre %d i %d argument(s), rebuts %d", min, max, len(args))
+		}
+		return nil
 	}
-	return nil
 }
 
 // MinimumNArgs returns an error if there is not at least N args.
