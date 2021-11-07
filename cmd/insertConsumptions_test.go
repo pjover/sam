@@ -11,12 +11,6 @@ var testNote = "Test note"
 
 func Test_ParseInsertConsumptionsArgs(t *testing.T) {
 
-	t.Run("Should fail with less than 3 args", func(t *testing.T) {
-		var actual, err = parseInsertConsumptionsArgs([]string{"1552"}, testNote)
-		assert.Equal(t, core.InsertConsumptionsArgs{}, actual)
-		assert.Equal(t, errors.New("Introdueix més de 3 arguments, has introduit 1 arguments"), err)
-	})
-
 	t.Run("Should fail with invalid child code", func(t *testing.T) {
 		var actual, err = parseInsertConsumptionsArgs([]string{"0.5", "MME", "2", "MME"}, testNote)
 		assert.Equal(t, core.InsertConsumptionsArgs{}, actual)
