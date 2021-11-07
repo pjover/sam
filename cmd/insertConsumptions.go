@@ -8,16 +8,22 @@ import (
 
 var iconNote string
 
-var iconCmd = &cobra.Command{
-	Use:   "icon codiInfant unitats codiProducte [unitats codiProducte ...] [-n nota]",
+var insertConsumptionsCmd = &cobra.Command{
+	Use:   "insertaConsums codiInfant unitats codiProducte [unitats codiProducte ...] [-n nota]",
 	Short: "Inserta consums per a un infant",
 	Long: `Inserta consums per a un infant al mes de treball
    - El mes de treball és el determinat per a l'execució de la comanda dir`,
-	Example: `   icon 1520 1 QME 0.5 MME      Inserta un consum per l'infant 1520 d'un QME i mig MME
-   icon 1520 1 QME -n "Això és una nota"    Inserta un consum per l'infant 1520 d'un QME amb una nota
-   icon 1520 -- -5 GEN    Inserta un consum negatiu de -5 GEN (per posar un número negatiu s'han de possar dos guionets abans i no se poden posar notes)`,
+	Example: `   insertaConsums 1520 1 qme 0.5 mme      Inserta un consum per l'infant 1520 d'un QME i mig MME
+   insertaConsums 1520 1 QME -n "Nota"    Inserta un consum per l'infant 1520 d'un QME amb una nota
+   insertaConsums 1520 -- -5 GEN          Inserta un consum negatiu de -5 GEN (per posar un número negatiu s'han de possar dos guionets abans i no se poden posar notes)`,
 	Annotations: map[string]string{"CON": "Comandes de consum"},
-	Aliases:     []string{"inserta-consum"},
+	Aliases: []string{
+		"icon",
+		"insertaconsums", "inserta-consums",
+		"insertarConsums", "insertarconsums", "insertar-consums",
+		"insertConsumptions", "insertconsumptions", "insert-consumptions",
+	},
+	Args: MinimumNArgs(3),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		ica, err := parseInsertConsumptionsArgs(args, iconNote)
 		if err != nil {
@@ -31,16 +37,11 @@ var iconCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(iconCmd)
-	iconCmd.Flags().StringVarP(&iconNote, "nota", "n", "", "Afegeix una nota al consum")
+	rootCmd.AddCommand(insertConsumptionsCmd)
+	insertConsumptionsCmd.Flags().StringVarP(&iconNote, "nota", "n", "", "Afegeix una nota al consum")
 }
 
 func parseInsertConsumptionsArgs(args []string, noteArg string) (core.InsertConsumptionsArgs, error) {
-	err := validateNumberOfArgsGreaterThan(3, args)
-	if err != nil {
-		return core.InsertConsumptionsArgs{}, err
-	}
-
 	code, err := parseInteger(args[0], "d'infant")
 	if err != nil {
 		return core.InsertConsumptionsArgs{}, err
