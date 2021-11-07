@@ -10,15 +10,6 @@ import (
 	"time"
 )
 
-func validateCustomerCode(args []string) error {
-	err := validateNumberOfArgsEqualsTo(1, args)
-	if err != nil {
-		return err
-	}
-	_, err = parseInteger(args[0], "de client")
-	return err
-}
-
 func validateNumberOfArgsEqualsTo(number int, args []string) error {
 	if len(args) != number {
 		return fmt.Errorf("Introdueix %d arguments, s'han introduit %d arguments", number, len(args))
