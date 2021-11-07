@@ -7,16 +7,20 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var mfacCmd = &cobra.Command{
-	Use:         "mfac codiFactura",
+var displayInvoiceCmd = &cobra.Command{
+	Use:         "mostraFactura codiFactura",
 	Short:       "Mostra les dades d'una factura",
 	Long:        "Mostra les dades d'uan factura indicant el seu codi",
-	Example:     `   mfac f-3945     Mostra les dades de la factura F-3945`,
+	Example:     `   mostraFactura f-3945     Mostra les dades de la factura F-3945`,
 	Annotations: map[string]string{"ADM": "Comandes d'administració"},
-	Aliases:     []string{"mostra-factura"},
-	Args: func(cmd *cobra.Command, args []string) error {
-		return validateNumberOfArgsEqualsTo(1, args)
+	Aliases: []string{
+		"mfac",
+		"mostrafactura", "mostra-factura",
+		"mostrarFactura", "mostrarfactura", "mostrar-factura",
+		"dinv",
+		"displayInvoice", "displayinvoice", "display-invoice",
 	},
+	Args: ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		invoiceCode := strings.ToUpper(args[0])
 		manager := adm.NewDisplayManager()
@@ -26,5 +30,5 @@ var mfacCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(mfacCmd)
+	rootCmd.AddCommand(displayInvoiceCmd)
 }
