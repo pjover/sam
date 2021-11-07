@@ -5,8 +5,8 @@ import (
 	"sam/core"
 )
 
-var fconCmd = &cobra.Command{
-	Use:   "fcon",
+var billConsumptionsCmd = &cobra.Command{
+	Use:   "facturaConsums",
 	Short: "Factura els consums no facturats",
 	Long: `Factura els consums pendents de facturar de tots els infants
    - Mostra el resum de les factures
@@ -14,9 +14,15 @@ var fconCmd = &cobra.Command{
    - Crea el fitxer de rebuts 'bdd-n.q1x' de les factures de rebuts dedins del directori de treball
      - 'n' és el número de sequència, per si hi ha més d'un fitxer
    - Crea el fitxer resum de factures 'factures.xlsx' dedins del directori de treball`,
-	Example:     `   fcon     Factura els consums no facturats`,
+	Example:     `   facturaConsums     Factura els consums no facturats`,
 	Annotations: map[string]string{"CON": "Comandes de consum"},
-	Aliases:     []string{"factura-consums"},
+	Aliases: []string{
+		"fcon",
+		"facturaconsums", "factura-consums",
+		"facturarConsums", "facturarconsums", "facturar-consums",
+		"bcon",
+		"billConsumptions", "billconsumptions", "bill-consumptions",
+	},
 	RunE: func(cmd *cobra.Command, args []string) error {
 		manager := core.NewConsumptionsManager()
 		return manager.BillConsumptions()
@@ -24,5 +30,5 @@ var fconCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(fconCmd)
+	rootCmd.AddCommand(billConsumptionsCmd)
 }
