@@ -13,7 +13,7 @@ var listInvoicesCmd = &cobra.Command{
 	Long: `Llista les factura del mes i del client,
     - si no s'especifica el mes agafa l'actual
     - si no s'especifica client, llista les factures de tots els clients'`,
-	Example: `   lfac                         Llista les factura del mes actual
+	Example: `   llistaFactures               Llista les factura del mes actual
    listaFactures 2021-10        Llista totes les factura del mes d'Octubre de 2021
    listaFactures 222            Llista totes les factura del client 222
    listaFactures 222 2021-10    Llista les factura del mes d'Octubre de 2021 del client 222`,

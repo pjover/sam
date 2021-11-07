@@ -26,13 +26,6 @@ func validateNumberOfArgsEqualsTo(number int, args []string) error {
 	return nil
 }
 
-func validateNumberOfArgsGreaterThan(min int, args []string) error {
-	if len(args) < min {
-		return fmt.Errorf("Introdueix més de %d arguments, has introduit %d arguments", min, len(args))
-	}
-	return nil
-}
-
 // RangeArgs returns an error if the number of args is not within the expected range.
 func RangeArgs(min int, max int) cobra.PositionalArgs {
 	return func(cmd *cobra.Command, args []string) error {
