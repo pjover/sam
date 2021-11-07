@@ -10,13 +10,6 @@ import (
 	"time"
 )
 
-func validateNumberOfArgsEqualsTo(number int, args []string) error {
-	if len(args) != number {
-		return fmt.Errorf("Introdueix %d arguments, s'han introduit %d arguments", number, len(args))
-	}
-	return nil
-}
-
 // RangeArgs returns an error if the number of args is not within the expected range.
 func RangeArgs(min int, max int) cobra.PositionalArgs {
 	return func(cmd *cobra.Command, args []string) error {
