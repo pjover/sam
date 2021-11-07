@@ -25,7 +25,8 @@ var billConsumptionsCmd = &cobra.Command{
 	},
 	RunE: func(cmd *cobra.Command, args []string) error {
 		manager := core.NewConsumptionsManager()
-		return manager.BillConsumptions()
+		_, err := manager.BillConsumptions()
+		return err
 	},
 }
 
