@@ -6,13 +6,19 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var lcliCmd = &cobra.Command{
-	Use:         "lcli",
+var listCustomersCmd = &cobra.Command{
+	Use:         "llistaClients",
 	Short:       "Llista tots els clients",
 	Long:        "Llista tots els clients i els seus infants per grups",
-	Example:     `   lcli      Llista tots els clients`,
+	Example:     `   llistaClients      Llista tots els clients`,
 	Annotations: map[string]string{"ADM": "Comandes de llistats"},
-	Aliases:     []string{"llista-clients"},
+	Aliases: []string{
+		"lcli",
+		"llistaclients", "llista-clients",
+		"llistarClients", "llistarclients", "llistar-clients",
+		"lcus",
+		"listCustomers", "listcustomers", "list-customers",
+	},
 	RunE: func(cmd *cobra.Command, args []string) error {
 		manager := adm.NewListManager()
 		_, err := manager.ListCustomers()
@@ -21,5 +27,5 @@ var lcliCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(lcliCmd)
+	rootCmd.AddCommand(listCustomersCmd)
 }
