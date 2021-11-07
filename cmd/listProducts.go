@@ -5,13 +5,18 @@ import (
 	"sam/adm"
 )
 
-var lproCmd = &cobra.Command{
-	Use:         "lpro",
+var listProductsCmd = &cobra.Command{
+	Use:         "llistaProductes",
 	Short:       "Llista tots els productes",
 	Long:        "Llista tots els productes que hi han a la base de dades",
-	Example:     `   lpro    "Llista tots els productes`,
+	Example:     `   llistaProductes    "Llista tots els productes`,
 	Annotations: map[string]string{"ADM": "Comandes de llistats"},
-	Aliases:     []string{"llista-producted"},
+	Aliases: []string{
+		"lpro",
+		"llistaproductes", "llista-productes",
+		"llistarProductes", "llistarproductes", "llistar-productes",
+		"listProducts", "listproducts", "list-products",
+	},
 	RunE: func(cmd *cobra.Command, args []string) error {
 		manager := adm.NewListManager()
 		_, err := manager.ListProducts()
@@ -20,5 +25,5 @@ var lproCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(lproCmd)
+	rootCmd.AddCommand(listProductsCmd)
 }

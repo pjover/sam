@@ -3,52 +3,47 @@ package cmd
 import (
 	"errors"
 	"fmt"
+	"github.com/spf13/cobra"
 	"sam/util"
 	"strconv"
 	"strings"
 	"time"
 )
 
-func validateCustomerCode(args []string) error {
-	err := validateNumberOfArgsEqualsTo(1, args)
+// RangeArgs returns an error if the number of args is not within the expected range.
+func RangeArgs(min int, max int) cobra.PositionalArgs {
+	return func(cmd *cobra.Command, args []string) error {
+		if len(args) < min || len(args) > max {
+			return fmt.Errorf("han d'esser entre %d i %d argument(s), rebuts %d", min, max, len(args))
+		}
+		return nil
+	}
+}
+
+// MinimumNArgs returns an error if there is not at least N args.
+func MinimumNArgs(n int) cobra.PositionalArgs {
+	return func(cmd *cobra.Command, args []string) error {
+		if len(args) < n {
+			return fmt.Errorf("es requereixen al menys %d argument(s), rebuts %d", n, len(args))
+		}
+		return nil
+	}
+}
+
+// ExactArgs returns an error if there are not exactly n args.
+func ExactArgs(n int) cobra.PositionalArgs {
+	return func(cmd *cobra.Command, args []string) error {
+		if len(args) != n {
+			return fmt.Errorf("es requereix %d argument(s), rebuts %d", n, len(args))
+		}
+		return nil
+	}
+}
+
+func parseInteger(strCode string, codeType string) (int, error) {
+	code, err := strconv.Atoi(strCode)
 	if err != nil {
-		return err
-	}
-	_, err = parseInteger(args[0], "de client")
-	return err
-}
-
-func validateNumberOfArgsEqualsTo(number int, args []string) error {
-	if len(args) != number {
-		return fmt.Errorf("Introdueix %d arguments, s'han introduit %d arguments", number, len(args))
-	}
-	return nil
-}
-
-func validateNumberOfArgsGreaterThan(min int, args []string) error {
-	if len(args) < min {
-		return fmt.Errorf("Introdueix més de %d arguments, has introduit %d arguments", min, len(args))
-	}
-	return nil
-}
-func validateNumberOfArgsBetween(min int, max int, args []string) error {
-	if len(args) < min && len(args) > max {
-		return fmt.Errorf("Introdueix des de %d fins a %d arguments, has introduit %d arguments", min, max, len(args))
-	}
-	return nil
-}
-
-func validateArgsExists(args []string) error {
-	if len(args) == 0 {
-		return errors.New("Introdueix els arguments, no s'ha introduit cap argument")
-	}
-	return nil
-}
-
-func parseInteger(customCode string, codeType string) (int, error) {
-	code, err := strconv.Atoi(customCode)
-	if err != nil {
-		return 0, fmt.Errorf("El codi %s introduit és invàlid: %s", codeType, customCode)
+		return 0, fmt.Errorf("El codi %s introduit és invàlid: %s", codeType, strCode)
 	}
 	return code, nil
 }

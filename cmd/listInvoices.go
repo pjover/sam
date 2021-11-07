@@ -7,28 +7,32 @@ import (
 	"sam/util"
 )
 
-var lfacCmd = &cobra.Command{
-	Use:   "lfac [codiClient] [AAAA-MM]",
+var listInvoicesCmd = &cobra.Command{
+	Use:   "llistaFactures [codiClient] [AAAA-MM]",
 	Short: "Llista les factura del mes i del client",
 	Long: `Llista les factura del mes i del client,
     - si no s'especifica el mes agafa l'actual
     - si no s'especifica client, llista les factures de tots els clients'`,
-	Example: `   lfac                Llista les factura del mes actual
-   lfac 2021-10        Llista totes les factura del mes d'Octubre de 2021
-   lfac 222            Llista totes les factura del client 222
-   lfac 222 2021-10    Llista les factura del mes d'Octubre de 2021 del client 222`,
+	Example: `   llistaFactures               Llista les factura del mes actual
+   listaFactures 2021-10        Llista totes les factura del mes d'Octubre de 2021
+   listaFactures 222            Llista totes les factura del client 222
+   listaFactures 222 2021-10    Llista les factura del mes d'Octubre de 2021 del client 222`,
 	Annotations: map[string]string{"ADM": "Comandes de llistats"},
-	Aliases:     []string{"llista-factures"},
-	Args: func(cmd *cobra.Command, args []string) error {
-		return validateNumberOfArgsBetween(0, 2, args)
+	Aliases: []string{
+		"lfac",
+		"llistafactures", "llista-factures",
+		"llistarFactures", "llistarfactures", "llistar-factures",
+		"linv",
+		"listInvoices", "listinvoices", "list-invoices",
 	},
+	Args: RangeArgs(0, 2),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		return parseListInvoicesArgs(args)
 	},
 }
 
 func init() {
-	rootCmd.AddCommand(lfacCmd)
+	rootCmd.AddCommand(listInvoicesCmd)
 }
 
 func parseListInvoicesArgs(args []string) error {

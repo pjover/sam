@@ -6,13 +6,19 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var linfCmd = &cobra.Command{
-	Use:         "linf",
+var listChildrenCmd = &cobra.Command{
+	Use:         "llistaInfants",
 	Short:       "Llista tots els infants",
 	Long:        "Llista tots els infants per grups",
-	Example:     `   linf      Llista tots els infants`,
+	Example:     `   llistaInfants      Llista tots els infants`,
 	Annotations: map[string]string{"ADM": "Comandes de llistats"},
-	Aliases:     []string{"llista-infants"},
+	Aliases: []string{
+		"linf",
+		"llistainfants", "llista-infants",
+		"llistarInfants", "llistarinfants", "llistar-infants",
+		"lchi",
+		"listChildren", "listchildren", "list-children",
+	},
 	RunE: func(cmd *cobra.Command, args []string) error {
 		manager := adm.NewListManager()
 		_, err := manager.ListChildren()
@@ -21,5 +27,5 @@ var linfCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(linfCmd)
+	rootCmd.AddCommand(listChildrenCmd)
 }
