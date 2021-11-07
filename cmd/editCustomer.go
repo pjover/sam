@@ -12,9 +12,11 @@ var editCustomerCmd = &cobra.Command{
 	Example:     `   editaClient 152     Edita les dades del client 152`,
 	Annotations: map[string]string{"ADM": "Comandes d'administració"},
 	Aliases: []string{
-		"editCustomer", "ecli",
+		"ecli",
 		"editaclient", "edita-client",
-		"editar-client", "editarclient", "editarClient",
+		"editarClient", "editarclient", "editar-client",
+		"ecus",
+		"editCustomer", "editcustomer", "edit-customer",
 	},
 	Args: ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {

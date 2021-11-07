@@ -5,17 +5,19 @@ import (
 	"sam/adm"
 )
 
-var searchClientCmd = &cobra.Command{
+var searchCustomerCmd = &cobra.Command{
 	Use:         "buscaClient nomDelClient",
 	Short:       "Busca els clients que tenguin 'nomDelClient'",
 	Long:        "Busca els clients que tenguin 'nomDelClient' al camps de texte",
 	Example:     `   buscaClient maria     Mostra les dades dels clients amb 'maria'`,
 	Annotations: map[string]string{"ADM": "Comandes d'administració"},
 	Aliases: []string{
-		"searchClient", "bcli",
+		"bcli",
 		"buscaclient", "busca-client",
-		"buscarclient", "buscarClient", "buscar-client",
-		"buscarclients", "buscarClients", "buscar-clients",
+		"buscarClient", "buscarclient", "buscar-client",
+		"buscarClients", "buscarclients", "buscar-clients",
+		"scus",
+		"searchCustomer", "searchcustomer", "search-customer",
 	},
 	Args: MinimumNArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
@@ -26,5 +28,5 @@ var searchClientCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(searchClientCmd)
+	rootCmd.AddCommand(searchCustomerCmd)
 }

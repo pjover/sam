@@ -13,9 +13,10 @@ var listConsumptionsCmd = &cobra.Command{
    llistaConsums         Mostra el consums de tots els clients`,
 	Annotations: map[string]string{"ADM": "Comandes de llistats"},
 	Aliases: []string{
-		"listConsumptions", "lcon",
-		"llista-consums", "llistaconsums",
-		"llistar-consums", "llistarconsums", "llistarConsums",
+		"lcon",
+		"llistaconsums", "llista-consums",
+		"llistarConsums", "llistarconsums", "llistar-consums",
+		"listConsumptions", "listconsumptions", "list-consumptions",
 	},
 	Args: RangeArgs(0, 1),
 	RunE: func(cmd *cobra.Command, args []string) error {

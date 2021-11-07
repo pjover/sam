@@ -13,9 +13,11 @@ var editInvoiceCmd = &cobra.Command{
 	Example:     `   editaFactura f-3945     Edita les dades de la factura F-3945`,
 	Annotations: map[string]string{"ADM": "Comandes d'administració"},
 	Aliases: []string{
-		"EditInvoice", "efac",
+		"efac",
 		"editafactura", "edita-factura",
-		"editarfactura", "editar-factura", "editarFactura",
+		"editarFactura", "editarfactura", "editar-factura",
+		"einv",
+		"editInvoice", "editinvoice", "edit-invoice",
 	},
 	Args: ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {

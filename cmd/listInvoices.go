@@ -19,10 +19,11 @@ var listInvoicesCmd = &cobra.Command{
    listaFactures 222 2021-10    Llista les factura del mes d'Octubre de 2021 del client 222`,
 	Annotations: map[string]string{"ADM": "Comandes de llistats"},
 	Aliases: []string{
-		"listInvoices", "lfac",
+		"lfac",
 		"llistafactures", "llista-factures",
-		"llistarfactures", "llistar-factures", "llistarFactures",
-		"llistarfactura", "llistar-facturas", "llistarFacturas",
+		"llistarFactures", "llistarfactures", "llistar-factures",
+		"linv",
+		"listInvoices", "listinvoices", "list-invoices",
 	},
 	Args: RangeArgs(0, 2),
 	RunE: func(cmd *cobra.Command, args []string) error {
