@@ -15,7 +15,7 @@ import (
 
 const contentType = "application/json; charset=UTF-8"
 
-func getHttpClient() *http.Client {
+func NewHttpClient() *http.Client {
 	return &http.Client{Timeout: httpClientTimeout}
 }
 
@@ -32,7 +32,7 @@ type SamHttpGetManager struct {
 
 func NewHttpGetManager() HttpGetManager {
 	return SamHttpGetManager{
-		getHttpClient(),
+		httpClient: NewHttpClient(),
 	}
 }
 
@@ -119,7 +119,7 @@ type SamHttpPostManager struct {
 
 func NewHttpPostManager() HttpPostManager {
 	return SamHttpPostManager{
-		getHttpClient(),
+		httpClient: NewHttpClient(),
 	}
 }
 

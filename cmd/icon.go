@@ -6,10 +6,10 @@ import (
 	"sam/core"
 )
 
-var note string
+var iconNote string
 
 var iconCmd = &cobra.Command{
-	Use:   "icon codiInfant unitats codiProducte [-n nota]",
+	Use:   "icon codiInfant unitats codiProducte [unitats codiProducte ...] [-n nota]",
 	Short: "Inserta consums per a un infant",
 	Long: `Inserta consums per a un infant al mes de treball
    - El mes de treball és el determinat per a l'execució de la comanda dir`,
@@ -19,7 +19,7 @@ var iconCmd = &cobra.Command{
 	Annotations: map[string]string{"CON": "Comandes de consum"},
 	Aliases:     []string{"inserta-consum"},
 	RunE: func(cmd *cobra.Command, args []string) error {
-		ica, err := parseInsertConsumptionsArgs(args, note)
+		ica, err := parseInsertConsumptionsArgs(args, iconNote)
 		if err != nil {
 			return err
 		}
@@ -32,7 +32,7 @@ var iconCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(iconCmd)
-	iconCmd.Flags().StringVarP(&note, "nota", "n", "", "Afegeix una nota al consum")
+	iconCmd.Flags().StringVarP(&iconNote, "nota", "n", "", "Afegeix una nota al consum")
 }
 
 func parseInsertConsumptionsArgs(args []string, noteArg string) (core.InsertConsumptionsArgs, error) {

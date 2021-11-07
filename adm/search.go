@@ -13,7 +13,7 @@ type SearchManager struct {
 
 func NewSearchManager() SearchManager {
 	return SearchManager{
-		GetManager: new(util.SamHttpGetManager),
+		GetManager: util.NewHttpGetManager(),
 	}
 }
 
