@@ -21,7 +21,7 @@ func (c CustomerStorage) GetChild(childCode int) (model.Child, error) {
 	url := fmt.Sprintf("%s/customers/%d", viper.GetString("urls.hobbit"), childCode/10)
 	customer := new(model.Customer)
 
-	err := c.getManager.GetType(url, customer)
+	err := c.getManager.Type(url, customer)
 	if err != nil {
 		return model.Child{}, err
 	}

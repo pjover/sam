@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"github.com/spf13/cobra"
 	"sam/adm"
 )
@@ -22,8 +23,13 @@ var searchCustomerCmd = &cobra.Command{
 	Args: MinimumNArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		manager := adm.NewSearchManager()
-		_, err := manager.SearchCustomer(args)
-		return err
+		msg, err := manager.SearchCustomer(args)
+		if err != nil {
+			return err
+		}
+
+		fmt.Println(msg)
+		return nil
 	},
 }
 

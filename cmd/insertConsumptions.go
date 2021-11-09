@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"errors"
+	"fmt"
 	"github.com/spf13/cobra"
 	"sam/core"
 )
@@ -31,8 +32,13 @@ var insertConsumptionsCmd = &cobra.Command{
 		}
 
 		manager := core.NewConsumptionsManager()
-		_, err = manager.InsertConsumptions(ica)
-		return err
+		msg, err := manager.InsertConsumptions(ica)
+		if err != nil {
+			return err
+		}
+
+		fmt.Println(msg)
+		return nil
 	},
 }
 

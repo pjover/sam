@@ -1,6 +1,9 @@
 package adm
 
-import "sam/util"
+import (
+	"fmt"
+	"sam/util"
+)
 
 type GenerateManager struct {
 	postManager util.HttpPostManager
@@ -13,5 +16,6 @@ func NewGenerateManager() GenerateManager {
 }
 
 func (g GenerateManager) GenerateBdd() (string, error) {
+	fmt.Println("Generant els rebuts ...")
 	return "", nil
 }

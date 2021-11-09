@@ -22,5 +22,5 @@ func (s SearchManager) SearchCustomer(args []string) (string, error) {
 	params := url.Values{}
 	params.Add("text", text)
 	_url := fmt.Sprintf("%s/search/customer?%s", viper.GetString("urls.hobbit"), params.Encode())
-	return s.GetManager.GetPrint(_url)
+	return s.GetManager.PrettyJson(_url)
 }

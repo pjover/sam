@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"github.com/spf13/cobra"
 	"sam/adm"
 )
@@ -19,8 +20,13 @@ var listProductsCmd = &cobra.Command{
 	},
 	RunE: func(cmd *cobra.Command, args []string) error {
 		manager := adm.NewListManager()
-		_, err := manager.ListProducts()
-		return err
+		msg, err := manager.ListProducts()
+		if err != nil {
+			return err
+		}
+
+		fmt.Println(msg)
+		return nil
 	},
 }
 

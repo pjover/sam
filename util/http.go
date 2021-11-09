@@ -20,10 +20,9 @@ func NewHttpClient() *http.Client {
 }
 
 type HttpGetManager interface {
-	GetBytes(url string) ([]byte, error)
-	GetPrettyJson(url string) (string, error)
-	GetType(url string, target interface{}) error
-	GetPrint(url string) (string, error)
+	Bytes(url string) ([]byte, error)
+	PrettyJson(url string) (string, error)
+	Type(url string, target interface{}) error
 }
 
 type SamHttpGetManager struct {
@@ -36,7 +35,7 @@ func NewHttpGetManager() HttpGetManager {
 	}
 }
 
-func (s SamHttpGetManager) GetBytes(url string) ([]byte, error) {
+func (s SamHttpGetManager) Bytes(url string) ([]byte, error) {
 	response, err := s.httpClient.Get(url)
 	if err != nil {
 		return nil, err
@@ -72,8 +71,8 @@ func processError(url string, body []byte, response *http.Response) ([]byte, err
 	return nil, fmt.Errorf("Error %d (%s) al cridar a %s", response.StatusCode, bodyText, url)
 }
 
-func (s SamHttpGetManager) GetPrettyJson(url string) (string, error) {
-	body, err := s.GetBytes(url)
+func (s SamHttpGetManager) PrettyJson(url string) (string, error) {
+	body, err := s.Bytes(url)
 	if err != nil {
 		return "", err
 	}
@@ -89,7 +88,7 @@ func ToPrettyJson(body []byte) (string, error) {
 	return prettyJSON.String(), nil
 }
 
-func (s SamHttpGetManager) GetType(url string, target interface{}) error {
+func (s SamHttpGetManager) Type(url string, target interface{}) error {
 	response, err := s.httpClient.Get(url)
 	if err != nil {
 		return err
@@ -98,19 +97,9 @@ func (s SamHttpGetManager) GetType(url string, target interface{}) error {
 	return json.NewDecoder(response.Body).Decode(target)
 }
 
-func (s SamHttpGetManager) GetPrint(url string) (string, error) {
-	_json, err := s.GetPrettyJson(url)
-	if err != nil {
-		return "", err
-	}
-	fmt.Println(_json)
-	return _json, nil
-}
-
 type HttpPostManager interface {
-	PostBytes(url string, data []byte) ([]byte, error)
-	PostPrettyJson(url string, data []byte) (string, error)
-	PostPrint(url string, data []byte) (string, error)
+	Bytes(url string, data []byte) ([]byte, error)
+	PrettyJson(url string, data []byte) (string, error)
 }
 
 type SamHttpPostManager struct {
@@ -123,7 +112,7 @@ func NewHttpPostManager() HttpPostManager {
 	}
 }
 
-func (s SamHttpPostManager) PostBytes(url string, data []byte) ([]byte, error) {
+func (s SamHttpPostManager) Bytes(url string, data []byte) ([]byte, error) {
 	response, err := s.httpClient.Post(url, contentType, bytes.NewBuffer(data))
 	if err != nil {
 		return nil, err
@@ -140,21 +129,12 @@ func (s SamHttpPostManager) PostBytes(url string, data []byte) ([]byte, error) {
 	return body, nil
 }
 
-func (s SamHttpPostManager) PostPrettyJson(url string, data []byte) (string, error) {
-	body, err := s.PostBytes(url, data)
+func (s SamHttpPostManager) PrettyJson(url string, data []byte) (string, error) {
+	body, err := s.Bytes(url, data)
 	if err != nil {
 		return "", err
 	}
 	return ToPrettyJson(body)
-}
-
-func (s SamHttpPostManager) PostPrint(url string, data []byte) (string, error) {
-	_json, err := s.PostPrettyJson(url, data)
-	if err != nil {
-		return "", err
-	}
-	fmt.Println(_json)
-	return _json, nil
 }
 
 func OpenOnBrowser(url string) error {
