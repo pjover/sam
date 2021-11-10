@@ -25,32 +25,53 @@ func (g GenerateManager) GenerateBdd() (string, error) {
 		viper.GetString("urls.hobbit"),
 		viper.GetString("yearMonth"),
 	)
-	//TODO create file sequence
-	filePath := path.Join(
-		viper.GetString("dirs.home"),
-		viper.GetString("dirs.current"),
-		"bdd.q1x",
-	)
+
+	dir := path.Join(viper.GetString("dirs.home"), viper.GetString("dirs.current"))
+	filenames := listFiles(dir, ".qx1")
+	filename := getNextBddFilename(filenames)
+	filePath := path.Join(dir, filename)
 	return g.postManager.File(url, filePath)
 }
 
-func getNextFilename(filenames []string) string {
-	return fmt.Sprintf("bdd-%d.qx1", len(filenames)+1)
-}
-
-func find(dir string, ext string) []string {
-	var a []string
-	err := filepath.WalkDir(dir, func(s string, d fs.DirEntry, e error) error {
-		if e != nil {
-			return e
+func listFiles(dir string, ext string) []string {
+	var filenames []string
+	err := filepath.WalkDir(dir, func(path string, info fs.DirEntry, err error) error {
+		if err != nil {
+			return err
 		}
-		if filepath.Ext(d.Name()) == ext {
-			a = append(a, s)
+		if info.IsDir() {
+			return nil
+		}
+		if filepath.Ext(info.Name()) == ext {
+			filenames = append(filenames, info.Name())
 		}
 		return nil
 	})
 	if err != nil {
 		return nil
 	}
-	return a
+	return filenames
+}
+
+func getNextBddFilename(filenames []string) string {
+	sequence := len(filenames) + 1
+	filename := buildBddFilename(sequence)
+	for stringInSlice(filename, filenames) {
+		sequence += 1
+		filename = buildBddFilename(sequence)
+	}
+	return filename
+}
+
+func buildBddFilename(sequence int) string {
+	return fmt.Sprintf("bdd-%d.qx1", sequence)
+}
+
+func stringInSlice(str string, list []string) bool {
+	for _, b := range list {
+		if b == str {
+			return true
+		}
+	}
+	return false
 }
