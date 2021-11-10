@@ -3,7 +3,9 @@ package adm
 import (
 	"fmt"
 	"github.com/spf13/viper"
+	"io/fs"
 	"path"
+	"path/filepath"
 	"sam/util"
 )
 
@@ -30,4 +32,25 @@ func (g GenerateManager) GenerateBdd() (string, error) {
 		"bdd.q1x",
 	)
 	return g.postManager.File(url, filePath)
+}
+
+func getNextFilename(filenames []string) string {
+	return fmt.Sprintf("bdd-%d.qx1", len(filenames)+1)
+}
+
+func find(dir string, ext string) []string {
+	var a []string
+	err := filepath.WalkDir(dir, func(s string, d fs.DirEntry, e error) error {
+		if e != nil {
+			return e
+		}
+		if filepath.Ext(d.Name()) == ext {
+			a = append(a, s)
+		}
+		return nil
+	})
+	if err != nil {
+		return nil
+	}
+	return a
 }
