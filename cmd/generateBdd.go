@@ -20,7 +20,7 @@ var generateBddCmd = &cobra.Command{
 		"generateBdd", "generatebdd", "generate-bdd",
 	},
 	RunE: func(cmd *cobra.Command, args []string) error {
-		manager := adm.NewGenerateManager()
+		manager := adm.NewGenerateManager(nil)
 		msg, err := manager.GenerateBdd()
 		fmt.Println(msg)
 		return err

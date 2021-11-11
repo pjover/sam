@@ -3,6 +3,7 @@ package adm
 import (
 	"fmt"
 	"github.com/spf13/viper"
+	"io"
 	"io/fs"
 	"path"
 	"path/filepath"
@@ -11,11 +12,13 @@ import (
 
 type GenerateManager struct {
 	postManager util.HttpPostManager
+	writer      io.Writer
 }
 
-func NewGenerateManager() GenerateManager {
+func NewGenerateManager(writer io.Writer) GenerateManager {
 	return GenerateManager{
 		util.NewHttpPostManager(),
+		writer,
 	}
 }
 
@@ -31,6 +34,15 @@ func (g GenerateManager) GenerateBdd() (string, error) {
 	filename := getNextBddFilename(currentFilenames)
 	filePath := path.Join(dir, filename)
 	return g.postManager.File(url, filePath)
+}
+
+func (g GenerateManager) GenerateInvoice(invoiceCode string) error {
+	_, err := fmt.Fprintln(g.writer, "Generant la factura", invoiceCode)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func listFiles(dir string, ext string) []string {
