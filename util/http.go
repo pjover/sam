@@ -103,7 +103,7 @@ func (s SamHttpGetManager) Type(url string, target interface{}) error {
 type HttpPostManager interface {
 	Bytes(url string, data []byte) ([]byte, error)
 	PrettyJson(url string, data []byte) (string, error)
-	FileWithDefaultName(remoteUrl string, directory string) (string, error)
+	FileDefaultName(remoteUrl string, directory string) (string, error)
 	File(remoteUrl string, directory string, filename string) (string, error)
 }
 
@@ -142,27 +142,14 @@ func (s SamHttpPostManager) PrettyJson(url string, data []byte) (string, error) 
 	return ToPrettyJson(body)
 }
 
-func (s SamHttpPostManager) FileWithDefaultName(remoteUrl string, directory string) (string, error) {
+func (s SamHttpPostManager) FileDefaultName(remoteUrl string, directory string) (string, error) {
 	response, err := s.httpClient.Post(remoteUrl, contentType, nil)
 	if err != nil {
 		return "", err
 	}
 	defer closeBody(response.Body)
-
 	filename := extractDefaultName(response.Header.Get("Content-Disposition"))
-	filePath := path.Join(directory, filename)
-	file, err := os.Create(filePath)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	_, err = io.Copy(file, response.Body)
-	defer closeFile(file)
-	if err != nil {
-		return "", err
-	}
-
-	return fmt.Sprint("Creat el fitxer ", filePath), nil
+	return writeFile(response, directory, filename)
 }
 
 func extractDefaultName(contentDisposition string) string {
@@ -172,17 +159,20 @@ func extractDefaultName(contentDisposition string) string {
 }
 
 func (s SamHttpPostManager) File(remoteUrl string, directory string, filename string) (string, error) {
-	filePath := path.Join(directory, filename)
-	file, err := os.Create(filePath)
-	if err != nil {
-		log.Fatal(err)
-	}
-
 	response, err := s.httpClient.Post(remoteUrl, contentType, nil)
 	if err != nil {
 		return "", err
 	}
 	defer closeBody(response.Body)
+	return writeFile(response, directory, filename)
+}
+
+func writeFile(response *http.Response, directory string, filename string) (string, error) {
+	filePath := path.Join(directory, filename)
+	file, err := os.Create(filePath)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	_, err = io.Copy(file, response.Body)
 	defer closeFile(file)

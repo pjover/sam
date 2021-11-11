@@ -7,7 +7,6 @@ import (
 	"path"
 	"path/filepath"
 	"sam/util"
-	"strings"
 )
 
 type GenerateManager interface {
@@ -73,14 +72,10 @@ func buildBddFilename(sequence int) string {
 }
 
 func (g GenerateManagerImpl) GenerateInvoice(invoiceCode string) (string, error) {
-	sb := strings.Builder{}
-	_, err := fmt.Fprintln(&sb, "Generant la factura", invoiceCode)
-	if err != nil {
-		return "", err
-	}
+	fmt.Println("Generant la factura", invoiceCode)
 
 	url := fmt.Sprintf("%s/generate/pdf/%s", viper.GetString("urls.hobbit"), invoiceCode)
 
 	dir := path.Join(viper.GetString("dirs.home"), viper.GetString("dirs.current"))
-	return g.postManager.FileWithDefaultName(url, dir)
+	return g.postManager.FileDefaultName(url, dir)
 }
