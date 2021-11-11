@@ -27,8 +27,8 @@ func (g GenerateManager) GenerateBdd() (string, error) {
 	)
 
 	dir := path.Join(viper.GetString("dirs.home"), viper.GetString("dirs.current"))
-	filenames := listFiles(dir, ".qx1")
-	filename := getNextBddFilename(filenames)
+	currentFilenames := listFiles(dir, ".qx1")
+	filename := getNextBddFilename(currentFilenames)
 	filePath := path.Join(dir, filename)
 	return g.postManager.File(url, filePath)
 }
@@ -53,10 +53,10 @@ func listFiles(dir string, ext string) []string {
 	return filenames
 }
 
-func getNextBddFilename(filenames []string) string {
-	sequence := len(filenames) + 1
+func getNextBddFilename(currentFilenames []string) string {
+	sequence := len(currentFilenames) + 1
 	filename := buildBddFilename(sequence)
-	for stringInSlice(filename, filenames) {
+	for util.StringInList(filename, currentFilenames) {
 		sequence += 1
 		filename = buildBddFilename(sequence)
 	}
@@ -65,13 +65,4 @@ func getNextBddFilename(filenames []string) string {
 
 func buildBddFilename(sequence int) string {
 	return fmt.Sprintf("bdd-%d.qx1", sequence)
-}
-
-func stringInSlice(str string, list []string) bool {
-	for _, b := range list {
-		if b == str {
-			return true
-		}
-	}
-	return false
 }
