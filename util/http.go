@@ -11,7 +11,9 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
+	"path"
 	"runtime"
+	"strings"
 )
 
 const contentType = "application/json; charset=UTF-8"
@@ -101,7 +103,8 @@ func (s SamHttpGetManager) Type(url string, target interface{}) error {
 type HttpPostManager interface {
 	Bytes(url string, data []byte) ([]byte, error)
 	PrettyJson(url string, data []byte) (string, error)
-	File(remoteUrl string, filePath string) (string, error)
+	FileWithDefaultName(remoteUrl string, directory string) (string, error)
+	File(remoteUrl string, directory string, filename string) (string, error)
 }
 
 type SamHttpPostManager struct {
@@ -139,7 +142,37 @@ func (s SamHttpPostManager) PrettyJson(url string, data []byte) (string, error) 
 	return ToPrettyJson(body)
 }
 
-func (s SamHttpPostManager) File(remoteUrl string, filePath string) (string, error) {
+func (s SamHttpPostManager) FileWithDefaultName(remoteUrl string, directory string) (string, error) {
+	response, err := s.httpClient.Post(remoteUrl, contentType, nil)
+	if err != nil {
+		return "", err
+	}
+	defer closeBody(response.Body)
+
+	filename := extractDefaultName(response.Header.Get("Content-Disposition"))
+	filePath := path.Join(directory, filename)
+	file, err := os.Create(filePath)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	_, err = io.Copy(file, response.Body)
+	defer closeFile(file)
+	if err != nil {
+		return "", err
+	}
+
+	return fmt.Sprint("Creat el fitxer ", filePath), nil
+}
+
+func extractDefaultName(contentDisposition string) string {
+	split := strings.Split(contentDisposition, ";")
+	filename := strings.Split(split[2], "\"")
+	return filename[1]
+}
+
+func (s SamHttpPostManager) File(remoteUrl string, directory string, filename string) (string, error) {
+	filePath := path.Join(directory, filename)
 	file, err := os.Create(filePath)
 	if err != nil {
 		log.Fatal(err)

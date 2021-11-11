@@ -35,18 +35,7 @@ func (g GenerateManagerImpl) GenerateBdd() (string, error) {
 	dir := path.Join(viper.GetString("dirs.home"), viper.GetString("dirs.current"))
 	currentFilenames := listFiles(dir, ".qx1")
 	filename := getNextBddFilename(currentFilenames)
-	filePath := path.Join(dir, filename)
-	return g.postManager.File(url, filePath)
-}
-
-func (g GenerateManagerImpl) GenerateInvoice(invoiceCode string) (string, error) {
-	sb := strings.Builder{}
-	_, err := fmt.Fprintln(&sb, "Generant la factura", invoiceCode)
-	if err != nil {
-		return "", err
-	}
-
-	return sb.String(), nil
+	return g.postManager.File(url, dir, filename)
 }
 
 func listFiles(dir string, ext string) []string {
@@ -81,4 +70,17 @@ func getNextBddFilename(currentFilenames []string) string {
 
 func buildBddFilename(sequence int) string {
 	return fmt.Sprintf("bdd-%d.qx1", sequence)
+}
+
+func (g GenerateManagerImpl) GenerateInvoice(invoiceCode string) (string, error) {
+	sb := strings.Builder{}
+	_, err := fmt.Fprintln(&sb, "Generant la factura", invoiceCode)
+	if err != nil {
+		return "", err
+	}
+
+	url := fmt.Sprintf("%s/generate/pdf/%s", viper.GetString("urls.hobbit"), invoiceCode)
+
+	dir := path.Join(viper.GetString("dirs.home"), viper.GetString("dirs.current"))
+	return g.postManager.FileWithDefaultName(url, dir)
 }
