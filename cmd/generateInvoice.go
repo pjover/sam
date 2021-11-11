@@ -1,12 +1,13 @@
 package cmd
 
 import (
+	"fmt"
 	"github.com/spf13/cobra"
 	"sam/adm"
 	"strings"
 )
 
-func newGenerateInvoiceCmd() *cobra.Command {
+func newGenerateInvoiceCmd(generateManager adm.GenerateManager) *cobra.Command {
 	return &cobra.Command{
 		Use:         "generaFactura",
 		Short:       "Genera el PDF d'una factura",
@@ -23,12 +24,17 @@ func newGenerateInvoiceCmd() *cobra.Command {
 		Args: ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			invoiceCode := strings.ToUpper(args[0])
-			manager := adm.NewGenerateManager(cmd.OutOrStdout())
-			return manager.GenerateInvoice(invoiceCode)
+			msg, err := generateManager.GenerateInvoice(invoiceCode)
+			if err != nil {
+				return err
+			}
+			_, err = fmt.Fprint(cmd.OutOrStdout(), msg)
+			return err
 		},
 	}
 }
 
 func init() {
-	rootCmd.AddCommand(newGenerateInvoiceCmd())
+	cmd := newGenerateInvoiceCmd(adm.NewGenerateManager())
+	rootCmd.AddCommand(cmd)
 }

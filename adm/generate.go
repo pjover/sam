@@ -3,26 +3,29 @@ package adm
 import (
 	"fmt"
 	"github.com/spf13/viper"
-	"io"
 	"io/fs"
 	"path"
 	"path/filepath"
 	"sam/util"
+	"strings"
 )
 
-type GenerateManager struct {
-	postManager util.HttpPostManager
-	writer      io.Writer
+type GenerateManager interface {
+	GenerateBdd() (string, error)
+	GenerateInvoice(invoiceCode string) (string, error)
 }
 
-func NewGenerateManager(writer io.Writer) GenerateManager {
-	return GenerateManager{
+type GenerateManagerImpl struct {
+	postManager util.HttpPostManager
+}
+
+func NewGenerateManager() GenerateManager {
+	return GenerateManagerImpl{
 		util.NewHttpPostManager(),
-		writer,
 	}
 }
 
-func (g GenerateManager) GenerateBdd() (string, error) {
+func (g GenerateManagerImpl) GenerateBdd() (string, error) {
 	fmt.Println("Generant el fitxer de rebuts ...")
 	url := fmt.Sprintf("%s/generate/bdd?yearMonth=%s",
 		viper.GetString("urls.hobbit"),
@@ -36,13 +39,14 @@ func (g GenerateManager) GenerateBdd() (string, error) {
 	return g.postManager.File(url, filePath)
 }
 
-func (g GenerateManager) GenerateInvoice(invoiceCode string) error {
-	_, err := fmt.Fprintln(g.writer, "Generant la factura", invoiceCode)
+func (g GenerateManagerImpl) GenerateInvoice(invoiceCode string) (string, error) {
+	sb := strings.Builder{}
+	_, err := fmt.Fprintln(&sb, "Generant la factura", invoiceCode)
 	if err != nil {
-		return err
+		return "", err
 	}
 
-	return nil
+	return sb.String(), nil
 }
 
 func listFiles(dir string, ext string) []string {
