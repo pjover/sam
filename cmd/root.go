@@ -62,6 +62,7 @@ func initConfig() {
 	dir := adm.Directories{Timer: util.SamTimeManager{}}
 	yearMonth, dirName := dir.GetDirConfig(false, false)
 	viper.SetDefault("dirs.current", dirName)
+	viper.SetDefault("dirs.invoices", "invoices")
 	viper.SetDefault("yearMonth", yearMonth)
 
 	viper.SetDefault("urls.hobbit", "http://localhost:8080")

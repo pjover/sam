@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/spf13/viper"
 	"io/fs"
+	"os"
 	"path"
 	"path/filepath"
 	"sam/util"
@@ -92,5 +93,12 @@ func (g GenerateManagerImpl) GenerateInvoices() (string, error) {
 		viper.GetString("urls.hobbit"),
 		viper.GetString("yearMonth"),
 	)
-	return g.postManager.Zip(url, getDirectory())
+
+	dirPath := path.Join(getDirectory(), viper.GetString("dirs.invoices"))
+	err := os.MkdirAll(dirPath, 0755)
+	if err != nil {
+		return "", err
+	}
+
+	return g.postManager.Zip(url, dirPath)
 }
