@@ -105,6 +105,7 @@ type HttpPostManager interface {
 	PrettyJson(url string, data []byte) (string, error)
 	FileDefaultName(remoteUrl string, directory string) (string, error)
 	File(remoteUrl string, directory string, filename string) (string, error)
+	Zip(remoteUrl string, directory string, filename string) (string, error)
 }
 
 type SamHttpPostManager struct {
@@ -164,6 +165,22 @@ func (s SamHttpPostManager) File(remoteUrl string, directory string, filename st
 		return "", err
 	}
 	defer closeBody(response.Body)
+	return writeFile(response, directory, filename)
+}
+
+func (s SamHttpPostManager) Zip(remoteUrl string, directory string, filename string) (string, error) {
+
+	req, err := http.NewRequest("POST", remoteUrl, nil)
+	if err != nil {
+		return "", err
+	}
+	req.Header.Set("Content-Type", "application/zip")
+	response, err := s.httpClient.Do(req)
+	defer closeBody(response.Body)
+	if err != nil {
+		return "", err
+	}
+
 	return writeFile(response, directory, filename)
 }
 

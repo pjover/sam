@@ -12,6 +12,7 @@ import (
 type GenerateManager interface {
 	GenerateBdd() (string, error)
 	GenerateInvoice(invoiceCode string) (string, error)
+	GenerateInvoices() (string, error)
 }
 
 type GenerateManagerImpl struct {
@@ -31,7 +32,7 @@ func (g GenerateManagerImpl) GenerateBdd() (string, error) {
 		viper.GetString("yearMonth"),
 	)
 
-	dir := path.Join(viper.GetString("dirs.home"), viper.GetString("dirs.current"))
+	dir := getDirectory()
 	currentFilenames := listFiles(dir, ".qx1")
 	filename := getNextBddFilename(currentFilenames)
 	return g.postManager.File(url, dir, filename)
@@ -76,6 +77,20 @@ func (g GenerateManagerImpl) GenerateInvoice(invoiceCode string) (string, error)
 
 	url := fmt.Sprintf("%s/generate/pdf/%s", viper.GetString("urls.hobbit"), invoiceCode)
 
-	dir := path.Join(viper.GetString("dirs.home"), viper.GetString("dirs.current"))
-	return g.postManager.FileDefaultName(url, dir)
+	return g.postManager.FileDefaultName(url, getDirectory())
+}
+
+func getDirectory() string {
+	return path.Join(viper.GetString("dirs.home"), viper.GetString("dirs.current"))
+}
+
+func (g GenerateManagerImpl) GenerateInvoices() (string, error) {
+	fmt.Println("Generant les factures del mes")
+
+	url := fmt.Sprintf(
+		"%s/generate/pdf?yearMonth=%s&notYetPrinted=false",
+		viper.GetString("urls.hobbit"),
+		viper.GetString("yearMonth"),
+	)
+	return g.postManager.Zip(url, getDirectory(), "factures.zip")
 }

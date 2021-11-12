@@ -28,7 +28,7 @@ func newGenerateInvoiceCmd(generateManager adm.GenerateManager) *cobra.Command {
 			if err != nil {
 				return err
 			}
-			_, err = fmt.Fprint(cmd.OutOrStdout(), msg)
+			_, err = fmt.Fprintln(cmd.OutOrStdout(), msg)
 			return err
 		},
 	}

@@ -7,25 +7,28 @@ import (
 )
 
 var tests = [][]string{
-	{"billConsumptions"},
 	{"directory"},
 	{"displayCustomer", "246"},
 	{"displayInvoice", "f-3945"},
 	{"displayProduct", "age"},
-	{"editCustomer", "246"},
-	{"editInvoice", "f-3945"},
-	{"editProduct", "age"},
-	{"generateBdd"},
-	{"generateInvoice", "f-3945"},
-	{"insertConsumptions", "2460", "1", "QME"},
+	//{"editCustomer", "246"},
+	//{"editInvoice", "f-3945"},
+	//{"editProduct", "age"},
 	{"listChildren"},
 	{"listConsumptions"},
 	{"listCustomers"},
 	{"listInvoices"},
 	{"listMails"},
 	{"listProducts"},
-	{"rectifyConsumptions", "2460", "1", "QME"},
 	{"searchCustomer", "maria"},
+	{"generateInvoice", "f-3945"},
+	{"insertConsumptions", "2630", "1", "QME", "2", "MME", "!", "AGE"},
+	{"insertConsumptions", "2640", "1", "QME", "1", "MME"},
+	{"insertConsumptions", "2460", "1", "QME", "1", "MME"},
+	{"rectifyConsumptions", "2460", "1", "MME"},
+	{"billConsumptions"},
+	{"generateBdd"},
+	{"generateInvoices"},
 }
 
 func main() {
