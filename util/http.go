@@ -1,6 +1,7 @@
 package util
 
 import (
+	"archive/zip"
 	"bytes"
 	"encoding/json"
 	"errors"
@@ -105,7 +106,7 @@ type HttpPostManager interface {
 	PrettyJson(url string, data []byte) (string, error)
 	FileDefaultName(remoteUrl string, directory string) (string, error)
 	File(remoteUrl string, directory string, filename string) (string, error)
-	Zip(remoteUrl string, directory string, filename string) (string, error)
+	Zip(remoteUrl string, directory string) (string, error)
 }
 
 type SamHttpPostManager struct {
@@ -148,9 +149,9 @@ func (s SamHttpPostManager) FileDefaultName(remoteUrl string, directory string) 
 	if err != nil {
 		return "", err
 	}
-	defer closeBody(response.Body)
 	filename := extractDefaultName(response.Header.Get("Content-Disposition"))
-	return writeFile(response, directory, filename)
+	defer closeBody(response.Body)
+	return writeFile(response.Body, directory, filename)
 }
 
 func extractDefaultName(contentDisposition string) string {
@@ -165,10 +166,10 @@ func (s SamHttpPostManager) File(remoteUrl string, directory string, filename st
 		return "", err
 	}
 	defer closeBody(response.Body)
-	return writeFile(response, directory, filename)
+	return writeFile(response.Body, directory, filename)
 }
 
-func (s SamHttpPostManager) Zip(remoteUrl string, directory string, filename string) (string, error) {
+func (s SamHttpPostManager) Zip(remoteUrl string, directory string) (string, error) {
 
 	req, err := http.NewRequest("POST", remoteUrl, nil)
 	if err != nil {
@@ -181,23 +182,64 @@ func (s SamHttpPostManager) Zip(remoteUrl string, directory string, filename str
 		return "", err
 	}
 
-	return writeFile(response, directory, filename)
+	body, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		return "", err
+	}
+
+	zipReader, err := zip.NewReader(bytes.NewReader(body), int64(len(body)))
+	if err != nil {
+		return "", err
+	}
+
+	// Read all the files from zip archive
+	var sb strings.Builder
+	for _, zipFile := range zipReader.File {
+		fmt.Println("Reading file:", zipFile.Name)
+		byteData, err := readZipFile(zipFile)
+		if err != nil {
+			sb.WriteString(fmt.Sprintf(" ❌ %s\n", zipFile.Name))
+			log.Println(err)
+			continue
+		}
+		_, err = writeFile(bytes.NewReader(byteData), directory, zipFile.Name)
+		if err != nil {
+			return "", err
+		}
+		sb.WriteString(fmt.Sprintf(" ✔️ %s\n", zipFile.Name))
+	}
+
+	return sb.String(), nil
 }
 
-func writeFile(response *http.Response, directory string, filename string) (string, error) {
+func readZipFile(zf *zip.File) ([]byte, error) {
+	f, err := zf.Open()
+	if err != nil {
+		return nil, err
+	}
+	defer func(f io.ReadCloser) {
+		err := f.Close()
+		if err != nil {
+			log.Fatal(err)
+		}
+	}(f)
+	return ioutil.ReadAll(f)
+}
+
+func writeFile(reader io.Reader, directory string, filename string) (string, error) {
 	filePath := path.Join(directory, filename)
 	file, err := os.Create(filePath)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	_, err = io.Copy(file, response.Body)
+	_, err = io.Copy(file, reader)
 	defer closeFile(file)
 	if err != nil {
 		return "", err
 	}
 
-	return fmt.Sprint("Creat el fitxer ", filePath), nil
+	return filePath, nil
 }
 
 func closeFile(file *os.File) {

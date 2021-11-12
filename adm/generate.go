@@ -92,5 +92,5 @@ func (g GenerateManagerImpl) GenerateInvoices() (string, error) {
 		viper.GetString("urls.hobbit"),
 		viper.GetString("yearMonth"),
 	)
-	return g.postManager.Zip(url, getDirectory(), "factures.zip")
+	return g.postManager.Zip(url, getDirectory())
 }
