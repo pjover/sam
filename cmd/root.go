@@ -45,8 +45,9 @@ func initConfig() {
 	} else {
 		// Search config in home directory with name ".sam" (without extension).
 		viper.AddConfigPath(home)
-		viper.SetConfigName(".sam")
+		viper.SetConfigName("sam")
 		viper.SetConfigType("yaml")
+		viper.AddConfigPath("$HOME/.sam")
 	}
 
 	viper.AutomaticEnv() // read in environment variables that match
@@ -55,6 +56,8 @@ func initConfig() {
 	if err != nil {            // Handle errors reading the config file
 		panic(fmt.Errorf("Fatal error config file: %w \n", err))
 	}
+
+	viper.SetDefault("dirs.config", "$HOME/.sam")
 
 	dirHome := path.Join(home, "Sam")
 	viper.SetDefault("dirs.home", dirHome)
@@ -67,4 +70,7 @@ func initConfig() {
 
 	viper.SetDefault("urls.hobbit", "http://localhost:8080")
 	viper.SetDefault("urls.mongoExpress", "http://localhost:8081/db/hobbit_prod")
+
+	viper.SetDefault("files.customerReport", "Customers.pdf")
+	viper.SetDefault("files.logo", "logo.png")
 }
