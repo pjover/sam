@@ -3,7 +3,7 @@ package cmd
 import (
 	"fmt"
 	"github.com/spf13/cobra"
-	"sam/adm"
+	"sam/generate"
 )
 
 var generateBddCmd = &cobra.Command{
@@ -20,7 +20,7 @@ var generateBddCmd = &cobra.Command{
 		"generateBdd", "generatebdd", "generate-bdd",
 	},
 	RunE: func(cmd *cobra.Command, args []string) error {
-		manager := adm.NewGenerateManager()
+		manager := generate.NewGenerateManager()
 		msg, err := manager.GenerateBdd()
 		fmt.Println(msg)
 		return err

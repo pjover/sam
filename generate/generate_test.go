@@ -1,6 +1,8 @@
-package adm
+package generate
 
-import "testing"
+import (
+	"testing"
+)
 
 func Test_getNextFilename(t *testing.T) {
 	type args struct {

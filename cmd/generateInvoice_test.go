@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"io/ioutil"
 	"reflect"
-	"sam/adm/mocks"
+	"sam/generate/mocks"
 	"testing"
 )
 
@@ -23,7 +23,7 @@ func Test_GenerateInvoiceCmd(t *testing.T) {
 			"Accepts invoice code",
 			args{[]string{"f-3945"}},
 			"F-3945",
-			"Generant la factura F-3945\n",
+			"Generant la factura F-3945",
 			nil,
 		},
 	}

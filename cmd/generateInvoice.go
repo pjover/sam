@@ -3,11 +3,11 @@ package cmd
 import (
 	"fmt"
 	"github.com/spf13/cobra"
-	"sam/adm"
+	"sam/generate"
 	"strings"
 )
 
-func newGenerateInvoiceCmd(generateManager adm.GenerateManager) *cobra.Command {
+func newGenerateInvoiceCmd(generateManager generate.GenerateManager) *cobra.Command {
 	return &cobra.Command{
 		Use:         "generaFactura",
 		Short:       "Genera el PDF d'una factura",
@@ -28,13 +28,13 @@ func newGenerateInvoiceCmd(generateManager adm.GenerateManager) *cobra.Command {
 			if err != nil {
 				return err
 			}
-			_, err = fmt.Fprintln(cmd.OutOrStdout(), msg)
+			_, err = fmt.Fprint(cmd.OutOrStdout(), msg)
 			return err
 		},
 	}
 }
 
 func init() {
-	cmd := newGenerateInvoiceCmd(adm.NewGenerateManager())
+	cmd := newGenerateInvoiceCmd(generate.NewGenerateManager())
 	rootCmd.AddCommand(cmd)
 }

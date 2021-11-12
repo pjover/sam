@@ -3,12 +3,12 @@ package cmd
 import (
 	"fmt"
 	"github.com/spf13/cobra"
-	"sam/adm"
+	"sam/generate"
 )
 
 var onlyNew bool
 
-func newGenerateInvoicesCmd(generateManager adm.GenerateManager) *cobra.Command {
+func newGenerateInvoicesCmd(generateManager generate.GenerateManager) *cobra.Command {
 	return &cobra.Command{
 		Use:         "generaFactures",
 		Short:       "Genera els PDFs de les factures del mes",
@@ -34,7 +34,7 @@ func newGenerateInvoicesCmd(generateManager adm.GenerateManager) *cobra.Command 
 }
 
 func init() {
-	cmd := newGenerateInvoicesCmd(adm.NewGenerateManager())
+	cmd := newGenerateInvoicesCmd(generate.NewGenerateManager())
 	cmd.Flags().BoolVarP(&onlyNew, "nomes_noves", "n", true, "Genera les factures noves, que no s'han generat abans")
 	rootCmd.AddCommand(cmd)
 }

@@ -1,4 +1,4 @@
-package adm
+package generate
 
 import (
 	"fmt"
@@ -7,6 +7,7 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"sam/adm"
 	"sam/util"
 )
 
@@ -107,5 +108,11 @@ func (g GenerateManagerImpl) GenerateInvoices(onlyNew bool) (string, error) {
 
 func (g GenerateManagerImpl) GenerateCustomerReport() (string, error) {
 	fmt.Println("Generant l'informe de clients")
-	return "Not implemented", nil
+
+	filePath := path.Join(getDirectory(), viper.GetString("files.customerReport"))
+	err := adm.CustomerReportPdf(filePath)
+	if err != nil {
+		return "", err
+	}
+	return fmt.Sprintf("Generat l'informe de clients a '%s'", filePath), nil
 }

@@ -3,10 +3,10 @@ package cmd
 import (
 	"fmt"
 	"github.com/spf13/cobra"
-	"sam/adm"
+	"sam/generate"
 )
 
-func newGenerateCustomerReportCmd(generateManager adm.GenerateManager) *cobra.Command {
+func newGenerateCustomerReportCmd(generateManager generate.GenerateManager) *cobra.Command {
 	return &cobra.Command{
 		Use:         "generaInformeClients",
 		Short:       "Genera l'informe dels clients",
@@ -32,6 +32,6 @@ func newGenerateCustomerReportCmd(generateManager adm.GenerateManager) *cobra.Co
 }
 
 func init() {
-	cmd := newGenerateCustomerReportCmd(adm.NewGenerateManager())
+	cmd := newGenerateCustomerReportCmd(generate.NewGenerateManager())
 	rootCmd.AddCommand(cmd)
 }
