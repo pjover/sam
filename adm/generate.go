@@ -14,6 +14,7 @@ type GenerateManager interface {
 	GenerateBdd() (string, error)
 	GenerateInvoice(invoiceCode string) (string, error)
 	GenerateInvoices(onlyNew bool) (string, error)
+	GenerateCustomerReport() (string, error)
 }
 
 type GenerateManagerImpl struct {
@@ -102,4 +103,9 @@ func (g GenerateManagerImpl) GenerateInvoices(onlyNew bool) (string, error) {
 	}
 
 	return g.postManager.Zip(url, dirPath)
+}
+
+func (g GenerateManagerImpl) GenerateCustomerReport() (string, error) {
+	fmt.Println("Generant l'informe de clients")
+	return "Not implemented", nil
 }
