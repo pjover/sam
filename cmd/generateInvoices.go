@@ -6,6 +6,8 @@ import (
 	"sam/adm"
 )
 
+var onlyNew bool
+
 func newGenerateInvoicesCmd(generateManager adm.GenerateManager) *cobra.Command {
 	return &cobra.Command{
 		Use:         "generaFactures",
@@ -21,7 +23,7 @@ func newGenerateInvoicesCmd(generateManager adm.GenerateManager) *cobra.Command 
 			"generateInvoices", "generateinvoices", "generate-invoices",
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
-			msg, err := generateManager.GenerateInvoices()
+			msg, err := generateManager.GenerateInvoices(onlyNew)
 			if err != nil {
 				return err
 			}
@@ -33,5 +35,6 @@ func newGenerateInvoicesCmd(generateManager adm.GenerateManager) *cobra.Command 
 
 func init() {
 	cmd := newGenerateInvoicesCmd(adm.NewGenerateManager())
+	cmd.Flags().BoolVarP(&onlyNew, "nomes_noves", "n", true, "Genera les factures noves, que no s'han generat abans")
 	rootCmd.AddCommand(cmd)
 }

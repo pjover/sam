@@ -22,7 +22,7 @@ var tests = [][]string{
 	{"listProducts"},
 	{"searchCustomer", "maria"},
 	{"generateInvoice", "f-3945"},
-	{"insertConsumptions", "2630", "1", "QME", "2", "MME", "!", "AGE"},
+	{"insertConsumptions", "2630", "1", "QME", "2", "MME", "1", "AGE"},
 	{"insertConsumptions", "2640", "1", "QME", "1", "MME"},
 	{"insertConsumptions", "2460", "1", "QME", "1", "MME"},
 	{"rectifyConsumptions", "2460", "1", "MME"},

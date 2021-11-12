@@ -13,7 +13,7 @@ import (
 type GenerateManager interface {
 	GenerateBdd() (string, error)
 	GenerateInvoice(invoiceCode string) (string, error)
-	GenerateInvoices() (string, error)
+	GenerateInvoices(onlyNew bool) (string, error)
 }
 
 type GenerateManagerImpl struct {
@@ -85,13 +85,14 @@ func getDirectory() string {
 	return path.Join(viper.GetString("dirs.home"), viper.GetString("dirs.current"))
 }
 
-func (g GenerateManagerImpl) GenerateInvoices() (string, error) {
+func (g GenerateManagerImpl) GenerateInvoices(onlyNew bool) (string, error) {
 	fmt.Println("Generant les factures del mes")
 
 	url := fmt.Sprintf(
-		"%s/generate/pdf?yearMonth=%s&notYetPrinted=false",
+		"%s/generate/pdf?yearMonth=%s&notYetPrinted=%t",
 		viper.GetString("urls.hobbit"),
 		viper.GetString("yearMonth"),
+		onlyNew,
 	)
 
 	dirPath := path.Join(getDirectory(), viper.GetString("dirs.invoices"))
