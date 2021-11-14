@@ -8,6 +8,7 @@ import (
 	"github.com/spf13/viper"
 	"log"
 	"path"
+	"time"
 )
 
 type Column struct {
@@ -27,6 +28,7 @@ type ReportInfo struct {
 func PdfReport(reportInfo ReportInfo) error {
 	m := setupStandardPage(reportInfo)
 	header(m)
+	footer(m)
 	title(m, reportInfo)
 	table(m, reportInfo)
 	err := m.OutputFileAndClose(reportInfo.FilePath)
@@ -93,6 +95,22 @@ func header(m pdf.Maroto) {
 					Size:  8,
 					Align: consts.Left,
 				})
+			})
+		})
+	})
+}
+
+func footer(m pdf.Maroto) {
+	m.RegisterFooter(func() {
+		m.Row(4, func() {
+			m.Col(12, func() {
+				m.Text(time.Now().Format("2006-01-02"),
+					props.Text{
+						Top:   4,
+						Style: consts.Italic,
+						Size:  8,
+						Align: consts.Right,
+					})
 			})
 		})
 	})
