@@ -31,7 +31,7 @@ func (_m *GenerateManager) GenerateBdd() (string, error) {
 }
 
 // GenerateCustomerReport provides a mock function with given fields:
-func (_m *GenerateManager) GenerateCustomerReport() (string, error) {
+func (_m *GenerateManager) GenerateCustomersReport() (string, error) {
 	ret := _m.Called()
 
 	var r0 string
