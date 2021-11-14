@@ -16,7 +16,8 @@ func DefaultConfig(home string) {
 	viper.SetDefault("urls.hobbit", "http://localhost:8080")
 	viper.SetDefault("urls.mongoExpress", "http://localhost:8081/db/hobbit_prod")
 
-	viper.SetDefault("files.customerReport", "Customers.pdf")
+	viper.SetDefault("files.customersReport", "Customers.pdf")
+	viper.SetDefault("files.productsReport", "Products.pdf")
 	viper.SetDefault("files.logo", "logo.png")
 
 	viper.SetDefault("business.name", "BusinessName")

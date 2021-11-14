@@ -60,9 +60,9 @@ func header(m pdf.Maroto) {
 					})
 			})
 
-			m.ColSpace(3)
+			m.ColSpace(2)
 
-			m.Col(3, func() {
+			m.Col(4, func() {
 				m.Text(viper.GetString("business.name"), props.Text{
 					Style:       consts.BoldItalic,
 					Size:        8,

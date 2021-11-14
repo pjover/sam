@@ -15,6 +15,7 @@ type GenerateManager interface {
 	GenerateInvoice(invoiceCode string) (string, error)
 	GenerateInvoices(onlyNew bool) (string, error)
 	GenerateCustomersReport() (string, error)
+	GenerateProductsReport() (string, error)
 }
 
 type GenerateManagerImpl struct {
@@ -109,6 +110,12 @@ func (g GenerateManagerImpl) GenerateInvoices(onlyNew bool) (string, error) {
 
 func (g GenerateManagerImpl) GenerateCustomersReport() (string, error) {
 	fmt.Println("Generant l'informe de clients ...")
+	manager := NewCustomersReportGenerator(g.getManager)
+	return manager.generate()
+}
 
-	return generateCustomersReport(g.getManager)
+func (g GenerateManagerImpl) GenerateProductsReport() (string, error) {
+	fmt.Println("Generant l'informe de productes ...")
+	manager := NewProductsReportGenerator(g.getManager)
+	return manager.generate()
 }

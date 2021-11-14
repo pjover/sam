@@ -10,16 +10,29 @@ import (
 	"sort"
 )
 
-func generateCustomersReport(getManager util.HttpGetManager) (string, error) {
+type CustomersReportGenerator struct {
+	getManager util.HttpGetManager
+}
 
-	customers, err := getCustomers(getManager)
+func NewCustomersReportGenerator(getManager util.HttpGetManager) CustomersReportGenerator {
+	return CustomersReportGenerator{
+		getManager,
+	}
+}
+
+func (c CustomersReportGenerator) generate() (string, error) {
+
+	customers, err := c.getCustomers(c.getManager)
 	if err != nil {
 		return "", err
 	}
 
-	contents := buildContents(customers)
+	contents := c.buildContents(customers)
 
-	filePath := path.Join(viper.GetString("dirs.reports"), viper.GetString("files.customerReport"))
+	filePath := path.Join(
+		viper.GetString("dirs.reports"),
+		viper.GetString("files.customersReport"),
+	)
 	reportInfo := util.ReportInfo{
 		consts.Landscape,
 		consts.Left,
@@ -54,7 +67,7 @@ type activeCustomers struct {
 	} `json:"_links"`
 }
 
-func getCustomers(getManager util.HttpGetManager) (*activeCustomers, error) {
+func (c CustomersReportGenerator) getCustomers(getManager util.HttpGetManager) (*activeCustomers, error) {
 	url := fmt.Sprintf(
 		"%s/customers/search/findAllByActiveTrue",
 		viper.GetString("urls.hobbit"),
@@ -67,22 +80,22 @@ func getCustomers(getManager util.HttpGetManager) (*activeCustomers, error) {
 	return customers, nil
 }
 
-func buildContents(customers *activeCustomers) [][]string {
+func (c CustomersReportGenerator) buildContents(customers *activeCustomers) [][]string {
 	var contents [][]string
-	for _, c := range customers.Embedded.Customers {
-		adult := getFirstAdult(c.Adults)
-		for _, child := range c.Children {
+	for _, customer := range customers.Embedded.Customers {
+		adult := c.getFirstAdult(customer.Adults)
+		for _, child := range customer.Children {
 			if !child.Active {
 				continue
 			}
 			var line = []string{
-				formatChildName(child),
+				c.formatChildName(child),
 				child.Group,
 				child.BirthDate,
-				formatAdultName(adult),
-				formatPhone(adult.MobilePhone),
+				c.formatAdultName(adult),
+				c.formatPhone(adult.MobilePhone),
 				adult.Email,
-				formatPaymentInfo(c.InvoiceHolder),
+				c.formatPaymentInfo(customer.InvoiceHolder),
 			}
 			contents = append(contents, line)
 		}
@@ -93,7 +106,7 @@ func buildContents(customers *activeCustomers) [][]string {
 	return contents
 }
 
-func getFirstAdult(adults []model.Adult) model.Adult {
+func (c CustomersReportGenerator) getFirstAdult(adults []model.Adult) model.Adult {
 
 	for _, adult := range adults {
 		if adult.Role == "MOTHER" {
@@ -103,15 +116,15 @@ func getFirstAdult(adults []model.Adult) model.Adult {
 	return adults[0]
 }
 
-func formatChildName(child model.Child) string {
+func (c CustomersReportGenerator) formatChildName(child model.Child) string {
 	return fmt.Sprintf("%d   %s %s", child.Code, child.Name, child.Surname)
 }
 
-func formatAdultName(adult model.Adult) string {
+func (c CustomersReportGenerator) formatAdultName(adult model.Adult) string {
 	return fmt.Sprintf("%s %s", adult.Name, adult.Surname)
 }
 
-func formatPhone(phone string) string {
+func (c CustomersReportGenerator) formatPhone(phone string) string {
 	if len(phone) != 9 {
 		return phone
 	}
@@ -123,12 +136,12 @@ func formatPhone(phone string) string {
 	)
 }
 
-func formatPaymentInfo(invoiceHolder model.InvoiceHolder) string {
+func (c CustomersReportGenerator) formatPaymentInfo(invoiceHolder model.InvoiceHolder) string {
 	switch invoiceHolder.PaymentType {
 	case "BANK_DIRECT_DEBIT":
-		return fmt.Sprintf("Rebut %s", formatIban(invoiceHolder.BankAccount))
+		return fmt.Sprintf("Rebut %s", c.formatIban(invoiceHolder.BankAccount))
 	case "BANK_TRANSFER":
-		return fmt.Sprintf("Trans. %s", formatIban(invoiceHolder.BankAccount))
+		return fmt.Sprintf("Trans. %s", c.formatIban(invoiceHolder.BankAccount))
 	case "CASH":
 		return "Efectiu"
 	case "VOUCHER":
@@ -138,7 +151,7 @@ func formatPaymentInfo(invoiceHolder model.InvoiceHolder) string {
 	}
 }
 
-func formatIban(iban string) string {
+func (c CustomersReportGenerator) formatIban(iban string) string {
 	if len(iban) != 24 {
 		return iban
 	}

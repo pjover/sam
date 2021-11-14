@@ -29,6 +29,8 @@ var tests = [][]string{
 	{"billConsumptions"},
 	{"generateBdd"},
 	{"generateInvoices"},
+	{"generateCustomersReport"},
+	{"generateProductsReport"},
 }
 
 func main() {
