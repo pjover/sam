@@ -8,6 +8,7 @@ import (
 	"sam/adm"
 	"sam/model"
 	"sam/util"
+	"sort"
 )
 
 func generateCustomersReport(getManager util.HttpGetManager) (string, error) {
@@ -72,7 +73,7 @@ func buildContents(customers *activeCustomers) [][]string {
 	for _, c := range customers.Embedded.Customers {
 		adult := getFirstAdult(c.Adults)
 		for _, child := range c.Children {
-			if !c.Active {
+			if !child.Active {
 				continue
 			}
 			var line = []string{
@@ -87,6 +88,9 @@ func buildContents(customers *activeCustomers) [][]string {
 			contents = append(contents, line)
 		}
 	}
+	sort.SliceStable(contents, func(i, j int) bool {
+		return contents[i][0] < contents[j][0]
+	})
 	return contents
 }
 
