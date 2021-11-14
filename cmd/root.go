@@ -5,9 +5,6 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"os"
-	"path"
-
-	"sam/adm"
 	"sam/util"
 )
 
@@ -57,20 +54,5 @@ func initConfig() {
 		panic(fmt.Errorf("Fatal error config file: %w \n", err))
 	}
 
-	viper.SetDefault("dirs.config", "$HOME/.sam")
-
-	dirHome := path.Join(home, "Sam")
-	viper.SetDefault("dirs.home", dirHome)
-
-	dir := adm.Directories{Timer: util.SamTimeManager{}}
-	yearMonth, dirName := dir.GetDirConfig(false, false)
-	viper.SetDefault("dirs.current", dirName)
-	viper.SetDefault("dirs.invoices", "invoices")
-	viper.SetDefault("yearMonth", yearMonth)
-
-	viper.SetDefault("urls.hobbit", "http://localhost:8080")
-	viper.SetDefault("urls.mongoExpress", "http://localhost:8081/db/hobbit_prod")
-
-	viper.SetDefault("files.customerReport", "Customers.pdf")
-	viper.SetDefault("files.logo", "logo.png")
+	util.DefaultConfig(home)
 }

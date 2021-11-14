@@ -2,6 +2,7 @@ package generate
 
 import (
 	"fmt"
+	"github.com/johnfercher/maroto/pkg/consts"
 	"github.com/spf13/viper"
 	"io/fs"
 	"os"
@@ -19,11 +20,13 @@ type GenerateManager interface {
 }
 
 type GenerateManagerImpl struct {
+	getManager  util.HttpGetManager
 	postManager util.HttpPostManager
 }
 
 func NewGenerateManager() GenerateManager {
 	return GenerateManagerImpl{
+		util.NewHttpGetManager(),
 		util.NewHttpPostManager(),
 	}
 }
@@ -106,13 +109,194 @@ func (g GenerateManagerImpl) GenerateInvoices(onlyNew bool) (string, error) {
 	return g.postManager.Zip(url, dirPath)
 }
 
+type Adult struct {
+	Name             string      `json:"name"`
+	Surname          string      `json:"surname"`
+	SecondSurname    interface{} `json:"secondSurname"`
+	TaxID            string      `json:"taxId"`
+	Role             string      `json:"role"`
+	Address          interface{} `json:"address"`
+	Email            string      `json:"email"`
+	MobilePhone      string      `json:"mobilePhone"`
+	HomePhone        interface{} `json:"homePhone"`
+	GrandMotherPhone interface{} `json:"grandMotherPhone"`
+	GrandParentPhone interface{} `json:"grandParentPhone"`
+	WorkPhone        interface{} `json:"workPhone"`
+	BirthDate        interface{} `json:"birthDate"`
+	Nationality      interface{} `json:"nationality"`
+	Score            float32     `json:"score"`
+}
+
+type InvoiceHolder struct {
+	Name    string `json:"name"`
+	TaxID   string `json:"taxId"`
+	Address struct {
+		Street  string `json:"street"`
+		ZipCode string `json:"zipCode"`
+		City    string `json:"city"`
+		State   string `json:"state"`
+	} `json:"address"`
+	Email       string `json:"email"`
+	SendEmail   bool   `json:"sendEmail"`
+	PaymentType string `json:"paymentType"`
+	BankAccount string `json:"bankAccount"`
+	IsBusiness  bool   `json:"isBusiness"`
+}
+
+type Child struct {
+	Code          int         `json:"code"`
+	Name          string      `json:"name"`
+	Surname       string      `json:"surname"`
+	SecondSurname string      `json:"secondSurname"`
+	TaxID         string      `json:"taxId"`
+	BirthDate     string      `json:"birthDate"`
+	Group         string      `json:"group"`
+	Note          interface{} `json:"note"`
+	Active        bool        `json:"active"`
+	Score         float32     `json:"score"`
+}
+
+type ActiveCustomers struct {
+	Embedded struct {
+		Customers []struct {
+			Children      []Child       `json:"children"`
+			Adults        []Adult       `json:"adults"`
+			InvoiceHolder InvoiceHolder `json:"invoiceHolder"`
+			Note          interface{}   `json:"note"`
+			Language      string        `json:"language"`
+			Active        bool          `json:"active"`
+			Links         struct {
+				Self struct {
+					Href string `json:"href"`
+				} `json:"self"`
+				Customer struct {
+					Href string `json:"href"`
+				} `json:"customer"`
+			} `json:"_links"`
+		} `json:"customers"`
+	} `json:"_embedded"`
+	Links struct {
+		Self struct {
+			Href string `json:"href"`
+		} `json:"self"`
+	} `json:"_links"`
+}
+
 func (g GenerateManagerImpl) GenerateCustomerReport() (string, error) {
 	fmt.Println("Generant l'informe de clients")
 
+	url := fmt.Sprintf(
+		"%s/customers/search/findAllByActiveTrue",
+		viper.GetString("urls.hobbit"),
+	)
+	customers := new(ActiveCustomers)
+	err := g.getManager.Type(url, customers)
+	if err != nil {
+		return "", err
+	}
+
+	var contents [][]string
+	for _, c := range customers.Embedded.Customers {
+		adult := getFirstAdult(c.Adults)
+		for _, child := range c.Children {
+			if !c.Active {
+				continue
+			}
+			var line = []string{
+				formatChildName(child),
+				child.Group,
+				child.BirthDate,
+				formatAdultName(adult),
+				formatPhone(adult.MobilePhone),
+				adult.Email,
+				formatPaymentInfo(c.InvoiceHolder),
+			}
+			contents = append(contents, line)
+		}
+
+	}
+
 	filePath := path.Join(getDirectory(), viper.GetString("files.customerReport"))
-	err := adm.CustomerReportPdf(filePath)
+	reportInfo := adm.ReportInfo{
+		filePath,
+		consts.Landscape,
+		"Llistat de clients",
+		[]string{
+			"Infant",
+			"Grup",
+			"Neixament",
+			"Mare",
+			"Mòbil",
+			"Correu",
+			"Pagament",
+		},
+		contents,
+		[]uint{2, 1, 1, 2, 1, 2, 3},
+		consts.Left,
+	}
+	err = adm.CustomerReportPdf(reportInfo)
 	if err != nil {
 		return "", err
 	}
 	return fmt.Sprintf("Generat l'informe de clients a '%s'", filePath), nil
+}
+
+func getFirstAdult(adults []Adult) Adult {
+
+	for _, adult := range adults {
+		if adult.Role == "MOTHER" {
+			return adult
+		}
+	}
+	return adults[0]
+}
+
+func formatChildName(child Child) string {
+	return fmt.Sprintf("%d   %s %s", child.Code, child.Name, child.Surname)
+}
+
+func formatAdultName(adult Adult) string {
+	return fmt.Sprintf("%s %s", adult.Name, adult.Surname)
+}
+
+func formatPaymentInfo(invoiceHolder InvoiceHolder) string {
+	switch invoiceHolder.PaymentType {
+	case "BANK_DIRECT_DEBIT":
+		return fmt.Sprintf("Rebut %s", formatIban(invoiceHolder.BankAccount))
+	case "BANK_TRANSFER":
+		return fmt.Sprintf("Trans. %s", formatIban(invoiceHolder.BankAccount))
+	case "CASH":
+		return "Efectiu"
+	case "VOUCHER":
+		return "Xec escoleta"
+	default:
+		return "Indefinit"
+	}
+}
+
+func formatPhone(phone string) string {
+	if len(phone) != 9 {
+		return phone
+	}
+	return fmt.Sprintf(
+		"%s %s %s",
+		phone[0:3],
+		phone[3:6],
+		phone[6:9],
+	)
+}
+
+func formatIban(iban string) string {
+	if len(iban) != 24 {
+		return iban
+	}
+	return fmt.Sprintf(
+		"%s %s %s %s %s %s",
+		iban[0:4],
+		iban[4:8],
+		iban[8:12],
+		iban[12:16],
+		iban[16:20],
+		iban[20:24],
+	)
 }

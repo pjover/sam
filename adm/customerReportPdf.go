@@ -1,71 +1,135 @@
 package adm
 
 import (
-	"fmt"
 	"github.com/johnfercher/maroto/pkg/color"
 	"github.com/johnfercher/maroto/pkg/consts"
 	"github.com/johnfercher/maroto/pkg/pdf"
 	"github.com/johnfercher/maroto/pkg/props"
 	"github.com/spf13/viper"
-	"log"
-	"os"
 	"path"
 )
 
-func CustomerReportPdf(filePath string) error {
-	m := SetupStandardPage()
+type ReportInfo struct {
+	FilePath    string
+	Orientation consts.Orientation
+	Title       string
+	Header      []string
+	Contents    [][]string
+	Sizes       []uint
+	Align       consts.Align
+}
 
-	err := header(m)
-	if err != nil {
-		return err
-	}
-
-	err = m.OutputFileAndClose(filePath)
+func CustomerReportPdf(reportInfo ReportInfo) error {
+	m := setupStandardPage(reportInfo)
+	header(m)
+	title(m, reportInfo)
+	table(m, reportInfo)
+	err := m.OutputFileAndClose(reportInfo.FilePath)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func SetupStandardPage() pdf.Maroto {
-	m := pdf.NewMaroto(consts.Portrait, consts.A4)
-	m.SetPageMargins(20, 10, 20)
+func setupStandardPage(reportInfo ReportInfo) pdf.Maroto {
+	m := pdf.NewMaroto(reportInfo.Orientation, consts.A4)
+	m.SetPageMargins(15, 10, 15)
 	return m
 }
 
-func header(m pdf.Maroto) error {
-	logo := path.Join(viper.GetString("dirs.config"), viper.GetString("files.logo"))
-	if _, err := os.Stat(logo); err != nil {
-		return fmt.Errorf("No s'ha trobat el fitxer del logo '%s'", logo)
-	}
+func header(m pdf.Maroto) {
 	m.RegisterHeader(func() {
-		m.Row(40, func() {
-			m.Col(12, func() {
-				err := m.FileImage(logo,
+		m.Row(20, func() {
+			m.Col(6, func() {
+				_ = m.FileImage(
+					path.Join(
+						viper.GetString("dirs.config"),
+						viper.GetString("files.logo"),
+					),
 					props.Rect{
+						Left:    2,
 						Center:  true,
-						Percent: 90,
+						Percent: 80,
 					})
-				if err != nil {
-					log.Fatal(err)
-				}
+			})
+
+			m.ColSpace(3)
+
+			m.Col(3, func() {
+				m.Text(viper.GetString("business.name"), props.Text{
+					Style:       consts.BoldItalic,
+					Size:        8,
+					Align:       consts.Left,
+					Extrapolate: false,
+				})
+				m.Text(viper.GetString("business.addressLine1"), props.Text{
+					Top:   3,
+					Size:  8,
+					Align: consts.Left,
+				})
+				m.Text(viper.GetString("business.addressLine2"), props.Text{
+					Top:   6,
+					Size:  8,
+					Align: consts.Left,
+				})
+				m.Text(viper.GetString("business.addressLine3"), props.Text{
+					Top:   9,
+					Size:  8,
+					Align: consts.Left,
+				})
+				m.Text(viper.GetString("business.addressLine4"), props.Text{
+					Top:   12,
+					Size:  8,
+					Align: consts.Left,
+				})
+				m.Text(viper.GetString("business.taxIdLine"), props.Text{
+					Top:   15,
+					Style: consts.BoldItalic,
+					Size:  8,
+					Align: consts.Left,
+				})
 			})
 		})
 	})
-	m.Row(10, func() {
+}
+
+func title(m pdf.Maroto, reportInfo ReportInfo) {
+	m.Row(20, func() {
 		m.Col(12, func() {
-			m.Text("Prepared for you by the Div Rhino Fruit Company", props.Text{
-				Top:   4,
-				Style: consts.Bold,
-				Align: consts.Center,
-				Color: color.Color{
-					Red:   0,
-					Green: 51,
-					Blue:  51,
-				},
-				Size: 30,
-			})
+			m.Text(
+				reportInfo.Title,
+				props.Text{
+					Top:   4,
+					Style: consts.Bold,
+					Align: consts.Center,
+					Color: color.Color{
+						Red:   0,
+						Green: 51,
+						Blue:  51,
+					},
+					Size: 24,
+				})
 		})
 	})
-	return nil
+}
+
+func table(m pdf.Maroto, reportInfo ReportInfo) {
+	m.TableList(reportInfo.Header, reportInfo.Contents, props.TableList{
+		HeaderProp: props.TableListContent{
+			Size:      9,
+			GridSizes: reportInfo.Sizes,
+		},
+		ContentProp: props.TableListContent{
+			Size:      8,
+			GridSizes: reportInfo.Sizes,
+		},
+		Align: reportInfo.Align,
+		AlternatedBackground: &color.Color{
+			Red:   200,
+			Green: 200,
+			Blue:  200,
+		},
+		HeaderContentSpace: 1,
+		Line:               false,
+	})
 }
