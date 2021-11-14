@@ -10,7 +10,40 @@ import (
 	"sam/util"
 )
 
-type ActiveCustomers struct {
+func generateCustomersReport(getManager util.HttpGetManager) (string, error) {
+
+	customers, err := getCustomers(getManager)
+	if err != nil {
+		return "", err
+	}
+
+	contents := buildContents(customers)
+
+	filePath := path.Join(getDirectory(), viper.GetString("files.customerReport"))
+	reportInfo := adm.ReportInfo{
+		consts.Landscape,
+		consts.Left,
+		"Llistat de clients",
+		[]adm.Column{
+			{"Infant", 2},
+			{"Grup", 1},
+			{"Neixament", 1},
+			{"Mare", 2},
+			{"Mòbil", 1},
+			{"Correu", 2},
+			{"Pagament", 3},
+		},
+		contents,
+		filePath,
+	}
+	err = adm.PdfReport(reportInfo)
+	if err != nil {
+		return "", err
+	}
+	return fmt.Sprintf("Generat l'informe de clients a '%s'", filePath), nil
+}
+
+type activeCustomers struct {
 	Embedded struct {
 		Customers []model.Customer `json:"customers"`
 	} `json:"_embedded"`
@@ -21,19 +54,20 @@ type ActiveCustomers struct {
 	} `json:"_links"`
 }
 
-func generateCustomersReport(getManager util.HttpGetManager) (string, error) {
-	fmt.Println("Generant l'informe de clients")
-
+func getCustomers(getManager util.HttpGetManager) (*activeCustomers, error) {
 	url := fmt.Sprintf(
 		"%s/customers/search/findAllByActiveTrue",
 		viper.GetString("urls.hobbit"),
 	)
-	customers := new(ActiveCustomers)
+	customers := new(activeCustomers)
 	err := getManager.Type(url, customers)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
+	return customers, nil
+}
 
+func buildContents(customers *activeCustomers) [][]string {
 	var contents [][]string
 	for _, c := range customers.Embedded.Customers {
 		adult := getFirstAdult(c.Adults)
@@ -52,32 +86,8 @@ func generateCustomersReport(getManager util.HttpGetManager) (string, error) {
 			}
 			contents = append(contents, line)
 		}
-
 	}
-
-	filePath := path.Join(getDirectory(), viper.GetString("files.customerReport"))
-	reportInfo := adm.ReportInfo{
-		filePath,
-		consts.Landscape,
-		"Llistat de clients",
-		[]string{
-			"Infant",
-			"Grup",
-			"Neixament",
-			"Mare",
-			"Mòbil",
-			"Correu",
-			"Pagament",
-		},
-		contents,
-		[]uint{2, 1, 1, 2, 1, 2, 3},
-		consts.Left,
-	}
-	err = adm.CustomerReportPdf(reportInfo)
-	if err != nil {
-		return "", err
-	}
-	return fmt.Sprintf("Generat l'informe de clients a '%s'", filePath), nil
+	return contents
 }
 
 func getFirstAdult(adults []model.Adult) model.Adult {
@@ -98,6 +108,18 @@ func formatAdultName(adult model.Adult) string {
 	return fmt.Sprintf("%s %s", adult.Name, adult.Surname)
 }
 
+func formatPhone(phone string) string {
+	if len(phone) != 9 {
+		return phone
+	}
+	return fmt.Sprintf(
+		"%s %s %s",
+		phone[0:3],
+		phone[3:6],
+		phone[6:9],
+	)
+}
+
 func formatPaymentInfo(invoiceHolder model.InvoiceHolder) string {
 	switch invoiceHolder.PaymentType {
 	case "BANK_DIRECT_DEBIT":
@@ -111,18 +133,6 @@ func formatPaymentInfo(invoiceHolder model.InvoiceHolder) string {
 	default:
 		return "Indefinit"
 	}
-}
-
-func formatPhone(phone string) string {
-	if len(phone) != 9 {
-		return phone
-	}
-	return fmt.Sprintf(
-		"%s %s %s",
-		phone[0:3],
-		phone[3:6],
-		phone[6:9],
-	)
 }
 
 func formatIban(iban string) string {

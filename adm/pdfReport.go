@@ -6,20 +6,25 @@ import (
 	"github.com/johnfercher/maroto/pkg/pdf"
 	"github.com/johnfercher/maroto/pkg/props"
 	"github.com/spf13/viper"
+	"log"
 	"path"
 )
 
-type ReportInfo struct {
-	FilePath    string
-	Orientation consts.Orientation
-	Title       string
-	Header      []string
-	Contents    [][]string
-	Sizes       []uint
-	Align       consts.Align
+type Column struct {
+	Name  string
+	Width uint
 }
 
-func CustomerReportPdf(reportInfo ReportInfo) error {
+type ReportInfo struct {
+	Orientation consts.Orientation
+	Align       consts.Align
+	Title       string
+	Columns     []Column
+	Contents    [][]string
+	FilePath    string
+}
+
+func PdfReport(reportInfo ReportInfo) error {
 	m := setupStandardPage(reportInfo)
 	header(m)
 	title(m, reportInfo)
@@ -114,14 +119,16 @@ func title(m pdf.Maroto, reportInfo ReportInfo) {
 }
 
 func table(m pdf.Maroto, reportInfo ReportInfo) {
-	m.TableList(reportInfo.Header, reportInfo.Contents, props.TableList{
+	headers, widths := extractFromColumns(reportInfo.Columns)
+
+	m.TableList(headers, reportInfo.Contents, props.TableList{
 		HeaderProp: props.TableListContent{
 			Size:      9,
-			GridSizes: reportInfo.Sizes,
+			GridSizes: widths,
 		},
 		ContentProp: props.TableListContent{
 			Size:      8,
-			GridSizes: reportInfo.Sizes,
+			GridSizes: widths,
 		},
 		Align: reportInfo.Align,
 		AlternatedBackground: &color.Color{
@@ -132,4 +139,19 @@ func table(m pdf.Maroto, reportInfo ReportInfo) {
 		HeaderContentSpace: 1,
 		Line:               false,
 	})
+}
+
+func extractFromColumns(columns []Column) ([]string, []uint) {
+	var headers []string
+	var widths []uint
+	var widthsSum uint
+	for _, column := range columns {
+		widthsSum += column.Width
+		headers = append(headers, column.Name)
+		widths = append(widths, column.Width)
+	}
+	if widthsSum != 12 {
+		log.Fatal("Columns widths always must sum 12")
+	}
+	return headers, widths
 }
