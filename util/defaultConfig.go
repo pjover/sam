@@ -10,7 +10,8 @@ func DefaultConfig(home string) {
 
 	dirHome := path.Join(home, "Sam")
 	viper.SetDefault("dirs.home", dirHome)
-	viper.SetDefault("dirs.invoices", "invoices")
+	viper.SetDefault("dirs.reports", "$HOME")
+	viper.SetDefault("dirs.invoicesName", "invoices")
 
 	viper.SetDefault("urls.hobbit", "http://localhost:8080")
 	viper.SetDefault("urls.mongoExpress", "http://localhost:8081/db/hobbit_prod")

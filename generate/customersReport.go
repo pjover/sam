@@ -5,7 +5,6 @@ import (
 	"github.com/johnfercher/maroto/pkg/consts"
 	"github.com/spf13/viper"
 	"path"
-	"sam/adm"
 	"sam/model"
 	"sam/util"
 	"sort"
@@ -20,12 +19,12 @@ func generateCustomersReport(getManager util.HttpGetManager) (string, error) {
 
 	contents := buildContents(customers)
 
-	filePath := path.Join(getDirectory(), viper.GetString("files.customerReport"))
-	reportInfo := adm.ReportInfo{
+	filePath := path.Join(viper.GetString("dirs.reports"), viper.GetString("files.customerReport"))
+	reportInfo := util.ReportInfo{
 		consts.Landscape,
 		consts.Left,
 		"Llistat de clients",
-		[]adm.Column{
+		[]util.Column{
 			{"Infant", 2},
 			{"Grup", 1},
 			{"Neixament", 1},
@@ -37,7 +36,7 @@ func generateCustomersReport(getManager util.HttpGetManager) (string, error) {
 		contents,
 		filePath,
 	}
-	err = adm.PdfReport(reportInfo)
+	err = util.PdfReport(reportInfo)
 	if err != nil {
 		return "", err
 	}

@@ -1,4 +1,4 @@
-package adm
+package util
 
 import (
 	"github.com/johnfercher/maroto/pkg/color"

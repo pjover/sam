@@ -36,7 +36,7 @@ func (g GenerateManagerImpl) GenerateBdd() (string, error) {
 		viper.GetString("yearMonth"),
 	)
 
-	dir := getDirectory()
+	dir := getWorkingDirectory()
 	currentFilenames := listFiles(dir, ".qx1")
 	filename := getNextBddFilename(currentFilenames)
 	return g.postManager.File(url, dir, filename)
@@ -81,10 +81,10 @@ func (g GenerateManagerImpl) GenerateInvoice(invoiceCode string) (string, error)
 
 	url := fmt.Sprintf("%s/generate/pdf/%s", viper.GetString("urls.hobbit"), invoiceCode)
 
-	return g.postManager.FileDefaultName(url, getDirectory())
+	return g.postManager.FileDefaultName(url, getWorkingDirectory())
 }
 
-func getDirectory() string {
+func getWorkingDirectory() string {
 	return path.Join(viper.GetString("dirs.home"), viper.GetString("dirs.current"))
 }
 
@@ -98,7 +98,7 @@ func (g GenerateManagerImpl) GenerateInvoices(onlyNew bool) (string, error) {
 		onlyNew,
 	)
 
-	dirPath := path.Join(getDirectory(), viper.GetString("dirs.invoices"))
+	dirPath := path.Join(getWorkingDirectory(), viper.GetString("dirs.invoicesName"))
 	err := os.MkdirAll(dirPath, 0755)
 	if err != nil {
 		return "", err
