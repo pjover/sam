@@ -8,6 +8,7 @@ import (
 	"path"
 	"path/filepath"
 	"sam/util"
+	"time"
 )
 
 type GenerateManager interface {
@@ -16,6 +17,7 @@ type GenerateManager interface {
 	GenerateInvoices(onlyNew bool) (string, error)
 	GenerateCustomersReport() (string, error)
 	GenerateProductsReport() (string, error)
+	GenerateMonthReport(month time.Time) (string, error)
 }
 
 type GenerateManagerImpl struct {
@@ -118,4 +120,8 @@ func (g GenerateManagerImpl) GenerateProductsReport() (string, error) {
 	fmt.Println("Generant l'informe de productes ...")
 	manager := NewProductsReportGenerator(g.getManager)
 	return manager.generate()
+}
+
+func (g GenerateManagerImpl) GenerateMonthReport(month time.Time) (string, error) {
+	panic("implement me")
 }

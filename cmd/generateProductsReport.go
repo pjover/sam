@@ -15,8 +15,8 @@ func newGenerateProductsReportCmd(generateManager generate.GenerateManager) *cob
 		Annotations: map[string]string{"GEN": "Comandes de generació"},
 		Aliases: []string{
 			"ginfp",
-			"generainfproductes", "genera-inf-productes",
-			"generarInfProductes", "generarinfproductes", "generar-inf-productes",
+			"generainformeproductes", "genera-informe-productes",
+			"generarInformeProductes", "generarinformeproductes", "generar-informe-productes",
 			"gcrep",
 			"generateProductsReport", "generateproductsreport", "generate-products-report",
 		},

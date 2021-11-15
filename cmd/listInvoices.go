@@ -10,7 +10,7 @@ import (
 var listInvoicesCmd = &cobra.Command{
 	Use:   "llistaFactures [codiClient] [AAAA-MM]",
 	Short: "Llista les factura del mes i del client",
-	Long: `Llista les factura del mes i del client,
+	Long: `Llista les factura del mes i del client
     - si no s'especifica el mes agafa l'actual
     - si no s'especifica client, llista les factures de tots els clients'`,
 	Example: `   llistaFactures               Llista les factura del mes actual
