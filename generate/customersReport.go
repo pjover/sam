@@ -92,10 +92,10 @@ func (c CustomersReportGenerator) buildContents(customers *activeCustomers) [][]
 				child.NameWithCode(),
 				child.Group,
 				child.BirthDate,
-				c.formatAdultName(adult),
-				c.formatPhone(adult.MobilePhone),
+				adult.NameSurnameFmt(),
+				adult.MobilePhoneFmt(),
 				adult.Email,
-				c.formatPaymentInfo(customer.InvoiceHolder),
+				customer.InvoiceHolder.PaymentInfoFmt(),
 			}
 			contents = append(contents, line)
 		}
@@ -104,50 +104,4 @@ func (c CustomersReportGenerator) buildContents(customers *activeCustomers) [][]
 		return contents[i][0] < contents[j][0]
 	})
 	return contents
-}
-
-func (c CustomersReportGenerator) formatAdultName(adult model.Adult) string {
-	return fmt.Sprintf("%s %s", adult.Name, adult.Surname)
-}
-
-func (c CustomersReportGenerator) formatPhone(phone string) string {
-	if len(phone) != 9 {
-		return phone
-	}
-	return fmt.Sprintf(
-		"%s %s %s",
-		phone[0:3],
-		phone[3:6],
-		phone[6:9],
-	)
-}
-
-func (c CustomersReportGenerator) formatPaymentInfo(invoiceHolder model.InvoiceHolder) string {
-	switch invoiceHolder.PaymentType {
-	case "BANK_DIRECT_DEBIT":
-		return fmt.Sprintf("Rebut %s", c.formatIban(invoiceHolder.BankAccount))
-	case "BANK_TRANSFER":
-		return fmt.Sprintf("Trans. %s", c.formatIban(invoiceHolder.BankAccount))
-	case "CASH":
-		return "Efectiu"
-	case "VOUCHER":
-		return "Xec escoleta"
-	default:
-		return "Indefinit"
-	}
-}
-
-func (c CustomersReportGenerator) formatIban(iban string) string {
-	if len(iban) != 24 {
-		return iban
-	}
-	return fmt.Sprintf(
-		"%s %s %s %s %s %s",
-		iban[0:4],
-		iban[4:8],
-		iban[8:12],
-		iban[12:16],
-		iban[16:20],
-		iban[20:24],
-	)
 }
