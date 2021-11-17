@@ -31,6 +31,7 @@ var tests = [][]string{
 	{"generateInvoices"},
 	{"generateCustomersReport"},
 	{"generateProductsReport"},
+	{"generateMonthReport"},
 }
 
 func main() {

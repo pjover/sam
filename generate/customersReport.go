@@ -83,13 +83,13 @@ func (c CustomersReportGenerator) getCustomers(getManager util.HttpGetManager) (
 func (c CustomersReportGenerator) buildContents(customers *activeCustomers) [][]string {
 	var contents [][]string
 	for _, customer := range customers.Embedded.Customers {
-		adult := c.getFirstAdult(customer.Adults)
+		adult := customer.FirstAdult()
 		for _, child := range customer.Children {
 			if !child.Active {
 				continue
 			}
 			var line = []string{
-				c.formatChildName(child),
+				child.NameWithCode(),
 				child.Group,
 				child.BirthDate,
 				c.formatAdultName(adult),
@@ -104,20 +104,6 @@ func (c CustomersReportGenerator) buildContents(customers *activeCustomers) [][]
 		return contents[i][0] < contents[j][0]
 	})
 	return contents
-}
-
-func (c CustomersReportGenerator) getFirstAdult(adults []model.Adult) model.Adult {
-
-	for _, adult := range adults {
-		if adult.Role == "MOTHER" {
-			return adult
-		}
-	}
-	return adults[0]
-}
-
-func (c CustomersReportGenerator) formatChildName(child model.Child) string {
-	return fmt.Sprintf("%d   %s %s", child.Code, child.Name, child.Surname)
 }
 
 func (c CustomersReportGenerator) formatAdultName(adult model.Adult) string {

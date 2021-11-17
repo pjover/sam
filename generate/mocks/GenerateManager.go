@@ -30,7 +30,7 @@ func (_m *GenerateManager) GenerateBdd() (string, error) {
 	return r0, r1
 }
 
-// GenerateCustomerReport provides a mock function with given fields:
+// GenerateCustomersReport provides a mock function with given fields:
 func (_m *GenerateManager) GenerateCustomersReport() (string, error) {
 	ret := _m.Called()
 
@@ -86,6 +86,48 @@ func (_m *GenerateManager) GenerateInvoices(onlyNew bool) (string, error) {
 	var r1 error
 	if rf, ok := ret.Get(1).(func(bool) error); ok {
 		r1 = rf(onlyNew)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// GenerateMonthReport provides a mock function with given fields:
+func (_m *GenerateManager) GenerateMonthReport() (string, error) {
+	ret := _m.Called()
+
+	var r0 string
+	if rf, ok := ret.Get(0).(func() string); ok {
+		r0 = rf()
+	} else {
+		r0 = ret.Get(0).(string)
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func() error); ok {
+		r1 = rf()
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// GenerateProductsReport provides a mock function with given fields:
+func (_m *GenerateManager) GenerateProductsReport() (string, error) {
+	ret := _m.Called()
+
+	var r0 string
+	if rf, ok := ret.Get(0).(func() string); ok {
+		r0 = rf()
+	} else {
+		r0 = ret.Get(0).(string)
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func() error); ok {
+		r1 = rf()
 	} else {
 		r1 = ret.Error(1)
 	}

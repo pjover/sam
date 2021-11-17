@@ -18,6 +18,7 @@ func DefaultConfig(home string) {
 
 	viper.SetDefault("files.customersReport", "Customers.pdf")
 	viper.SetDefault("files.productsReport", "Products.pdf")
+	viper.SetDefault("files.invoicesReport", "Factures.pdf")
 	viper.SetDefault("files.logo", "logo.png")
 
 	viper.SetDefault("business.name", "BusinessName")
