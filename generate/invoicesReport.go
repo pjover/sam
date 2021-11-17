@@ -11,7 +11,6 @@ import (
 	"sam/translate/catalan"
 	"sam/util"
 	"sort"
-	"strings"
 	"time"
 )
 
@@ -34,8 +33,10 @@ func (i InvoicesReportGenerator) generate() (string, error) {
 		return "", err
 	}
 
-	contents := i.buildContents(invoices)
-
+	contents, err := i.buildContents(invoices)
+	if err != nil {
+		return "", err
+	}
 	filePath := path.Join(
 		getWorkingDirectory(),
 		viper.GetString("files.invoicesReport"),
@@ -90,69 +91,35 @@ func (i InvoicesReportGenerator) getInvoices(getManager util.HttpGetManager) (*m
 	return invoices, nil
 }
 
-func (i InvoicesReportGenerator) buildContents(invoices *monthInvoices) [][]string {
+func (i InvoicesReportGenerator) buildContents(invoices *monthInvoices) ([][]string, error) {
 	var contents [][]string
 	for _, invoice := range invoices.Embedded.Invoices {
-		customer := i.customer(invoice)
+		customer, err := i.customer(invoice)
+		if err != nil {
+			return nil, err
+		}
 
 		var line = []string{
 			invoice.Code(),
 			invoice.Date,
 			customer.FirstAdultNameWithCode(),
 			customer.ChildrenNames("\n"),
-			i.lines(invoice),
-			i.amount(invoice),
-			i.payment(invoice),
+			invoice.LinesFmt(", "),
+			fmt.Sprintf("%.2f", invoice.Amount()),
+			invoice.PaymentFmt(),
 		}
 		contents = append(contents, line)
 	}
 	sort.SliceStable(contents, func(i, j int) bool {
 		return contents[i][0] < contents[j][0]
 	})
-	return contents
+	return contents, nil
 }
 
-func (i InvoicesReportGenerator) customer(invoice model.Invoice) model.Customer {
+func (i InvoicesReportGenerator) customer(invoice model.Invoice) (model.Customer, error) {
 	customer, err := i.customerStorage.GetCustomer(invoice.CustomerID)
 	if err != nil {
-		log.Fatal(err)
+		return model.Customer{}, err
 	}
-	return customer
-}
-
-func (i InvoicesReportGenerator) lines(invoice model.Invoice) string {
-	var lines []string
-	for _, line := range invoice.Lines {
-		lines = append(lines, fmt.Sprintf(
-			"%.1f %s (%.2f)",
-			line.Units,
-			line.ProductID,
-			line.Units*line.ProductPrice,
-		),
-		)
-	}
-	return strings.Join(lines, ", ")
-}
-
-func (i InvoicesReportGenerator) amount(invoice model.Invoice) string {
-	var amount float32
-	for _, line := range invoice.Lines {
-		amount += line.Units * line.ProductPrice
-	}
-	return fmt.Sprintf("%.2f", amount)
-}
-
-func (i InvoicesReportGenerator) payment(invoice model.Invoice) string {
-	switch invoice.PaymentType {
-	case "BANK_DIRECT_DEBIT":
-		return "Rebut"
-	case "BANK_TRANSFER":
-		return "Tranferència"
-	case "CASH":
-		return "Efectiu"
-	case "VOUCHER":
-		return "Xec escoleta"
-	default:
-		return "Indefinit"
-	}
+	return customer, nil
 }
