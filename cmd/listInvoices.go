@@ -25,7 +25,7 @@ var listInvoicesCmd = &cobra.Command{
 		"linv",
 		"listInvoices", "listinvoices", "list-invoices",
 	},
-	Args: RangeArgs(0, 2),
+	Args: util.RangeArgs(0, 2),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		return parseListInvoicesArgs(args)
 	},
@@ -44,20 +44,20 @@ func parseListInvoicesArgs(args []string) error {
 		var workingTime = util.SamTimeManager{}.Now()
 		msg, err = manager.ListYearMonthInvoices(workingTime)
 	case 1:
-		customerCode, err := parseInteger(args[0], "de client")
+		customerCode, err := util.ParseInteger(args[0], "de client")
 		if err == nil {
 			msg, err = manager.ListCustomerInvoices(customerCode)
 		}
-		yearMonth, err := parseYearMonth(args[0])
+		yearMonth, err := util.ParseYearMonth(args[0])
 		if err == nil {
 			msg, err = manager.ListYearMonthInvoices(yearMonth)
 		}
 	case 2:
-		customerCode, err := parseInteger(args[0], "de client")
+		customerCode, err := util.ParseInteger(args[0], "de client")
 		if err != nil {
 			return err
 		}
-		yearMonth, err := parseYearMonth(args[1])
+		yearMonth, err := util.ParseYearMonth(args[1])
 		if err != nil {
 			return err
 		}

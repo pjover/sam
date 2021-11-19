@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/spf13/cobra"
 	"sam/cmd"
+	"sam/internal/util"
 	"strings"
 )
 
@@ -26,7 +27,7 @@ func newSingleInvoiceCmd(generator SingleInvoiceGenerator) *cobra.Command {
 			"generatesingleinvoice",
 			"generate-single-invoice",
 		},
-		Args: cmd.ExactArgs(1),
+		Args: util.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			invoiceCode := strings.ToUpper(args[0])
 			msg, err := generator.Generate(invoiceCode)

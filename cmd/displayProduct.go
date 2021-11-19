@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/spf13/cobra"
 	"sam/adm"
+	"sam/internal/util"
 )
 
 var displayProductCmd = &cobra.Command{
@@ -19,9 +20,9 @@ var displayProductCmd = &cobra.Command{
 		"dpro",
 		"displayProduct", "displayproduct", "display-product",
 	},
-	Args: ExactArgs(1),
+	Args: util.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		productCode, err := parseProductCode(args[0])
+		productCode, err := util.ParseProductCode(args[0])
 		if err != nil {
 			return err
 		}

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/spf13/cobra"
 	"sam/adm"
+	"sam/internal/util"
 )
 
 var listConsumptionsCmd = &cobra.Command{
@@ -19,13 +20,13 @@ var listConsumptionsCmd = &cobra.Command{
 		"llistarConsums", "llistarconsums", "llistar-consums",
 		"listConsumptions", "listconsumptions", "list-consumptions",
 	},
-	Args: RangeArgs(0, 1),
+	Args: util.RangeArgs(0, 1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		manager := adm.NewListManager()
 		var msg string
 		var err error
 		if len(args) != 0 {
-			customerCode, err := parseInteger(args[0], "de client")
+			customerCode, err := util.ParseInteger(args[0], "de client")
 			if err != nil {
 				return err
 			}

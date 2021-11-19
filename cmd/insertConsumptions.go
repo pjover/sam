@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/spf13/cobra"
 	"sam/core"
+	"sam/internal/util"
 )
 
 var iconNote string
@@ -24,7 +25,7 @@ var insertConsumptionsCmd = &cobra.Command{
 		"insertarConsums", "insertarconsums", "insertar-consums",
 		"insertConsumptions", "insertconsumptions", "insert-consumptions",
 	},
-	Args: MinimumNArgs(3),
+	Args: util.MinimumNArgs(3),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		ica, err := parseInsertConsumptionsArgs(args, iconNote)
 		if err != nil {
@@ -48,7 +49,7 @@ func init() {
 }
 
 func parseInsertConsumptionsArgs(args []string, noteArg string) (core.InsertConsumptionsArgs, error) {
-	code, err := parseInteger(args[0], "d'infant")
+	code, err := util.ParseInteger(args[0], "d'infant")
 	if err != nil {
 		return core.InsertConsumptionsArgs{}, err
 	}
@@ -59,12 +60,12 @@ func parseInsertConsumptionsArgs(args []string, noteArg string) (core.InsertCons
 			return core.InsertConsumptionsArgs{}, errors.New("No s'ha indroduit el codi del darrer producte")
 		}
 
-		consUnits, err := parseFloat(args[i])
+		consUnits, err := util.ParseFloat(args[i])
 		if err != nil {
 			return core.InsertConsumptionsArgs{}, err
 		}
 
-		productCode, err := parseProductCode(args[i+1])
+		productCode, err := util.ParseProductCode(args[i+1])
 		if err != nil {
 			return core.InsertConsumptionsArgs{}, err
 		}

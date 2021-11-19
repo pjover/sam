@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/spf13/cobra"
 	"sam/core"
+	"sam/internal/util"
 )
 
 var rconNote string
@@ -24,7 +25,7 @@ var rectifyConsumptionsCmd = &cobra.Command{
 		"rectificarConsums", "rectificarconsums", "rectificar-consums",
 		"rectifyConsumptions", "rectifyconsumptions", "rectify-consumptions",
 	},
-	Args: MinimumNArgs(3),
+	Args: util.MinimumNArgs(3),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		ica, err := parseInsertConsumptionsArgs(args, rconNote)
 		if err != nil {

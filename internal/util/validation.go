@@ -1,10 +1,9 @@
-package cmd
+package util
 
 import (
 	"errors"
 	"fmt"
 	"github.com/spf13/cobra"
-	"sam/internal/util"
 	"strconv"
 	"strings"
 	"time"
@@ -40,7 +39,7 @@ func ExactArgs(n int) cobra.PositionalArgs {
 	}
 }
 
-func parseInteger(strCode string, codeType string) (int, error) {
+func ParseInteger(strCode string, codeType string) (int, error) {
 	code, err := strconv.Atoi(strCode)
 	if err != nil {
 		return 0, fmt.Errorf("El codi %s introduit és invàlid: %s", codeType, strCode)
@@ -48,7 +47,7 @@ func parseInteger(strCode string, codeType string) (int, error) {
 	return code, nil
 }
 
-func parseFloat(value string) (float64, error) {
+func ParseFloat(value string) (float64, error) {
 	float, err := strconv.ParseFloat(value, 64)
 	if err != nil {
 		return 0, fmt.Errorf("El número introduit és invàlid: %s", value)
@@ -56,15 +55,15 @@ func parseFloat(value string) (float64, error) {
 	return float, nil
 }
 
-func parseYearMonth(yearMonth string) (time.Time, error) {
-	ym, err := time.Parse(util.YearMonthLayout, yearMonth)
+func ParseYearMonth(yearMonth string) (time.Time, error) {
+	ym, err := time.Parse(YearMonthLayout, yearMonth)
 	if err != nil {
 		return time.Time{}, errors.New("Error al introduïr el mes: " + err.Error())
 	}
 	return ym, nil
 }
 
-func parseProductCode(code string) (string, error) {
+func ParseProductCode(code string) (string, error) {
 	if len(code) != 3 {
 		return "", fmt.Errorf("El codi de producte introduit és invàlid: %s", code)
 	}

@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"sam/adm"
+	"sam/internal/util"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -21,7 +22,7 @@ var displayInvoiceCmd = &cobra.Command{
 		"dinv",
 		"displayInvoice", "displayinvoice", "display-invoice",
 	},
-	Args: ExactArgs(1),
+	Args: util.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		invoiceCode := strings.ToUpper(args[0])
 		manager := adm.NewDisplayManager()

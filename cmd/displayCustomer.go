@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/spf13/cobra"
 	"sam/adm"
+	"sam/internal/util"
 )
 
 var displayCustomerCmd = &cobra.Command{
@@ -19,9 +20,9 @@ var displayCustomerCmd = &cobra.Command{
 		"dcus",
 		"displayCustomer", "displaycustomer", "display-customer",
 	},
-	Args: ExactArgs(1),
+	Args: util.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		customerCode, _ := parseInteger(args[0], "de client")
+		customerCode, _ := util.ParseInteger(args[0], "de client")
 		manager := adm.NewDisplayManager()
 		msg, err := manager.DisplayCustomer(customerCode)
 		if err != nil {

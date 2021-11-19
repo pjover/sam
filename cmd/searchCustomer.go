@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/spf13/cobra"
 	"sam/adm"
+	"sam/internal/util"
 )
 
 var searchCustomerCmd = &cobra.Command{
@@ -20,7 +21,7 @@ var searchCustomerCmd = &cobra.Command{
 		"scus",
 		"searchCustomer", "searchcustomer", "search-customer",
 	},
-	Args: MinimumNArgs(1),
+	Args: util.MinimumNArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		manager := adm.NewSearchManager()
 		msg, err := manager.SearchCustomer(args)
