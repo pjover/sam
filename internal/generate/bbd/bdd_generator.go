@@ -1,41 +1,38 @@
-package generate
+package bbd
 
 import (
 	"fmt"
 	"github.com/spf13/viper"
 	"io/fs"
-	"path"
 	"path/filepath"
 	"sam/internal/util"
 )
 
-type GenerateManager interface {
-	GenerateBdd() (string, error)
+type BddGenerator interface {
+	Generate() (string, error)
 }
 
-type GenerateManagerImpl struct {
-	getManager  util.HttpGetManager
+type BddGeneratorImpl struct {
 	postManager util.HttpPostManager
 }
 
-func NewGenerateManager() GenerateManager {
-	return GenerateManagerImpl{
-		util.NewHttpGetManager(),
+func NewBddGenerator() BddGenerator {
+	return BddGeneratorImpl{
 		util.NewHttpPostManager(),
 	}
 }
 
-func (g GenerateManagerImpl) GenerateBdd() (string, error) {
+func (b BddGeneratorImpl) Generate() (string, error) {
 	fmt.Println("Generant el fitxer de rebuts ...")
 	url := fmt.Sprintf("%s/generate/bdd?yearMonth=%s",
 		viper.GetString("urls.hobbit"),
 		viper.GetString("yearMonth"),
 	)
 
-	dir := GetWorkingDirectory()
+	dir := util.GetWorkingDirectory()
 	currentFilenames := listFiles(dir, ".qx1")
 	filename := getNextBddFilename(currentFilenames)
-	return g.postManager.File(url, dir, filename)
+	return b.postManager.File(url, dir, filename)
 }
 
 func listFiles(dir string, ext string) []string {
@@ -70,8 +67,4 @@ func getNextBddFilename(currentFilenames []string) string {
 
 func buildBddFilename(sequence int) string {
 	return fmt.Sprintf("bdd-%d.qx1", sequence)
-}
-
-func GetWorkingDirectory() string {
-	return path.Join(viper.GetString("dirs.home"), viper.GetString("dirs.current"))
 }

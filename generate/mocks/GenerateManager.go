@@ -10,7 +10,7 @@ type GenerateManager struct {
 }
 
 // GenerateBdd provides a mock function with given fields:
-func (_m *GenerateManager) GenerateBdd() (string, error) {
+func (_m *GenerateManager) Generate() (string, error) {
 	ret := _m.Called()
 
 	var r0 string
