@@ -1,4 +1,4 @@
-package generate
+package reports
 
 import (
 	"fmt"
@@ -15,13 +15,15 @@ type ProductsReportGenerator struct {
 	getManager util.HttpGetManager
 }
 
-func NewProductsReportGenerator(getManager util.HttpGetManager) ProductsReportGenerator {
+func NewProductsReportGenerator() ReportGenerator {
 	return ProductsReportGenerator{
-		getManager,
+		util.NewHttpGetManager(),
 	}
 }
 
-func (p ProductsReportGenerator) generate() (string, error) {
+func (p ProductsReportGenerator) Generate() (string, error) {
+	fmt.Println("Generant l'informe de productes ...")
+
 	products, err := p.getProducts()
 	if err != nil {
 		return "", err

@@ -1,12 +1,12 @@
-package cmd
+package reports
 
 import (
 	"fmt"
 	"github.com/spf13/cobra"
-	"sam/generate"
+	"sam/cmd"
 )
 
-func newGenerateProductsReportCmd(generateManager generate.GenerateManager) *cobra.Command {
+func newGenerateProductsReportCmd(generator ReportGenerator) *cobra.Command {
 	return &cobra.Command{
 		Use:         "generaInformeProductes",
 		Short:       "Genera l'informe dels productes",
@@ -21,7 +21,7 @@ func newGenerateProductsReportCmd(generateManager generate.GenerateManager) *cob
 			"generateProductsReport", "generateproductsreport", "generate-products-report",
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
-			msg, err := generateManager.GenerateProductsReport()
+			msg, err := generator.Generate()
 			if err != nil {
 				return err
 			}
@@ -32,6 +32,6 @@ func newGenerateProductsReportCmd(generateManager generate.GenerateManager) *cob
 }
 
 func init() {
-	cmd := newGenerateProductsReportCmd(generate.NewGenerateManager())
-	RootCmd.AddCommand(cmd)
+	generator := NewProductsReportGenerator()
+	cmd.RootCmd.AddCommand(newGenerateProductsReportCmd(generator))
 }

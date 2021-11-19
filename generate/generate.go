@@ -14,8 +14,6 @@ type GenerateManager interface {
 	GenerateBdd() (string, error)
 	GenerateInvoice(invoiceCode string) (string, error)
 	GenerateInvoices(onlyNew bool) (string, error)
-	GenerateProductsReport() (string, error)
-	GenerateMonthReport() (string, error)
 }
 
 type GenerateManagerImpl struct {
@@ -37,7 +35,7 @@ func (g GenerateManagerImpl) GenerateBdd() (string, error) {
 		viper.GetString("yearMonth"),
 	)
 
-	dir := getWorkingDirectory()
+	dir := GetWorkingDirectory()
 	currentFilenames := listFiles(dir, ".qx1")
 	filename := getNextBddFilename(currentFilenames)
 	return g.postManager.File(url, dir, filename)
@@ -82,10 +80,10 @@ func (g GenerateManagerImpl) GenerateInvoice(invoiceCode string) (string, error)
 
 	url := fmt.Sprintf("%s/generate/pdf/%s", viper.GetString("urls.hobbit"), invoiceCode)
 
-	return g.postManager.FileDefaultName(url, getWorkingDirectory())
+	return g.postManager.FileDefaultName(url, GetWorkingDirectory())
 }
 
-func getWorkingDirectory() string {
+func GetWorkingDirectory() string {
 	return path.Join(viper.GetString("dirs.home"), viper.GetString("dirs.current"))
 }
 
@@ -99,23 +97,11 @@ func (g GenerateManagerImpl) GenerateInvoices(onlyNew bool) (string, error) {
 		onlyNew,
 	)
 
-	dirPath := path.Join(getWorkingDirectory(), viper.GetString("dirs.invoicesName"))
+	dirPath := path.Join(GetWorkingDirectory(), viper.GetString("dirs.invoicesName"))
 	err := os.MkdirAll(dirPath, 0755)
 	if err != nil {
 		return "", err
 	}
 
 	return g.postManager.Zip(url, dirPath)
-}
-
-func (g GenerateManagerImpl) GenerateProductsReport() (string, error) {
-	fmt.Println("Generant l'informe de productes ...")
-	manager := NewProductsReportGenerator(g.getManager)
-	return manager.generate()
-}
-
-func (g GenerateManagerImpl) GenerateMonthReport() (string, error) {
-	fmt.Println("Generant l'informe de factures del mes ...")
-	manager := NewInvoicesReportGenerator(g.getManager)
-	return manager.generate()
 }
