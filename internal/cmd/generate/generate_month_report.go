@@ -1,13 +1,14 @@
-package reports
+package generate
 
 import (
 	"fmt"
 	"github.com/spf13/cobra"
-	"sam/cmd"
+	"sam/internal/cmd"
 	"sam/internal/generate"
+	"sam/internal/generate/reports"
 )
 
-func newMonthReportCmd(generator generate.Generator) *cobra.Command {
+func newGenerateMonthReportCmd(generator generate.Generator) *cobra.Command {
 	return &cobra.Command{
 		Use:         "generaInformeMes [AAAA-MM]",
 		Short:       "Genera l'informe de les factures del mes actual",
@@ -38,7 +39,7 @@ func newMonthReportCmd(generator generate.Generator) *cobra.Command {
 }
 
 func init() {
-	generator := NewMonthReportGenerator()
-	command := newMonthReportCmd(generator)
+	generator := reports.NewMonthReportGenerator()
+	command := newGenerateMonthReportCmd(generator)
 	cmd.RootCmd.AddCommand(command)
 }

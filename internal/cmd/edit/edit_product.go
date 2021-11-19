@@ -2,11 +2,12 @@ package edit
 
 import (
 	"github.com/spf13/cobra"
-	"sam/cmd"
+	"sam/internal/cmd"
+	"sam/internal/edit"
 	"sam/internal/util"
 )
 
-func newEditProductCmd(editor Editor) *cobra.Command {
+func newEditProductCmd(editor edit.Editor) *cobra.Command {
 	return &cobra.Command{
 		Use:         "editaProducte codiProducte",
 		Short:       "Edita les dades d'un producte",
@@ -36,7 +37,7 @@ func newEditProductCmd(editor Editor) *cobra.Command {
 }
 
 func init() {
-	editor := newProductEditor()
+	editor := edit.NewProductEditor()
 	command := newEditProductCmd(editor)
 	cmd.RootCmd.AddCommand(command)
 }

@@ -1,9 +1,10 @@
-package cmd
+package display
 
 import (
 	"fmt"
 	"github.com/spf13/cobra"
 	"sam/adm"
+	"sam/internal/cmd"
 	"sam/internal/util"
 )
 
@@ -35,5 +36,5 @@ var displayCustomerCmd = &cobra.Command{
 }
 
 func init() {
-	RootCmd.AddCommand(displayCustomerCmd)
+	cmd.RootCmd.AddCommand(displayCustomerCmd)
 }

@@ -1,7 +1,8 @@
-package cmd
+package adm
 
 import (
 	"sam/adm"
+	"sam/internal/cmd"
 	"sam/internal/util"
 
 	"github.com/spf13/cobra"
@@ -30,7 +31,7 @@ var directoryCmd = &cobra.Command{
 }
 
 func init() {
-	RootCmd.AddCommand(directoryCmd)
+	cmd.RootCmd.AddCommand(directoryCmd)
 	directoryCmd.Flags().BoolVarP(&previousMonth, "anterior", "a", false, "Es treballa al mes anterior al mes actual")
 	directoryCmd.Flags().BoolVarP(&nextMonth, "seguent", "s", false, "Es treballa al mes següent al mes actual")
 }

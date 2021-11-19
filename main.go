@@ -16,7 +16,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 package main
 
-import "sam/cmd"
+import "sam/internal/cmd"
 
 func main() {
 	cmd.Execute()

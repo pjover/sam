@@ -10,7 +10,7 @@ import (
 type ProductEditorImpl struct {
 }
 
-func newProductEditor() Editor {
+func NewProductEditor() Editor {
 	return ProductEditorImpl{}
 }
 

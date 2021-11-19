@@ -2,12 +2,13 @@ package edit
 
 import (
 	"github.com/spf13/cobra"
-	"sam/cmd"
+	"sam/internal/cmd"
+	"sam/internal/edit"
 	"sam/internal/util"
 	"strings"
 )
 
-func newInvoiceCmd(editor Editor) *cobra.Command {
+func newEditInvoiceCmd(editor edit.Editor) *cobra.Command {
 	return &cobra.Command{
 		Use:         "editaFactura codiFactura",
 		Short:       "Edita les dades d'una factura",
@@ -35,7 +36,7 @@ func newInvoiceCmd(editor Editor) *cobra.Command {
 }
 
 func init() {
-	editor := newInvoiceEditor()
-	command := newInvoiceCmd(editor)
+	editor := edit.NewInvoiceEditor()
+	command := newEditInvoiceCmd(editor)
 	cmd.RootCmd.AddCommand(command)
 }

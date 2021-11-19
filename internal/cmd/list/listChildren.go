@@ -1,8 +1,9 @@
-package cmd
+package list
 
 import (
 	"fmt"
 	"sam/adm"
+	"sam/internal/cmd"
 
 	"github.com/spf13/cobra"
 )
@@ -33,5 +34,5 @@ var listChildrenCmd = &cobra.Command{
 }
 
 func init() {
-	RootCmd.AddCommand(listChildrenCmd)
+	cmd.RootCmd.AddCommand(listChildrenCmd)
 }

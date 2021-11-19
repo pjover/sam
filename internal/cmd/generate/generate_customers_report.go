@@ -1,10 +1,11 @@
-package reports
+package generate
 
 import (
 	"fmt"
 	"github.com/spf13/cobra"
-	"sam/cmd"
+	"sam/internal/cmd"
 	"sam/internal/generate"
+	"sam/internal/generate/reports"
 )
 
 func newGenerateCustomersReportCmd(generator generate.Generator) *cobra.Command {
@@ -38,7 +39,7 @@ func newGenerateCustomersReportCmd(generator generate.Generator) *cobra.Command 
 }
 
 func init() {
-	generator := NewCustomersReportGenerator()
+	generator := reports.NewCustomersReportGenerator()
 	command := newGenerateCustomersReportCmd(generator)
 	cmd.RootCmd.AddCommand(command)
 }

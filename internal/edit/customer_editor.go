@@ -9,7 +9,7 @@ import (
 type CustomerEditorImpl struct {
 }
 
-func newCustomerEditor() Editor {
+func NewCustomerEditor() Editor {
 	return CustomerEditorImpl{}
 }
 

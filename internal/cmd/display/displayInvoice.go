@@ -1,8 +1,9 @@
-package cmd
+package display
 
 import (
 	"fmt"
 	"sam/adm"
+	"sam/internal/cmd"
 	"sam/internal/util"
 	"strings"
 
@@ -37,5 +38,5 @@ var displayInvoiceCmd = &cobra.Command{
 }
 
 func init() {
-	RootCmd.AddCommand(displayInvoiceCmd)
+	cmd.RootCmd.AddCommand(displayInvoiceCmd)
 }

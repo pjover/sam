@@ -1,9 +1,10 @@
-package cmd
+package consumtions
 
 import (
 	"fmt"
 	"github.com/spf13/cobra"
 	"sam/core"
+	"sam/internal/cmd"
 )
 
 var billConsumptionsCmd = &cobra.Command{
@@ -37,5 +38,5 @@ var billConsumptionsCmd = &cobra.Command{
 }
 
 func init() {
-	RootCmd.AddCommand(billConsumptionsCmd)
+	cmd.RootCmd.AddCommand(billConsumptionsCmd)
 }

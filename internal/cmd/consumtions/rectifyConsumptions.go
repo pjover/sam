@@ -1,9 +1,10 @@
-package cmd
+package consumtions
 
 import (
 	"fmt"
 	"github.com/spf13/cobra"
 	"sam/core"
+	"sam/internal/cmd"
 	"sam/internal/util"
 )
 
@@ -44,6 +45,6 @@ var rectifyConsumptionsCmd = &cobra.Command{
 }
 
 func init() {
-	RootCmd.AddCommand(rectifyConsumptionsCmd)
+	cmd.RootCmd.AddCommand(rectifyConsumptionsCmd)
 	rectifyConsumptionsCmd.Flags().StringVarP(&rconNote, "nota", "n", "", "Afegeix una nota al consum")
 }

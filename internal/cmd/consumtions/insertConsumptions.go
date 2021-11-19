@@ -1,10 +1,11 @@
-package cmd
+package consumtions
 
 import (
 	"errors"
 	"fmt"
 	"github.com/spf13/cobra"
 	"sam/core"
+	"sam/internal/cmd"
 	"sam/internal/util"
 )
 
@@ -44,7 +45,7 @@ var insertConsumptionsCmd = &cobra.Command{
 }
 
 func init() {
-	RootCmd.AddCommand(insertConsumptionsCmd)
+	cmd.RootCmd.AddCommand(insertConsumptionsCmd)
 	insertConsumptionsCmd.Flags().StringVarP(&iconNote, "nota", "n", "", "Afegeix una nota al consum")
 }
 

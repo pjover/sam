@@ -1,9 +1,10 @@
-package cmd
+package search
 
 import (
 	"fmt"
 	"github.com/spf13/cobra"
 	"sam/adm"
+	"sam/internal/cmd"
 	"sam/internal/util"
 )
 
@@ -35,5 +36,5 @@ var searchCustomerCmd = &cobra.Command{
 }
 
 func init() {
-	RootCmd.AddCommand(searchCustomerCmd)
+	cmd.RootCmd.AddCommand(searchCustomerCmd)
 }

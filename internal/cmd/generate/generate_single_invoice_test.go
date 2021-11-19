@@ -1,4 +1,4 @@
-package invoices
+package generate
 
 import (
 	"bytes"
@@ -8,7 +8,7 @@ import (
 	"testing"
 )
 
-func Test_SingleInvoiceCmd(t *testing.T) {
+func Test_GenerateSingleInvoiceCmd(t *testing.T) {
 	type args struct {
 		args []string
 	}
@@ -30,7 +30,7 @@ func Test_SingleInvoiceCmd(t *testing.T) {
 
 	mockedGenerator := new(mocks.SingleInvoiceGenerator)
 
-	sut := newSingleInvoiceCmd(mockedGenerator)
+	sut := newGenerateSingleInvoiceCmd(mockedGenerator)
 	buffer := bytes.NewBufferString("")
 	sut.SetOut(buffer)
 

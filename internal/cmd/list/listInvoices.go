@@ -1,9 +1,10 @@
-package cmd
+package list
 
 import (
 	"fmt"
 	"github.com/spf13/cobra"
 	"sam/adm"
+	"sam/internal/cmd"
 	"sam/internal/util"
 )
 
@@ -32,7 +33,7 @@ var listInvoicesCmd = &cobra.Command{
 }
 
 func init() {
-	RootCmd.AddCommand(listInvoicesCmd)
+	cmd.RootCmd.AddCommand(listInvoicesCmd)
 }
 
 func parseListInvoicesArgs(args []string) error {

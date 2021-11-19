@@ -1,13 +1,14 @@
-package bbd
+package generate
 
 import (
 	"fmt"
 	"github.com/spf13/cobra"
-	"sam/cmd"
+	"sam/internal/cmd"
 	"sam/internal/generate"
+	"sam/internal/generate/bbd"
 )
 
-func newBddCmd(generator generate.Generator) *cobra.Command {
+func newGenerateBddCmd(generator generate.Generator) *cobra.Command {
 	return &cobra.Command{
 		Use:         "generaRebuts",
 		Short:       "Genera el fitxer de rebuts",
@@ -35,7 +36,7 @@ func newBddCmd(generator generate.Generator) *cobra.Command {
 }
 
 func init() {
-	generator := NewBddGenerator()
-	command := newBddCmd(generator)
+	generator := bbd.NewBddGenerator()
+	command := newGenerateBddCmd(generator)
 	cmd.RootCmd.AddCommand(command)
 }

@@ -1,9 +1,10 @@
-package cmd
+package list
 
 import (
 	"fmt"
 	"github.com/spf13/cobra"
 	"sam/adm"
+	"sam/internal/cmd"
 	"sam/internal/util"
 )
 
@@ -44,5 +45,5 @@ var listConsumptionsCmd = &cobra.Command{
 }
 
 func init() {
-	RootCmd.AddCommand(listConsumptionsCmd)
+	cmd.RootCmd.AddCommand(listConsumptionsCmd)
 }

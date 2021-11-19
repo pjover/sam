@@ -1,14 +1,15 @@
-package invoices
+package generate
 
 import (
 	"fmt"
 	"github.com/spf13/cobra"
-	"sam/cmd"
+	"sam/internal/cmd"
+	"sam/internal/generate/invoices"
 )
 
 var onlyNew bool
 
-func newMonthInvoicesCmd(generator MonthInvoicesGenerator) *cobra.Command {
+func newGenerateMonthInvoicesCmd(generator invoices.MonthInvoicesGenerator) *cobra.Command {
 	return &cobra.Command{
 		Use:         "generaFactures",
 		Short:       "Genera els PDFs de les factures del mes",
@@ -39,8 +40,8 @@ func newMonthInvoicesCmd(generator MonthInvoicesGenerator) *cobra.Command {
 }
 
 func init() {
-	generator := NewMonthInvoicesGenerator()
-	command := newMonthInvoicesCmd(generator)
+	generator := invoices.NewMonthInvoicesGenerator()
+	command := newGenerateMonthInvoicesCmd(generator)
 	command.Flags().BoolVarP(&onlyNew, "nomes_noves", "n", true, "Genera les factures noves, que no s'han generat abans")
 	cmd.RootCmd.AddCommand(command)
 }

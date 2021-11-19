@@ -10,7 +10,7 @@ import (
 type InvoiceEditorImpl struct {
 }
 
-func newInvoiceEditor() Editor {
+func NewInvoiceEditor() Editor {
 	return InvoiceEditorImpl{}
 }
 

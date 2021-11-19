@@ -1,8 +1,9 @@
-package cmd
+package list
 
 import (
 	"fmt"
 	"sam/adm"
+	"sam/internal/cmd"
 
 	"github.com/spf13/cobra"
 )
@@ -41,7 +42,7 @@ var listMailsCmd = &cobra.Command{
 }
 
 func init() {
-	RootCmd.AddCommand(listMailsCmd)
+	cmd.RootCmd.AddCommand(listMailsCmd)
 	listMailsCmd.Flags().BoolVarP(&ei1, "ei1", "1", false, "Educació infantil 1")
 	listMailsCmd.Flags().BoolVarP(&ei2, "ei2", "2", false, "Educació infantil 2")
 	listMailsCmd.Flags().BoolVarP(&ei3, "ei3", "3", false, "Educació infantil 3")
