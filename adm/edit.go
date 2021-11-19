@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/spf13/viper"
 	"net/url"
-	"sam/util"
+	"sam/internal/util"
 )
 
 func EditCustomer(customerCode int) error {

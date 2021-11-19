@@ -6,10 +6,10 @@ import (
 	"github.com/spf13/viper"
 	"log"
 	"path"
+	"sam/internal/util"
 	"sam/model"
 	"sam/storage"
 	"sam/translate/catalan"
-	"sam/util"
 	"sort"
 	"time"
 )

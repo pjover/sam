@@ -3,7 +3,7 @@ package adm
 import (
 	"fmt"
 	"github.com/spf13/viper"
-	"sam/util"
+	"sam/internal/util"
 	"time"
 )
 

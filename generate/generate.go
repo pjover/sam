@@ -7,7 +7,7 @@ import (
 	"os"
 	"path"
 	"path/filepath"
-	"sam/util"
+	"sam/internal/util"
 )
 
 type GenerateManager interface {

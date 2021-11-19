@@ -2,7 +2,7 @@ package adm
 
 import (
 	"github.com/stretchr/testify/assert"
-	"sam/util/mocks"
+	"sam/internal/util/mocks"
 	"testing"
 	"time"
 )

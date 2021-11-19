@@ -5,8 +5,8 @@ import (
 	"github.com/spf13/viper"
 	"os"
 	"path"
+	"sam/internal/util"
 	"sam/translate/catalan"
-	"sam/util"
 	"time"
 )
 

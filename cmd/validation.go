@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/spf13/cobra"
-	"sam/util"
+	"sam/internal/util"
 	"strconv"
 	"strings"
 	"time"

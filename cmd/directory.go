@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"sam/adm"
-	"sam/util"
+	"sam/internal/util"
 
 	"github.com/spf13/cobra"
 )

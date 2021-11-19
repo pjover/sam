@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/spf13/viper"
+	"sam/internal/util"
 	"sam/storage"
-	"sam/util"
 )
 
 type ConsumptionsManager struct {

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/spf13/cobra"
 	"sam/adm"
-	"sam/util"
+	"sam/internal/util"
 )
 
 var listInvoicesCmd = &cobra.Command{
