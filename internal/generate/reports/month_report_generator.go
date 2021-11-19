@@ -1,4 +1,4 @@
-package generate
+package reports
 
 import (
 	"fmt"
@@ -6,6 +6,7 @@ import (
 	"github.com/spf13/viper"
 	"log"
 	"path"
+	"sam/generate"
 	"sam/internal/util"
 	"sam/model"
 	"sam/storage"
@@ -14,19 +15,20 @@ import (
 	"time"
 )
 
-type InvoicesReportGenerator struct {
+type MonthReportGenerator struct {
 	getManager      util.HttpGetManager
 	customerStorage storage.CustomerStorage
 }
 
-func NewInvoicesReportGenerator(getManager util.HttpGetManager) InvoicesReportGenerator {
-	return InvoicesReportGenerator{
-		getManager,
+func NewMonthReportGenerator() ReportGenerator {
+	return MonthReportGenerator{
+		util.NewHttpGetManager(),
 		storage.NewCustomerStorage(),
 	}
 }
 
-func (i InvoicesReportGenerator) generate() (string, error) {
+func (i MonthReportGenerator) Generate() (string, error) {
+	fmt.Println("Generant l'informe de factures del mes ...")
 
 	invoices, err := i.getInvoices(i.getManager)
 	if err != nil {
@@ -38,7 +40,7 @@ func (i InvoicesReportGenerator) generate() (string, error) {
 		return "", err
 	}
 	filePath := path.Join(
-		getWorkingDirectory(),
+		generate.GetWorkingDirectory(),
 		viper.GetString("files.invoicesReport"),
 	)
 	month, err := time.Parse(util.YearMonthLayout, viper.GetString("yearMonth"))
@@ -80,7 +82,7 @@ type monthInvoices struct {
 	} `json:"_links"`
 }
 
-func (i InvoicesReportGenerator) getInvoices(getManager util.HttpGetManager) (*monthInvoices, error) {
+func (i MonthReportGenerator) getInvoices(getManager util.HttpGetManager) (*monthInvoices, error) {
 	ym := viper.GetString("yearMonth")
 	url := fmt.Sprintf("%s/invoices/search/findByYearMonthIn?yearMonths=%s", viper.GetString("urls.hobbit"), ym)
 	invoices := new(monthInvoices)
@@ -91,7 +93,7 @@ func (i InvoicesReportGenerator) getInvoices(getManager util.HttpGetManager) (*m
 	return invoices, nil
 }
 
-func (i InvoicesReportGenerator) buildContents(invoices *monthInvoices) ([][]string, error) {
+func (i MonthReportGenerator) buildContents(invoices *monthInvoices) ([][]string, error) {
 	var contents [][]string
 	for _, invoice := range invoices.Embedded.Invoices {
 		customer, err := i.customer(invoice)
@@ -116,7 +118,7 @@ func (i InvoicesReportGenerator) buildContents(invoices *monthInvoices) ([][]str
 	return contents, nil
 }
 
-func (i InvoicesReportGenerator) customer(invoice model.Invoice) (model.Customer, error) {
+func (i MonthReportGenerator) customer(invoice model.Invoice) (model.Customer, error) {
 	customer, err := i.customerStorage.GetCustomer(invoice.CustomerID)
 	if err != nil {
 		return model.Customer{}, err

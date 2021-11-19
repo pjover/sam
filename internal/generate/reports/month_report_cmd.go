@@ -1,12 +1,12 @@
-package cmd
+package reports
 
 import (
 	"fmt"
 	"github.com/spf13/cobra"
-	"sam/generate"
+	"sam/cmd"
 )
 
-func newGenerateMonthReportCmd(generateManager generate.GenerateManager) *cobra.Command {
+func newGenerateMonthReportCmd(generator ReportGenerator) *cobra.Command {
 	return &cobra.Command{
 		Use:         "generaInformeMes [AAAA-MM]",
 		Short:       "Genera l'informe de les factures del mes actual",
@@ -21,7 +21,7 @@ func newGenerateMonthReportCmd(generateManager generate.GenerateManager) *cobra.
 			"generateMonthReport", "generatemonthreport", "generate-month-report",
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
-			msg, err := generateManager.GenerateMonthReport()
+			msg, err := generator.Generate()
 			if err != nil {
 				return err
 			}
@@ -32,6 +32,6 @@ func newGenerateMonthReportCmd(generateManager generate.GenerateManager) *cobra.
 }
 
 func init() {
-	cmd := newGenerateMonthReportCmd(generate.NewGenerateManager())
-	RootCmd.AddCommand(cmd)
+	generator := NewMonthReportGenerator()
+	cmd.RootCmd.AddCommand(newGenerateMonthReportCmd(generator))
 }
