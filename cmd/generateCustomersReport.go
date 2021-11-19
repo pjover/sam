@@ -6,7 +6,7 @@ import (
 	"sam/generate"
 )
 
-func newGenerateCustomersReportCmd(generateManager generate.GenerateManager) *cobra.Command {
+func newGenerateCustomersReportCmd(generator generate.CustomersReportGenerator) *cobra.Command {
 	return &cobra.Command{
 		Use:         "generaInformeClients",
 		Short:       "Genera l'informe dels clients",
@@ -21,7 +21,7 @@ func newGenerateCustomersReportCmd(generateManager generate.GenerateManager) *co
 			"generateCustomersReport", "generatecustomersreport", "generate-customers-report",
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
-			msg, err := generateManager.GenerateCustomersReport()
+			msg, err := generator.Generate()
 			if err != nil {
 				return err
 			}
@@ -32,6 +32,7 @@ func newGenerateCustomersReportCmd(generateManager generate.GenerateManager) *co
 }
 
 func init() {
-	cmd := newGenerateCustomersReportCmd(generate.NewGenerateManager())
+	generator := generate.NewCustomersReportGenerator()
+	cmd := newGenerateCustomersReportCmd(generator)
 	rootCmd.AddCommand(cmd)
 }
