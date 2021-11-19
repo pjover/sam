@@ -11,7 +11,7 @@ func Test_GetDirConfig(t *testing.T) {
 	mockedTimeManager := new(mocks.TimeManager)
 	mockedTimeManager.On("Now").Return(time.Date(2021, time.October, 31, 21, 14, 0, 0, time.UTC))
 
-	sut := Directories{Timer: mockedTimeManager}
+	sut := DirectoryManagerImpl{mockedTimeManager}
 
 	t.Run("Should return current month", func(t *testing.T) {
 		yearMonth, dirName := sut.GetDirConfig(false, false)
