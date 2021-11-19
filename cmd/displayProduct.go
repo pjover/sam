@@ -38,5 +38,5 @@ var displayProductCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(displayProductCmd)
+	RootCmd.AddCommand(displayProductCmd)
 }

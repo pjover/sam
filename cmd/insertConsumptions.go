@@ -43,7 +43,7 @@ var insertConsumptionsCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(insertConsumptionsCmd)
+	RootCmd.AddCommand(insertConsumptionsCmd)
 	insertConsumptionsCmd.Flags().StringVarP(&iconNote, "nota", "n", "", "Afegeix una nota al consum")
 }
 

@@ -33,5 +33,5 @@ var listCustomersCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(listCustomersCmd)
+	RootCmd.AddCommand(listCustomersCmd)
 }

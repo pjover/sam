@@ -36,5 +36,5 @@ func newGenerateInvoiceCmd(generateManager generate.GenerateManager) *cobra.Comm
 
 func init() {
 	cmd := newGenerateInvoiceCmd(generate.NewGenerateManager())
-	rootCmd.AddCommand(cmd)
+	RootCmd.AddCommand(cmd)
 }

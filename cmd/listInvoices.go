@@ -32,7 +32,7 @@ var listInvoicesCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(listInvoicesCmd)
+	RootCmd.AddCommand(listInvoicesCmd)
 }
 
 func parseListInvoicesArgs(args []string) error {

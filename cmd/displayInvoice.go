@@ -36,5 +36,5 @@ var displayInvoiceCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(displayInvoiceCmd)
+	RootCmd.AddCommand(displayInvoiceCmd)
 }

@@ -43,5 +43,5 @@ var listConsumptionsCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(listConsumptionsCmd)
+	RootCmd.AddCommand(listConsumptionsCmd)
 }

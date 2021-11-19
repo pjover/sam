@@ -27,5 +27,5 @@ var editInvoiceCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(editInvoiceCmd)
+	RootCmd.AddCommand(editInvoiceCmd)
 }

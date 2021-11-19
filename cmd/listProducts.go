@@ -31,5 +31,5 @@ var listProductsCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(listProductsCmd)
+	RootCmd.AddCommand(listProductsCmd)
 }

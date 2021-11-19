@@ -33,5 +33,5 @@ func newGenerateMonthReportCmd(generateManager generate.GenerateManager) *cobra.
 
 func init() {
 	cmd := newGenerateMonthReportCmd(generate.NewGenerateManager())
-	rootCmd.AddCommand(cmd)
+	RootCmd.AddCommand(cmd)
 }

@@ -36,5 +36,5 @@ func newGenerateInvoicesCmd(generateManager generate.GenerateManager) *cobra.Com
 func init() {
 	cmd := newGenerateInvoicesCmd(generate.NewGenerateManager())
 	cmd.Flags().BoolVarP(&onlyNew, "nomes_noves", "n", true, "Genera les factures noves, que no s'han generat abans")
-	rootCmd.AddCommand(cmd)
+	RootCmd.AddCommand(cmd)
 }

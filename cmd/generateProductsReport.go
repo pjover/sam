@@ -33,5 +33,5 @@ func newGenerateProductsReportCmd(generateManager generate.GenerateManager) *cob
 
 func init() {
 	cmd := newGenerateProductsReportCmd(generate.NewGenerateManager())
-	rootCmd.AddCommand(cmd)
+	RootCmd.AddCommand(cmd)
 }

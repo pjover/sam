@@ -30,7 +30,7 @@ var directoryCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(directoryCmd)
+	RootCmd.AddCommand(directoryCmd)
 	directoryCmd.Flags().BoolVarP(&previousMonth, "anterior", "a", false, "Es treballa al mes anterior al mes actual")
 	directoryCmd.Flags().BoolVarP(&nextMonth, "seguent", "s", false, "Es treballa al mes següent al mes actual")
 }

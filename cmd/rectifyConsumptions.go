@@ -43,6 +43,6 @@ var rectifyConsumptionsCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(rectifyConsumptionsCmd)
+	RootCmd.AddCommand(rectifyConsumptionsCmd)
 	rectifyConsumptionsCmd.Flags().StringVarP(&rconNote, "nota", "n", "", "Afegeix una nota al consum")
 }

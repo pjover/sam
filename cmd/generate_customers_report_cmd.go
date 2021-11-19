@@ -34,5 +34,5 @@ func newGenerateCustomersReportCmd(generator customers.CustomersReportGenerator)
 func init() {
 	generator := customers.NewCustomersReportGenerator()
 	cmd := newGenerateCustomersReportCmd(generator)
-	rootCmd.AddCommand(cmd)
+	RootCmd.AddCommand(cmd)
 }

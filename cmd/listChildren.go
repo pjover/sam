@@ -33,5 +33,5 @@ var listChildrenCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(listChildrenCmd)
+	RootCmd.AddCommand(listChildrenCmd)
 }

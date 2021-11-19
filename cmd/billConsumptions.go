@@ -37,5 +37,5 @@ var billConsumptionsCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(billConsumptionsCmd)
+	RootCmd.AddCommand(billConsumptionsCmd)
 }

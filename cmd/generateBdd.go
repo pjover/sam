@@ -28,5 +28,5 @@ var generateBddCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(generateBddCmd)
+	RootCmd.AddCommand(generateBddCmd)
 }
