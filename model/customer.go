@@ -5,11 +5,12 @@ type Child struct {
 	Name          string      `json:"name"`
 	Surname       string      `json:"surname"`
 	SecondSurname string      `json:"secondSurname"`
-	TaxID         interface{} `json:"taxId"`
+	TaxID         string      `json:"taxId"`
 	BirthDate     string      `json:"birthDate"`
 	Group         string      `json:"group"`
 	Note          interface{} `json:"note"`
 	Active        bool        `json:"active"`
+	Score         float32     `json:"score"`
 }
 
 type Adult struct {
@@ -21,12 +22,13 @@ type Adult struct {
 	Address          interface{} `json:"address"`
 	Email            string      `json:"email"`
 	MobilePhone      string      `json:"mobilePhone"`
-	HomePhone        string      `json:"homePhone"`
+	HomePhone        interface{} `json:"homePhone"`
 	GrandMotherPhone interface{} `json:"grandMotherPhone"`
 	GrandParentPhone interface{} `json:"grandParentPhone"`
-	WorkPhone        string      `json:"workPhone"`
+	WorkPhone        interface{} `json:"workPhone"`
 	BirthDate        interface{} `json:"birthDate"`
 	Nationality      interface{} `json:"nationality"`
+	Score            float32     `json:"score"`
 }
 
 type Address struct {

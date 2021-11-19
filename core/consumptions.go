@@ -39,7 +39,7 @@ func (c ConsumptionsManager) InsertConsumptions(args InsertConsumptionsArgs) (st
 	}
 
 	url := fmt.Sprintf("%s/consumptions", viper.GetString("urls.hobbit"))
-	return c.PostManager.PostPrint(url, data)
+	return c.PostManager.PrettyJson(url, data)
 }
 
 type ConsumptionBody struct {
@@ -95,10 +95,13 @@ func (c ConsumptionsManager) RectifyConsumptions(args InsertConsumptionsArgs) (s
 	}
 
 	url := fmt.Sprintf("%s/consumptions/rectification", viper.GetString("urls.hobbit"))
-	return c.PostManager.PostPrint(url, data)
+	return c.PostManager.PrettyJson(url, data)
 }
 
-func (c ConsumptionsManager) BillConsumptions() error {
+func (c ConsumptionsManager) BillConsumptions() (string, error) {
 	fmt.Println("Facturant els consums pendents de facturar de tots els infants")
-	return nil
+
+	url := fmt.Sprintf("%s/billing/billConsumptions", viper.GetString("urls.hobbit"))
+	var data []byte
+	return c.PostManager.PrettyJson(url, data)
 }

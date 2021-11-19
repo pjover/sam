@@ -17,24 +17,35 @@ func NewCustomerStorage() CustomerStorage {
 	}
 }
 
-func (c CustomerStorage) GetChild(childCode int) (model.Child, error) {
-	url := fmt.Sprintf("%s/customers/%d", viper.GetString("urls.hobbit"), childCode/10)
+func (c CustomerStorage) GetCustomer(code int) (model.Customer, error) {
+	url := fmt.Sprintf("%s/customers/%d", viper.GetString("urls.hobbit"), code)
 	customer := new(model.Customer)
 
-	err := c.getManager.GetType(url, customer)
+	err := c.getManager.Type(url, customer)
+	if err != nil {
+		return model.Customer{}, err
+	}
+	return *customer, nil
+}
+
+func (c CustomerStorage) GetChild(code int) (model.Child, error) {
+	url := fmt.Sprintf("%s/customers/%d", viper.GetString("urls.hobbit"), code/10)
+	customer := new(model.Customer)
+
+	err := c.getManager.Type(url, customer)
 	if err != nil {
 		return model.Child{}, err
 	}
 
 	var child model.Child
 	for _, value := range customer.Children {
-		if value.Code == childCode {
+		if value.Code == code {
 			child = value
 			break
 		}
 	}
 	if child == (model.Child{}) {
-		return model.Child{}, fmt.Errorf("No s'ha trobat l'infant amb codi %d", childCode)
+		return model.Child{}, fmt.Errorf("No s'ha trobat l'infant amb codi %d", code)
 	}
 	return child, nil
 }

@@ -5,7 +5,15 @@ import (
 	"time"
 )
 
-func WorkingDir(workingTime time.Time) string {
+func WorkingDir(month time.Time) string {
+	layout := "060100-Factures del mes January"
+	dirName := month.Format(layout)
+	englishMonth := month.Month().String()
+	catalanMonth := MonthName(month)
+	return strings.ReplaceAll(dirName, englishMonth, catalanMonth)
+}
+
+func MonthName(month time.Time) string {
 	m := map[string]string{
 		"January":   "de Gener",
 		"February":  "de Febrer",
@@ -20,9 +28,5 @@ func WorkingDir(workingTime time.Time) string {
 		"November":  "de Novembre",
 		"December":  "de Decembre",
 	}
-	layout := "060100-Factures del mes January"
-	dirName := workingTime.Format(layout)
-	englishMonth := workingTime.Month().String()
-	catalanMonth := m[englishMonth]
-	return strings.ReplaceAll(dirName, englishMonth, catalanMonth)
+	return m[month.Month().String()]
 }

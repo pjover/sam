@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"sam/adm"
 	"strings"
 
@@ -24,8 +25,13 @@ var displayInvoiceCmd = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 		invoiceCode := strings.ToUpper(args[0])
 		manager := adm.NewDisplayManager()
-		_, err := manager.DisplayInvoice(invoiceCode)
-		return err
+		msg, err := manager.DisplayInvoice(invoiceCode)
+		if err != nil {
+			return err
+		}
+
+		fmt.Println(msg)
+		return nil
 	},
 }
 

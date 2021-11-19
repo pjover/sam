@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"github.com/spf13/cobra"
 	"sam/core"
 )
@@ -31,8 +32,13 @@ var rectifyConsumptionsCmd = &cobra.Command{
 		}
 
 		manager := core.NewConsumptionsManager()
-		_, err = manager.RectifyConsumptions(ica)
-		return err
+		msg, err := manager.RectifyConsumptions(ica)
+		if err != nil {
+			return err
+		}
+
+		fmt.Println(msg)
+		return nil
 	},
 }
 

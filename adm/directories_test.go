@@ -2,24 +2,16 @@ package adm
 
 import (
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/mock"
+	"sam/util/mocks"
 	"testing"
 	"time"
 )
 
-type MockedSamClock struct {
-	mock.Mock
-}
-
-func (m *MockedSamClock) Now() time.Time {
-	args := m.Called()
-	return args.Get(0).(time.Time)
-}
-
 func Test_GetDirConfig(t *testing.T) {
-	mockedSamTimes := new(MockedSamClock)
-	sut := Directories{Timer: mockedSamTimes}
-	mockedSamTimes.On("Now").Return(time.Date(2021, time.October, 31, 21, 14, 0, 0, time.UTC))
+	mockedTimeManager := new(mocks.TimeManager)
+	mockedTimeManager.On("Now").Return(time.Date(2021, time.October, 31, 21, 14, 0, 0, time.UTC))
+
+	sut := Directories{Timer: mockedTimeManager}
 
 	t.Run("Should return current month", func(t *testing.T) {
 		yearMonth, dirName := sut.GetDirConfig(false, false)

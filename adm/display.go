@@ -18,15 +18,15 @@ func NewDisplayManager() DisplayManager {
 
 func (d DisplayManager) DisplayCustomer(customerCode int) (string, error) {
 	url := fmt.Sprintf("%s/customers/%d", viper.GetString("urls.hobbit"), customerCode)
-	return d.getManager.GetPrint(url)
+	return d.getManager.PrettyJson(url)
 }
 
 func (d DisplayManager) DisplayProduct(productCode string) (string, error) {
 	url := fmt.Sprintf("%s/products/%s", viper.GetString("urls.hobbit"), productCode)
-	return d.getManager.GetPrint(url)
+	return d.getManager.PrettyJson(url)
 }
 
 func (d DisplayManager) DisplayInvoice(invoiceCode string) (string, error) {
 	url := fmt.Sprintf("%s/invoices/%s", viper.GetString("urls.hobbit"), invoiceCode)
-	return d.getManager.GetPrint(url)
+	return d.getManager.PrettyJson(url)
 }

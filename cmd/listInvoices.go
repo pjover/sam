@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"errors"
+	"fmt"
 	"github.com/spf13/cobra"
 	"sam/adm"
 	"sam/util"
@@ -10,7 +10,7 @@ import (
 var listInvoicesCmd = &cobra.Command{
 	Use:   "llistaFactures [codiClient] [AAAA-MM]",
 	Short: "Llista les factura del mes i del client",
-	Long: `Llista les factura del mes i del client,
+	Long: `Llista les factura del mes i del client
     - si no s'especifica el mes agafa l'actual
     - si no s'especifica client, llista les factures de tots els clients'`,
 	Example: `   llistaFactures               Llista les factura del mes actual
@@ -37,23 +37,21 @@ func init() {
 
 func parseListInvoicesArgs(args []string) error {
 	manager := adm.NewListManager()
+	var msg string
+	var err error
 	switch len(args) {
 	case 0:
 		var workingTime = util.SamTimeManager{}.Now()
-		_, err := manager.ListYearMonthInvoices(workingTime)
-		return err
+		msg, err = manager.ListYearMonthInvoices(workingTime)
 	case 1:
 		customerCode, err := parseInteger(args[0], "de client")
 		if err == nil {
-			_, err := manager.ListCustomerInvoices(customerCode)
-			return err
+			msg, err = manager.ListCustomerInvoices(customerCode)
 		}
 		yearMonth, err := parseYearMonth(args[0])
 		if err == nil {
-			_, err := manager.ListYearMonthInvoices(yearMonth)
-			return err
+			msg, err = manager.ListYearMonthInvoices(yearMonth)
 		}
-		return err
 	case 2:
 		customerCode, err := parseInteger(args[0], "de client")
 		if err != nil {
@@ -63,8 +61,12 @@ func parseListInvoicesArgs(args []string) error {
 		if err != nil {
 			return err
 		}
-		_, err = manager.ListCustomerYearMonthInvoices(customerCode, yearMonth)
+		msg, err = manager.ListCustomerYearMonthInvoices(customerCode, yearMonth)
+	}
+	if err != nil {
 		return err
 	}
-	return errors.New("Unknown error")
+
+	fmt.Println(msg)
+	return nil
 }

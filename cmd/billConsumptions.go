@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"github.com/spf13/cobra"
 	"sam/core"
 )
@@ -25,7 +26,13 @@ var billConsumptionsCmd = &cobra.Command{
 	},
 	RunE: func(cmd *cobra.Command, args []string) error {
 		manager := core.NewConsumptionsManager()
-		return manager.BillConsumptions()
+		msg, err := manager.BillConsumptions()
+		if err != nil {
+			return err
+		}
+
+		fmt.Println(msg)
+		return nil
 	},
 }
 

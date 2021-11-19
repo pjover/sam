@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"sam/adm"
 
 	"github.com/spf13/cobra"
@@ -29,8 +30,13 @@ var listMailsCmd = &cobra.Command{
 	},
 	RunE: func(cmd *cobra.Command, args []string) error {
 		manager := adm.NewListManager()
-		_, err := manager.ListEmails(ei1, ei2, ei3)
-		return err
+		msg, err := manager.ListEmails(ei1, ei2, ei3)
+		if err != nil {
+			return err
+		}
+
+		fmt.Println(msg)
+		return nil
 	},
 }
 

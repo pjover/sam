@@ -1,6 +1,7 @@
 package util
 
 import (
+	"archive/zip"
 	"bytes"
 	"encoding/json"
 	"errors"
@@ -9,8 +10,11 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 	"os/exec"
+	"path"
 	"runtime"
+	"strings"
 )
 
 const contentType = "application/json; charset=UTF-8"
@@ -20,10 +24,9 @@ func NewHttpClient() *http.Client {
 }
 
 type HttpGetManager interface {
-	GetBytes(url string) ([]byte, error)
-	GetPrettyJson(url string) (string, error)
-	GetType(url string, target interface{}) error
-	GetPrint(url string) (string, error)
+	Bytes(url string) ([]byte, error)
+	PrettyJson(url string) (string, error)
+	Type(url string, target interface{}) error
 }
 
 type SamHttpGetManager struct {
@@ -36,7 +39,7 @@ func NewHttpGetManager() HttpGetManager {
 	}
 }
 
-func (s SamHttpGetManager) GetBytes(url string) ([]byte, error) {
+func (s SamHttpGetManager) Bytes(url string) ([]byte, error) {
 	response, err := s.httpClient.Get(url)
 	if err != nil {
 		return nil, err
@@ -72,8 +75,8 @@ func processError(url string, body []byte, response *http.Response) ([]byte, err
 	return nil, fmt.Errorf("Error %d (%s) al cridar a %s", response.StatusCode, bodyText, url)
 }
 
-func (s SamHttpGetManager) GetPrettyJson(url string) (string, error) {
-	body, err := s.GetBytes(url)
+func (s SamHttpGetManager) PrettyJson(url string) (string, error) {
+	body, err := s.Bytes(url)
 	if err != nil {
 		return "", err
 	}
@@ -89,7 +92,7 @@ func ToPrettyJson(body []byte) (string, error) {
 	return prettyJSON.String(), nil
 }
 
-func (s SamHttpGetManager) GetType(url string, target interface{}) error {
+func (s SamHttpGetManager) Type(url string, target interface{}) error {
 	response, err := s.httpClient.Get(url)
 	if err != nil {
 		return err
@@ -98,19 +101,12 @@ func (s SamHttpGetManager) GetType(url string, target interface{}) error {
 	return json.NewDecoder(response.Body).Decode(target)
 }
 
-func (s SamHttpGetManager) GetPrint(url string) (string, error) {
-	_json, err := s.GetPrettyJson(url)
-	if err != nil {
-		return "", err
-	}
-	fmt.Println(_json)
-	return _json, nil
-}
-
 type HttpPostManager interface {
-	PostBytes(url string, data []byte) ([]byte, error)
-	PostPrettyJson(url string, data []byte) (string, error)
-	PostPrint(url string, data []byte) (string, error)
+	Bytes(url string, data []byte) ([]byte, error)
+	PrettyJson(url string, data []byte) (string, error)
+	FileDefaultName(remoteUrl string, directory string) (string, error)
+	File(remoteUrl string, directory string, filename string) (string, error)
+	Zip(remoteUrl string, directory string) (string, error)
 }
 
 type SamHttpPostManager struct {
@@ -123,7 +119,7 @@ func NewHttpPostManager() HttpPostManager {
 	}
 }
 
-func (s SamHttpPostManager) PostBytes(url string, data []byte) ([]byte, error) {
+func (s SamHttpPostManager) Bytes(url string, data []byte) ([]byte, error) {
 	response, err := s.httpClient.Post(url, contentType, bytes.NewBuffer(data))
 	if err != nil {
 		return nil, err
@@ -140,21 +136,117 @@ func (s SamHttpPostManager) PostBytes(url string, data []byte) ([]byte, error) {
 	return body, nil
 }
 
-func (s SamHttpPostManager) PostPrettyJson(url string, data []byte) (string, error) {
-	body, err := s.PostBytes(url, data)
+func (s SamHttpPostManager) PrettyJson(url string, data []byte) (string, error) {
+	body, err := s.Bytes(url, data)
 	if err != nil {
 		return "", err
 	}
 	return ToPrettyJson(body)
 }
 
-func (s SamHttpPostManager) PostPrint(url string, data []byte) (string, error) {
-	_json, err := s.PostPrettyJson(url, data)
+func (s SamHttpPostManager) FileDefaultName(remoteUrl string, directory string) (string, error) {
+	response, err := s.httpClient.Post(remoteUrl, contentType, nil)
 	if err != nil {
 		return "", err
 	}
-	fmt.Println(_json)
-	return _json, nil
+	filename := extractDefaultName(response.Header.Get("Content-Disposition"))
+	defer closeBody(response.Body)
+	return writeFile(response.Body, directory, filename)
+}
+
+func extractDefaultName(contentDisposition string) string {
+	split := strings.Split(contentDisposition, ";")
+	filename := strings.Split(split[2], "\"")
+	return filename[1]
+}
+
+func (s SamHttpPostManager) File(remoteUrl string, directory string, filename string) (string, error) {
+	response, err := s.httpClient.Post(remoteUrl, contentType, nil)
+	if err != nil {
+		return "", err
+	}
+	defer closeBody(response.Body)
+	return writeFile(response.Body, directory, filename)
+}
+
+func (s SamHttpPostManager) Zip(remoteUrl string, directory string) (string, error) {
+
+	req, err := http.NewRequest("POST", remoteUrl, nil)
+	if err != nil {
+		return "", err
+	}
+	req.Header.Set("Content-Type", "application/zip")
+	response, err := s.httpClient.Do(req)
+	defer closeBody(response.Body)
+	if err != nil {
+		return "", err
+	}
+
+	body, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		return "", err
+	}
+
+	zipReader, err := zip.NewReader(bytes.NewReader(body), int64(len(body)))
+	if err != nil {
+		return "", err
+	}
+
+	// Read all the files from zip archive
+	var sb strings.Builder
+	for _, zipFile := range zipReader.File {
+		fmt.Println("Reading file:", zipFile.Name)
+		byteData, err := readZipFile(zipFile)
+		if err != nil {
+			sb.WriteString(fmt.Sprintf(" ❌ %s\n", zipFile.Name))
+			log.Println(err)
+			continue
+		}
+		_, err = writeFile(bytes.NewReader(byteData), directory, zipFile.Name)
+		if err != nil {
+			return "", err
+		}
+		sb.WriteString(fmt.Sprintf(" ✔️ %s\n", zipFile.Name))
+	}
+
+	return sb.String(), nil
+}
+
+func readZipFile(zf *zip.File) ([]byte, error) {
+	f, err := zf.Open()
+	if err != nil {
+		return nil, err
+	}
+	defer func(f io.ReadCloser) {
+		err := f.Close()
+		if err != nil {
+			log.Fatal(err)
+		}
+	}(f)
+	return ioutil.ReadAll(f)
+}
+
+func writeFile(reader io.Reader, directory string, filename string) (string, error) {
+	filePath := path.Join(directory, filename)
+	file, err := os.Create(filePath)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	_, err = io.Copy(file, reader)
+	defer closeFile(file)
+	if err != nil {
+		return "", err
+	}
+
+	return filePath, nil
+}
+
+func closeFile(file *os.File) {
+	err := file.Close()
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 func OpenOnBrowser(url string) error {

@@ -5,9 +5,6 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"os"
-	"path"
-
-	"sam/adm"
 	"sam/util"
 )
 
@@ -45,8 +42,9 @@ func initConfig() {
 	} else {
 		// Search config in home directory with name ".sam" (without extension).
 		viper.AddConfigPath(home)
-		viper.SetConfigName(".sam")
+		viper.SetConfigName("sam")
 		viper.SetConfigType("yaml")
+		viper.AddConfigPath("$HOME/.sam")
 	}
 
 	viper.AutomaticEnv() // read in environment variables that match
@@ -56,14 +54,5 @@ func initConfig() {
 		panic(fmt.Errorf("Fatal error config file: %w \n", err))
 	}
 
-	dirHome := path.Join(home, "Sam")
-	viper.SetDefault("dirs.home", dirHome)
-
-	dir := adm.Directories{Timer: util.SamTimeManager{}}
-	yearMonth, dirName := dir.GetDirConfig(false, false)
-	viper.SetDefault("dirs.current", dirName)
-	viper.SetDefault("yearMonth", yearMonth)
-
-	viper.SetDefault("urls.hobbit", "http://localhost:8080")
-	viper.SetDefault("urls.mongoExpress", "http://localhost:8081/db/hobbit_prod")
+	util.DefaultConfig(home)
 }

@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"github.com/spf13/cobra"
 	"sam/adm"
 )
@@ -26,8 +27,13 @@ var displayProductCmd = &cobra.Command{
 		}
 
 		manager := adm.NewDisplayManager()
-		_, err = manager.DisplayProduct(productCode)
-		return err
+		msg, err := manager.DisplayProduct(productCode)
+		if err != nil {
+			return err
+		}
+
+		fmt.Println(msg)
+		return nil
 	},
 }
 
