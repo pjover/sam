@@ -1,14 +1,14 @@
-package cmd
+package invoices
 
 import (
 	"fmt"
 	"github.com/spf13/cobra"
-	"sam/generate"
+	"sam/cmd"
 )
 
 var onlyNew bool
 
-func newGenerateInvoicesCmd(generateManager generate.GenerateManager) *cobra.Command {
+func newGenerateInvoicesCmd(generator MonthInvoicesGenerator) *cobra.Command {
 	return &cobra.Command{
 		Use:         "generaFactures",
 		Short:       "Genera els PDFs de les factures del mes",
@@ -17,13 +17,18 @@ func newGenerateInvoicesCmd(generateManager generate.GenerateManager) *cobra.Com
 		Annotations: map[string]string{"GEN": "Comandes de generació"},
 		Aliases: []string{
 			"gfacs",
-			"generafactures", "genera-factures",
-			"generarFactures", "generarfactures", "generar-factures",
+			"generafactures",
+			"genera-factures",
+			"generarFactures",
+			"generarfactures",
+			"generar-factures",
 			"ginvs",
-			"generateInvoices", "generateinvoices", "generate-invoices",
+			"generateMonthInvoices",
+			"generatemonthinvoices",
+			"generate-month-invoices",
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
-			msg, err := generateManager.GenerateInvoices(onlyNew)
+			msg, err := generator.Generate(onlyNew)
 			if err != nil {
 				return err
 			}
@@ -34,7 +39,8 @@ func newGenerateInvoicesCmd(generateManager generate.GenerateManager) *cobra.Com
 }
 
 func init() {
-	cmd := newGenerateInvoicesCmd(generate.NewGenerateManager())
-	cmd.Flags().BoolVarP(&onlyNew, "nomes_noves", "n", true, "Genera les factures noves, que no s'han generat abans")
-	RootCmd.AddCommand(cmd)
+	generator := NewMonthInvoicesGenerator()
+	command := newGenerateInvoicesCmd(generator)
+	command.Flags().BoolVarP(&onlyNew, "nomes_noves", "n", true, "Genera les factures noves, que no s'han generat abans")
+	cmd.RootCmd.AddCommand(command)
 }

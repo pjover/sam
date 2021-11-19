@@ -15,10 +15,15 @@ func newGenerateMonthReportCmd(generator ReportGenerator) *cobra.Command {
 		Annotations: map[string]string{"GEN": "Comandes de generació"},
 		Aliases: []string{
 			"ginfm",
-			"generainformemes", "genera-informe-mes",
-			"generarInformeMes", "generarinformemes", "generar-informe-mes",
+			"generainformemes",
+			"genera-informe-mes",
+			"generarInformeMes",
+			"generarinformemes",
+			"generar-informe-mes",
 			"gcrem",
-			"generateMonthReport", "generatemonthreport", "generate-month-report",
+			"generateMonthReport",
+			"generatemonthreport",
+			"generate-month-report",
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			msg, err := generator.Generate()
@@ -33,5 +38,6 @@ func newGenerateMonthReportCmd(generator ReportGenerator) *cobra.Command {
 
 func init() {
 	generator := NewMonthReportGenerator()
-	cmd.RootCmd.AddCommand(newGenerateMonthReportCmd(generator))
+	command := newGenerateMonthReportCmd(generator)
+	cmd.RootCmd.AddCommand(command)
 }

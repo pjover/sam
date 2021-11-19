@@ -15,10 +15,15 @@ func newGenerateCustomersReportCmd(generator ReportGenerator) *cobra.Command {
 		Annotations: map[string]string{"GEN": "Comandes de generació"},
 		Aliases: []string{
 			"ginfc",
-			"generainfclients", "genera-inf-clients",
-			"generarInfClients", "generarinfclients", "generar-inf-clients",
+			"generainfclients",
+			"genera-inf-clients",
+			"generarInfClients",
+			"generarinfclients",
+			"generar-inf-clients",
 			"gcrep",
-			"generateCustomersReport", "generatecustomersreport", "generate-customers-report",
+			"generateCustomersReport",
+			"generatecustomersreport",
+			"generate-customers-report",
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			msg, err := generator.Generate()
@@ -33,5 +38,6 @@ func newGenerateCustomersReportCmd(generator ReportGenerator) *cobra.Command {
 
 func init() {
 	generator := NewCustomersReportGenerator()
-	cmd.RootCmd.AddCommand(newGenerateCustomersReportCmd(generator))
+	command := newGenerateCustomersReportCmd(generator)
+	cmd.RootCmd.AddCommand(command)
 }

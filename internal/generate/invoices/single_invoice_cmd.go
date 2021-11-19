@@ -16,10 +16,15 @@ func newGenerateSingleInvoiceCmd(generator SingleInvoiceGenerator) *cobra.Comman
 		Annotations: map[string]string{"GEN": "Comandes de generació"},
 		Aliases: []string{
 			"gfac",
-			"generafactura", "genera-factura",
-			"generarFactura", "generarfactura", "generar-factura",
+			"generafactura",
+			"genera-factura",
+			"generarFactura",
+			"generarfactura",
+			"generar-factura",
 			"ginv",
-			"generateSingleInvoice", "generatesingleinvoice", "generate-single-invoice",
+			"generateSingleInvoice",
+			"generatesingleinvoice",
+			"generate-single-invoice",
 		},
 		Args: cmd.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {

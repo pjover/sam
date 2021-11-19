@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/spf13/viper"
 	"io/fs"
-	"os"
 	"path"
 	"path/filepath"
 	"sam/internal/util"
@@ -12,7 +11,6 @@ import (
 
 type GenerateManager interface {
 	GenerateBdd() (string, error)
-	GenerateInvoices(onlyNew bool) (string, error)
 }
 
 type GenerateManagerImpl struct {
@@ -76,23 +74,4 @@ func buildBddFilename(sequence int) string {
 
 func GetWorkingDirectory() string {
 	return path.Join(viper.GetString("dirs.home"), viper.GetString("dirs.current"))
-}
-
-func (g GenerateManagerImpl) GenerateInvoices(onlyNew bool) (string, error) {
-	fmt.Println("Generant les factures del mes")
-
-	url := fmt.Sprintf(
-		"%s/generate/pdf?yearMonth=%s&notYetPrinted=%t",
-		viper.GetString("urls.hobbit"),
-		viper.GetString("yearMonth"),
-		onlyNew,
-	)
-
-	dirPath := path.Join(GetWorkingDirectory(), viper.GetString("dirs.invoicesName"))
-	err := os.MkdirAll(dirPath, 0755)
-	if err != nil {
-		return "", err
-	}
-
-	return g.postManager.Zip(url, dirPath)
 }
