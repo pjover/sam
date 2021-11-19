@@ -10,21 +10,17 @@ import (
 	"sort"
 )
 
-type CustomersReportGenerator interface {
-	Generate() (string, error)
-}
-
-type CustomersReportGeneratorImpl struct {
+type CustomersReportGenerator struct {
 	getManager util.HttpGetManager
 }
 
-func NewCustomersReportGenerator() CustomersReportGenerator {
-	return CustomersReportGeneratorImpl{
+func NewCustomersReportGenerator() ReportGenerator {
+	return CustomersReportGenerator{
 		util.NewHttpGetManager(),
 	}
 }
 
-func (c CustomersReportGeneratorImpl) Generate() (string, error) {
+func (c CustomersReportGenerator) Generate() (string, error) {
 	fmt.Println("Generant l'informe de clients ...")
 
 	customers, err := c.getCustomers(c.getManager)
@@ -72,7 +68,7 @@ type activeCustomers struct {
 	} `json:"_links"`
 }
 
-func (c CustomersReportGeneratorImpl) getCustomers(getManager util.HttpGetManager) (*activeCustomers, error) {
+func (c CustomersReportGenerator) getCustomers(getManager util.HttpGetManager) (*activeCustomers, error) {
 	url := fmt.Sprintf(
 		"%s/customers/search/findAllByActiveTrue",
 		viper.GetString("urls.hobbit"),
@@ -85,7 +81,7 @@ func (c CustomersReportGeneratorImpl) getCustomers(getManager util.HttpGetManage
 	return customers, nil
 }
 
-func (c CustomersReportGeneratorImpl) buildContents(customers *activeCustomers) [][]string {
+func (c CustomersReportGenerator) buildContents(customers *activeCustomers) [][]string {
 	var contents [][]string
 	for _, customer := range customers.Embedded.Customers {
 		adult := customer.FirstAdult()

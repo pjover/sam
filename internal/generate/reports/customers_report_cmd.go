@@ -6,7 +6,7 @@ import (
 	cmd2 "sam/cmd"
 )
 
-func newGenerateCustomersReportCmd(generator CustomersReportGenerator) *cobra.Command {
+func newGenerateCustomersReportCmd(generator ReportGenerator) *cobra.Command {
 	return &cobra.Command{
 		Use:         "generaInformeClients",
 		Short:       "Genera l'informe dels clients",
