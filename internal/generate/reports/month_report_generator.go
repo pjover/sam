@@ -48,11 +48,11 @@ func (i MonthReportGenerator) Generate() (string, error) {
 		log.Fatal(err)
 	}
 
-	reportInfo := util.ReportInfo{
+	reportInfo := ReportInfo{
 		consts.Landscape,
 		consts.Left,
 		fmt.Sprintf("Factures %s", catalan.MonthName(month)),
-		[]util.Column{
+		[]Column{
 			{"Factura", 1},
 			{"Data", 1},
 			{"Client", 2},
@@ -64,7 +64,7 @@ func (i MonthReportGenerator) Generate() (string, error) {
 		contents,
 		filePath,
 	}
-	err = util.PdfReport(reportInfo)
+	err = PdfReport(reportInfo)
 	if err != nil {
 		return "", err
 	}

@@ -34,11 +34,11 @@ func (c CustomersReportGenerator) Generate() (string, error) {
 		viper.GetString("dirs.reports"),
 		viper.GetString("files.customersReport"),
 	)
-	reportInfo := util.ReportInfo{
+	reportInfo := ReportInfo{
 		consts.Landscape,
 		consts.Left,
 		"Llistat de clients",
-		[]util.Column{
+		[]Column{
 			{"Infant", 2},
 			{"Grup", 1},
 			{"Neixament", 1},
@@ -50,7 +50,7 @@ func (c CustomersReportGenerator) Generate() (string, error) {
 		contents,
 		filePath,
 	}
-	err = util.PdfReport(reportInfo)
+	err = PdfReport(reportInfo)
 	if err != nil {
 		return "", err
 	}

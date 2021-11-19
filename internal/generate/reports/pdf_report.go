@@ -1,4 +1,4 @@
-package util
+package reports
 
 import (
 	"github.com/johnfercher/maroto/pkg/color"

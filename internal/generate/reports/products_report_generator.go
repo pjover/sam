@@ -32,11 +32,11 @@ func (p ProductsReportGenerator) Generate() (string, error) {
 	contents := p.buildContents(products)
 
 	filePath := path.Join(viper.GetString("dirs.reports"), viper.GetString("files.productsReport"))
-	reportInfo := util.ReportInfo{
+	reportInfo := ReportInfo{
 		consts.Portrait,
 		consts.Left,
 		"Llistat de productes",
-		[]util.Column{
+		[]Column{
 			{"Codi", 2},
 			{"Nom", 4},
 			{"Preu", 2},
@@ -46,7 +46,7 @@ func (p ProductsReportGenerator) Generate() (string, error) {
 		contents,
 		filePath,
 	}
-	err = util.PdfReport(reportInfo)
+	err = PdfReport(reportInfo)
 	if err != nil {
 		return "", err
 	}
