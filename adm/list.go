@@ -45,13 +45,13 @@ func (l ListManager) ListChildren() (string, error) {
 
 func (l ListManager) ListAllCustomersConsumptions() (string, error) {
 	fmt.Println("Llistat dels consums pendents de tots els clients")
-	url := fmt.Sprintf("%s/consumptions", viper.GetString("urls.hobbit"))
+	url := fmt.Sprintf("%s/consum", viper.GetString("urls.hobbit"))
 	return l.getManager.PrettyJson(url)
 }
 
 func (l ListManager) ListCustomerConsumptions(customerCode int) (string, error) {
 	fmt.Println("Llistat dels consums pendents del client", customerCode)
-	url := fmt.Sprintf("%s/consumptions/%d", viper.GetString("urls.hobbit"), customerCode)
+	url := fmt.Sprintf("%s/consum/%d", viper.GetString("urls.hobbit"), customerCode)
 	return l.getManager.PrettyJson(url)
 }
 

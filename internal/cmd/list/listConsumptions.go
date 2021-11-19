@@ -19,7 +19,7 @@ var listConsumptionsCmd = &cobra.Command{
 		"lcon",
 		"llistaconsums", "llista-consums",
 		"llistarConsums", "llistarconsums", "llistar-consums",
-		"listConsumptions", "listconsumptions", "list-consumptions",
+		"listConsumptions", "listconsumptions", "list-consum",
 	},
 	Args: util.RangeArgs(0, 1),
 	RunE: func(cmd *cobra.Command, args []string) error {

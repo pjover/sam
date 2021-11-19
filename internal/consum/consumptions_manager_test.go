@@ -1,4 +1,4 @@
-package core
+package consum
 
 import (
 	"github.com/spf13/viper"
@@ -7,6 +7,7 @@ import (
 )
 
 func Test_buildConsumptionsBody(t *testing.T) {
+	sut := ConsumptionsManagerImpl{}
 
 	t.Run("Should return a basic ConsumptionsBody", func(t *testing.T) {
 		var args = InsertConsumptionsArgs{
@@ -14,9 +15,9 @@ func Test_buildConsumptionsBody(t *testing.T) {
 			Consumptions: map[string]float64{"AAA": 1.5},
 			Note:         "Test note",
 		}
-		actual := buildConsumptionsBody(args)
+		actual := sut.buildConsumptionsBody(args)
 
-		var expected = ConsumptionsBody{
+		var expected = Body{
 			YearMonth: viper.GetString("yearMonth"),
 			Children: []ChildBody{
 				{
@@ -36,9 +37,9 @@ func Test_buildConsumptionsBody(t *testing.T) {
 			Consumptions: map[string]float64{"AAA": 1.5, "BBB": 2, "CCC": 7.7},
 			Note:         "Test note",
 		}
-		actual := buildConsumptionsBody(args)
+		actual := sut.buildConsumptionsBody(args)
 
-		var expected = ConsumptionsBody{
+		var expected = Body{
 			YearMonth: viper.GetString("yearMonth"),
 			Children: []ChildBody{
 				{
