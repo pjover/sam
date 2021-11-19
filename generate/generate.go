@@ -110,9 +110,8 @@ func (g GenerateManagerImpl) GenerateInvoices(onlyNew bool) (string, error) {
 }
 
 func (g GenerateManagerImpl) GenerateCustomersReport() (string, error) {
-	fmt.Println("Generant l'informe de clients ...")
-	manager := NewCustomersReportGenerator(g.getManager)
-	return manager.generate()
+	manager := NewCustomersReportGenerator()
+	return manager.Generate()
 }
 
 func (g GenerateManagerImpl) GenerateProductsReport() (string, error) {
