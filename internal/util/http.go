@@ -104,7 +104,7 @@ func (s SamHttpGetManager) Type(url string, target interface{}) error {
 type HttpPostManager interface {
 	Bytes(url string, data []byte) ([]byte, error)
 	PrettyJson(url string, data []byte) (string, error)
-	FileDefaultName(remoteUrl string, directory string) (string, error)
+	FileWithDefaultName(remoteUrl string, directory string) (string, error)
 	File(remoteUrl string, directory string, filename string) (string, error)
 	Zip(remoteUrl string, directory string) (string, error)
 }
@@ -144,7 +144,7 @@ func (s SamHttpPostManager) PrettyJson(url string, data []byte) (string, error) 
 	return ToPrettyJson(body)
 }
 
-func (s SamHttpPostManager) FileDefaultName(remoteUrl string, directory string) (string, error) {
+func (s SamHttpPostManager) FileWithDefaultName(remoteUrl string, directory string) (string, error) {
 	response, err := s.httpClient.Post(remoteUrl, contentType, nil)
 	if err != nil {
 		return "", err

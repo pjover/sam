@@ -12,7 +12,6 @@ import (
 
 type GenerateManager interface {
 	GenerateBdd() (string, error)
-	GenerateInvoice(invoiceCode string) (string, error)
 	GenerateInvoices(onlyNew bool) (string, error)
 }
 
@@ -73,14 +72,6 @@ func getNextBddFilename(currentFilenames []string) string {
 
 func buildBddFilename(sequence int) string {
 	return fmt.Sprintf("bdd-%d.qx1", sequence)
-}
-
-func (g GenerateManagerImpl) GenerateInvoice(invoiceCode string) (string, error) {
-	fmt.Println("Generant la factura", invoiceCode)
-
-	url := fmt.Sprintf("%s/generate/pdf/%s", viper.GetString("urls.hobbit"), invoiceCode)
-
-	return g.postManager.FileDefaultName(url, GetWorkingDirectory())
 }
 
 func GetWorkingDirectory() string {

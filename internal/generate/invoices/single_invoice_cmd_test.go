@@ -1,10 +1,10 @@
-package cmd
+package invoices
 
 import (
 	"bytes"
 	"io/ioutil"
 	"reflect"
-	"sam/generate/mocks"
+	"sam/internal/generate/invoices/mocks"
 	"testing"
 )
 
@@ -28,15 +28,15 @@ func Test_GenerateInvoiceCmd(t *testing.T) {
 		},
 	}
 
-	mockedGenerateManager := new(mocks.GenerateManager)
+	mockedGenerator := new(mocks.SingleInvoiceGenerator)
 
-	sut := newGenerateInvoiceCmd(mockedGenerateManager)
+	sut := newGenerateSingleInvoiceCmd(mockedGenerator)
 	buffer := bytes.NewBufferString("")
 	sut.SetOut(buffer)
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			mockedGenerateManager.On("GenerateInvoice", tt.mocketArg).Return(tt.want, tt.wantErr)
+			mockedGenerator.On("Generate", tt.mocketArg).Return(tt.want, tt.wantErr)
 
 			sut.SetArgs(tt.args.args)
 			_ = sut.Execute()

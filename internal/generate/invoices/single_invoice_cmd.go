@@ -1,13 +1,13 @@
-package cmd
+package invoices
 
 import (
 	"fmt"
 	"github.com/spf13/cobra"
-	"sam/generate"
+	"sam/cmd"
 	"strings"
 )
 
-func newGenerateInvoiceCmd(generateManager generate.GenerateManager) *cobra.Command {
+func newGenerateSingleInvoiceCmd(generator SingleInvoiceGenerator) *cobra.Command {
 	return &cobra.Command{
 		Use:         "generaFactura",
 		Short:       "Genera el PDF d'una factura",
@@ -19,12 +19,12 @@ func newGenerateInvoiceCmd(generateManager generate.GenerateManager) *cobra.Comm
 			"generafactura", "genera-factura",
 			"generarFactura", "generarfactura", "generar-factura",
 			"ginv",
-			"generateInvoice", "generateinvoice", "generate-invoice",
+			"generateSingleInvoice", "generatesingleinvoice", "generate-single-invoice",
 		},
-		Args: ExactArgs(1),
+		Args: cmd.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			invoiceCode := strings.ToUpper(args[0])
-			msg, err := generateManager.GenerateInvoice(invoiceCode)
+			msg, err := generator.Generate(invoiceCode)
 			if err != nil {
 				return err
 			}
@@ -35,6 +35,6 @@ func newGenerateInvoiceCmd(generateManager generate.GenerateManager) *cobra.Comm
 }
 
 func init() {
-	cmd := newGenerateInvoiceCmd(generate.NewGenerateManager())
-	RootCmd.AddCommand(cmd)
+	generator := NewSingleInvoiceGenerator()
+	cmd.RootCmd.AddCommand(newGenerateSingleInvoiceCmd(generator))
 }
