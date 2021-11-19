@@ -6,6 +6,7 @@ import (
 	"github.com/spf13/viper"
 	"log"
 	"path"
+	"sam/internal/generate"
 	"sam/internal/util"
 	"sam/model"
 	"sam/storage"
@@ -19,7 +20,7 @@ type MonthReportGenerator struct {
 	customerStorage storage.CustomerStorage
 }
 
-func NewMonthReportGenerator() ReportGenerator {
+func NewMonthReportGenerator() generate.Generator {
 	return MonthReportGenerator{
 		util.NewHttpGetManager(),
 		storage.NewCustomerStorage(),

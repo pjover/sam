@@ -4,9 +4,10 @@ import (
 	"fmt"
 	"github.com/spf13/cobra"
 	"sam/cmd"
+	"sam/internal/generate"
 )
 
-func newGenerateCustomersReportCmd(generator ReportGenerator) *cobra.Command {
+func newGenerateCustomersReportCmd(generator generate.Generator) *cobra.Command {
 	return &cobra.Command{
 		Use:         "generaInformeClients",
 		Short:       "Genera l'informe dels clients",

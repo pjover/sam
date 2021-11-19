@@ -5,6 +5,7 @@ import (
 	"github.com/johnfercher/maroto/pkg/consts"
 	"github.com/spf13/viper"
 	"path"
+	"sam/internal/generate"
 	"sam/internal/util"
 	"sam/model"
 	"sort"
@@ -14,7 +15,7 @@ type CustomersReportGenerator struct {
 	getManager util.HttpGetManager
 }
 
-func NewCustomersReportGenerator() ReportGenerator {
+func NewCustomersReportGenerator() generate.Generator {
 	return CustomersReportGenerator{
 		util.NewHttpGetManager(),
 	}

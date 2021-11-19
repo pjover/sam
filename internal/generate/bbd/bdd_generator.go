@@ -5,18 +5,15 @@ import (
 	"github.com/spf13/viper"
 	"io/fs"
 	"path/filepath"
+	"sam/internal/generate"
 	"sam/internal/util"
 )
-
-type BddGenerator interface {
-	Generate() (string, error)
-}
 
 type BddGeneratorImpl struct {
 	postManager util.HttpPostManager
 }
 
-func NewBddGenerator() BddGenerator {
+func NewBddGenerator() generate.Generator {
 	return BddGeneratorImpl{
 		util.NewHttpPostManager(),
 	}

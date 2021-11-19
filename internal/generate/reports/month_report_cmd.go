@@ -4,9 +4,10 @@ import (
 	"fmt"
 	"github.com/spf13/cobra"
 	"sam/cmd"
+	"sam/internal/generate"
 )
 
-func newMonthReportCmd(generator ReportGenerator) *cobra.Command {
+func newMonthReportCmd(generator generate.Generator) *cobra.Command {
 	return &cobra.Command{
 		Use:         "generaInformeMes [AAAA-MM]",
 		Short:       "Genera l'informe de les factures del mes actual",

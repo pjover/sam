@@ -4,9 +4,10 @@ import (
 	"fmt"
 	"github.com/spf13/cobra"
 	"sam/cmd"
+	"sam/internal/generate"
 )
 
-func newBddCmd(generator BddGenerator) *cobra.Command {
+func newBddCmd(generator generate.Generator) *cobra.Command {
 	return &cobra.Command{
 		Use:         "generaRebuts",
 		Short:       "Genera el fitxer de rebuts",
