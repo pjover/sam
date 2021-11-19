@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-func newGenerateSingleInvoiceCmd(generator SingleInvoiceGenerator) *cobra.Command {
+func newSingleInvoiceCmd(generator SingleInvoiceGenerator) *cobra.Command {
 	return &cobra.Command{
 		Use:         "generaFactura",
 		Short:       "Genera el PDF d'una factura",
@@ -41,5 +41,5 @@ func newGenerateSingleInvoiceCmd(generator SingleInvoiceGenerator) *cobra.Comman
 
 func init() {
 	generator := NewSingleInvoiceGenerator()
-	cmd.RootCmd.AddCommand(newGenerateSingleInvoiceCmd(generator))
+	cmd.RootCmd.AddCommand(newSingleInvoiceCmd(generator))
 }

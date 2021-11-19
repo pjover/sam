@@ -8,7 +8,7 @@ import (
 
 var onlyNew bool
 
-func newGenerateInvoicesCmd(generator MonthInvoicesGenerator) *cobra.Command {
+func newMonthInvoicesCmd(generator MonthInvoicesGenerator) *cobra.Command {
 	return &cobra.Command{
 		Use:         "generaFactures",
 		Short:       "Genera els PDFs de les factures del mes",
@@ -40,7 +40,7 @@ func newGenerateInvoicesCmd(generator MonthInvoicesGenerator) *cobra.Command {
 
 func init() {
 	generator := NewMonthInvoicesGenerator()
-	command := newGenerateInvoicesCmd(generator)
+	command := newMonthInvoicesCmd(generator)
 	command.Flags().BoolVarP(&onlyNew, "nomes_noves", "n", true, "Genera les factures noves, que no s'han generat abans")
 	cmd.RootCmd.AddCommand(command)
 }

@@ -6,7 +6,7 @@ import (
 	"sam/cmd"
 )
 
-func newGenerateMonthReportCmd(generator ReportGenerator) *cobra.Command {
+func newMonthReportCmd(generator ReportGenerator) *cobra.Command {
 	return &cobra.Command{
 		Use:         "generaInformeMes [AAAA-MM]",
 		Short:       "Genera l'informe de les factures del mes actual",
@@ -38,6 +38,6 @@ func newGenerateMonthReportCmd(generator ReportGenerator) *cobra.Command {
 
 func init() {
 	generator := NewMonthReportGenerator()
-	command := newGenerateMonthReportCmd(generator)
+	command := newMonthReportCmd(generator)
 	cmd.RootCmd.AddCommand(command)
 }

@@ -8,7 +8,7 @@ import (
 	"testing"
 )
 
-func Test_GenerateInvoiceCmd(t *testing.T) {
+func Test_SingleInvoiceCmd(t *testing.T) {
 	type args struct {
 		args []string
 	}
@@ -30,7 +30,7 @@ func Test_GenerateInvoiceCmd(t *testing.T) {
 
 	mockedGenerator := new(mocks.SingleInvoiceGenerator)
 
-	sut := newGenerateSingleInvoiceCmd(mockedGenerator)
+	sut := newSingleInvoiceCmd(mockedGenerator)
 	buffer := bytes.NewBufferString("")
 	sut.SetOut(buffer)
 

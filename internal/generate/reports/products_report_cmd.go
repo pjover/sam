@@ -6,7 +6,7 @@ import (
 	"sam/cmd"
 )
 
-func newGenerateProductsReportCmd(generator ReportGenerator) *cobra.Command {
+func newProductsReportCmd(generator ReportGenerator) *cobra.Command {
 	return &cobra.Command{
 		Use:         "generaInformeProductes",
 		Short:       "Genera l'informe dels productes",
@@ -38,6 +38,6 @@ func newGenerateProductsReportCmd(generator ReportGenerator) *cobra.Command {
 
 func init() {
 	generator := NewProductsReportGenerator()
-	command := newGenerateProductsReportCmd(generator)
+	command := newProductsReportCmd(generator)
 	cmd.RootCmd.AddCommand(command)
 }

@@ -6,7 +6,6 @@ import (
 	"github.com/spf13/viper"
 	"log"
 	"path"
-	"sam/generate"
 	"sam/internal/util"
 	"sam/model"
 	"sam/storage"
@@ -40,7 +39,7 @@ func (i MonthReportGenerator) Generate() (string, error) {
 		return "", err
 	}
 	filePath := path.Join(
-		generate.GetWorkingDirectory(),
+		util.GetWorkingDirectory(),
 		viper.GetString("files.invoicesReport"),
 	)
 	month, err := time.Parse(util.YearMonthLayout, viper.GetString("yearMonth"))
