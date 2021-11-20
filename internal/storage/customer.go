@@ -3,8 +3,8 @@ package storage
 import (
 	"fmt"
 	"github.com/spf13/viper"
+	"sam/internal/model"
 	"sam/internal/util"
-	"sam/model"
 )
 
 type CustomerStorage struct {

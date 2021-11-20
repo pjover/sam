@@ -6,8 +6,8 @@ import (
 	"github.com/spf13/viper"
 	"path"
 	"sam/internal/generate"
+	"sam/internal/model"
 	"sam/internal/util"
-	"sam/model"
 	"sort"
 	"strings"
 )

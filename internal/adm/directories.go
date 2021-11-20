@@ -2,8 +2,8 @@ package adm
 
 import (
 	"github.com/spf13/viper"
+	"sam/internal/translate"
 	"sam/internal/util"
-	"sam/translate/catalan"
 	"time"
 )
 
@@ -44,7 +44,7 @@ func (d DirectoryManagerImpl) GetDirConfig(previousMonth bool, nextMonth bool) (
 		workingTime = workingTime.AddDate(0, 1, 0)
 	}
 	yearMonth := workingTime.Format("2006-01")
-	dirName := catalan.WorkingDir(workingTime)
+	dirName := translate.WorkingDir(workingTime)
 	return yearMonth, dirName
 }
 

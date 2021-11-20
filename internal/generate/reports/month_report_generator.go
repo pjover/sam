@@ -7,10 +7,10 @@ import (
 	"log"
 	"path"
 	"sam/internal/generate"
+	"sam/internal/model"
+	"sam/internal/storage"
+	"sam/internal/translate"
 	"sam/internal/util"
-	"sam/model"
-	"sam/storage"
-	"sam/translate/catalan"
 	"sort"
 	"time"
 )
@@ -51,7 +51,7 @@ func (i MonthReportGenerator) Generate() (string, error) {
 	reportInfo := ReportInfo{
 		consts.Landscape,
 		consts.Left,
-		fmt.Sprintf("Factures %s", catalan.MonthName(month)),
+		fmt.Sprintf("Factures %s", translate.MonthName(month)),
 		[]Column{
 			{"Factura", 1},
 			{"Data", 1},

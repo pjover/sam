@@ -1,4 +1,4 @@
-package catalan
+package translate
 
 import (
 	"strings"
