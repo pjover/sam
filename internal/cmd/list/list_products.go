@@ -3,8 +3,8 @@ package list
 import (
 	"fmt"
 	"github.com/spf13/cobra"
-	"sam/adm"
 	"sam/internal/cmd"
+	"sam/internal/list"
 )
 
 var listProductsCmd = &cobra.Command{
@@ -20,7 +20,7 @@ var listProductsCmd = &cobra.Command{
 		"listProducts", "listproducts", "list-products",
 	},
 	RunE: func(cmd *cobra.Command, args []string) error {
-		manager := adm.NewListManager()
+		manager := list.NewListManager()
 		msg, err := manager.ListProducts()
 		if err != nil {
 			return err

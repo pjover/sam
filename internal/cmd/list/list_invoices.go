@@ -3,8 +3,8 @@ package list
 import (
 	"fmt"
 	"github.com/spf13/cobra"
-	"sam/adm"
 	"sam/internal/cmd"
+	"sam/internal/list"
 	"sam/internal/util"
 )
 
@@ -37,7 +37,7 @@ func init() {
 }
 
 func parseListInvoicesArgs(args []string) error {
-	manager := adm.NewListManager()
+	manager := list.NewListManager()
 	var msg string
 	var err error
 	switch len(args) {

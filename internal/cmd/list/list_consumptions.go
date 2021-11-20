@@ -3,8 +3,8 @@ package list
 import (
 	"fmt"
 	"github.com/spf13/cobra"
-	"sam/adm"
 	"sam/internal/cmd"
+	"sam/internal/list"
 	"sam/internal/util"
 )
 
@@ -23,7 +23,7 @@ var listConsumptionsCmd = &cobra.Command{
 	},
 	Args: util.RangeArgs(0, 1),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		manager := adm.NewListManager()
+		manager := list.NewListManager()
 		var msg string
 		var err error
 		if len(args) != 0 {

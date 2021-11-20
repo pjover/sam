@@ -1,4 +1,4 @@
-package adm
+package list
 
 import (
 	"fmt"
@@ -35,11 +35,6 @@ func (l ListManager) ListEmails(ei1 bool, ei2 bool, ei3 bool) (string, error) {
 
 func (l ListManager) ListCustomers() (string, error) {
 	url := fmt.Sprintf("%s/lists/customers", viper.GetString("urls.hobbit"))
-	return l.getManager.PrettyJson(url)
-}
-
-func (l ListManager) ListChildren() (string, error) {
-	url := fmt.Sprintf("%s/lists/children", viper.GetString("urls.hobbit"))
 	return l.getManager.PrettyJson(url)
 }
 
