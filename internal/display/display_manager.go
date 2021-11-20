@@ -1,4 +1,4 @@
-package adm
+package display
 
 import (
 	"fmt"
@@ -14,11 +14,6 @@ func NewDisplayManager() DisplayManager {
 	return DisplayManager{
 		util.NewHttpGetManager(),
 	}
-}
-
-func (d DisplayManager) DisplayCustomer(customerCode int) (string, error) {
-	url := fmt.Sprintf("%s/customers/%d", viper.GetString("urls.hobbit"), customerCode)
-	return d.getManager.PrettyJson(url)
 }
 
 func (d DisplayManager) DisplayProduct(productCode string) (string, error) {

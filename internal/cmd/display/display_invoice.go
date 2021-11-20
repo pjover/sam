@@ -2,8 +2,8 @@ package display
 
 import (
 	"fmt"
-	"sam/adm"
 	"sam/internal/cmd"
+	"sam/internal/display"
 	"sam/internal/util"
 	"strings"
 
@@ -26,7 +26,7 @@ var displayInvoiceCmd = &cobra.Command{
 	Args: util.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		invoiceCode := strings.ToUpper(args[0])
-		manager := adm.NewDisplayManager()
+		manager := display.NewDisplayManager()
 		msg, err := manager.DisplayInvoice(invoiceCode)
 		if err != nil {
 			return err

@@ -3,8 +3,8 @@ package display
 import (
 	"fmt"
 	"github.com/spf13/cobra"
-	"sam/adm"
 	"sam/internal/cmd"
+	"sam/internal/display"
 	"sam/internal/util"
 )
 
@@ -28,7 +28,7 @@ var displayProductCmd = &cobra.Command{
 			return err
 		}
 
-		manager := adm.NewDisplayManager()
+		manager := display.NewDisplayManager()
 		msg, err := manager.DisplayProduct(productCode)
 		if err != nil {
 			return err
