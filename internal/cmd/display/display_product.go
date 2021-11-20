@@ -29,12 +29,12 @@ func newDisplayProductCmd(dsp display.Display) *cobra.Command {
 		},
 		Args: util.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			productCode, err := util.ParseProductCode(args[0])
+			code, err := util.ParseProductCode(args[0])
 			if err != nil {
 				return err
 			}
 
-			msg, err := dsp.Display(productCode)
+			msg, err := dsp.Display(code)
 			if err != nil {
 				return err
 			}
