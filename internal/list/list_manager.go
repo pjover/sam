@@ -17,22 +17,6 @@ func NewListManager() ListManager {
 	}
 }
 
-func (l ListManager) ListEmails(ei1 bool, ei2 bool, ei3 bool) (string, error) {
-	var group string
-	if ei1 {
-		group = "EI_1"
-	} else if ei2 {
-		group = "EI_2"
-	} else if ei3 {
-		group = "EI_3"
-	} else {
-		group = "ALL"
-	}
-
-	url := fmt.Sprintf("%s/lists/emails/%s", viper.GetString("urls.hobbit"), group)
-	return l.getManager.PrettyJson(url)
-}
-
 func (l ListManager) ListYearMonthInvoices(yearMonth time.Time) (string, error) {
 	ym := yearMonth.Format(util.YearMonthLayout)
 	fmt.Println("Llistat de les factures del mes", ym)

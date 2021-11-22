@@ -21,10 +21,15 @@ var listInvoicesCmd = &cobra.Command{
 	Annotations: map[string]string{"ADM": "Comandes de llistats"},
 	Aliases: []string{
 		"lfac",
-		"llistafactures", "llista-factures",
-		"llistarFactures", "llistarfactures", "llistar-factures",
+		"llistafactures",
+		"llista-factures",
+		"llistarFactures",
+		"llistarfactures",
+		"llistar-factures",
 		"linv",
-		"listInvoices", "listinvoices", "list-invoices",
+		"listInvoices",
+		"listinvoices",
+		"list-invoices",
 	},
 	Args: util.RangeArgs(0, 2),
 	RunE: func(cmd *cobra.Command, args []string) error {
