@@ -8,7 +8,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func newListChildrenCmd(manager list.ListChildren) *cobra.Command {
+func newListChildrenCmd(manager list.List) *cobra.Command {
 	return &cobra.Command{
 		Use:         "llistaInfants",
 		Short:       "Llista tots els infants",

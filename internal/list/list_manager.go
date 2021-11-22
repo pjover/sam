@@ -33,11 +33,6 @@ func (l ListManager) ListEmails(ei1 bool, ei2 bool, ei3 bool) (string, error) {
 	return l.getManager.PrettyJson(url)
 }
 
-func (l ListManager) ListCustomers() (string, error) {
-	url := fmt.Sprintf("%s/lists/customers", viper.GetString("urls.hobbit"))
-	return l.getManager.PrettyJson(url)
-}
-
 func (l ListManager) ListYearMonthInvoices(yearMonth time.Time) (string, error) {
 	ym := yearMonth.Format(util.YearMonthLayout)
 	fmt.Println("Llistat de les factures del mes", ym)

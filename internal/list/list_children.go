@@ -6,21 +6,17 @@ import (
 	"sam/internal/util"
 )
 
-type ListChildren interface {
-	List() (string, error)
-}
-
-type ListChildrenImpl struct {
+type ListChildren struct {
 	getManager util.HttpGetManager
 }
 
-func NewListChildren() ListChildren {
-	return ListChildrenImpl{
+func NewListChildren() List {
+	return ListChildren{
 		util.NewHttpGetManager(),
 	}
 }
 
-func (l ListChildrenImpl) List() (string, error) {
+func (l ListChildren) List() (string, error) {
 	url := fmt.Sprintf("%s/lists/children", viper.GetString("urls.hobbit"))
 	return l.getManager.PrettyJson(url)
 }

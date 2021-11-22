@@ -8,31 +8,39 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var listCustomersCmd = &cobra.Command{
-	Use:         "llistaClients",
-	Short:       "Llista tots els clients",
-	Long:        "Llista tots els clients i els seus infants per grups",
-	Example:     `   llistaClients      Llista tots els clients`,
-	Annotations: map[string]string{"ADM": "Comandes de llistats"},
-	Aliases: []string{
-		"lcli",
-		"llistaclients", "llista-clients",
-		"llistarClients", "llistarclients", "llistar-clients",
-		"lcus",
-		"listCustomers", "listcustomers", "list-customers",
-	},
-	RunE: func(cmd *cobra.Command, args []string) error {
-		manager := list.NewListManager()
-		msg, err := manager.ListCustomers()
-		if err != nil {
-			return err
-		}
+func newListCustomersCmd(manager list.List) *cobra.Command {
+	return &cobra.Command{
+		Use:         "llistaClients",
+		Short:       "Llista tots els clients",
+		Long:        "Llista tots els clients i els seus infants per grups",
+		Example:     `   llistaClients      Llista tots els clients`,
+		Annotations: map[string]string{"ADM": "Comandes de llistats"},
+		Aliases: []string{
+			"lcli",
+			"llistaclients",
+			"llista-clients",
+			"llistarClients",
+			"llistarclients",
+			"llistar-clients",
+			"lcus",
+			"listCustomers",
+			"listcustomers",
+			"list-customers",
+		},
+		RunE: func(cmd *cobra.Command, args []string) error {
+			msg, err := manager.List()
+			if err != nil {
+				return err
+			}
 
-		fmt.Println(msg)
-		return nil
-	},
+			fmt.Println(msg)
+			return nil
+		},
+	}
 }
 
 func init() {
-	cmd.RootCmd.AddCommand(listCustomersCmd)
+	manager := list.NewListCustomers()
+	command := newListCustomersCmd(manager)
+	cmd.RootCmd.AddCommand(command)
 }
