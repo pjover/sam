@@ -36,9 +36,3 @@ func (l ListManager) ListCustomerYearMonthInvoices(customerCode int, yearMonth t
 	url := fmt.Sprintf("%s/invoices/search/findByCustomerIdAndYearMonthIn?customerId=%d&yearMonths=%s", viper.GetString("urls.hobbit"), customerCode, ym)
 	return l.getManager.PrettyJson(url)
 }
-
-func (l ListManager) ListProducts() (string, error) {
-	fmt.Println("Llistat de tots els productes")
-	url := fmt.Sprintf("%s/products?page=0&size=100", viper.GetString("urls.hobbit"))
-	return l.getManager.PrettyJson(url)
-}
