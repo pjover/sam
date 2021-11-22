@@ -1,9 +1,9 @@
 package adm
 
 import (
+	"github.com/pjover/sam/internal/adm"
+	"github.com/pjover/sam/internal/cmd"
 	"github.com/spf13/cobra"
-	"sam/internal/adm"
-	"sam/internal/cmd"
 )
 
 var previousMonth bool

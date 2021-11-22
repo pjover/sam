@@ -2,14 +2,15 @@ package reports
 
 import (
 	"fmt"
-	"github.com/johnfercher/maroto/pkg/consts"
-	"github.com/spf13/viper"
 	"path"
-	"sam/internal/generate"
-	"sam/internal/model"
-	"sam/internal/util"
 	"sort"
 	"strings"
+
+	"github.com/johnfercher/maroto/pkg/consts"
+	"github.com/pjover/sam/internal/generate"
+	"github.com/pjover/sam/internal/model"
+	"github.com/pjover/sam/internal/util"
+	"github.com/spf13/viper"
 )
 
 type ProductsReportGenerator struct {

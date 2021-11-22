@@ -1,10 +1,11 @@
 package adm
 
 import (
-	"github.com/spf13/viper"
-	"sam/internal/translate"
-	"sam/internal/util"
 	"time"
+
+	"github.com/pjover/sam/internal/translate"
+	"github.com/pjover/sam/internal/util"
+	"github.com/spf13/viper"
 )
 
 type DirectoryManager interface {

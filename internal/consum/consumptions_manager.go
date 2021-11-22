@@ -3,9 +3,10 @@ package consum
 import (
 	"encoding/json"
 	"fmt"
+
+	"github.com/pjover/sam/internal/storage"
+	"github.com/pjover/sam/internal/util"
 	"github.com/spf13/viper"
-	"sam/internal/storage"
-	"sam/internal/util"
 )
 
 type ConsumptionsManager interface {

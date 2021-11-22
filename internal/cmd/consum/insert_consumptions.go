@@ -3,10 +3,11 @@ package consum
 import (
 	"errors"
 	"fmt"
+
+	"github.com/pjover/sam/internal/cmd"
+	"github.com/pjover/sam/internal/consum"
+	"github.com/pjover/sam/internal/util"
 	"github.com/spf13/cobra"
-	"sam/internal/cmd"
-	"sam/internal/consum"
-	"sam/internal/util"
 )
 
 var iconNote string

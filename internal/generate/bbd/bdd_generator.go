@@ -2,11 +2,12 @@ package bbd
 
 import (
 	"fmt"
-	"github.com/spf13/viper"
 	"io/fs"
 	"path/filepath"
-	"sam/internal/generate"
-	"sam/internal/util"
+
+	"github.com/pjover/sam/internal/generate"
+	"github.com/pjover/sam/internal/util"
+	"github.com/spf13/viper"
 )
 
 type BddGeneratorImpl struct {

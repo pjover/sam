@@ -2,11 +2,12 @@ package generate
 
 import (
 	"fmt"
-	"github.com/spf13/cobra"
-	"sam/internal/cmd"
-	"sam/internal/generate/invoices"
-	"sam/internal/util"
 	"strings"
+
+	"github.com/pjover/sam/internal/cmd"
+	"github.com/pjover/sam/internal/generate/invoices"
+	"github.com/pjover/sam/internal/util"
+	"github.com/spf13/cobra"
 )
 
 func newGenerateSingleInvoiceCmd(generator invoices.SingleInvoiceGenerator) *cobra.Command {

@@ -2,10 +2,11 @@ package display
 
 import (
 	"fmt"
-	"sam/internal/cmd"
-	"sam/internal/display"
-	"sam/internal/util"
 	"strings"
+
+	"github.com/pjover/sam/internal/cmd"
+	"github.com/pjover/sam/internal/display"
+	"github.com/pjover/sam/internal/util"
 
 	"github.com/spf13/cobra"
 )

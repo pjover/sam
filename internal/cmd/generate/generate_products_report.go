@@ -2,10 +2,11 @@ package generate
 
 import (
 	"fmt"
+
+	"github.com/pjover/sam/internal/cmd"
+	"github.com/pjover/sam/internal/generate"
+	"github.com/pjover/sam/internal/generate/reports"
 	"github.com/spf13/cobra"
-	"sam/internal/cmd"
-	"sam/internal/generate"
-	"sam/internal/generate/reports"
 )
 
 func newGenerateProductsReportCmd(generator generate.Generator) *cobra.Command {

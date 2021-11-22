@@ -2,9 +2,10 @@ package search
 
 import (
 	"fmt"
-	"github.com/spf13/viper"
 	"net/url"
-	"sam/internal/util"
+
+	"github.com/pjover/sam/internal/util"
+	"github.com/spf13/viper"
 )
 
 type SearchManager interface {

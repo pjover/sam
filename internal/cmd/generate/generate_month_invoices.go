@@ -2,9 +2,10 @@ package generate
 
 import (
 	"fmt"
+
+	"github.com/pjover/sam/internal/cmd"
+	"github.com/pjover/sam/internal/generate/invoices"
 	"github.com/spf13/cobra"
-	"sam/internal/cmd"
-	"sam/internal/generate/invoices"
 )
 
 var onlyNew bool

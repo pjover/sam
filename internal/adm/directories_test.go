@@ -1,10 +1,11 @@
 package adm
 
 import (
-	"github.com/stretchr/testify/assert"
-	"sam/internal/util/mocks"
 	"testing"
 	"time"
+
+	"github.com/pjover/sam/internal/util/mocks"
+	"github.com/stretchr/testify/assert"
 )
 
 func Test_GetDirConfig(t *testing.T) {

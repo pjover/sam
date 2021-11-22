@@ -1,10 +1,10 @@
 package edit
 
 import (
+	"github.com/pjover/sam/internal/cmd"
+	"github.com/pjover/sam/internal/edit"
+	"github.com/pjover/sam/internal/util"
 	"github.com/spf13/cobra"
-	"sam/internal/cmd"
-	"sam/internal/edit"
-	"sam/internal/util"
 )
 
 func newEditCustomerCmd(editor edit.Editor) *cobra.Command {

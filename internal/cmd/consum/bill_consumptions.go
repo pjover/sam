@@ -2,9 +2,10 @@ package consum
 
 import (
 	"fmt"
+
+	"github.com/pjover/sam/internal/cmd"
+	"github.com/pjover/sam/internal/consum"
 	"github.com/spf13/cobra"
-	"sam/internal/cmd"
-	"sam/internal/consum"
 )
 
 func newBillConsumptionsCmd(manager consum.ConsumptionsManager) *cobra.Command {

@@ -3,8 +3,9 @@ package consum
 import (
 	"errors"
 	"reflect"
-	"sam/internal/consum"
 	"testing"
+
+	"github.com/pjover/sam/internal/consum"
 )
 
 var testNote = "Test note"

@@ -4,8 +4,9 @@ import (
 	"bytes"
 	"io/ioutil"
 	"reflect"
-	"sam/internal/generate/invoices/mocks"
 	"testing"
+
+	"github.com/pjover/sam/internal/generate/invoices/mocks"
 )
 
 func Test_GenerateSingleInvoiceCmd(t *testing.T) {

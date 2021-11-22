@@ -2,8 +2,9 @@ package list
 
 import (
 	"fmt"
-	"sam/internal/cmd"
-	"sam/internal/list"
+
+	"github.com/pjover/sam/internal/cmd"
+	"github.com/pjover/sam/internal/list"
 
 	"github.com/spf13/cobra"
 )

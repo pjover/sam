@@ -2,8 +2,9 @@ package invoices
 
 import (
 	"fmt"
+
+	"github.com/pjover/sam/internal/util"
 	"github.com/spf13/viper"
-	"sam/internal/util"
 )
 
 type SingleInvoiceGenerator interface {
