@@ -1,4 +1,4 @@
-package adm
+package search
 
 import (
 	"fmt"
@@ -7,17 +7,21 @@ import (
 	"sam/internal/util"
 )
 
-type SearchManager struct {
+type SearchManager interface {
+	SearchCustomer(args []string) (string, error)
+}
+
+type SearchManagerImpl struct {
 	GetManager util.HttpGetManager
 }
 
 func NewSearchManager() SearchManager {
-	return SearchManager{
+	return SearchManagerImpl{
 		GetManager: util.NewHttpGetManager(),
 	}
 }
 
-func (s SearchManager) SearchCustomer(args []string) (string, error) {
+func (s SearchManagerImpl) SearchCustomer(args []string) (string, error) {
 	text := fmt.Sprint(args)
 	params := url.Values{}
 	params.Add("text", text)
