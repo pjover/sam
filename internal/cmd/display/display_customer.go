@@ -2,12 +2,20 @@ package display
 
 import (
 	"fmt"
-
 	"github.com/pjover/sam/internal/cmd"
+
 	"github.com/pjover/sam/internal/display"
 	"github.com/pjover/sam/internal/util"
 	"github.com/spf13/cobra"
 )
+
+func init() {
+	cmd.RootCmd.AddCommand(NewDisplayCustomerCmd())
+}
+
+func NewDisplayCustomerCmd() *cobra.Command {
+	return newDisplayCustomerCmd(display.NewCustomerDisplay())
+}
 
 func newDisplayCustomerCmd(dsp display.Display) *cobra.Command {
 	return &cobra.Command{
@@ -44,10 +52,4 @@ func newDisplayCustomerCmd(dsp display.Display) *cobra.Command {
 			return nil
 		},
 	}
-}
-
-func init() {
-	dsp := display.NewCustomerDisplay()
-	command := newDisplayCustomerCmd(dsp)
-	cmd.RootCmd.AddCommand(command)
 }

@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-var tests = [][]string{
+var tests_old = [][]string{
 	{"directory"},
 	{"displayCustomer", "246"},
 	{"displayInvoice", "f-3945"},
@@ -36,8 +36,8 @@ var tests = [][]string{
 
 func main() {
 	var errCount int
-	for _, args := range tests {
-		errCount += run("sam", args...)
+	for _, args := range tests_old {
+		errCount += run_old("sam", args...)
 	}
 	if errCount == 0 {
 		fmt.Printf("All %d tests passed", len(tests))
@@ -46,7 +46,7 @@ func main() {
 	}
 }
 
-func run(name string, args ...string) int {
+func run_old(name string, args ...string) int {
 	cmd := exec.Command(name, args...)
 	err := cmd.Run()
 	if err != nil {
