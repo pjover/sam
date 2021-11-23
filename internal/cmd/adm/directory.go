@@ -9,6 +9,17 @@ import (
 var previousMonth bool
 var nextMonth bool
 
+func init() {
+	command := NewDirectoryCmd()
+	command.Flags().BoolVarP(&previousMonth, "anterior", "a", false, "Es treballa al mes anterior al mes actual")
+	command.Flags().BoolVarP(&nextMonth, "seguent", "s", false, "Es treballa al mes següent al mes actual")
+	cmd.RootCmd.AddCommand(command)
+}
+
+func NewDirectoryCmd() *cobra.Command {
+	return newDirectoryCmd(adm.NewDirectoryManager())
+}
+
 func newDirectoryCmd(manager adm.DirectoryManager) *cobra.Command {
 	return &cobra.Command{
 		Use:   "directori",
@@ -30,12 +41,4 @@ func newDirectoryCmd(manager adm.DirectoryManager) *cobra.Command {
 			return manager.Create(previousMonth, nextMonth)
 		},
 	}
-}
-
-func init() {
-	manager := adm.NewDirectoryManager()
-	command := newDirectoryCmd(manager)
-	command.Flags().BoolVarP(&previousMonth, "anterior", "a", false, "Es treballa al mes anterior al mes actual")
-	command.Flags().BoolVarP(&nextMonth, "seguent", "s", false, "Es treballa al mes següent al mes actual")
-	cmd.RootCmd.AddCommand(command)
 }

@@ -3,7 +3,9 @@ package main
 import (
 	"bytes"
 	"fmt"
+	"github.com/pjover/sam/internal/cmd/adm"
 	"github.com/pjover/sam/internal/cmd/display"
+	"github.com/pjover/sam/internal/cmd/edit"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -15,7 +17,13 @@ type integrationTest struct {
 }
 
 var tests = []integrationTest{
+	{adm.NewDirectoryCmd(), []string{}},
 	{display.NewDisplayCustomerCmd(), []string{"181"}},
+	{display.NewDisplayInvoiceCmd(), []string{"f-3945"}},
+	{display.NewDisplayProductCmd(), []string{"age"}},
+	{edit.NewEditCustomerCmd(), []string{"246"}},
+	{edit.NewEditInvoiceCmd(), []string{"f-3945"}},
+	{edit.NewEditProductCmd(), []string{"age"}},
 }
 
 func main() {

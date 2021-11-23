@@ -9,6 +9,16 @@ import (
 	"github.com/spf13/cobra"
 )
 
+func init() {
+	editor := edit.NewInvoiceEditor()
+	command := newEditInvoiceCmd(editor)
+	cmd.RootCmd.AddCommand(command)
+}
+
+func NewEditInvoiceCmd() *cobra.Command {
+	return newEditInvoiceCmd(edit.NewInvoiceEditor())
+}
+
 func newEditInvoiceCmd(editor edit.Editor) *cobra.Command {
 	return &cobra.Command{
 		Use:         "editaFactura codiFactura",
@@ -34,10 +44,4 @@ func newEditInvoiceCmd(editor edit.Editor) *cobra.Command {
 			return editor.Edit(invoiceCode)
 		},
 	}
-}
-
-func init() {
-	editor := edit.NewInvoiceEditor()
-	command := newEditInvoiceCmd(editor)
-	cmd.RootCmd.AddCommand(command)
 }

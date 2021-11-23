@@ -7,6 +7,13 @@ import (
 	"github.com/spf13/cobra"
 )
 
+func init() {
+	cmd.RootCmd.AddCommand(NewEditProductCmd())
+}
+
+func NewEditProductCmd() *cobra.Command {
+	return newEditProductCmd(edit.NewProductEditor())
+}
 func newEditProductCmd(editor edit.Editor) *cobra.Command {
 	return &cobra.Command{
 		Use:         "editaProducte codiProducte",
@@ -34,10 +41,4 @@ func newEditProductCmd(editor edit.Editor) *cobra.Command {
 			return editor.Edit(productCode)
 		},
 	}
-}
-
-func init() {
-	editor := edit.NewProductEditor()
-	command := newEditProductCmd(editor)
-	cmd.RootCmd.AddCommand(command)
 }

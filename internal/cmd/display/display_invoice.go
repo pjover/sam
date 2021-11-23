@@ -11,6 +11,13 @@ import (
 	"github.com/spf13/cobra"
 )
 
+func init() {
+	cmd.RootCmd.AddCommand(NewDisplayInvoiceCmd())
+}
+
+func NewDisplayInvoiceCmd() *cobra.Command {
+	return newDisplayInvoiceCmd(display.NewInvoiceDisplay())
+}
 func newDisplayInvoiceCmd(dsp display.Display) *cobra.Command {
 	return &cobra.Command{
 		Use:         "mostraFactura codiFactura",
@@ -42,10 +49,4 @@ func newDisplayInvoiceCmd(dsp display.Display) *cobra.Command {
 			return nil
 		},
 	}
-}
-
-func init() {
-	dsp := display.NewInvoiceDisplay()
-	command := newDisplayInvoiceCmd(dsp)
-	cmd.RootCmd.AddCommand(command)
 }

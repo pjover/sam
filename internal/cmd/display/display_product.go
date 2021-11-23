@@ -9,6 +9,14 @@ import (
 	"github.com/spf13/cobra"
 )
 
+func init() {
+	cmd.RootCmd.AddCommand(NewDisplayProductCmd())
+}
+
+func NewDisplayProductCmd() *cobra.Command {
+	return newDisplayProductCmd(display.NewProductDisplay())
+}
+
 func newDisplayProductCmd(dsp display.Display) *cobra.Command {
 	return &cobra.Command{
 		Use:         "mostraProducte codiProducte",
@@ -44,10 +52,4 @@ func newDisplayProductCmd(dsp display.Display) *cobra.Command {
 			return nil
 		},
 	}
-}
-
-func init() {
-	dsp := display.NewProductDisplay()
-	command := newDisplayProductCmd(dsp)
-	cmd.RootCmd.AddCommand(command)
 }

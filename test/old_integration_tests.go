@@ -7,10 +7,10 @@ import (
 )
 
 var tests_old = [][]string{
-	{"directory"},
-	{"displayCustomer", "246"},
-	{"displayInvoice", "f-3945"},
-	{"displayProduct", "age"},
+	//{"directory"},
+	//{"displayCustomer", "246"},
+	//{"displayInvoice", "f-3945"},
+	//{"displayProduct", "age"},
 	//{"editCustomer", "246"},
 	//{"editInvoice", "f-3945"},
 	//{"editProduct", "age"},

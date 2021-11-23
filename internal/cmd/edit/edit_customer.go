@@ -7,6 +7,13 @@ import (
 	"github.com/spf13/cobra"
 )
 
+func init() {
+	cmd.RootCmd.AddCommand(NewEditCustomerCmd())
+}
+
+func NewEditCustomerCmd() *cobra.Command {
+	return newEditCustomerCmd(edit.NewCustomerEditor())
+}
 func newEditCustomerCmd(editor edit.Editor) *cobra.Command {
 	return &cobra.Command{
 		Use:         "editaClient codiClient",
@@ -35,10 +42,4 @@ func newEditCustomerCmd(editor edit.Editor) *cobra.Command {
 			return editor.Edit(args[0])
 		},
 	}
-}
-
-func init() {
-	editor := edit.NewCustomerEditor()
-	command := newEditCustomerCmd(editor)
-	cmd.RootCmd.AddCommand(command)
 }
