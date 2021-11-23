@@ -9,6 +9,14 @@ import (
 	"github.com/spf13/cobra"
 )
 
+func init() {
+	cmd.RootCmd.AddCommand(NewListChildrenCmd())
+}
+
+func NewListChildrenCmd() *cobra.Command {
+	return newListChildrenCmd(list.NewListChildren())
+}
+
 func newListChildrenCmd(manager list.List) *cobra.Command {
 	return &cobra.Command{
 		Use:         "llistaInfants",
@@ -33,10 +41,4 @@ func newListChildrenCmd(manager list.List) *cobra.Command {
 			return nil
 		},
 	}
-}
-
-func init() {
-	manager := list.NewListChildren()
-	command := newListChildrenCmd(manager)
-	cmd.RootCmd.AddCommand(command)
 }

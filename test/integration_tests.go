@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/pjover/sam/internal/cmd/adm"
 	"github.com/pjover/sam/internal/cmd/display"
-	"github.com/pjover/sam/internal/cmd/edit"
+	"github.com/pjover/sam/internal/cmd/list"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -21,9 +21,16 @@ var tests = []integrationTest{
 	{display.NewDisplayCustomerCmd(), []string{"181"}},
 	{display.NewDisplayInvoiceCmd(), []string{"f-3945"}},
 	{display.NewDisplayProductCmd(), []string{"age"}},
-	{edit.NewEditCustomerCmd(), []string{"246"}},
-	{edit.NewEditInvoiceCmd(), []string{"f-3945"}},
-	{edit.NewEditProductCmd(), []string{"age"}},
+	//{edit.NewEditCustomerCmd(), []string{"246"}},
+	//{edit.NewEditInvoiceCmd(), []string{"f-3945"}},
+	//{edit.NewEditProductCmd(), []string{"age"}},
+	{list.NewListChildrenCmd(), []string{}},
+	{list.NewListConsumptionsCmd(), []string{}},
+	{list.NewListConsumptionsCmd(), []string{"246"}},
+	{list.NewListCustomersCmd(), []string{}},
+	{list.NewListInvoicesCmd(), []string{}},
+	{list.NewListMailsCmd(), []string{}},
+	{list.NewListProductsCmd(), []string{}},
 }
 
 func main() {

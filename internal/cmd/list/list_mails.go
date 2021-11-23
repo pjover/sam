@@ -13,6 +13,18 @@ var ei1 bool
 var ei2 bool
 var ei3 bool
 
+func init() {
+	command := NewListMailsCmd()
+	command.Flags().BoolVarP(&ei1, "ei1", "1", false, "Educació infantil 1")
+	command.Flags().BoolVarP(&ei2, "ei2", "2", false, "Educació infantil 2")
+	command.Flags().BoolVarP(&ei3, "ei3", "3", false, "Educació infantil 3")
+	cmd.RootCmd.AddCommand(command)
+}
+
+func NewListMailsCmd() *cobra.Command {
+	return newListMailsCmd(list.NewListMails())
+}
+
 func newListMailsCmd(manager list.ListMails) *cobra.Command {
 	return &cobra.Command{
 		Use:   "llistaCorreus",
@@ -46,13 +58,4 @@ func newListMailsCmd(manager list.ListMails) *cobra.Command {
 			return nil
 		},
 	}
-}
-
-func init() {
-	manager := list.NewListMails()
-	command := newListMailsCmd(manager)
-	command.Flags().BoolVarP(&ei1, "ei1", "1", false, "Educació infantil 1")
-	command.Flags().BoolVarP(&ei2, "ei2", "2", false, "Educació infantil 2")
-	command.Flags().BoolVarP(&ei3, "ei3", "3", false, "Educació infantil 3")
-	cmd.RootCmd.AddCommand(command)
 }

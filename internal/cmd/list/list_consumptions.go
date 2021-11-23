@@ -9,6 +9,14 @@ import (
 	"github.com/spf13/cobra"
 )
 
+func init() {
+	cmd.RootCmd.AddCommand(NewListConsumptionsCmd())
+}
+
+func NewListConsumptionsCmd() *cobra.Command {
+	return newListConsumptionsCmd(list.NewListConsumptions())
+}
+
 func newListConsumptionsCmd(manager list.ListConsumptions) *cobra.Command {
 	return &cobra.Command{
 		Use:   "llistaConsums [codiClient]",
@@ -49,10 +57,4 @@ func newListConsumptionsCmd(manager list.ListConsumptions) *cobra.Command {
 			return nil
 		},
 	}
-}
-
-func init() {
-	manager := list.NewListConsumptions()
-	command := newListConsumptionsCmd(manager)
-	cmd.RootCmd.AddCommand(command)
 }

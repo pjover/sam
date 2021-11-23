@@ -9,6 +9,14 @@ import (
 	"github.com/spf13/cobra"
 )
 
+func init() {
+	cmd.RootCmd.AddCommand(NewListCustomersCmd())
+}
+
+func NewListCustomersCmd() *cobra.Command {
+	return newListCustomersCmd(list.NewListCustomers())
+}
+
 func newListCustomersCmd(manager list.List) *cobra.Command {
 	return &cobra.Command{
 		Use:         "llistaClients",
@@ -38,10 +46,4 @@ func newListCustomersCmd(manager list.List) *cobra.Command {
 			return nil
 		},
 	}
-}
-
-func init() {
-	manager := list.NewListCustomers()
-	command := newListCustomersCmd(manager)
-	cmd.RootCmd.AddCommand(command)
 }

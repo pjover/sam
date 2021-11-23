@@ -9,6 +9,14 @@ import (
 	"github.com/spf13/cobra"
 )
 
+func init() {
+	cmd.RootCmd.AddCommand(NewListInvoicesCmd())
+}
+
+func NewListInvoicesCmd() *cobra.Command {
+	return newListInvoicesCmd(list.NewListInvoices())
+}
+
 func newListInvoicesCmd(manager list.ListInvoices) *cobra.Command {
 	return &cobra.Command{
 		Use:   "llistaFactures [codiClient] [AAAA-MM]",
@@ -38,12 +46,6 @@ func newListInvoicesCmd(manager list.ListInvoices) *cobra.Command {
 			return parseListInvoicesArgs(manager, args)
 		},
 	}
-}
-
-func init() {
-	manager := list.NewListInvoices()
-	command := newListInvoicesCmd(manager)
-	cmd.RootCmd.AddCommand(command)
 }
 
 func parseListInvoicesArgs(manager list.ListInvoices, args []string) error {
