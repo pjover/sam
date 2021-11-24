@@ -8,10 +8,10 @@ import (
 )
 
 func NewBillConsumptionsCmd() *cobra.Command {
-	return newBillConsumptionsCmd(consum.NewConsumptionsManager())
+	return newBillConsumptionsCmd(consum.NewBillConsumptionsManager())
 }
 
-func newBillConsumptionsCmd(manager consum.ConsumptionsManager) *cobra.Command {
+func newBillConsumptionsCmd(manager consum.BillConsumptionsManager) *cobra.Command {
 	return &cobra.Command{
 		Use:   "facturaConsums",
 		Short: "Factura els consums no facturats",
@@ -36,7 +36,7 @@ func newBillConsumptionsCmd(manager consum.ConsumptionsManager) *cobra.Command {
 			"bill-consum",
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
-			msg, err := manager.BillConsumptions()
+			msg, err := manager.Run()
 			if err != nil {
 				return err
 			}

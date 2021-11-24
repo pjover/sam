@@ -14,10 +14,10 @@ func NewListConsumptionsCmd() *cobra.Command {
 
 func newListConsumptionsCmd(manager list.ListConsumptions) *cobra.Command {
 	return &cobra.Command{
-		Use:   "llistaConsums [codiClient]",
-		Short: "Mostra els consums d'un client",
-		Long:  "Mostra el consums no facturats d'un client, indicant el seu codi",
-		Example: `   llistaConsums 152     Mostra el consums del client 152
+		Use:   "llistaConsums [codiInfant]",
+		Short: "Mostra els consums d'un infant",
+		Long:  "Mostra el consums no facturats d'un infant, indicant el seu codi",
+		Example: `   llistaConsums 2630    Mostra el consums de l'infant 2630
    llistaConsums         Mostra el consums de tots els clients`,
 		Annotations: map[string]string{"ADM": "Comandes de llistats"},
 		Aliases: []string{
@@ -36,11 +36,11 @@ func newListConsumptionsCmd(manager list.ListConsumptions) *cobra.Command {
 			var msg string
 			var err error
 			if len(args) != 0 {
-				customerCode, err := util.ParseInteger(args[0], "de client")
+				childCode, err := util.ParseInteger(args[0], "de client")
 				if err != nil {
 					return err
 				}
-				msg, err = manager.ListOne(customerCode)
+				msg, err = manager.ListOne(childCode)
 			} else {
 				msg, err = manager.List()
 			}

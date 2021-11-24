@@ -8,26 +8,26 @@ import (
 	"github.com/spf13/viper"
 )
 
-type ConsumptionsManager interface {
-	BillConsumptions() (string, error)
+type BillConsumptionsManager interface {
+	Run() (string, error)
 }
 
-type ConsumptionsManagerImpl struct {
+type BillConsumptionsManagerImpl struct {
 	PostManager     util.HttpPostManager
 	CustomerStorage storage.CustomerStorage
 }
 
-func NewConsumptionsManager() ConsumptionsManager {
-	return ConsumptionsManagerImpl{
+func NewBillConsumptionsManager() BillConsumptionsManager {
+	return BillConsumptionsManagerImpl{
 		util.NewHttpPostManager(),
 		storage.NewCustomerStorage(),
 	}
 }
 
-func (c ConsumptionsManagerImpl) BillConsumptions() (string, error) {
+func (b BillConsumptionsManagerImpl) Run() (string, error) {
 	fmt.Println("Facturant els consums pendents de facturar de tots els infants")
 
 	url := fmt.Sprintf("%s/billing/billConsumptions", viper.GetString("urls.hobbit"))
 	var data []byte
-	return c.PostManager.PrettyJson(url, data)
+	return b.PostManager.PrettyJson(url, data)
 }
