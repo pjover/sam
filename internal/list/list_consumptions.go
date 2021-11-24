@@ -8,7 +8,7 @@ import (
 )
 
 type ListConsumptions interface {
-	ListOne(customerCode int) (string, error)
+	ListOne(childCode int) (string, error)
 	List() (string, error)
 }
 
@@ -22,9 +22,9 @@ func NewListConsumptions() ListConsumptions {
 	}
 }
 
-func (l ListConsumptionsImpl) ListOne(customerCode int) (string, error) {
-	fmt.Println("Llistat dels consums pendents del client", customerCode)
-	url := fmt.Sprintf("%s/consumptions/%d", viper.GetString("urls.hobbit"), customerCode)
+func (l ListConsumptionsImpl) ListOne(childCode int) (string, error) {
+	fmt.Println("Llistat dels consums pendents del client", childCode)
+	url := fmt.Sprintf("%s/consumptions/%d", viper.GetString("urls.hobbit"), childCode)
 	return l.getManager.PrettyJson(url)
 }
 

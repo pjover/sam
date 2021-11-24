@@ -12,12 +12,12 @@ import (
 var iconNote string
 
 func NewInsertConsumptionsCmd() *cobra.Command {
-	command := newInsertConsumptionsCmd(consum.NewConsumptionsManager())
+	command := newInsertConsumptionsCmd(consum.NewInsertConsumptionsManager())
 	command.Flags().StringVarP(&iconNote, "nota", "n", "", "Afegeix una nota al consum")
 	return command
 }
 
-func newInsertConsumptionsCmd(manager consum.ConsumptionsManager) *cobra.Command {
+func newInsertConsumptionsCmd(manager consum.CustomerConsumptionsManager) *cobra.Command {
 	return &cobra.Command{
 		Use:   "insertaConsums codiInfant unitats codiProducte [unitats codiProducte ...] [-n nota]",
 		Short: "Inserta consums per a un infant",
@@ -45,7 +45,7 @@ func newInsertConsumptionsCmd(manager consum.ConsumptionsManager) *cobra.Command
 				return err
 			}
 
-			msg, err := manager.InsertConsumptions(ica)
+			msg, err := manager.Run(ica)
 			if err != nil {
 				return err
 			}
@@ -56,34 +56,34 @@ func newInsertConsumptionsCmd(manager consum.ConsumptionsManager) *cobra.Command
 	}
 }
 
-func parseInsertConsumptionsArgs(args []string, noteArg string) (consum.InsertConsumptionsArgs, error) {
+func parseInsertConsumptionsArgs(args []string, noteArg string) (consum.CustomerConsumptionsArgs, error) {
 	code, err := util.ParseInteger(args[0], "d'infant")
 	if err != nil {
-		return consum.InsertConsumptionsArgs{}, err
+		return consum.CustomerConsumptionsArgs{}, err
 	}
 
 	var consMap = make(map[string]float64)
 	for i := 1; i < len(args); i = i + 2 {
 		if i >= len(args)-1 {
-			return consum.InsertConsumptionsArgs{}, errors.New("No s'ha indroduit el codi del darrer producte")
+			return consum.CustomerConsumptionsArgs{}, errors.New("No s'ha indroduit el codi del darrer producte")
 		}
 
 		consUnits, err := util.ParseFloat(args[i])
 		if err != nil {
-			return consum.InsertConsumptionsArgs{}, err
+			return consum.CustomerConsumptionsArgs{}, err
 		}
 
 		productCode, err := util.ParseProductCode(args[i+1])
 		if err != nil {
-			return consum.InsertConsumptionsArgs{}, err
+			return consum.CustomerConsumptionsArgs{}, err
 		}
 
 		if _, ok := consMap[productCode]; ok {
-			return consum.InsertConsumptionsArgs{}, errors.New("Hi ha un codi de producte repetit")
+			return consum.CustomerConsumptionsArgs{}, errors.New("Hi ha un codi de producte repetit")
 		}
 
 		consMap[productCode] = consUnits
 	}
 
-	return consum.InsertConsumptionsArgs{Code: code, Consumptions: consMap, Note: noteArg}, nil
+	return consum.CustomerConsumptionsArgs{Code: code, Consumptions: consMap, Note: noteArg}, nil
 }
