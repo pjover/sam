@@ -9,7 +9,6 @@ import (
 )
 
 type ConsumptionsManager interface {
-	RectifyConsumptions(args CustomerConsumptionsArgs) (string, error)
 	BillConsumptions() (string, error)
 }
 
@@ -23,22 +22,6 @@ func NewConsumptionsManager() ConsumptionsManager {
 		util.NewHttpPostManager(),
 		storage.NewCustomerStorage(),
 	}
-}
-
-func (c ConsumptionsManagerImpl) RectifyConsumptions(args CustomerConsumptionsArgs) (string, error) {
-	child, err := c.CustomerStorage.GetChild(args.Code)
-	if err != nil {
-		return "", err
-	}
-	fmt.Println("Rectificant els consums de l'infant", child.Name, child.Surname)
-
-	data, err := getConsumptionsJson(args)
-	if err != nil {
-		return "", err
-	}
-
-	url := fmt.Sprintf("%s/consumptions/rectification", viper.GetString("urls.hobbit"))
-	return c.PostManager.PrettyJson(url, data)
 }
 
 func (c ConsumptionsManagerImpl) BillConsumptions() (string, error) {

@@ -11,12 +11,12 @@ import (
 var rconNote string
 
 func NewRectifyConsumptionsCmd() *cobra.Command {
-	command := newRectifyConsumptionsCmd(consum.NewConsumptionsManager())
+	command := newRectifyConsumptionsCmd(consum.NewRectifyConsumptionsManager())
 	command.Flags().StringVarP(&rconNote, "nota", "n", "", "Afegeix una nota al consum")
 	return command
 }
 
-func newRectifyConsumptionsCmd(manager consum.ConsumptionsManager) *cobra.Command {
+func newRectifyConsumptionsCmd(manager consum.CustomerConsumptionsManager) *cobra.Command {
 	return &cobra.Command{
 		Use:   "rectificaConsums codiInfant unitats codiProducte [unitats codiProducte ...] [-n nota]",
 		Short: "Rectifica els consums d'un infant",
@@ -45,7 +45,7 @@ func newRectifyConsumptionsCmd(manager consum.ConsumptionsManager) *cobra.Comman
 				return err
 			}
 
-			msg, err := manager.RectifyConsumptions(ica)
+			msg, err := manager.Run(ica)
 			if err != nil {
 				return err
 			}
