@@ -21,17 +21,17 @@ var tests_old = [][]string{
 	//{"listMails"},
 	//{"listProducts"},
 	//{"searchCustomer", "maria"},
-	{"generateSingleInvoice", "f-3945"},
+	//{"generateSingleInvoice", "f-3945"},
 	{"insertConsumptions", "2630", "1", "QME", "2", "MME", "1", "AGE"},
 	{"insertConsumptions", "2640", "1", "QME", "1", "MME"},
 	{"insertConsumptions", "2460", "1", "QME", "1", "MME"},
 	{"rectifyConsumptions", "2460", "1", "MME"},
 	{"billConsumptions"},
-	{"generateBdd"},
-	{"generateMonthInvoices"},
-	{"generateCustomersReport"},
-	{"generateProductsReport"},
-	{"generateMonthReport"},
+	//{"generateBdd"},
+	//{"generateMonthInvoices"},
+	//{"generateCustomersReport"},
+	//{"generateProductsReport"},
+	//{"generateMonthReport"},
 }
 
 func main() {

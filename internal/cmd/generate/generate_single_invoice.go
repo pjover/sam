@@ -10,6 +10,14 @@ import (
 	"github.com/spf13/cobra"
 )
 
+func init() {
+	cmd.RootCmd.AddCommand(NewGenerateSingleInvoiceCmd())
+}
+
+func NewGenerateSingleInvoiceCmd() *cobra.Command {
+	return newGenerateSingleInvoiceCmd(invoices.NewSingleInvoiceGenerator())
+}
+
 func newGenerateSingleInvoiceCmd(generator invoices.SingleInvoiceGenerator) *cobra.Command {
 	return &cobra.Command{
 		Use:         "generaFactura",
@@ -40,9 +48,4 @@ func newGenerateSingleInvoiceCmd(generator invoices.SingleInvoiceGenerator) *cob
 			return err
 		},
 	}
-}
-
-func init() {
-	generator := invoices.NewSingleInvoiceGenerator()
-	cmd.RootCmd.AddCommand(newGenerateSingleInvoiceCmd(generator))
 }

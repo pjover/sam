@@ -9,6 +9,14 @@ import (
 	"github.com/spf13/cobra"
 )
 
+func init() {
+	cmd.RootCmd.AddCommand(NewGenerateCustomersReportCmd())
+}
+
+func NewGenerateCustomersReportCmd() *cobra.Command {
+	return newGenerateCustomersReportCmd(reports.NewCustomersReportGenerator())
+}
+
 func newGenerateCustomersReportCmd(generator generate.Generator) *cobra.Command {
 	return &cobra.Command{
 		Use:         "generaInformeClients",
@@ -37,10 +45,4 @@ func newGenerateCustomersReportCmd(generator generate.Generator) *cobra.Command 
 			return err
 		},
 	}
-}
-
-func init() {
-	generator := reports.NewCustomersReportGenerator()
-	command := newGenerateCustomersReportCmd(generator)
-	cmd.RootCmd.AddCommand(command)
 }

@@ -10,6 +10,16 @@ import (
 
 var onlyNew bool
 
+func init() {
+	cmd.RootCmd.AddCommand(NewGenerateMonthInvoicesCmd())
+}
+
+func NewGenerateMonthInvoicesCmd() *cobra.Command {
+	command := newGenerateMonthInvoicesCmd(invoices.NewMonthInvoicesGenerator())
+	command.Flags().BoolVarP(&onlyNew, "nomes_noves", "n", true, "Genera les factures noves, que no s'han generat abans")
+	return command
+}
+
 func newGenerateMonthInvoicesCmd(generator invoices.MonthInvoicesGenerator) *cobra.Command {
 	return &cobra.Command{
 		Use:         "generaFactures",
@@ -38,11 +48,4 @@ func newGenerateMonthInvoicesCmd(generator invoices.MonthInvoicesGenerator) *cob
 			return err
 		},
 	}
-}
-
-func init() {
-	generator := invoices.NewMonthInvoicesGenerator()
-	command := newGenerateMonthInvoicesCmd(generator)
-	command.Flags().BoolVarP(&onlyNew, "nomes_noves", "n", true, "Genera les factures noves, que no s'han generat abans")
-	cmd.RootCmd.AddCommand(command)
 }

@@ -9,6 +9,14 @@ import (
 	"github.com/spf13/cobra"
 )
 
+func init() {
+	cmd.RootCmd.AddCommand(NewGenerateBddCmd())
+}
+
+func NewGenerateBddCmd() *cobra.Command {
+	return newGenerateBddCmd(bbd.NewBddGenerator())
+}
+
 func newGenerateBddCmd(generator generate.Generator) *cobra.Command {
 	return &cobra.Command{
 		Use:         "generaRebuts",
@@ -34,10 +42,4 @@ func newGenerateBddCmd(generator generate.Generator) *cobra.Command {
 			return err
 		},
 	}
-}
-
-func init() {
-	generator := bbd.NewBddGenerator()
-	command := newGenerateBddCmd(generator)
-	cmd.RootCmd.AddCommand(command)
 }

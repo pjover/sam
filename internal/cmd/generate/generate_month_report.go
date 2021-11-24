@@ -9,6 +9,14 @@ import (
 	"github.com/spf13/cobra"
 )
 
+func init() {
+	cmd.RootCmd.AddCommand(NewGenerateMonthReportCmd())
+}
+
+func NewGenerateMonthReportCmd() *cobra.Command {
+	return newGenerateMonthReportCmd(reports.NewMonthReportGenerator())
+}
+
 func newGenerateMonthReportCmd(generator generate.Generator) *cobra.Command {
 	return &cobra.Command{
 		Use:         "generaInformeMes [AAAA-MM]",
@@ -37,10 +45,4 @@ func newGenerateMonthReportCmd(generator generate.Generator) *cobra.Command {
 			return err
 		},
 	}
-}
-
-func init() {
-	generator := reports.NewMonthReportGenerator()
-	command := newGenerateMonthReportCmd(generator)
-	cmd.RootCmd.AddCommand(command)
 }
