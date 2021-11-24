@@ -2,12 +2,18 @@ package adm
 
 import (
 	"github.com/pjover/sam/internal/adm"
-	"github.com/pjover/sam/internal/cmd"
 	"github.com/spf13/cobra"
 )
 
 var previousMonth bool
 var nextMonth bool
+
+func NewDirectoryCmd() *cobra.Command {
+	command := newDirectoryCmd(adm.NewDirectoryManager())
+	command.Flags().BoolVarP(&previousMonth, "anterior", "a", false, "Es treballa al mes anterior al mes actual")
+	command.Flags().BoolVarP(&nextMonth, "seguent", "s", false, "Es treballa al mes següent al mes actual")
+	return command
+}
 
 func newDirectoryCmd(manager adm.DirectoryManager) *cobra.Command {
 	return &cobra.Command{
@@ -30,12 +36,4 @@ func newDirectoryCmd(manager adm.DirectoryManager) *cobra.Command {
 			return manager.Create(previousMonth, nextMonth)
 		},
 	}
-}
-
-func init() {
-	manager := adm.NewDirectoryManager()
-	command := newDirectoryCmd(manager)
-	command.Flags().BoolVarP(&previousMonth, "anterior", "a", false, "Es treballa al mes anterior al mes actual")
-	command.Flags().BoolVarP(&nextMonth, "seguent", "s", false, "Es treballa al mes següent al mes actual")
-	cmd.RootCmd.AddCommand(command)
 }

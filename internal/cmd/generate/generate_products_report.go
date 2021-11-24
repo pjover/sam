@@ -3,11 +3,14 @@ package generate
 import (
 	"fmt"
 
-	"github.com/pjover/sam/internal/cmd"
 	"github.com/pjover/sam/internal/generate"
 	"github.com/pjover/sam/internal/generate/reports"
 	"github.com/spf13/cobra"
 )
+
+func NewGenerateProductsReportCmd() *cobra.Command {
+	return newGenerateProductsReportCmd(reports.NewProductsReportGenerator())
+}
 
 func newGenerateProductsReportCmd(generator generate.Generator) *cobra.Command {
 	return &cobra.Command{
@@ -37,10 +40,4 @@ func newGenerateProductsReportCmd(generator generate.Generator) *cobra.Command {
 			return err
 		},
 	}
-}
-
-func init() {
-	generator := reports.NewProductsReportGenerator()
-	command := newGenerateProductsReportCmd(generator)
-	cmd.RootCmd.AddCommand(command)
 }

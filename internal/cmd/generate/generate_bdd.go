@@ -3,11 +3,14 @@ package generate
 import (
 	"fmt"
 
-	"github.com/pjover/sam/internal/cmd"
 	"github.com/pjover/sam/internal/generate"
 	"github.com/pjover/sam/internal/generate/bbd"
 	"github.com/spf13/cobra"
 )
+
+func NewGenerateBddCmd() *cobra.Command {
+	return newGenerateBddCmd(bbd.NewBddGenerator())
+}
 
 func newGenerateBddCmd(generator generate.Generator) *cobra.Command {
 	return &cobra.Command{
@@ -34,10 +37,4 @@ func newGenerateBddCmd(generator generate.Generator) *cobra.Command {
 			return err
 		},
 	}
-}
-
-func init() {
-	generator := bbd.NewBddGenerator()
-	command := newGenerateBddCmd(generator)
-	cmd.RootCmd.AddCommand(command)
 }

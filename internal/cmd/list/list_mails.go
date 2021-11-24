@@ -3,7 +3,6 @@ package list
 import (
 	"fmt"
 
-	"github.com/pjover/sam/internal/cmd"
 	"github.com/pjover/sam/internal/list"
 
 	"github.com/spf13/cobra"
@@ -12,6 +11,14 @@ import (
 var ei1 bool
 var ei2 bool
 var ei3 bool
+
+func NewListMailsCmd() *cobra.Command {
+	command := newListMailsCmd(list.NewListMails())
+	command.Flags().BoolVarP(&ei1, "ei1", "1", false, "Educació infantil 1")
+	command.Flags().BoolVarP(&ei2, "ei2", "2", false, "Educació infantil 2")
+	command.Flags().BoolVarP(&ei3, "ei3", "3", false, "Educació infantil 3")
+	return command
+}
 
 func newListMailsCmd(manager list.ListMails) *cobra.Command {
 	return &cobra.Command{
@@ -46,13 +53,4 @@ func newListMailsCmd(manager list.ListMails) *cobra.Command {
 			return nil
 		},
 	}
-}
-
-func init() {
-	manager := list.NewListMails()
-	command := newListMailsCmd(manager)
-	command.Flags().BoolVarP(&ei1, "ei1", "1", false, "Educació infantil 1")
-	command.Flags().BoolVarP(&ei2, "ei2", "2", false, "Educació infantil 2")
-	command.Flags().BoolVarP(&ei3, "ei3", "3", false, "Educació infantil 3")
-	cmd.RootCmd.AddCommand(command)
 }

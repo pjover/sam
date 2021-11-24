@@ -4,13 +4,15 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/pjover/sam/internal/cmd"
 	"github.com/pjover/sam/internal/display"
 	"github.com/pjover/sam/internal/util"
 
 	"github.com/spf13/cobra"
 )
 
+func NewDisplayInvoiceCmd() *cobra.Command {
+	return newDisplayInvoiceCmd(display.NewInvoiceDisplay())
+}
 func newDisplayInvoiceCmd(dsp display.Display) *cobra.Command {
 	return &cobra.Command{
 		Use:         "mostraFactura codiFactura",
@@ -42,10 +44,4 @@ func newDisplayInvoiceCmd(dsp display.Display) *cobra.Command {
 			return nil
 		},
 	}
-}
-
-func init() {
-	dsp := display.NewInvoiceDisplay()
-	command := newDisplayInvoiceCmd(dsp)
-	cmd.RootCmd.AddCommand(command)
 }

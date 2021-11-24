@@ -3,11 +3,14 @@ package list
 import (
 	"fmt"
 
-	"github.com/pjover/sam/internal/cmd"
 	"github.com/pjover/sam/internal/list"
 	"github.com/pjover/sam/internal/util"
 	"github.com/spf13/cobra"
 )
+
+func NewListConsumptionsCmd() *cobra.Command {
+	return newListConsumptionsCmd(list.NewListConsumptions())
+}
 
 func newListConsumptionsCmd(manager list.ListConsumptions) *cobra.Command {
 	return &cobra.Command{
@@ -49,10 +52,4 @@ func newListConsumptionsCmd(manager list.ListConsumptions) *cobra.Command {
 			return nil
 		},
 	}
-}
-
-func init() {
-	manager := list.NewListConsumptions()
-	command := newListConsumptionsCmd(manager)
-	cmd.RootCmd.AddCommand(command)
 }

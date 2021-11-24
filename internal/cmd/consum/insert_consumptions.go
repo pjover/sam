@@ -4,13 +4,18 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/pjover/sam/internal/cmd"
 	"github.com/pjover/sam/internal/consum"
 	"github.com/pjover/sam/internal/util"
 	"github.com/spf13/cobra"
 )
 
 var iconNote string
+
+func NewInsertConsumptionsCmd() *cobra.Command {
+	command := newInsertConsumptionsCmd(consum.NewConsumptionsManager())
+	command.Flags().StringVarP(&iconNote, "nota", "n", "", "Afegeix una nota al consum")
+	return command
+}
 
 func newInsertConsumptionsCmd(manager consum.ConsumptionsManager) *cobra.Command {
 	return &cobra.Command{
@@ -49,13 +54,6 @@ func newInsertConsumptionsCmd(manager consum.ConsumptionsManager) *cobra.Command
 			return nil
 		},
 	}
-}
-
-func init() {
-	manager := consum.NewConsumptionsManager()
-	command := newInsertConsumptionsCmd(manager)
-	command.Flags().StringVarP(&iconNote, "nota", "n", "", "Afegeix una nota al consum")
-	cmd.RootCmd.AddCommand(command)
 }
 
 func parseInsertConsumptionsArgs(args []string, noteArg string) (consum.InsertConsumptionsArgs, error) {

@@ -3,11 +3,14 @@ package list
 import (
 	"fmt"
 
-	"github.com/pjover/sam/internal/cmd"
 	"github.com/pjover/sam/internal/list"
 	"github.com/pjover/sam/internal/util"
 	"github.com/spf13/cobra"
 )
+
+func NewListInvoicesCmd() *cobra.Command {
+	return newListInvoicesCmd(list.NewListInvoices())
+}
 
 func newListInvoicesCmd(manager list.ListInvoices) *cobra.Command {
 	return &cobra.Command{
@@ -38,12 +41,6 @@ func newListInvoicesCmd(manager list.ListInvoices) *cobra.Command {
 			return parseListInvoicesArgs(manager, args)
 		},
 	}
-}
-
-func init() {
-	manager := list.NewListInvoices()
-	command := newListInvoicesCmd(manager)
-	cmd.RootCmd.AddCommand(command)
 }
 
 func parseListInvoicesArgs(manager list.ListInvoices, args []string) error {

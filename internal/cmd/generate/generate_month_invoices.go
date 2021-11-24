@@ -3,12 +3,17 @@ package generate
 import (
 	"fmt"
 
-	"github.com/pjover/sam/internal/cmd"
 	"github.com/pjover/sam/internal/generate/invoices"
 	"github.com/spf13/cobra"
 )
 
 var onlyNew bool
+
+func NewGenerateMonthInvoicesCmd() *cobra.Command {
+	command := newGenerateMonthInvoicesCmd(invoices.NewMonthInvoicesGenerator())
+	command.Flags().BoolVarP(&onlyNew, "nomes_noves", "n", true, "Genera les factures noves, que no s'han generat abans")
+	return command
+}
 
 func newGenerateMonthInvoicesCmd(generator invoices.MonthInvoicesGenerator) *cobra.Command {
 	return &cobra.Command{
@@ -38,11 +43,4 @@ func newGenerateMonthInvoicesCmd(generator invoices.MonthInvoicesGenerator) *cob
 			return err
 		},
 	}
-}
-
-func init() {
-	generator := invoices.NewMonthInvoicesGenerator()
-	command := newGenerateMonthInvoicesCmd(generator)
-	command.Flags().BoolVarP(&onlyNew, "nomes_noves", "n", true, "Genera les factures noves, que no s'han generat abans")
-	cmd.RootCmd.AddCommand(command)
 }

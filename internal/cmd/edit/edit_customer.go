@@ -1,12 +1,14 @@
 package edit
 
 import (
-	"github.com/pjover/sam/internal/cmd"
 	"github.com/pjover/sam/internal/edit"
 	"github.com/pjover/sam/internal/util"
 	"github.com/spf13/cobra"
 )
 
+func NewEditCustomerCmd() *cobra.Command {
+	return newEditCustomerCmd(edit.NewCustomerEditor())
+}
 func newEditCustomerCmd(editor edit.Editor) *cobra.Command {
 	return &cobra.Command{
 		Use:         "editaClient codiClient",
@@ -35,10 +37,4 @@ func newEditCustomerCmd(editor edit.Editor) *cobra.Command {
 			return editor.Edit(args[0])
 		},
 	}
-}
-
-func init() {
-	editor := edit.NewCustomerEditor()
-	command := newEditCustomerCmd(editor)
-	cmd.RootCmd.AddCommand(command)
 }

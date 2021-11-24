@@ -3,11 +3,14 @@ package search
 import (
 	"fmt"
 
-	"github.com/pjover/sam/internal/cmd"
 	"github.com/pjover/sam/internal/search"
 	"github.com/pjover/sam/internal/util"
 	"github.com/spf13/cobra"
 )
+
+func NewSearchCustomerCmd() *cobra.Command {
+	return newSearchCustomerCmd(search.NewSearchManager())
+}
 
 func newSearchCustomerCmd(manager search.SearchManager) *cobra.Command {
 	return &cobra.Command{
@@ -42,10 +45,4 @@ func newSearchCustomerCmd(manager search.SearchManager) *cobra.Command {
 			return nil
 		},
 	}
-}
-
-func init() {
-	manager := search.NewSearchManager()
-	command := newSearchCustomerCmd(manager)
-	cmd.RootCmd.AddCommand(command)
 }

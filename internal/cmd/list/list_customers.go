@@ -3,11 +3,14 @@ package list
 import (
 	"fmt"
 
-	"github.com/pjover/sam/internal/cmd"
 	"github.com/pjover/sam/internal/list"
 
 	"github.com/spf13/cobra"
 )
+
+func NewListCustomersCmd() *cobra.Command {
+	return newListCustomersCmd(list.NewListCustomers())
+}
 
 func newListCustomersCmd(manager list.List) *cobra.Command {
 	return &cobra.Command{
@@ -38,10 +41,4 @@ func newListCustomersCmd(manager list.List) *cobra.Command {
 			return nil
 		},
 	}
-}
-
-func init() {
-	manager := list.NewListCustomers()
-	command := newListCustomersCmd(manager)
-	cmd.RootCmd.AddCommand(command)
 }
