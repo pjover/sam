@@ -20,7 +20,7 @@ var tests_old = [][]string{
 	//{"listInvoices"},
 	//{"listMails"},
 	//{"listProducts"},
-	{"searchCustomer", "maria"},
+	//{"searchCustomer", "maria"},
 	{"generateSingleInvoice", "f-3945"},
 	{"insertConsumptions", "2630", "1", "QME", "2", "MME", "1", "AGE"},
 	{"insertConsumptions", "2640", "1", "QME", "1", "MME"},

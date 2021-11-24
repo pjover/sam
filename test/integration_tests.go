@@ -6,6 +6,7 @@ import (
 	"github.com/pjover/sam/internal/cmd/adm"
 	"github.com/pjover/sam/internal/cmd/display"
 	"github.com/pjover/sam/internal/cmd/list"
+	"github.com/pjover/sam/internal/cmd/search"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -31,6 +32,7 @@ var tests = []integrationTest{
 	{list.NewListInvoicesCmd(), []string{}},
 	{list.NewListMailsCmd(), []string{}},
 	{list.NewListProductsCmd(), []string{}},
+	{search.NewSearchCustomerCmd(), []string{"maria"}},
 }
 
 func main() {

@@ -9,6 +9,14 @@ import (
 	"github.com/spf13/cobra"
 )
 
+func init() {
+	cmd.RootCmd.AddCommand(NewSearchCustomerCmd())
+}
+
+func NewSearchCustomerCmd() *cobra.Command {
+	return newSearchCustomerCmd(search.NewSearchManager())
+}
+
 func newSearchCustomerCmd(manager search.SearchManager) *cobra.Command {
 	return &cobra.Command{
 		Use:         "buscaClient nomDelClient",
@@ -42,10 +50,4 @@ func newSearchCustomerCmd(manager search.SearchManager) *cobra.Command {
 			return nil
 		},
 	}
-}
-
-func init() {
-	manager := search.NewSearchManager()
-	command := newSearchCustomerCmd(manager)
-	cmd.RootCmd.AddCommand(command)
 }
