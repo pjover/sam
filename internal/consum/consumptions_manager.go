@@ -56,7 +56,7 @@ type ConsumptionBody struct {
 }
 type ChildBody struct {
 	Code         int               `json:"code"`
-	Consumptions []ConsumptionBody `json:"consum"`
+	Consumptions []ConsumptionBody `json:"consumptions"`
 }
 type Body struct {
 	YearMonth string      `json:"yearMonth"`
@@ -86,6 +86,7 @@ func (c ConsumptionsManagerImpl) getConsumptionsJson(args InsertConsumptionsArgs
 		fmt.Println(err)
 		return nil, err
 	}
+	fmt.Println(string(bytes[:]))
 	return bytes, nil
 }
 

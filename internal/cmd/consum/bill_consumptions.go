@@ -3,14 +3,9 @@ package consum
 import (
 	"fmt"
 
-	"github.com/pjover/sam/internal/cmd"
 	"github.com/pjover/sam/internal/consum"
 	"github.com/spf13/cobra"
 )
-
-func init() {
-	cmd.RootCmd.AddCommand(NewBillConsumptionsCmd())
-}
 
 func NewBillConsumptionsCmd() *cobra.Command {
 	return newBillConsumptionsCmd(consum.NewConsumptionsManager())

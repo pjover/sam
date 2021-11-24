@@ -3,16 +3,11 @@ package generate
 import (
 	"fmt"
 
-	"github.com/pjover/sam/internal/cmd"
 	"github.com/pjover/sam/internal/generate/invoices"
 	"github.com/spf13/cobra"
 )
 
 var onlyNew bool
-
-func init() {
-	cmd.RootCmd.AddCommand(NewGenerateMonthInvoicesCmd())
-}
 
 func NewGenerateMonthInvoicesCmd() *cobra.Command {
 	command := newGenerateMonthInvoicesCmd(invoices.NewMonthInvoicesGenerator())

@@ -3,17 +3,12 @@ package consum
 import (
 	"fmt"
 
-	"github.com/pjover/sam/internal/cmd"
 	"github.com/pjover/sam/internal/consum"
 	"github.com/pjover/sam/internal/util"
 	"github.com/spf13/cobra"
 )
 
 var rconNote string
-
-func init() {
-	cmd.RootCmd.AddCommand(NewRectifyConsumptionsCmd())
-}
 
 func NewRectifyConsumptionsCmd() *cobra.Command {
 	command := newRectifyConsumptionsCmd(consum.NewConsumptionsManager())

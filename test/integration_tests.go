@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"fmt"
+	"github.com/pjover/sam/internal/cmd"
 	"github.com/pjover/sam/internal/cmd/adm"
 	"github.com/pjover/sam/internal/cmd/consum"
 	"github.com/pjover/sam/internal/cmd/display"
@@ -43,12 +44,13 @@ var tests = []integrationTest{
 	{generate.NewGenerateSingleInvoiceCmd(), []string{"f-3945"}},
 	{generate.NewGenerateBddCmd(), []string{}},
 	{generate.NewGenerateCustomersReportCmd(), []string{}},
-	{generate.NewGenerateMonthInvoicesCmd(), []string{}},
+	//{generate.NewGenerateMonthInvoicesCmd(), []string{}},
 	{generate.NewGenerateMonthReportCmd(), []string{}},
 	{generate.NewGenerateProductsReportCmd(), []string{}},
 }
 
 func main() {
+	cmd.InitConfig()
 	var errCount int
 	var sb strings.Builder
 	for _, test := range tests {

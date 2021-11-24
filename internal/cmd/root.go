@@ -2,6 +2,13 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/pjover/sam/internal/cmd/adm"
+	"github.com/pjover/sam/internal/cmd/consum"
+	"github.com/pjover/sam/internal/cmd/display"
+	"github.com/pjover/sam/internal/cmd/edit"
+	"github.com/pjover/sam/internal/cmd/generate"
+	"github.com/pjover/sam/internal/cmd/list"
+	"github.com/pjover/sam/internal/cmd/search"
 	"os"
 
 	"github.com/pjover/sam/internal/util"
@@ -27,12 +34,42 @@ func Execute() {
 }
 
 func init() {
-	cobra.OnInitialize(initConfig)
+	cobra.OnInitialize(InitConfig)
 	RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.sam)")
+
+	RootCmd.AddCommand(adm.NewDirectoryCmd())
+
+	RootCmd.AddCommand(consum.NewBillConsumptionsCmd())
+	RootCmd.AddCommand(consum.NewInsertConsumptionsCmd())
+	RootCmd.AddCommand(consum.NewRectifyConsumptionsCmd())
+
+	RootCmd.AddCommand(display.NewDisplayCustomerCmd())
+	RootCmd.AddCommand(display.NewDisplayInvoiceCmd())
+	RootCmd.AddCommand(display.NewDisplayProductCmd())
+
+	RootCmd.AddCommand(edit.NewEditCustomerCmd())
+	RootCmd.AddCommand(edit.NewEditInvoiceCmd())
+	RootCmd.AddCommand(edit.NewEditProductCmd())
+
+	RootCmd.AddCommand(generate.NewGenerateBddCmd())
+	RootCmd.AddCommand(generate.NewGenerateCustomersReportCmd())
+	RootCmd.AddCommand(generate.NewGenerateMonthInvoicesCmd())
+	RootCmd.AddCommand(generate.NewGenerateMonthReportCmd())
+	RootCmd.AddCommand(generate.NewGenerateProductsReportCmd())
+	RootCmd.AddCommand(generate.NewGenerateSingleInvoiceCmd())
+
+	RootCmd.AddCommand(list.NewListChildrenCmd())
+	RootCmd.AddCommand(list.NewListConsumptionsCmd())
+	RootCmd.AddCommand(list.NewListCustomersCmd())
+	RootCmd.AddCommand(list.NewListInvoicesCmd())
+	RootCmd.AddCommand(list.NewListMailsCmd())
+	RootCmd.AddCommand(list.NewListProductsCmd())
+
+	RootCmd.AddCommand(search.NewSearchCustomerCmd())
 }
 
-// initConfig reads in config file and ENV variables if set.
-func initConfig() {
+// InitConfig reads in config file and ENV variables if set.
+func InitConfig() {
 	// Find home directory.
 	home, err := os.UserHomeDir()
 	cobra.CheckErr(err)

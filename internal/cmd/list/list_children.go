@@ -3,15 +3,10 @@ package list
 import (
 	"fmt"
 
-	"github.com/pjover/sam/internal/cmd"
 	"github.com/pjover/sam/internal/list"
 
 	"github.com/spf13/cobra"
 )
-
-func init() {
-	cmd.RootCmd.AddCommand(NewListChildrenCmd())
-}
 
 func NewListChildrenCmd() *cobra.Command {
 	return newListChildrenCmd(list.NewListChildren())

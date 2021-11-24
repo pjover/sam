@@ -3,15 +3,10 @@ package edit
 import (
 	"strings"
 
-	"github.com/pjover/sam/internal/cmd"
 	"github.com/pjover/sam/internal/edit"
 	"github.com/pjover/sam/internal/util"
 	"github.com/spf13/cobra"
 )
-
-func init() {
-	cmd.RootCmd.AddCommand(NewEditInvoiceCmd())
-}
 
 func NewEditInvoiceCmd() *cobra.Command {
 	return newEditInvoiceCmd(edit.NewInvoiceEditor())

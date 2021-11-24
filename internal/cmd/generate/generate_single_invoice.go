@@ -4,15 +4,10 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/pjover/sam/internal/cmd"
 	"github.com/pjover/sam/internal/generate/invoices"
 	"github.com/pjover/sam/internal/util"
 	"github.com/spf13/cobra"
 )
-
-func init() {
-	cmd.RootCmd.AddCommand(NewGenerateSingleInvoiceCmd())
-}
 
 func NewGenerateSingleInvoiceCmd() *cobra.Command {
 	return newGenerateSingleInvoiceCmd(invoices.NewSingleInvoiceGenerator())

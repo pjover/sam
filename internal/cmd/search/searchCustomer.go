@@ -3,15 +3,10 @@ package search
 import (
 	"fmt"
 
-	"github.com/pjover/sam/internal/cmd"
 	"github.com/pjover/sam/internal/search"
 	"github.com/pjover/sam/internal/util"
 	"github.com/spf13/cobra"
 )
-
-func init() {
-	cmd.RootCmd.AddCommand(NewSearchCustomerCmd())
-}
 
 func NewSearchCustomerCmd() *cobra.Command {
 	return newSearchCustomerCmd(search.NewSearchManager())

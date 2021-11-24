@@ -4,16 +4,11 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/pjover/sam/internal/cmd"
 	"github.com/pjover/sam/internal/display"
 	"github.com/pjover/sam/internal/util"
 
 	"github.com/spf13/cobra"
 )
-
-func init() {
-	cmd.RootCmd.AddCommand(NewDisplayInvoiceCmd())
-}
 
 func NewDisplayInvoiceCmd() *cobra.Command {
 	return newDisplayInvoiceCmd(display.NewInvoiceDisplay())

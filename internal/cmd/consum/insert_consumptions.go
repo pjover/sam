@@ -4,17 +4,12 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/pjover/sam/internal/cmd"
 	"github.com/pjover/sam/internal/consum"
 	"github.com/pjover/sam/internal/util"
 	"github.com/spf13/cobra"
 )
 
 var iconNote string
-
-func init() {
-	cmd.RootCmd.AddCommand(NewInsertConsumptionsCmd())
-}
 
 func NewInsertConsumptionsCmd() *cobra.Command {
 	command := newInsertConsumptionsCmd(consum.NewConsumptionsManager())

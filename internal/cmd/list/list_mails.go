@@ -3,7 +3,6 @@ package list
 import (
 	"fmt"
 
-	"github.com/pjover/sam/internal/cmd"
 	"github.com/pjover/sam/internal/list"
 
 	"github.com/spf13/cobra"
@@ -12,10 +11,6 @@ import (
 var ei1 bool
 var ei2 bool
 var ei3 bool
-
-func init() {
-	cmd.RootCmd.AddCommand(NewListMailsCmd())
-}
 
 func NewListMailsCmd() *cobra.Command {
 	command := newListMailsCmd(list.NewListMails())

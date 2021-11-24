@@ -3,15 +3,10 @@ package display
 import (
 	"fmt"
 
-	"github.com/pjover/sam/internal/cmd"
 	"github.com/pjover/sam/internal/display"
 	"github.com/pjover/sam/internal/util"
 	"github.com/spf13/cobra"
 )
-
-func init() {
-	cmd.RootCmd.AddCommand(NewDisplayProductCmd())
-}
 
 func NewDisplayProductCmd() *cobra.Command {
 	return newDisplayProductCmd(display.NewProductDisplay())

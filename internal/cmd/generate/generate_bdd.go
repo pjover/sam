@@ -3,15 +3,10 @@ package generate
 import (
 	"fmt"
 
-	"github.com/pjover/sam/internal/cmd"
 	"github.com/pjover/sam/internal/generate"
 	"github.com/pjover/sam/internal/generate/bbd"
 	"github.com/spf13/cobra"
 )
-
-func init() {
-	cmd.RootCmd.AddCommand(NewGenerateBddCmd())
-}
 
 func NewGenerateBddCmd() *cobra.Command {
 	return newGenerateBddCmd(bbd.NewBddGenerator())
