@@ -40,12 +40,12 @@ func (c ConsumptionsManagerImpl) InsertConsumptions(args InsertConsumptionsArgs)
 	}
 	fmt.Println("Insertant consums de l'infant", child.Name, child.Surname)
 
-	data, err := c.getInsertConsumptionsJson(args)
+	data, err := c.getConsumptionsJson(args)
 	if err != nil {
 		return "", err
 	}
 
-	url := fmt.Sprintf("%s/consum", viper.GetString("urls.hobbit"))
+	url := fmt.Sprintf("%s/consumptions", viper.GetString("urls.hobbit"))
 	return c.PostManager.PrettyJson(url, data)
 }
 
@@ -70,16 +70,16 @@ func (c ConsumptionsManagerImpl) RectifyConsumptions(args InsertConsumptionsArgs
 	}
 	fmt.Println("Rectificant els consums de l'infant", child.Name, child.Surname)
 
-	data, err := c.getInsertConsumptionsJson(args)
+	data, err := c.getConsumptionsJson(args)
 	if err != nil {
 		return "", err
 	}
 
-	url := fmt.Sprintf("%s/consum/rectification", viper.GetString("urls.hobbit"))
+	url := fmt.Sprintf("%s/consumptions/rectification", viper.GetString("urls.hobbit"))
 	return c.PostManager.PrettyJson(url, data)
 }
 
-func (c ConsumptionsManagerImpl) getInsertConsumptionsJson(args InsertConsumptionsArgs) ([]byte, error) {
+func (c ConsumptionsManagerImpl) getConsumptionsJson(args InsertConsumptionsArgs) ([]byte, error) {
 	consumptionsBody := c.buildConsumptionsBody(args)
 	bytes, err := json.Marshal(consumptionsBody)
 	if err != nil {

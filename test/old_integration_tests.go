@@ -7,31 +7,31 @@ import (
 )
 
 var tests_old = [][]string{
-	//{"directory"},
-	//{"displayCustomer", "246"},
-	//{"displayInvoice", "f-3945"},
-	//{"displayProduct", "age"},
-	//{"editCustomer", "246"},
-	//{"editInvoice", "f-3945"},
-	//{"editProduct", "age"},
-	//{"listChildren"},
-	//{"listConsumptions"},
-	//{"listCustomers"},
-	//{"listInvoices"},
-	//{"listMails"},
-	//{"listProducts"},
-	//{"searchCustomer", "maria"},
-	//{"generateSingleInvoice", "f-3945"},
+	{"directory"},
+	{"displayCustomer", "246"},
+	{"displayInvoice", "f-3945"},
+	{"displayProduct", "age"},
+	{"editCustomer", "246"},
+	{"editInvoice", "f-3945"},
+	{"editProduct", "age"},
+	{"listChildren"},
+	{"listConsumptions"},
+	{"listCustomers"},
+	{"listInvoices"},
+	{"listMails"},
+	{"listProducts"},
+	{"searchCustomer", "maria"},
+	{"generateSingleInvoice", "f-3945"},
 	{"insertConsumptions", "2630", "1", "QME", "2", "MME", "1", "AGE"},
 	{"insertConsumptions", "2640", "1", "QME", "1", "MME"},
 	{"insertConsumptions", "2460", "1", "QME", "1", "MME"},
 	{"rectifyConsumptions", "2460", "1", "MME"},
 	{"billConsumptions"},
-	//{"generateBdd"},
-	//{"generateMonthInvoices"},
-	//{"generateCustomersReport"},
-	//{"generateProductsReport"},
-	//{"generateMonthReport"},
+	{"generateBdd"},
+	{"generateMonthInvoices"},
+	{"generateCustomersReport"},
+	{"generateProductsReport"},
+	{"generateMonthReport"},
 }
 
 func main() {
@@ -40,9 +40,9 @@ func main() {
 		errCount += run_old("sam", args...)
 	}
 	if errCount == 0 {
-		fmt.Printf("All %d tests passed", len(tests))
+		fmt.Printf("All %d tests passed", len(tests_old))
 	} else {
-		fmt.Printf("%d of %d tests failed", errCount, len(tests))
+		fmt.Printf("%d of %d tests failed", errCount, len(tests_old))
 	}
 }
 

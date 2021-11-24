@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"github.com/pjover/sam/internal/cmd/adm"
+	"github.com/pjover/sam/internal/cmd/consum"
 	"github.com/pjover/sam/internal/cmd/display"
 	"github.com/pjover/sam/internal/cmd/generate"
 	"github.com/pjover/sam/internal/cmd/list"
@@ -34,7 +35,11 @@ var tests = []integrationTest{
 	{list.NewListMailsCmd(), []string{}},
 	{list.NewListProductsCmd(), []string{}},
 	{search.NewSearchCustomerCmd(), []string{"maria"}},
-
+	{consum.NewInsertConsumptionsCmd(), []string{"2630", "1", "QME", "2", "MME", "1", "AGE"}},
+	{consum.NewInsertConsumptionsCmd(), []string{"2640", "1", "QME", "1", "MME"}},
+	{consum.NewInsertConsumptionsCmd(), []string{"2620", "1", "QME", "1", "MME"}},
+	{consum.NewRectifyConsumptionsCmd(), []string{"2620", "1", "MME"}},
+	{consum.NewBillConsumptionsCmd(), []string{}},
 	{generate.NewGenerateSingleInvoiceCmd(), []string{"f-3945"}},
 	{generate.NewGenerateBddCmd(), []string{}},
 	{generate.NewGenerateCustomersReportCmd(), []string{}},
@@ -65,10 +70,10 @@ func main() {
 func run(test integrationTest) (bool, string) {
 	_, err := executeCommand(test.cmd, test.args...)
 	if err != nil {
-		msg := fmt.Sprintf("🔴 %s %s > ERROR: %s\n", test.cmd.Name(), strings.Join(test.args, " "), err)
+		msg := fmt.Sprintf("🔴 sam %s %s >>> %s\n", test.cmd.Name(), strings.Join(test.args, " "), err)
 		return true, msg
 	} else {
-		msg := fmt.Sprintf("🟢 %s %s\n", test.cmd.Name(), strings.Join(test.args, " "))
+		msg := fmt.Sprintf("🟢 sam %s %s\n", test.cmd.Name(), strings.Join(test.args, " "))
 		return false, msg
 	}
 }

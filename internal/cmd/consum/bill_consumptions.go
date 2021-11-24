@@ -8,6 +8,14 @@ import (
 	"github.com/spf13/cobra"
 )
 
+func init() {
+	cmd.RootCmd.AddCommand(NewBillConsumptionsCmd())
+}
+
+func NewBillConsumptionsCmd() *cobra.Command {
+	return newBillConsumptionsCmd(consum.NewConsumptionsManager())
+}
+
 func newBillConsumptionsCmd(manager consum.ConsumptionsManager) *cobra.Command {
 	return &cobra.Command{
 		Use:   "facturaConsums",
@@ -42,10 +50,4 @@ func newBillConsumptionsCmd(manager consum.ConsumptionsManager) *cobra.Command {
 			return nil
 		},
 	}
-}
-
-func init() {
-	manager := consum.NewConsumptionsManager()
-	command := newBillConsumptionsCmd(manager)
-	cmd.RootCmd.AddCommand(command)
 }

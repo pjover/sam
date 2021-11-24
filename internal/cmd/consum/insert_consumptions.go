@@ -12,6 +12,16 @@ import (
 
 var iconNote string
 
+func init() {
+	cmd.RootCmd.AddCommand(NewInsertConsumptionsCmd())
+}
+
+func NewInsertConsumptionsCmd() *cobra.Command {
+	command := newInsertConsumptionsCmd(consum.NewConsumptionsManager())
+	command.Flags().StringVarP(&iconNote, "nota", "n", "", "Afegeix una nota al consum")
+	return command
+}
+
 func newInsertConsumptionsCmd(manager consum.ConsumptionsManager) *cobra.Command {
 	return &cobra.Command{
 		Use:   "insertaConsums codiInfant unitats codiProducte [unitats codiProducte ...] [-n nota]",
@@ -49,13 +59,6 @@ func newInsertConsumptionsCmd(manager consum.ConsumptionsManager) *cobra.Command
 			return nil
 		},
 	}
-}
-
-func init() {
-	manager := consum.NewConsumptionsManager()
-	command := newInsertConsumptionsCmd(manager)
-	command.Flags().StringVarP(&iconNote, "nota", "n", "", "Afegeix una nota al consum")
-	cmd.RootCmd.AddCommand(command)
 }
 
 func parseInsertConsumptionsArgs(args []string, noteArg string) (consum.InsertConsumptionsArgs, error) {
