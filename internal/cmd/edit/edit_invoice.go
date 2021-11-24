@@ -10,9 +10,7 @@ import (
 )
 
 func init() {
-	editor := edit.NewInvoiceEditor()
-	command := newEditInvoiceCmd(editor)
-	cmd.RootCmd.AddCommand(command)
+	cmd.RootCmd.AddCommand(NewEditInvoiceCmd())
 }
 
 func NewEditInvoiceCmd() *cobra.Command {
