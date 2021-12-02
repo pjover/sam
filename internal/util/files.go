@@ -29,7 +29,7 @@ func CreateDir(dirName string) error {
 		return err
 	}
 
-	fmt.Println("Creat el directori de treball", dirPath, "...")
+	fmt.Println("Creat el directori de treball", dirPath)
 	return nil
 }
 
