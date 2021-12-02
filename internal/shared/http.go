@@ -4,16 +4,13 @@ import (
 	"archive/zip"
 	"bytes"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
-	"os/exec"
 	"path"
-	"runtime"
 	"strings"
 )
 
@@ -246,19 +243,5 @@ func closeFile(file *os.File) {
 	err := file.Close()
 	if err != nil {
 		log.Fatal(err)
-	}
-}
-
-func OpenOnBrowser(url string) error {
-
-	switch runtime.GOOS {
-	case "linux":
-		return exec.Command("xdg-open", url).Start()
-	case "windows":
-		return exec.Command("rundll32", "url.dll,FileProtocolHandler", url).Start()
-	case "darwin":
-		return exec.Command("open", url).Start()
-	default:
-		return errors.New("unsupported platform")
 	}
 }

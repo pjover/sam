@@ -25,12 +25,17 @@ type DirectoryManagerImpl struct {
 func (d DirectoryManagerImpl) Create(previousMonth bool, nextMonth bool) error {
 	yearMonth, dirName := d.GetDirConfig(previousMonth, nextMonth)
 
-	err := shared.CreateDir(dirName)
+	dirPath, err := shared.CreateDir(dirName)
 	if err != nil {
 		return err
 	}
 
 	err = d.updateConfig(yearMonth, dirName)
+	if err != nil {
+		return err
+	}
+
+	err = shared.OpenOnDefaultApp(dirPath)
 	if err != nil {
 		return err
 	}
