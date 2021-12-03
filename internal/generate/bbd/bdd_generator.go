@@ -6,17 +6,17 @@ import (
 	"path/filepath"
 
 	"github.com/pjover/sam/internal/generate"
-	"github.com/pjover/sam/internal/util"
+	"github.com/pjover/sam/internal/shared"
 	"github.com/spf13/viper"
 )
 
 type BddGeneratorImpl struct {
-	postManager util.HttpPostManager
+	postManager shared.HttpPostManager
 }
 
 func NewBddGenerator() generate.Generator {
 	return BddGeneratorImpl{
-		util.NewHttpPostManager(),
+		shared.NewHttpPostManager(),
 	}
 }
 
@@ -27,7 +27,7 @@ func (b BddGeneratorImpl) Generate() (string, error) {
 		viper.GetString("yearMonth"),
 	)
 
-	dir := util.GetWorkingDirectory()
+	dir := shared.GetWorkingDirectory()
 	currentFilenames := listFiles(dir, ".qx1")
 	filename := getNextBddFilename(currentFilenames)
 	return b.postManager.File(url, dir, filename)
@@ -56,7 +56,7 @@ func listFiles(dir string, ext string) []string {
 func getNextBddFilename(currentFilenames []string) string {
 	sequence := len(currentFilenames) + 1
 	filename := buildBddFilename(sequence)
-	for util.StringInList(filename, currentFilenames) {
+	for shared.StringInList(filename, currentFilenames) {
 		sequence += 1
 		filename = buildBddFilename(sequence)
 	}

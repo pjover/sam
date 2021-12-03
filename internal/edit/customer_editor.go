@@ -3,7 +3,7 @@ package edit
 import (
 	"fmt"
 
-	"github.com/pjover/sam/internal/util"
+	"github.com/pjover/sam/internal/shared"
 	"github.com/spf13/viper"
 )
 
@@ -17,5 +17,5 @@ func NewCustomerEditor() Editor {
 func (c CustomerEditorImpl) Edit(code string) error {
 	_url := fmt.Sprintf("%s/customer/%s", viper.GetString("urls.mongoExpress"), code)
 	fmt.Println("Editant el client", code, "a", _url)
-	return util.OpenOnBrowser(_url)
+	return shared.OpenOnDefaultApp(_url)
 }

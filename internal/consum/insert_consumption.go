@@ -2,19 +2,19 @@ package consum
 
 import (
 	"fmt"
+	"github.com/pjover/sam/internal/shared"
 	"github.com/pjover/sam/internal/storage"
-	"github.com/pjover/sam/internal/util"
 	"github.com/spf13/viper"
 )
 
 type InsertConsumptionsManager struct {
-	PostManager     util.HttpPostManager
+	PostManager     shared.HttpPostManager
 	CustomerStorage storage.CustomerStorage
 }
 
 func NewInsertConsumptionsManager() CustomerConsumptionsManager {
 	return InsertConsumptionsManager{
-		util.NewHttpPostManager(),
+		shared.NewHttpPostManager(),
 		storage.NewCustomerStorage(),
 	}
 }

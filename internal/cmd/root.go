@@ -11,7 +11,7 @@ import (
 	"github.com/pjover/sam/internal/cmd/search"
 	"os"
 
-	"github.com/pjover/sam/internal/util"
+	"github.com/pjover/sam/internal/shared"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -24,7 +24,7 @@ var RootCmd = &cobra.Command{
 	Short: "A Command Line Interface to Hobbit service",
 	Long: `A Command Line Interface to Hobbit service in Go.
 	Complete documentation is available at https://github.com/pjover/sam`,
-	Version: util.Version,
+	Version: shared.Version,
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -92,5 +92,5 @@ func InitConfig() {
 		panic(fmt.Errorf("Fatal error config file: %w \n", err))
 	}
 
-	util.DefaultConfig(home)
+	shared.DefaultConfig(home)
 }

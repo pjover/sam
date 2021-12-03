@@ -5,7 +5,7 @@ import (
 	"os"
 	"path"
 
-	"github.com/pjover/sam/internal/util"
+	"github.com/pjover/sam/internal/shared"
 	"github.com/spf13/viper"
 )
 
@@ -14,12 +14,12 @@ type MonthInvoicesGenerator interface {
 }
 
 type MonthInvoicesGeneratorImpl struct {
-	postManager util.HttpPostManager
+	postManager shared.HttpPostManager
 }
 
 func NewMonthInvoicesGenerator() MonthInvoicesGenerator {
 	return MonthInvoicesGeneratorImpl{
-		util.NewHttpPostManager(),
+		shared.NewHttpPostManager(),
 	}
 }
 
@@ -33,7 +33,7 @@ func (m MonthInvoicesGeneratorImpl) Generate(onlyNew bool) (string, error) {
 		onlyNew,
 	)
 
-	dirPath := path.Join(util.GetWorkingDirectory(), viper.GetString("dirs.invoicesName"))
+	dirPath := path.Join(shared.GetWorkingDirectory(), viper.GetString("dirs.invoicesName"))
 	err := os.MkdirAll(dirPath, 0755)
 	if err != nil {
 		return "", err

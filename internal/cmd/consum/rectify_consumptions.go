@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/pjover/sam/internal/consum"
-	"github.com/pjover/sam/internal/util"
+	"github.com/pjover/sam/internal/shared"
 	"github.com/spf13/cobra"
 )
 
@@ -38,7 +38,7 @@ func newRectifyConsumptionsCmd(manager consum.CustomerConsumptionsManager) *cobr
 			"rectifyconsumptions",
 			"rectify-consum",
 		},
-		Args: util.MinimumNArgs(3),
+		Args: shared.MinimumNArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ica, err := parseInsertConsumptionsArgs(args, rconNote)
 			if err != nil {

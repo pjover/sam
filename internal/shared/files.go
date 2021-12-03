@@ -1,4 +1,4 @@
-package util
+package shared
 
 import (
 	"fmt"
@@ -11,26 +11,26 @@ func GetWorkingDirectory() string {
 	return path.Join(viper.GetString("dirs.home"), viper.GetString("dirs.current"))
 }
 
-func CreateDir(dirName string) error {
+func CreateDir(dirName string) (string, error) {
 	parentDir := viper.GetString("dirs.home")
 	dirPath := path.Join(parentDir, dirName)
 	exists, err := FileExists(dirPath)
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	if exists {
 		fmt.Println("El directori de treball", dirPath, "ja existeix")
-		return nil
+		return dirPath, nil
 	}
 
 	err = os.MkdirAll(dirPath, 0755)
 	if err != nil {
-		return err
+		return "", err
 	}
 
-	fmt.Println("Creat el directori de treball", dirPath, "...")
-	return nil
+	fmt.Println("Creat el directori de treball", dirPath)
+	return dirPath, nil
 }
 
 func FileExists(path string) (bool, error) {

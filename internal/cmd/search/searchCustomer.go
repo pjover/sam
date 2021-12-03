@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/pjover/sam/internal/search"
-	"github.com/pjover/sam/internal/util"
+	"github.com/pjover/sam/internal/shared"
 	"github.com/spf13/cobra"
 )
 
@@ -34,7 +34,7 @@ func newSearchCustomerCmd(manager search.SearchManager) *cobra.Command {
 			"searchcustomer",
 			"search-customer",
 		},
-		Args: util.MinimumNArgs(1),
+		Args: shared.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			msg, err := manager.SearchCustomer(args)
 			if err != nil {

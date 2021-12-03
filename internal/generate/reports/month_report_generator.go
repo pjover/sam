@@ -10,20 +10,20 @@ import (
 	"github.com/johnfercher/maroto/pkg/consts"
 	"github.com/pjover/sam/internal/generate"
 	"github.com/pjover/sam/internal/model"
+	"github.com/pjover/sam/internal/shared"
 	"github.com/pjover/sam/internal/storage"
 	"github.com/pjover/sam/internal/translate"
-	"github.com/pjover/sam/internal/util"
 	"github.com/spf13/viper"
 )
 
 type MonthReportGenerator struct {
-	getManager      util.HttpGetManager
+	getManager      shared.HttpGetManager
 	customerStorage storage.CustomerStorage
 }
 
 func NewMonthReportGenerator() generate.Generator {
 	return MonthReportGenerator{
-		util.NewHttpGetManager(),
+		shared.NewHttpGetManager(),
 		storage.NewCustomerStorage(),
 	}
 }
@@ -41,10 +41,10 @@ func (i MonthReportGenerator) Generate() (string, error) {
 		return "", err
 	}
 	filePath := path.Join(
-		util.GetWorkingDirectory(),
+		shared.GetWorkingDirectory(),
 		viper.GetString("files.invoicesReport"),
 	)
-	month, err := time.Parse(util.YearMonthLayout, viper.GetString("yearMonth"))
+	month, err := time.Parse(shared.YearMonthLayout, viper.GetString("yearMonth"))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -83,7 +83,7 @@ type monthInvoices struct {
 	} `json:"_links"`
 }
 
-func (i MonthReportGenerator) getInvoices(getManager util.HttpGetManager) (*monthInvoices, error) {
+func (i MonthReportGenerator) getInvoices(getManager shared.HttpGetManager) (*monthInvoices, error) {
 	ym := viper.GetString("yearMonth")
 	url := fmt.Sprintf("%s/invoices/search/findByYearMonthIn?yearMonths=%s", viper.GetString("urls.hobbit"), ym)
 	invoices := new(monthInvoices)

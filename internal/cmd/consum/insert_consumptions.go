@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/pjover/sam/internal/consum"
-	"github.com/pjover/sam/internal/util"
+	"github.com/pjover/sam/internal/shared"
 	"github.com/spf13/cobra"
 )
 
@@ -38,7 +38,7 @@ func newInsertConsumptionsCmd(manager consum.CustomerConsumptionsManager) *cobra
 			"insertconsumptions",
 			"insert-consum",
 		},
-		Args: util.MinimumNArgs(3),
+		Args: shared.MinimumNArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ica, err := parseInsertConsumptionsArgs(args, iconNote)
 			if err != nil {
@@ -57,7 +57,7 @@ func newInsertConsumptionsCmd(manager consum.CustomerConsumptionsManager) *cobra
 }
 
 func parseInsertConsumptionsArgs(args []string, noteArg string) (consum.CustomerConsumptionsArgs, error) {
-	code, err := util.ParseInteger(args[0], "d'infant")
+	code, err := shared.ParseInteger(args[0], "d'infant")
 	if err != nil {
 		return consum.CustomerConsumptionsArgs{}, err
 	}
@@ -68,12 +68,12 @@ func parseInsertConsumptionsArgs(args []string, noteArg string) (consum.Customer
 			return consum.CustomerConsumptionsArgs{}, errors.New("No s'ha indroduit el codi del darrer producte")
 		}
 
-		consUnits, err := util.ParseFloat(args[i])
+		consUnits, err := shared.ParseFloat(args[i])
 		if err != nil {
 			return consum.CustomerConsumptionsArgs{}, err
 		}
 
-		productCode, err := util.ParseProductCode(args[i+1])
+		productCode, err := shared.ParseProductCode(args[i+1])
 		if err != nil {
 			return consum.CustomerConsumptionsArgs{}, err
 		}

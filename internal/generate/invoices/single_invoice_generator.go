@@ -3,7 +3,7 @@ package invoices
 import (
 	"fmt"
 
-	"github.com/pjover/sam/internal/util"
+	"github.com/pjover/sam/internal/shared"
 	"github.com/spf13/viper"
 )
 
@@ -12,12 +12,12 @@ type SingleInvoiceGenerator interface {
 }
 
 type SingleInvoiceGeneratorImpl struct {
-	postManager util.HttpPostManager
+	postManager shared.HttpPostManager
 }
 
 func NewSingleInvoiceGenerator() SingleInvoiceGenerator {
 	return SingleInvoiceGeneratorImpl{
-		util.NewHttpPostManager(),
+		shared.NewHttpPostManager(),
 	}
 }
 
@@ -26,5 +26,5 @@ func (s SingleInvoiceGeneratorImpl) Generate(invoiceCode string) (string, error)
 
 	url := fmt.Sprintf("%s/generate/pdf/%s", viper.GetString("urls.hobbit"), invoiceCode)
 
-	return s.postManager.FileWithDefaultName(url, util.GetWorkingDirectory())
+	return s.postManager.FileWithDefaultName(url, shared.GetWorkingDirectory())
 }

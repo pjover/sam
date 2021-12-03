@@ -3,17 +3,17 @@ package list
 import (
 	"fmt"
 
-	"github.com/pjover/sam/internal/util"
+	"github.com/pjover/sam/internal/shared"
 	"github.com/spf13/viper"
 )
 
 type ListCustomers struct {
-	getManager util.HttpGetManager
+	getManager shared.HttpGetManager
 }
 
 func NewListCustomers() List {
 	return ListCustomers{
-		util.NewHttpGetManager(),
+		shared.NewHttpGetManager(),
 	}
 }
 

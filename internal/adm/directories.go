@@ -3,8 +3,8 @@ package adm
 import (
 	"time"
 
+	"github.com/pjover/sam/internal/shared"
 	"github.com/pjover/sam/internal/translate"
-	"github.com/pjover/sam/internal/util"
 	"github.com/spf13/viper"
 )
 
@@ -14,23 +14,28 @@ type DirectoryManager interface {
 
 func NewDirectoryManager() DirectoryManager {
 	return DirectoryManagerImpl{
-		util.SamTimeManager{},
+		shared.SamTimeManager{},
 	}
 }
 
 type DirectoryManagerImpl struct {
-	Timer util.TimeManager
+	Timer shared.TimeManager
 }
 
 func (d DirectoryManagerImpl) Create(previousMonth bool, nextMonth bool) error {
 	yearMonth, dirName := d.GetDirConfig(previousMonth, nextMonth)
 
-	err := util.CreateDir(dirName)
+	dirPath, err := shared.CreateDir(dirName)
 	if err != nil {
 		return err
 	}
 
 	err = d.updateConfig(yearMonth, dirName)
+	if err != nil {
+		return err
+	}
+
+	err = shared.OpenOnDefaultApp(dirPath)
 	if err != nil {
 		return err
 	}

@@ -26,7 +26,7 @@ func MonthName(month time.Time) string {
 		"September": "de Setembre",
 		"October":   "d'Octubre",
 		"November":  "de Novembre",
-		"December":  "de Decembre",
+		"December":  "de Desembre",
 	}
 	return m[month.Month().String()]
 }
