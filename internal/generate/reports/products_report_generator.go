@@ -9,17 +9,17 @@ import (
 	"github.com/johnfercher/maroto/pkg/consts"
 	"github.com/pjover/sam/internal/generate"
 	"github.com/pjover/sam/internal/model"
-	"github.com/pjover/sam/internal/util"
+	"github.com/pjover/sam/internal/shared"
 	"github.com/spf13/viper"
 )
 
 type ProductsReportGenerator struct {
-	getManager util.HttpGetManager
+	getManager shared.HttpGetManager
 }
 
 func NewProductsReportGenerator() generate.Generator {
 	return ProductsReportGenerator{
-		util.NewHttpGetManager(),
+		shared.NewHttpGetManager(),
 	}
 }
 

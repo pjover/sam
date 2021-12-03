@@ -3,8 +3,8 @@ package consum
 import (
 	"fmt"
 
+	"github.com/pjover/sam/internal/shared"
 	"github.com/pjover/sam/internal/storage"
-	"github.com/pjover/sam/internal/util"
 	"github.com/spf13/viper"
 )
 
@@ -13,13 +13,13 @@ type BillConsumptionsManager interface {
 }
 
 type BillConsumptionsManagerImpl struct {
-	PostManager     util.HttpPostManager
+	PostManager     shared.HttpPostManager
 	CustomerStorage storage.CustomerStorage
 }
 
 func NewBillConsumptionsManager() BillConsumptionsManager {
 	return BillConsumptionsManagerImpl{
-		util.NewHttpPostManager(),
+		shared.NewHttpPostManager(),
 		storage.NewCustomerStorage(),
 	}
 }

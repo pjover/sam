@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/url"
 
-	"github.com/pjover/sam/internal/util"
+	"github.com/pjover/sam/internal/shared"
 	"github.com/spf13/viper"
 )
 
@@ -13,12 +13,12 @@ type SearchManager interface {
 }
 
 type SearchManagerImpl struct {
-	GetManager util.HttpGetManager
+	GetManager shared.HttpGetManager
 }
 
 func NewSearchManager() SearchManager {
 	return SearchManagerImpl{
-		GetManager: util.NewHttpGetManager(),
+		GetManager: shared.NewHttpGetManager(),
 	}
 }
 

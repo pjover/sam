@@ -1,4 +1,4 @@
-package util
+package shared
 
 import (
 	"github.com/spf13/viper"

@@ -3,17 +3,17 @@ package display
 import (
 	"fmt"
 
-	"github.com/pjover/sam/internal/util"
+	"github.com/pjover/sam/internal/shared"
 	"github.com/spf13/viper"
 )
 
 type ProductDisplay struct {
-	getManager util.HttpGetManager
+	getManager shared.HttpGetManager
 }
 
 func NewProductDisplay() Display {
 	return ProductDisplay{
-		util.NewHttpGetManager(),
+		shared.NewHttpGetManager(),
 	}
 }
 

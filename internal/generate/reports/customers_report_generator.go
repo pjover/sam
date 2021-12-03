@@ -8,17 +8,17 @@ import (
 	"github.com/johnfercher/maroto/pkg/consts"
 	"github.com/pjover/sam/internal/generate"
 	"github.com/pjover/sam/internal/model"
-	"github.com/pjover/sam/internal/util"
+	"github.com/pjover/sam/internal/shared"
 	"github.com/spf13/viper"
 )
 
 type CustomersReportGenerator struct {
-	getManager util.HttpGetManager
+	getManager shared.HttpGetManager
 }
 
 func NewCustomersReportGenerator() generate.Generator {
 	return CustomersReportGenerator{
-		util.NewHttpGetManager(),
+		shared.NewHttpGetManager(),
 	}
 }
 
@@ -70,7 +70,7 @@ type activeCustomers struct {
 	} `json:"_links"`
 }
 
-func (c CustomersReportGenerator) getCustomers(getManager util.HttpGetManager) (*activeCustomers, error) {
+func (c CustomersReportGenerator) getCustomers(getManager shared.HttpGetManager) (*activeCustomers, error) {
 	url := fmt.Sprintf(
 		"%s/customers/search/findAllByActiveTrue",
 		viper.GetString("urls.hobbit"),

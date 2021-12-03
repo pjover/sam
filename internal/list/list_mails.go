@@ -3,7 +3,7 @@ package list
 import (
 	"fmt"
 
-	"github.com/pjover/sam/internal/util"
+	"github.com/pjover/sam/internal/shared"
 	"github.com/spf13/viper"
 )
 
@@ -12,12 +12,12 @@ type ListMails interface {
 }
 
 type ListMailsImpl struct {
-	getManager util.HttpGetManager
+	getManager shared.HttpGetManager
 }
 
 func NewListMails() ListMails {
 	return ListMailsImpl{
-		util.NewHttpGetManager(),
+		shared.NewHttpGetManager(),
 	}
 }
 

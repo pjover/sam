@@ -4,17 +4,17 @@ import (
 	"fmt"
 
 	"github.com/pjover/sam/internal/model"
-	"github.com/pjover/sam/internal/util"
+	"github.com/pjover/sam/internal/shared"
 	"github.com/spf13/viper"
 )
 
 type CustomerStorage struct {
-	getManager util.HttpGetManager
+	getManager shared.HttpGetManager
 }
 
 func NewCustomerStorage() CustomerStorage {
 	return CustomerStorage{
-		util.NewHttpGetManager(),
+		shared.NewHttpGetManager(),
 	}
 }
 

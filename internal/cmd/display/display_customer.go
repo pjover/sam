@@ -3,7 +3,7 @@ package display
 import (
 	"fmt"
 	"github.com/pjover/sam/internal/display"
-	"github.com/pjover/sam/internal/util"
+	"github.com/pjover/sam/internal/shared"
 	"github.com/spf13/cobra"
 )
 
@@ -30,9 +30,9 @@ func newDisplayCustomerCmd(dsp display.Display) *cobra.Command {
 			"displaycustomer",
 			"display-customer",
 		},
-		Args: util.ExactArgs(1),
+		Args: shared.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			_, err := util.ParseInteger(args[0], "de client")
+			_, err := shared.ParseInteger(args[0], "de client")
 			if err != nil {
 				return err
 			}

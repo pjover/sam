@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/pjover/sam/internal/util/mocks"
+	"github.com/pjover/sam/internal/shared/mocks"
 	"github.com/stretchr/testify/assert"
 )
 

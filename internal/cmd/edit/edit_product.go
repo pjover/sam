@@ -2,7 +2,7 @@ package edit
 
 import (
 	"github.com/pjover/sam/internal/edit"
-	"github.com/pjover/sam/internal/util"
+	"github.com/pjover/sam/internal/shared"
 	"github.com/spf13/cobra"
 )
 
@@ -27,9 +27,9 @@ func newEditProductCmd(editor edit.Editor) *cobra.Command {
 			"editproduct",
 			"edit-product",
 		},
-		Args: util.ExactArgs(1),
+		Args: shared.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			productCode, err := util.ParseProductCode(args[0])
+			productCode, err := shared.ParseProductCode(args[0])
 			if err != nil {
 				return err
 			}

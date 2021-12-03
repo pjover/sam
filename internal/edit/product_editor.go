@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/url"
 
-	"github.com/pjover/sam/internal/util"
+	"github.com/pjover/sam/internal/shared"
 	"github.com/spf13/viper"
 )
 
@@ -19,5 +19,5 @@ func (c ProductEditorImpl) Edit(code string) error {
 	_code := url.QueryEscape(fmt.Sprintf("\"%s\"", code))
 	_url := fmt.Sprintf("%s/product/%s", viper.GetString("urls.mongoExpress"), _code)
 	fmt.Println("Editant el producte", code, "a", _url)
-	return util.OpenOnBrowser(_url)
+	return shared.OpenOnBrowser(_url)
 }
