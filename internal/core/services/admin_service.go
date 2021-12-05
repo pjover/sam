@@ -26,8 +26,8 @@ func NewAdminService(configService ports.ConfigService, timeManager os.TimeManag
 }
 
 func (a adminService) Backup() (string, error) {
-	filePath := a.filePath()
 	fmt.Println("Fent la còpia de seguretat de la base de dades ...")
+	filePath := a.filePath()
 
 	return fmt.Sprint("Completada la còpia de seguretat de la base de dades a", filePath, " ..."), nil
 }
