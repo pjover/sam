@@ -2,7 +2,7 @@ package admin
 
 import (
 	"fmt"
-	"github.com/pjover/sam/internal/adapters/primary/cli"
+	"github.com/pjover/sam/internal/adapters/cli"
 	"github.com/pjover/sam/internal/core/ports"
 	"github.com/spf13/cobra"
 )

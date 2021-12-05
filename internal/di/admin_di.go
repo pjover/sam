@@ -1,19 +1,19 @@
 package di
 
 import (
-	"github.com/pjover/sam/internal/adapters/primary/cli/admin"
-	"github.com/pjover/sam/internal/core/env"
+	"github.com/pjover/sam/internal/adapters/cfg"
+	admin2 "github.com/pjover/sam/internal/adapters/cli/admin"
 	"github.com/pjover/sam/internal/core/os"
 	"github.com/pjover/sam/internal/core/services"
 	"github.com/spf13/cobra"
 )
 
 func adminServiceDI(rootCmd *cobra.Command) {
-	adminService := services.NewAdminService(os.NewTimeManager(), os.NewFileManager(), env.NewConfigManager(), os.NewOpenManager())
+	adminService := services.NewAdminService(cfg.NewConfigService(), os.NewTimeManager(), os.NewFileManager(), os.NewOpenManager())
 
-	backupCmd := admin.NewBackupCmd(adminService)
+	backupCmd := admin2.NewBackupCmd(adminService)
 	rootCmd.AddCommand(backupCmd.Cmd())
 
-	directoryCmd := admin.NewDirectoryCmd(adminService)
+	directoryCmd := admin2.NewDirectoryCmd(adminService)
 	rootCmd.AddCommand(directoryCmd.Cmd())
 }

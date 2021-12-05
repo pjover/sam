@@ -2,7 +2,6 @@ package services
 
 import (
 	"fmt"
-	"github.com/pjover/sam/internal/core/env"
 	"github.com/pjover/sam/internal/core/os"
 	"github.com/pjover/sam/internal/core/ports"
 	"github.com/pjover/sam/internal/translate"
@@ -11,21 +10,17 @@ import (
 )
 
 type adminService struct {
+	configService ports.ConfigService
 	timeManager   os.TimeManager
 	fileManager   os.FileManager
-	configManager env.ConfigManager
 	openManager   os.OpenManager
 }
 
-func NewAdminService(
-	timeManager os.TimeManager,
-	fileManager os.FileManager,
-	configManager env.ConfigManager,
-	openManager os.OpenManager) ports.AdminService {
+func NewAdminService(configService ports.ConfigService, timeManager os.TimeManager, fileManager os.FileManager, openManager os.OpenManager) ports.AdminService {
 	return adminService{
+		configService: configService,
 		timeManager:   timeManager,
 		fileManager:   fileManager,
-		configManager: configManager,
 		openManager:   openManager,
 	}
 }
@@ -40,7 +35,7 @@ func (a adminService) Backup() (string, error) {
 func (a adminService) filePath() string {
 	dateStr := a.timeManager.Now().Format("060102")
 	return path.Join(
-		a.configManager.Get("dirs.backup"),
+		a.configService.Get("dirs.backup"),
 		fmt.Sprintf("%s-ºBackup.zip", dateStr),
 	)
 }
@@ -50,7 +45,7 @@ func (a adminService) CreateDirectory(previousMonth bool, nextMonth bool) (strin
 	yearMonth := workingTime.Format("2006-01")
 	dirName := translate.WorkingDir(workingTime)
 
-	dirPath := path.Join(a.configManager.Get("dirs.home"), dirName)
+	dirPath := path.Join(a.configService.Get("dirs.home"), dirName)
 	exists, err := a.fileManager.Exists(dirPath)
 	if err != nil {
 		return "", err
@@ -87,10 +82,10 @@ func (a adminService) getWorkingTime(previousMonth bool, nextMonth bool) time.Ti
 }
 
 func (a adminService) updateConfig(yearMonth string, dirName string) error {
-	if err := a.configManager.Set("yearMonth", yearMonth); err != nil {
+	if err := a.configService.Set("yearMonth", yearMonth); err != nil {
 		return err
 	}
-	if err := a.configManager.Set("dirs.current", dirName); err != nil {
+	if err := a.configService.Set("dirs.current", dirName); err != nil {
 		return err
 	}
 	return nil

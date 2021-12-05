@@ -1,7 +1,7 @@
 package di
 
 import (
-	"github.com/pjover/sam/internal/adapters/primary/cli"
+	"github.com/pjover/sam/internal/adapters/cli"
 	"github.com/pjover/sam/internal/cmd/consum"
 	"github.com/pjover/sam/internal/cmd/display"
 	"github.com/pjover/sam/internal/cmd/edit"

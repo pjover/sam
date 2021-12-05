@@ -3,14 +3,14 @@ package main
 import (
 	"bytes"
 	"fmt"
-	"github.com/pjover/sam/internal/adapters/primary/cli"
-	"github.com/pjover/sam/internal/adapters/primary/cli/admin"
+	"github.com/pjover/sam/internal/adapters/cfg"
+	"github.com/pjover/sam/internal/adapters/cli"
+	"github.com/pjover/sam/internal/adapters/cli/admin"
 	"github.com/pjover/sam/internal/cmd/consum"
 	"github.com/pjover/sam/internal/cmd/display"
 	"github.com/pjover/sam/internal/cmd/generate"
 	"github.com/pjover/sam/internal/cmd/list"
 	"github.com/pjover/sam/internal/cmd/search"
-	"github.com/pjover/sam/internal/core/env"
 	"github.com/pjover/sam/internal/core/os"
 	"github.com/pjover/sam/internal/core/services"
 	"strings"
@@ -25,7 +25,7 @@ type integrationTest struct {
 
 var tests = []integrationTest{
 	// TODO integrate with DI
-	{admin.NewDirectoryCmd(services.NewAdminService(os.NewTimeManager(), os.NewFileManager(), env.NewConfigManager(), os.NewOpenManager())).Cmd(), []string{}},
+	{admin.NewDirectoryCmd(services.NewAdminService(cfg.NewConfigService(), os.NewTimeManager(), os.NewFileManager(), os.NewOpenManager())).Cmd(), []string{}},
 	{display.NewDisplayCustomerCmd(), []string{"181"}},
 	{display.NewDisplayInvoiceCmd(), []string{"f-3945"}},
 	{display.NewDisplayProductCmd(), []string{"age"}},

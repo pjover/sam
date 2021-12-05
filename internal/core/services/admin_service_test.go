@@ -1,8 +1,8 @@
 package services
 
 import (
-	env_mocks "github.com/pjover/sam/internal/core/env/mocks"
 	os_mocks "github.com/pjover/sam/internal/core/os/mocks"
+	ports_mocks "github.com/pjover/sam/internal/core/ports/mocks"
 	"github.com/stretchr/testify/mock"
 	"testing"
 	"time"
@@ -18,14 +18,14 @@ func Test_CreateDirectory(t *testing.T) {
 	mockedFileManager.On("Exists", mock.Anything).Return(false, nil)
 	mockedFileManager.On("CreateDirectory", mock.Anything).Return(nil)
 
-	mockedConfigManager := new(env_mocks.ConfigManager)
-	mockedConfigManager.On("Get", "dirs.home").Return("/fake/dir")
-	mockedConfigManager.On("Set", mock.Anything, mock.Anything).Return(nil)
+	mockedConfigService := new(ports_mocks.ConfigService)
+	mockedConfigService.On("Get", "dirs.home").Return("/fake/dir")
+	mockedConfigService.On("Set", mock.Anything, mock.Anything).Return(nil)
 
 	mockedOpenManager := new(os_mocks.OpenManager)
 	mockedOpenManager.On("OnDefaultApp", mock.Anything).Return(nil)
 
-	sut := NewAdminService(mockedTimeManager, mockedFileManager, mockedConfigManager, mockedOpenManager)
+	sut := NewAdminService(mockedConfigService, mockedTimeManager, mockedFileManager, mockedOpenManager)
 
 	t.Run("Should return current month", func(t *testing.T) {
 		msg, err := sut.CreateDirectory(false, false)
