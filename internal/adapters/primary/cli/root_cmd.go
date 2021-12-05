@@ -9,10 +9,6 @@ import (
 	"github.com/spf13/viper"
 )
 
-func init() {
-	cobra.OnInitialize(InitConfig)
-}
-
 // RootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "sam",
@@ -27,6 +23,10 @@ var rootCmd = &cobra.Command{
 func Execute() *cobra.Command {
 	cobra.CheckErr(rootCmd.Execute())
 	return rootCmd
+}
+
+func init() {
+	cobra.OnInitialize(InitConfig)
 }
 
 // InitConfig reads in config file and ENV variables if set.

@@ -2,19 +2,26 @@ package services
 
 import (
 	"fmt"
+	"github.com/pjover/sam/internal/core/env"
+	"github.com/pjover/sam/internal/core/os"
 	"github.com/pjover/sam/internal/core/ports"
 	"github.com/pjover/sam/internal/shared"
-	"github.com/spf13/viper"
+	"github.com/pjover/sam/internal/translate"
 	"path"
+	"time"
 )
 
 type adminService struct {
-	timer shared.TimeManager
+	timeManager   os.TimeManager
+	fileManager   os.FileManager
+	configManager env.ConfigManager
 }
 
-func NewAdminService(timer shared.TimeManager) ports.AdminService {
+func NewAdminService(timeManager os.TimeManager, fileManager os.FileManager, configManager env.ConfigManager) ports.AdminService {
 	return adminService{
-		timer: timer,
+		timeManager:   timeManager,
+		fileManager:   fileManager,
+		configManager: configManager,
 	}
 }
 
@@ -26,13 +33,54 @@ func (a adminService) Backup() (string, error) {
 }
 
 func (a adminService) filePath() string {
-	dateStr := a.timer.Now().Format("060102")
+	dateStr := a.timeManager.Now().Format("060102")
 	return path.Join(
-		viper.GetString("dirs.backup"),
+		a.configManager.Get("dirs.backup"),
 		fmt.Sprintf("%s-ºBackup.zip", dateStr),
 	)
 }
 
 func (a adminService) CreateDirectory(previousMonth bool, nextMonth bool) (string, error) {
-	panic("implement me")
+	workingTime := a.getWorkingTime(previousMonth, nextMonth)
+	yearMonth := workingTime.Format("2006-01")
+	dirName := translate.WorkingDir(workingTime)
+
+	dirPath := path.Join(a.configManager.Get("dirs.home"), dirName)
+	msg, err := a.fileManager.CreateDirectory(dirPath)
+	if err != nil {
+		return "", err
+	}
+
+	err = a.updateConfig(yearMonth, dirName)
+	if err != nil {
+		return "", err
+	}
+
+	err = shared.OpenOnDefaultApp(dirPath)
+	if err != nil {
+		return "", err
+	}
+	return msg, nil
+}
+
+func (a adminService) getWorkingTime(previousMonth bool, nextMonth bool) time.Time {
+	var t = a.timeManager.Now()
+	var workingTime = time.Date(t.Year(), t.Month(), 1, 0, 0, 0, 0, time.Local)
+
+	if previousMonth {
+		workingTime = workingTime.AddDate(0, -1, 0)
+	} else if nextMonth {
+		workingTime = workingTime.AddDate(0, 1, 0)
+	}
+	return workingTime
+}
+
+func (a adminService) updateConfig(yearMonth string, dirName string) error {
+	if err := a.configManager.Set("yearMonth", yearMonth); err != nil {
+		return err
+	}
+	if err := a.configManager.Set("dirs.current", dirName); err != nil {
+		return err
+	}
+	return nil
 }

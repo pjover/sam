@@ -36,7 +36,6 @@ func (b backupCmd) Cmd() *cobra.Command {
 
 			fmt.Println(msg)
 			return nil
-
 		},
 	}
 }

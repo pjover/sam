@@ -2,7 +2,6 @@ package di
 
 import (
 	"github.com/pjover/sam/internal/adapters/primary/cli"
-	"github.com/pjover/sam/internal/cmd/adm"
 	"github.com/pjover/sam/internal/cmd/consum"
 	"github.com/pjover/sam/internal/cmd/display"
 	"github.com/pjover/sam/internal/cmd/edit"
@@ -16,8 +15,6 @@ func MainDependencyInjection() {
 	adminServiceDI(rootCmd)
 
 	// TODO move to DI
-	rootCmd.AddCommand(adm.NewDirectoryCmd())
-
 	rootCmd.AddCommand(consum.NewBillConsumptionsCmd())
 	rootCmd.AddCommand(consum.NewInsertConsumptionsCmd())
 	rootCmd.AddCommand(consum.NewRectifyConsumptionsCmd())
