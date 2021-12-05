@@ -1,4 +1,4 @@
-package shared
+package os
 
 import (
 	"errors"
@@ -6,8 +6,18 @@ import (
 	"runtime"
 )
 
-func OpenOnDefaultApp(url string) error {
+type OpenManager interface {
+	OnDefaultApp(url string) error
+}
 
+type openManager struct {
+}
+
+func NewOpenManager() OpenManager {
+	return openManager{}
+}
+
+func (o openManager) OnDefaultApp(url string) error {
 	switch runtime.GOOS {
 	case "linux":
 		return exec.Command("xdg-open", url).Start()

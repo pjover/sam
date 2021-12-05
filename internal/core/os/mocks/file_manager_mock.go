@@ -9,29 +9,22 @@ type FileManager struct {
 	mock.Mock
 }
 
-// CreateDir provides a mock function with given fields: dirName
-func (_m *FileManager) CreateDirectory(dirName string) (string, error) {
+// CreateDirectory provides a mock function with given fields: dirName
+func (_m *FileManager) CreateDirectory(dirName string) error {
 	ret := _m.Called(dirName)
 
-	var r0 string
-	if rf, ok := ret.Get(0).(func(string) string); ok {
+	var r0 error
+	if rf, ok := ret.Get(0).(func(string) error); ok {
 		r0 = rf(dirName)
 	} else {
-		r0 = ret.Get(0).(string)
+		r0 = ret.Error(0)
 	}
 
-	var r1 error
-	if rf, ok := ret.Get(2).(func(string) error); ok {
-		r1 = rf(dirName)
-	} else {
-		r1 = ret.Error(2)
-	}
-
-	return r0, r1
+	return r0
 }
 
-// FileExists provides a mock function with given fields: path
-func (_m *FileManager) FileExists(path string) (bool, error) {
+// Exists provides a mock function with given fields: path
+func (_m *FileManager) Exists(path string) (bool, error) {
 	ret := _m.Called(path)
 
 	var r0 bool

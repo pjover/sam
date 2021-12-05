@@ -25,7 +25,7 @@ type integrationTest struct {
 
 var tests = []integrationTest{
 	// TODO integrate with DI
-	{admin.NewDirectoryCmd(services.NewAdminService(os.NewTimeManager(), os.NewFileManager(), env.NewConfigManager())).Cmd(), []string{}},
+	{admin.NewDirectoryCmd(services.NewAdminService(os.NewTimeManager(), os.NewFileManager(), env.NewConfigManager(), os.NewOpenManager())).Cmd(), []string{}},
 	{display.NewDisplayCustomerCmd(), []string{"181"}},
 	{display.NewDisplayInvoiceCmd(), []string{"f-3945"}},
 	{display.NewDisplayProductCmd(), []string{"age"}},

@@ -5,7 +5,6 @@ import (
 	"github.com/pjover/sam/internal/core/env"
 	"github.com/pjover/sam/internal/core/os"
 	"github.com/pjover/sam/internal/core/ports"
-	"github.com/pjover/sam/internal/shared"
 	"github.com/pjover/sam/internal/translate"
 	"path"
 	"time"
@@ -15,13 +14,19 @@ type adminService struct {
 	timeManager   os.TimeManager
 	fileManager   os.FileManager
 	configManager env.ConfigManager
+	openManager   os.OpenManager
 }
 
-func NewAdminService(timeManager os.TimeManager, fileManager os.FileManager, configManager env.ConfigManager) ports.AdminService {
+func NewAdminService(
+	timeManager os.TimeManager,
+	fileManager os.FileManager,
+	configManager env.ConfigManager,
+	openManager os.OpenManager) ports.AdminService {
 	return adminService{
 		timeManager:   timeManager,
 		fileManager:   fileManager,
 		configManager: configManager,
+		openManager:   openManager,
 	}
 }
 
@@ -46,21 +51,27 @@ func (a adminService) CreateDirectory(previousMonth bool, nextMonth bool) (strin
 	dirName := translate.WorkingDir(workingTime)
 
 	dirPath := path.Join(a.configManager.Get("dirs.home"), dirName)
-	msg, err := a.fileManager.CreateDirectory(dirPath)
+	exists, err := a.fileManager.Exists(dirPath)
 	if err != nil {
+		return "", err
+	}
+	if exists {
+		return fmt.Sprint("El directori", dirPath, "ja existeix"), nil
+	}
+
+	if err := a.fileManager.CreateDirectory(dirPath); err != nil {
 		return "", err
 	}
 
-	err = a.updateConfig(yearMonth, dirName)
-	if err != nil {
+	if err := a.updateConfig(yearMonth, dirName); err != nil {
 		return "", err
 	}
 
-	err = shared.OpenOnDefaultApp(dirPath)
-	if err != nil {
+	if err := a.openManager.OnDefaultApp(dirPath); err != nil {
 		return "", err
 	}
-	return msg, nil
+
+	return fmt.Sprint("Creat el directori ", dirPath), nil
 }
 
 func (a adminService) getWorkingTime(previousMonth bool, nextMonth bool) time.Time {

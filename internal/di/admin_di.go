@@ -9,7 +9,7 @@ import (
 )
 
 func adminServiceDI(rootCmd *cobra.Command) {
-	adminService := services.NewAdminService(os.NewTimeManager(), os.NewFileManager(), env.NewConfigManager())
+	adminService := services.NewAdminService(os.NewTimeManager(), os.NewFileManager(), env.NewConfigManager(), os.NewOpenManager())
 
 	backupCmd := admin.NewBackupCmd(adminService)
 	rootCmd.AddCommand(backupCmd.Cmd())

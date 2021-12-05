@@ -15,29 +15,33 @@ func Test_CreateDirectory(t *testing.T) {
 	mockedTimeManager.On("Now").Return(time.Date(2021, time.October, 31, 21, 14, 0, 0, time.UTC))
 
 	mockedFileManager := new(os_mocks.FileManager)
-	mockedFileManager.On("CreateDirectory", mock.Anything).Return("OK", nil)
+	mockedFileManager.On("Exists", mock.Anything).Return(false, nil)
+	mockedFileManager.On("CreateDirectory", mock.Anything).Return(nil)
 
 	mockedConfigManager := new(env_mocks.ConfigManager)
-	mockedConfigManager.On("Get", "dirs.home").Return("fake/dir")
+	mockedConfigManager.On("Get", "dirs.home").Return("/fake/dir")
 	mockedConfigManager.On("Set", mock.Anything, mock.Anything).Return(nil)
 
-	sut := NewAdminService(mockedTimeManager, mockedFileManager, mockedConfigManager)
+	mockedOpenManager := new(os_mocks.OpenManager)
+	mockedOpenManager.On("OnDefaultApp", mock.Anything).Return(nil)
+
+	sut := NewAdminService(mockedTimeManager, mockedFileManager, mockedConfigManager, mockedOpenManager)
 
 	t.Run("Should return current month", func(t *testing.T) {
 		msg, err := sut.CreateDirectory(false, false)
-		assert.Equal(t, "211000-Factures del mes d'Octubre", msg)
+		assert.Equal(t, "Creat el directori /fake/dir/211000-Factures del mes d'Octubre", msg)
 		assert.Equal(t, nil, err)
 	})
 
 	t.Run("Should return previous month", func(t *testing.T) {
 		msg, err := sut.CreateDirectory(true, false)
-		assert.Equal(t, "210900-Factures del mes de Setembre", msg)
+		assert.Equal(t, "Creat el directori /fake/dir/210900-Factures del mes de Setembre", msg)
 		assert.Equal(t, nil, err)
 	})
 
 	t.Run("Should return next month", func(t *testing.T) {
 		msg, err := sut.CreateDirectory(false, true)
-		assert.Equal(t, "211100-Factures del mes de Novembre", msg)
+		assert.Equal(t, "Creat el directori /fake/dir/211100-Factures del mes de Novembre", msg)
 		assert.Equal(t, nil, err)
 	})
 }
