@@ -3,7 +3,7 @@ package main
 import (
 	"bytes"
 	"fmt"
-	"github.com/pjover/sam/internal/cmd"
+	"github.com/pjover/sam/internal/adapters/primary/cli"
 	"github.com/pjover/sam/internal/cmd/adm"
 	"github.com/pjover/sam/internal/cmd/consum"
 	"github.com/pjover/sam/internal/cmd/display"
@@ -50,7 +50,7 @@ var tests = []integrationTest{
 }
 
 func main() {
-	cmd.InitConfig()
+	cli.InitConfig()
 	var errCount int
 	var sb strings.Builder
 	for _, test := range tests {
