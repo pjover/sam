@@ -28,27 +28,29 @@ func NewAdminService(configService ports.ConfigService, timeManager os.TimeManag
 
 func (a adminService) Backup() (string, error) {
 	fmt.Println("Fent la còpia de seguretat de la base de dades ...")
-	filePath := a.filePath()
 
-	exists, err := a.fileManager.Exists(filePath)
+	dateStr := a.timeManager.Now().Format("060102")
+	dirPath := a.configService.Get("dirs.backup")
+	exists, err := a.fileManager.Exists(dirPath)
 	if err != nil {
 		return "", err
 	}
 	if !exists {
-		return "", errors.New(fmt.Sprint("El directori ", filePath, " no existeix"))
+		return "", errors.New(fmt.Sprint("El directori ", dirPath, " no existeix"))
 	}
 
-	//a.fileManager.ChangeToDirectory()
+	tmpDirPath := path.Join(dirPath, fmt.Sprintf("%s-Backup", dateStr))
+	if err := a.fileManager.CreateDirectory(tmpDirPath); err != nil {
+		return "", err
+	}
+
+	if err := a.fileManager.ChangeToDirectory(tmpDirPath); err != nil {
+		return "", err
+	}
+
+	filePath := path.Join(dirPath, fmt.Sprintf("%s-Backup.zip", dateStr))
 
 	return fmt.Sprint("Completada la còpia de seguretat de la base de dades a ", filePath, " ..."), nil
-}
-
-func (a adminService) filePath() string {
-	dateStr := a.timeManager.Now().Format("060102")
-	return path.Join(
-		a.configService.Get("dirs.backup"),
-		fmt.Sprintf("%s-ºBackup.zip", dateStr),
-	)
 }
 
 func (a adminService) CreateDirectory(previousMonth bool, nextMonth bool) (string, error) {
