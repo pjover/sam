@@ -1,6 +1,7 @@
 package services
 
 import (
+	"errors"
 	"fmt"
 	"github.com/pjover/sam/internal/core/os"
 	"github.com/pjover/sam/internal/core/ports"
@@ -13,15 +14,15 @@ type adminService struct {
 	configService ports.ConfigService
 	timeManager   os.TimeManager
 	fileManager   os.FileManager
-	openManager   os.OpenManager
+	execManager   os.ExecManager
 }
 
-func NewAdminService(configService ports.ConfigService, timeManager os.TimeManager, fileManager os.FileManager, openManager os.OpenManager) ports.AdminService {
+func NewAdminService(configService ports.ConfigService, timeManager os.TimeManager, fileManager os.FileManager, execManager os.ExecManager) ports.AdminService {
 	return adminService{
 		configService: configService,
 		timeManager:   timeManager,
 		fileManager:   fileManager,
-		openManager:   openManager,
+		execManager:   execManager,
 	}
 }
 
@@ -29,7 +30,17 @@ func (a adminService) Backup() (string, error) {
 	fmt.Println("Fent la còpia de seguretat de la base de dades ...")
 	filePath := a.filePath()
 
-	return fmt.Sprint("Completada la còpia de seguretat de la base de dades a", filePath, " ..."), nil
+	exists, err := a.fileManager.Exists(filePath)
+	if err != nil {
+		return "", err
+	}
+	if !exists {
+		return "", errors.New(fmt.Sprint("El directori ", filePath, " no existeix"))
+	}
+
+	//a.fileManager.ChangeToDirectory()
+
+	return fmt.Sprint("Completada la còpia de seguretat de la base de dades a ", filePath, " ..."), nil
 }
 
 func (a adminService) filePath() string {
@@ -62,7 +73,7 @@ func (a adminService) CreateDirectory(previousMonth bool, nextMonth bool) (strin
 		return "", err
 	}
 
-	if err := a.openManager.OnDefaultApp(dirPath); err != nil {
+	if err := a.execManager.BrowseTo(dirPath); err != nil {
 		return "", err
 	}
 

@@ -9,12 +9,12 @@ import (
 )
 
 type InvoiceEditorImpl struct {
-	openManager os.OpenManager
+	execManager os.ExecManager
 }
 
 func NewInvoiceEditor() Editor {
 	return InvoiceEditorImpl{
-		openManager: os.NewOpenManager(),
+		execManager: os.NewExecManager(),
 	}
 }
 
@@ -22,5 +22,5 @@ func (c InvoiceEditorImpl) Edit(code string) error {
 	_code := url.QueryEscape(fmt.Sprintf("\"%s\"", code))
 	_url := fmt.Sprintf("%s/invoice/%s", viper.GetString("urls.mongoExpress"), _code)
 	fmt.Println("Editant la factura", code, "a", _url)
-	return c.openManager.OnDefaultApp(_url)
+	return c.execManager.BrowseTo(_url)
 }

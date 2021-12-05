@@ -7,6 +7,7 @@ import (
 type FileManager interface {
 	CreateDirectory(dirName string) error
 	Exists(path string) (bool, error)
+	ChangeToDirectory(path string) error
 }
 
 type fileManager struct {
@@ -34,4 +35,8 @@ func (f fileManager) Exists(path string) (bool, error) {
 		return false, nil
 	}
 	return false, err
+}
+
+func (f fileManager) ChangeToDirectory(path string) error {
+	return os.Chdir(path)
 }

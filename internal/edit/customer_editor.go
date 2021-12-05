@@ -8,17 +8,17 @@ import (
 )
 
 type CustomerEditorImpl struct {
-	openManager os.OpenManager
+	execManager os.ExecManager
 }
 
 func NewCustomerEditor() Editor {
 	return CustomerEditorImpl{
-		openManager: os.NewOpenManager(),
+		execManager: os.NewExecManager(),
 	}
 }
 
 func (c CustomerEditorImpl) Edit(code string) error {
 	_url := fmt.Sprintf("%s/customer/%s", viper.GetString("urls.mongoExpress"), code)
 	fmt.Println("Editant el client", code, "a", _url)
-	return c.openManager.OnDefaultApp(_url)
+	return c.execManager.BrowseTo(_url)
 }

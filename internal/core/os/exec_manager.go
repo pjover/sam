@@ -6,18 +6,19 @@ import (
 	"runtime"
 )
 
-type OpenManager interface {
-	OnDefaultApp(url string) error
+type ExecManager interface {
+	BrowseTo(url string) error
+	Run(command string, args ...string) error
 }
 
-type openManager struct {
+type execManager struct {
 }
 
-func NewOpenManager() OpenManager {
-	return openManager{}
+func NewExecManager() ExecManager {
+	return execManager{}
 }
 
-func (o openManager) OnDefaultApp(url string) error {
+func (o execManager) BrowseTo(url string) error {
 	switch runtime.GOOS {
 	case "linux":
 		return exec.Command("xdg-open", url).Start()
@@ -28,4 +29,8 @@ func (o openManager) OnDefaultApp(url string) error {
 	default:
 		return errors.New("unsupported platform")
 	}
+}
+
+func (o execManager) Run(command string, args ...string) error {
+	return exec.Command(command, args...).Start()
 }

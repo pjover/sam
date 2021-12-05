@@ -9,6 +9,20 @@ type FileManager struct {
 	mock.Mock
 }
 
+// ChangeToDirectory provides a mock function with given fields: path
+func (_m *FileManager) ChangeToDirectory(path string) error {
+	ret := _m.Called(path)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(string) error); ok {
+		r0 = rf(path)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
 // CreateDirectory provides a mock function with given fields: dirName
 func (_m *FileManager) CreateDirectory(dirName string) error {
 	ret := _m.Called(dirName)
