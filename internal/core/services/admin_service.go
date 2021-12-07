@@ -39,7 +39,8 @@ func (a adminService) Backup() (string, error) {
 		return "", errors.New(fmt.Sprint("El directori ", dirPath, " no existeix"))
 	}
 
-	tmpDirPath := path.Join(dirPath, fmt.Sprintf("%s-Backup", dateStr))
+	tmpDirName := fmt.Sprintf("%s-Backup", dateStr)
+	tmpDirPath := path.Join(dirPath, tmpDirName)
 	if err := a.fileManager.CreateDirectory(tmpDirPath); err != nil {
 		return "", err
 	}
@@ -48,8 +49,37 @@ func (a adminService) Backup() (string, error) {
 		return "", err
 	}
 
-	filePath := path.Join(dirPath, fmt.Sprintf("%s-Backup.zip", dateStr))
+	var strSlice = []string{"consumption", "customer", "invoice", "product", "sequence"}
+	for _, value := range strSlice {
+		if err := a.execManager.Run(
+			"mongoexport",
+			"--db=hobbit_prod",
+			fmt.Sprintf("--collection=%s", value),
+			fmt.Sprintf("--out=%s.json", value),
+		); err != nil {
+			return "", err
+		}
+	}
 
+	if err := a.fileManager.ChangeToDirectory(dirPath); err != nil {
+		return "", err
+	}
+
+	zipFileName := fmt.Sprintf("%s.zip", tmpDirName)
+	if err := a.execManager.Run(
+		"zip",
+		"-r",
+		zipFileName,
+		fmt.Sprintf("%s/", tmpDirName),
+	); err != nil {
+		return "", err
+	}
+
+	if err := a.fileManager.RemoveDirectory(tmpDirPath); err != nil {
+		return "", err
+	}
+
+	filePath := path.Join(dirPath, zipFileName)
 	return fmt.Sprint("Completada la còpia de seguretat de la base de dades a ", filePath, " ..."), nil
 }
 

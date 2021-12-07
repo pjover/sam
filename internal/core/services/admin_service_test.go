@@ -1,7 +1,6 @@
 package services
 
 import (
-	"errors"
 	os_mocks "github.com/pjover/sam/internal/core/os/mocks"
 	ports_mocks "github.com/pjover/sam/internal/core/ports/mocks"
 	"github.com/stretchr/testify/assert"
@@ -50,69 +49,23 @@ func Test_Backup_ok(t *testing.T) {
 	mockedFileManager.On("Exists", "/fake/dir").Return(true, nil)
 	mockedFileManager.On("CreateDirectory", "/fake/dir/211031-Backup").Return(nil)
 	mockedFileManager.On("ChangeToDirectory", "/fake/dir/211031-Backup").Return(nil)
+	mockedFileManager.On("ChangeToDirectory", "/fake/dir").Return(nil)
+	mockedFileManager.On("RemoveDirectory", "/fake/dir/211031-Backup").Return(nil)
 	mockedConfigService := new(ports_mocks.ConfigService)
 	mockedConfigService.On("Get", "dirs.backup").Return("/fake/dir")
-	mockedOpenManager := new(os_mocks.ExecManager)
+	mockedExecManager := new(os_mocks.ExecManager)
+	mockedExecManager.On("Run", "mongoexport", "--db=hobbit_prod", "--collection=consumption", "--out=consumption.json").Return(nil)
+	mockedExecManager.On("Run", "mongoexport", "--db=hobbit_prod", "--collection=customer", "--out=customer.json").Return(nil)
+	mockedExecManager.On("Run", "mongoexport", "--db=hobbit_prod", "--collection=invoice", "--out=invoice.json").Return(nil)
+	mockedExecManager.On("Run", "mongoexport", "--db=hobbit_prod", "--collection=product", "--out=product.json").Return(nil)
+	mockedExecManager.On("Run", "mongoexport", "--db=hobbit_prod", "--collection=sequence", "--out=sequence.json").Return(nil)
+	mockedExecManager.On("Run", "zip", "-r", "211031-Backup.zip", "211031-Backup/").Return(nil)
 
-	sut := NewAdminService(mockedConfigService, mockedTimeManager, mockedFileManager, mockedOpenManager)
+	sut := NewAdminService(mockedConfigService, mockedTimeManager, mockedFileManager, mockedExecManager)
 
 	t.Run("Should return message with right filename", func(t *testing.T) {
 		msg, err := sut.Backup()
 		assert.Equal(t, "Completada la còpia de seguretat de la base de dades a /fake/dir/211031-Backup.zip ...", msg)
 		assert.Equal(t, nil, err)
-	})
-}
-
-func Test_Backup_dir_exists(t *testing.T) {
-	mockedTimeManager := new(os_mocks.TimeManager)
-	mockedTimeManager.On("Now").Return(time.Date(2021, time.October, 31, 21, 14, 0, 0, time.UTC))
-	mockedFileManager := new(os_mocks.FileManager)
-	mockedFileManager.On("Exists", mock.Anything).Return(false, nil)
-	mockedConfigService := new(ports_mocks.ConfigService)
-	mockedConfigService.On("Get", "dirs.backup").Return("/fake/dir")
-	mockedOpenManager := new(os_mocks.ExecManager)
-
-	sut := NewAdminService(mockedConfigService, mockedTimeManager, mockedFileManager, mockedOpenManager)
-
-	t.Run("Should return an error message if the directory already -exists", func(t *testing.T) {
-		_, err := sut.Backup()
-		assert.Equal(t, errors.New("El directori /fake/dir no existeix"), err)
-	})
-}
-
-func Test_Backup_chdir_error(t *testing.T) {
-	mockedTimeManager := new(os_mocks.TimeManager)
-	mockedTimeManager.On("Now").Return(time.Date(2021, time.October, 31, 21, 14, 0, 0, time.UTC))
-	mockedFileManager := new(os_mocks.FileManager)
-	mockedFileManager.On("Exists", mock.Anything).Return(true, nil)
-	mockedFileManager.On("ChangeToDirectory", mock.Anything).Return(errors.New("chdir error"))
-	mockedConfigService := new(ports_mocks.ConfigService)
-	mockedConfigService.On("Get", "dirs.backup").Return("/fake/dir")
-	mockedOpenManager := new(os_mocks.ExecManager)
-
-	sut := NewAdminService(mockedConfigService, mockedTimeManager, mockedFileManager, mockedOpenManager)
-
-	t.Run("Should return an error message if the directory already -exists", func(t *testing.T) {
-		_, err := sut.Backup()
-		assert.Equal(t, errors.New("chdir error"), err)
-	})
-}
-
-func Test_Backup_mkdir_error(t *testing.T) {
-	mockedTimeManager := new(os_mocks.TimeManager)
-	mockedTimeManager.On("Now").Return(time.Date(2021, time.October, 31, 21, 14, 0, 0, time.UTC))
-	mockedFileManager := new(os_mocks.FileManager)
-	mockedFileManager.On("Exists", mock.Anything).Return(true, nil)
-	mockedFileManager.On("ChangeToDirectory", mock.Anything).Return(nil)
-	mockedFileManager.On("CreateDirectory", mock.Anything).Return(errors.New("mkdir error"))
-	mockedConfigService := new(ports_mocks.ConfigService)
-	mockedConfigService.On("Get", "dirs.backup").Return("/fake/dir")
-	mockedOpenManager := new(os_mocks.ExecManager)
-
-	sut := NewAdminService(mockedConfigService, mockedTimeManager, mockedFileManager, mockedOpenManager)
-
-	t.Run("Should return an error message if the directory already -exists", func(t *testing.T) {
-		_, err := sut.Backup()
-		assert.Equal(t, errors.New("mkdir error"), err)
 	})
 }

@@ -12,7 +12,7 @@ import (
 // RootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "sam",
-	Short: "A Command Line Interface to Hobbit service",
+	Short: fmt.Sprintf("sam v%s - a Command Line Interface to Hobbit service", shared.Version),
 	Long: `A Command Line Interface to Hobbit service in Go.
 	Complete documentation is available at https://github.com/pjover/sam`,
 	Version: shared.Version,
