@@ -1,7 +1,6 @@
 package shared
 
 import (
-	"errors"
 	"fmt"
 	"github.com/spf13/cobra"
 	"strconv"
@@ -58,7 +57,7 @@ func ParseFloat(value string) (float64, error) {
 func ParseYearMonth(yearMonth string) (time.Time, error) {
 	ym, err := time.Parse(YearMonthLayout, yearMonth)
 	if err != nil {
-		return time.Time{}, errors.New("Error al introduïr el mes: " + err.Error())
+		return time.Time{}, fmt.Errorf("error al introduïr el mes: %s", err.Error())
 	}
 	return ym, nil
 }

@@ -65,7 +65,7 @@ func parseInsertConsumptionsArgs(args []string, noteArg string) (consum.Customer
 	var consMap = make(map[string]float64)
 	for i := 1; i < len(args); i = i + 2 {
 		if i >= len(args)-1 {
-			return consum.CustomerConsumptionsArgs{}, errors.New("No s'ha indroduit el codi del darrer producte")
+			return consum.CustomerConsumptionsArgs{}, errors.New("no s'ha indroduit el codi del darrer producte")
 		}
 
 		consUnits, err := shared.ParseFloat(args[i])
@@ -79,7 +79,7 @@ func parseInsertConsumptionsArgs(args []string, noteArg string) (consum.Customer
 		}
 
 		if _, ok := consMap[productCode]; ok {
-			return consum.CustomerConsumptionsArgs{}, errors.New("Hi ha un codi de producte repetit")
+			return consum.CustomerConsumptionsArgs{}, errors.New("hi ha un codi de producte repetit")
 		}
 
 		consMap[productCode] = consUnits

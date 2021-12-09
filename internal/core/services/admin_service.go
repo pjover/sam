@@ -1,7 +1,6 @@
 package services
 
 import (
-	"errors"
 	"fmt"
 	"github.com/pjover/sam/internal/core/os"
 	"github.com/pjover/sam/internal/core/ports"
@@ -30,17 +29,13 @@ func (a adminService) Backup() (string, error) {
 	fmt.Println("Fent la còpia de seguretat de la base de dades ...")
 
 	dateStr := a.timeManager.Now().Format("060102")
-	dirPath := a.configService.Get("dirs.backup")
-	exists, err := a.fileManager.Exists(dirPath)
+	backupDirPath, err := a.getBackupDirPath()
 	if err != nil {
 		return "", err
 	}
-	if !exists {
-		return "", errors.New(fmt.Sprint("El directori ", dirPath, " no existeix"))
-	}
 
 	tmpDirName := fmt.Sprintf("%s-Backup", dateStr)
-	tmpDirPath := path.Join(dirPath, tmpDirName)
+	tmpDirPath := path.Join(backupDirPath, tmpDirName)
 	if err := a.fileManager.CreateDirectory(tmpDirPath); err != nil {
 		return "", err
 	}
@@ -61,7 +56,7 @@ func (a adminService) Backup() (string, error) {
 		}
 	}
 
-	if err := a.fileManager.ChangeToDirectory(dirPath); err != nil {
+	if err := a.fileManager.ChangeToDirectory(backupDirPath); err != nil {
 		return "", err
 	}
 
@@ -79,8 +74,20 @@ func (a adminService) Backup() (string, error) {
 		return "", err
 	}
 
-	filePath := path.Join(dirPath, zipFileName)
+	filePath := path.Join(backupDirPath, zipFileName)
 	return fmt.Sprint("Completada la còpia de seguretat de la base de dades a ", filePath, " ..."), nil
+}
+
+func (a adminService) getBackupDirPath() (string, error) {
+	backupDirPath := a.configService.Get("dirs.backup")
+	exists, err := a.fileManager.Exists(backupDirPath)
+	if err != nil {
+		return "", err
+	}
+	if !exists {
+		return "", fmt.Errorf("El directori ", backupDirPath, " no existeix")
+	}
+	return backupDirPath, nil
 }
 
 func (a adminService) CreateDirectory(previousMonth bool, nextMonth bool) (string, error) {
@@ -94,7 +101,7 @@ func (a adminService) CreateDirectory(previousMonth bool, nextMonth bool) (strin
 		return "", err
 	}
 	if exists {
-		return fmt.Sprint("El directori", dirPath, "ja existeix"), nil
+		return fmt.Sprintf("El directori %s ja existeix", dirPath), nil
 	}
 
 	if err := a.fileManager.CreateDirectory(dirPath); err != nil {
