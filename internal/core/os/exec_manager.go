@@ -8,7 +8,7 @@ import (
 
 type ExecManager interface {
 	BrowseTo(url string) error
-	Run(command string, args ...string) error
+	Run(command string, args ...string) ([]byte, error)
 }
 
 type execManager struct {
@@ -31,6 +31,6 @@ func (o execManager) BrowseTo(url string) error {
 	}
 }
 
-func (o execManager) Run(command string, args ...string) error {
-	return exec.Command(command, args...).Start()
+func (o execManager) Run(command string, args ...string) ([]byte, error) {
+	return exec.Command(command, args...).Output()
 }

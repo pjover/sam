@@ -46,12 +46,17 @@ func (a adminService) Backup() (string, error) {
 
 	var strSlice = []string{"consumption", "customer", "invoice", "product", "sequence"}
 	for _, value := range strSlice {
-		if err := a.execManager.Run(
+		output, err := a.execManager.Run(
 			"mongoexport",
-			"--db=hobbit_prod",
+			"--db=hobbit",
 			fmt.Sprintf("--collection=%s", value),
 			fmt.Sprintf("--out=%s.json", value),
-		); err != nil {
+		)
+		out := string(output)
+		if out != "" {
+			fmt.Println(out)
+		}
+		if err != nil {
 			return "", err
 		}
 	}
@@ -61,7 +66,7 @@ func (a adminService) Backup() (string, error) {
 	}
 
 	zipFileName := fmt.Sprintf("%s.zip", tmpDirName)
-	if err := a.execManager.Run(
+	if _, err := a.execManager.Run(
 		"zip",
 		"-r",
 		zipFileName,
