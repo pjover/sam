@@ -46,16 +46,12 @@ func (a adminService) Backup() (string, error) {
 
 	var strSlice = []string{"consumption", "customer", "invoice", "product", "sequence"}
 	for _, value := range strSlice {
-		output, err := a.execManager.Run(
+		err := a.execManager.Run(
 			"mongoexport",
 			"--db=hobbit",
 			fmt.Sprintf("--collection=%s", value),
 			fmt.Sprintf("--out=%s.json", value),
 		)
-		out := string(output)
-		if out != "" {
-			fmt.Println(out)
-		}
 		if err != nil {
 			return "", err
 		}
@@ -66,7 +62,7 @@ func (a adminService) Backup() (string, error) {
 	}
 
 	zipFileName := fmt.Sprintf("%s.zip", tmpDirName)
-	if _, err := a.execManager.Run(
+	if err := a.execManager.Run(
 		"zip",
 		"-r",
 		zipFileName,
@@ -90,7 +86,7 @@ func (a adminService) getBackupDirPath() (string, error) {
 		return "", err
 	}
 	if !exists {
-		return "", fmt.Errorf("El directori ", backupDirPath, " no existeix")
+		return "", fmt.Errorf("el directori %s no existeix", backupDirPath)
 	}
 	return backupDirPath, nil
 }
@@ -106,6 +102,7 @@ func (a adminService) CreateDirectory(previousMonth bool, nextMonth bool) (strin
 		return "", err
 	}
 	if exists {
+		_ = a.updateConfig(yearMonth, dirName)
 		return fmt.Sprintf("El directori %s ja existeix", dirPath), nil
 	}
 

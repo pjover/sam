@@ -24,7 +24,7 @@ func (_m *ExecManager) BrowseTo(url string) error {
 }
 
 // Run provides a mock function with given fields: command, args
-func (_m *ExecManager) Run(command string, args ...string) ([]byte, error) {
+func (_m *ExecManager) Run(command string, args ...string) error {
 	_va := make([]interface{}, len(args))
 	for _i := range args {
 		_va[_i] = args[_i]
@@ -41,5 +41,5 @@ func (_m *ExecManager) Run(command string, args ...string) ([]byte, error) {
 		r0 = ret.Error(0)
 	}
 
-	return nil, r0
+	return r0
 }

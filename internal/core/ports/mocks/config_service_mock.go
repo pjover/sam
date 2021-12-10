@@ -23,6 +23,11 @@ func (_m *ConfigService) Get(key string) string {
 	return r0
 }
 
+// Init provides a mock function with given fields:
+func (_m *ConfigService) Init() {
+	_m.Called()
+}
+
 // Set provides a mock function with given fields: key, value
 func (_m *ConfigService) Set(key string, value string) error {
 	ret := _m.Called(key, value)

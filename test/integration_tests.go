@@ -1,64 +1,69 @@
 package main
 
 import (
-	"bytes"
 	"fmt"
-	"github.com/pjover/sam/internal/adapters/cfg"
-	"github.com/pjover/sam/internal/adapters/cli"
-	"github.com/pjover/sam/internal/adapters/cli/admin"
-	"github.com/pjover/sam/internal/cmd/consum"
-	"github.com/pjover/sam/internal/cmd/display"
-	"github.com/pjover/sam/internal/cmd/generate"
-	"github.com/pjover/sam/internal/cmd/list"
-	"github.com/pjover/sam/internal/cmd/search"
 	"github.com/pjover/sam/internal/core/os"
-	"github.com/pjover/sam/internal/core/services"
+	"log"
+	goos "os"
+	"os/exec"
 	"strings"
-
-	"github.com/spf13/cobra"
 )
 
-type integrationTest struct {
-	cmd  *cobra.Command
-	args []string
+var light_tests = [][]string{
+	{"directory"},
+	{"displayCustomer", "181"},
+	{"displayInvoice", "f-3945"},
+	{"displayProduct", "age"},
+	{"listChildren"},
+	{"listConsumptions"},
+	{"listConsumptions", "246"},
+	{"listCustomers"},
+	{"listInvoices"},
+	{"listMails"},
+	{"listProducts"},
+	{"searchCustomer", "maria"},
+	{"insertConsumptions", "2630", "1", "QME", "2", "MME", "1", "AGE"},
+	{"insertConsumptions", "2640", "1", "QME", "1", "MME"},
+	{"insertConsumptions", "2460", "1", "QME", "1", "MME"},
+	{"rectifyConsumptions", "2460", "1", "MME"},
+	{"billConsumptions"},
 }
 
-var tests = []integrationTest{
-	// TODO integrate with DI
-	{admin.NewDirectoryCmd(services.NewAdminService(cfg.NewConfigService(), os.NewTimeManager(), os.NewFileManager(), os.NewExecManager())).Cmd(), []string{}},
-	{display.NewDisplayCustomerCmd(), []string{"181"}},
-	{display.NewDisplayInvoiceCmd(), []string{"f-3945"}},
-	{display.NewDisplayProductCmd(), []string{"age"}},
-	//{edit.NewEditCustomerCmd(), []string{"246"}},
-	//{edit.NewEditInvoiceCmd(), []string{"f-3945"}},
-	//{edit.NewEditProductCmd(), []string{"age"}},
-	{list.NewListChildrenCmd(), []string{}},
-	{list.NewListConsumptionsCmd(), []string{}},
-	{list.NewListConsumptionsCmd(), []string{"246"}},
-	{list.NewListCustomersCmd(), []string{}},
-	{list.NewListInvoicesCmd(), []string{}},
-	{list.NewListMailsCmd(), []string{}},
-	{list.NewListProductsCmd(), []string{}},
-	{search.NewSearchCustomerCmd(), []string{"maria"}},
-	{consum.NewInsertConsumptionsCmd(), []string{"2630", "1", "QME", "2", "MME", "1", "AGE"}},
-	{consum.NewInsertConsumptionsCmd(), []string{"2640", "1", "QME", "1", "MME"}},
-	{consum.NewInsertConsumptionsCmd(), []string{"2620", "1", "QME", "1", "MME"}},
-	{consum.NewRectifyConsumptionsCmd(), []string{"2620", "1", "MME"}},
-	{consum.NewBillConsumptionsCmd(), []string{}},
-	{generate.NewGenerateSingleInvoiceCmd(), []string{"f-3945"}},
-	{generate.NewGenerateBddCmd(), []string{}},
-	{generate.NewGenerateCustomersReportCmd(), []string{}},
-	//{generate.NewGenerateMonthInvoicesCmd(), []string{}},
-	{generate.NewGenerateMonthReportCmd(), []string{}},
-	{generate.NewGenerateProductsReportCmd(), []string{}},
+var heavy_tests = [][]string{
+	{"backup"},
+	{"editCustomer", "246"},
+	{"editInvoice", "f-3945"},
+	{"editProduct", "age"},
+	{"generateSingleInvoice", "f-3945"},
+	{"generateBdd"},
+	{"generateCustomersReport"},
+	{"generateMonthInvoices"},
+	{"generateMonthReport"},
+	{"generateProductsReport"},
 }
+
+var execManager = os.NewExecManager()
 
 func main() {
-	cli.InitConfig()
+	args := goos.Args[1:]
+	if len(args) != 1 {
+		log.Fatalln("Required test type as arg: 'light', 'heavy' or 'all'")
+	}
+	switch args[0] {
+	case "light":
+		test(light_tests)
+	case "heavy":
+		test(heavy_tests)
+	case "all":
+		test(append(light_tests, heavy_tests...))
+	}
+}
+
+func test(tests [][]string) {
 	var errCount int
 	var sb strings.Builder
-	for _, test := range tests {
-		isError, msg := run(test)
+	for _, args := range tests {
+		isError, msg := run(args...)
 		if isError {
 			errCount += 1
 		}
@@ -67,28 +72,18 @@ func main() {
 	fmt.Print(sb.String())
 
 	if errCount == 0 {
-		fmt.Printf("All %d tests passed", len(tests))
+		fmt.Printf("All %d tests passed\n", len(tests))
 	} else {
-		fmt.Printf("%d of %d tests failed", errCount, len(tests))
+		fmt.Printf("%d of %d tests failed\n", errCount, len(tests))
 	}
 }
 
-func run(test integrationTest) (bool, string) {
-	_, err := executeCommand(test.cmd, test.args...)
+func run(args ...string) (isError bool, msg string) {
+	err := execManager.Run("sam", args...)
 	if err != nil {
-		msg := fmt.Sprintf("🔴 sam %s %s >>> %s\n", test.cmd.Name(), strings.Join(test.args, " "), err)
-		return true, msg
+		exitError := err.(*exec.ExitError)
+		return true, fmt.Sprintf("🔴 sam %s : %s\n", strings.Join(args, " "), exitError.Error())
 	} else {
-		msg := fmt.Sprintf("🟢 sam %s %s\n", test.cmd.Name(), strings.Join(test.args, " "))
-		return false, msg
+		return false, fmt.Sprintf("🟢 sam %s\n", strings.Join(args, " "))
 	}
-}
-
-func executeCommand(root *cobra.Command, args ...string) (output string, err error) {
-	buf := new(bytes.Buffer)
-	root.SetOut(buf)
-	root.SetErr(buf)
-	root.SetArgs(args)
-	_, err = root.ExecuteC()
-	return buf.String(), err
 }

@@ -25,32 +25,32 @@ func Test_parseInsertConsumptionsArgs(t *testing.T) {
 			"Should fail with invalid child code",
 			args{[]string{"0.5", "MME", "2", "MME"}, testNote},
 			consum.CustomerConsumptionsArgs{},
-			errors.New("El codi d'infant introduit és invàlid: 0.5"),
+			errors.New("el codi d'infant introduit és invàlid: 0.5"),
 		}, {
 			"Should fail with invalid unit format",
 			args{[]string{"2220", "0,5", "MME", "2", "AGE"}, testNote},
 			consum.CustomerConsumptionsArgs{},
-			errors.New("El número introduit és invàlid: 0,5"),
+			errors.New("el número introduit és invàlid: 0,5"),
 		}, {
 			"Should fail with invalid unit format",
 			args{[]string{"2220", "MME", "2"}, testNote},
 			consum.CustomerConsumptionsArgs{},
-			errors.New("El número introduit és invàlid: MME"),
+			errors.New("el número introduit és invàlid: MME"),
 		}, {
 			"Should fail with invalid product code",
 			args{[]string{"2220", "2", "MMME"}, testNote},
 			consum.CustomerConsumptionsArgs{},
-			errors.New("El codi de producte introduit és invàlid: MMME"),
+			errors.New("el codi de producte introduit és invàlid: MMME"),
 		}, {
 			"Should fail without last product code",
 			args{[]string{"2220", "0.5", "MME", "2"}, testNote},
 			consum.CustomerConsumptionsArgs{},
-			errors.New("No s'ha indroduit el codi del darrer producte"),
+			errors.New("no s'ha indroduit el codi del darrer producte"),
 		}, {
 			"Should fail with duplicated product code",
 			args{[]string{"2220", "0.5", "MME", "2", "MME"}, testNote},
 			consum.CustomerConsumptionsArgs{},
-			errors.New("Hi ha un codi de producte repetit"),
+			errors.New("hi ha un codi de producte repetit"),
 		}, {
 			"Should parse with 1 consumption",
 			args{[]string{"1552", "1", "QME"}, testNote},

@@ -41,7 +41,7 @@ func ExactArgs(n int) cobra.PositionalArgs {
 func ParseInteger(strCode string, codeType string) (int, error) {
 	code, err := strconv.Atoi(strCode)
 	if err != nil {
-		return 0, fmt.Errorf("El codi %s introduit és invàlid: %s", codeType, strCode)
+		return 0, fmt.Errorf("el codi %s introduit és invàlid: %s", codeType, strCode)
 	}
 	return code, nil
 }
@@ -49,7 +49,7 @@ func ParseInteger(strCode string, codeType string) (int, error) {
 func ParseFloat(value string) (float64, error) {
 	float, err := strconv.ParseFloat(value, 64)
 	if err != nil {
-		return 0, fmt.Errorf("El número introduit és invàlid: %s", value)
+		return 0, fmt.Errorf("el número introduit és invàlid: %s", value)
 	}
 	return float, nil
 }
@@ -64,7 +64,7 @@ func ParseYearMonth(yearMonth string) (time.Time, error) {
 
 func ParseProductCode(code string) (string, error) {
 	if len(code) != 3 {
-		return "", fmt.Errorf("El codi de producte introduit és invàlid: %s", code)
+		return "", fmt.Errorf("el codi de producte introduit és invàlid: %s", code)
 	}
 	return strings.ToUpper(code), nil
 }
