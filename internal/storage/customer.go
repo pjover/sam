@@ -3,8 +3,8 @@ package storage
 import (
 	"fmt"
 	"github.com/pjover/sam/internal/adapters/tuk"
+	"github.com/pjover/sam/internal/core/model"
 
-	"github.com/pjover/sam/internal/model"
 	"github.com/spf13/viper"
 )
 

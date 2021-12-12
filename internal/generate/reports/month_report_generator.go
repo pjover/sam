@@ -5,6 +5,7 @@ import (
 	"github.com/pjover/sam/internal/adapters/cfg"
 	"github.com/pjover/sam/internal/adapters/tuk"
 	"github.com/pjover/sam/internal/core"
+	model2 "github.com/pjover/sam/internal/core/model"
 	"github.com/pjover/sam/internal/core/ports"
 	"log"
 	"path"
@@ -13,7 +14,6 @@ import (
 
 	"github.com/johnfercher/maroto/pkg/consts"
 	"github.com/pjover/sam/internal/generate"
-	"github.com/pjover/sam/internal/model"
 	"github.com/pjover/sam/internal/storage"
 	"github.com/pjover/sam/internal/translate"
 	"github.com/spf13/viper"
@@ -79,7 +79,7 @@ func (i MonthReportGenerator) Generate() (string, error) {
 
 type monthInvoices struct {
 	Embedded struct {
-		Invoices []model.Invoice `json:"invoices"`
+		Invoices []model2.Invoice `json:"invoices"`
 	} `json:"_embedded"`
 	Links struct {
 		Self struct {
@@ -124,10 +124,10 @@ func (i MonthReportGenerator) buildContents(invoices *monthInvoices) ([][]string
 	return contents, nil
 }
 
-func (i MonthReportGenerator) customer(invoice model.Invoice) (model.Customer, error) {
+func (i MonthReportGenerator) customer(invoice model2.Invoice) (model2.Customer, error) {
 	customer, err := i.customerStorage.GetCustomer(invoice.CustomerID)
 	if err != nil {
-		return model.Customer{}, err
+		return model2.Customer{}, err
 	}
 	return customer, nil
 }

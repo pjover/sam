@@ -3,13 +3,13 @@ package reports
 import (
 	"fmt"
 	"github.com/pjover/sam/internal/adapters/tuk"
+	"github.com/pjover/sam/internal/core/model"
 	"path"
 	"sort"
 	"strings"
 
 	"github.com/johnfercher/maroto/pkg/consts"
 	"github.com/pjover/sam/internal/generate"
-	"github.com/pjover/sam/internal/model"
 	"github.com/spf13/viper"
 )
 
