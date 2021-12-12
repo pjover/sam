@@ -2,9 +2,10 @@ package list
 
 import (
 	"fmt"
+	"github.com/pjover/sam/internal/adapters/tuk"
+	"github.com/pjover/sam/internal/core"
 	"time"
 
-	"github.com/pjover/sam/internal/shared"
 	"github.com/spf13/viper"
 )
 
@@ -15,17 +16,17 @@ type ListInvoices interface {
 }
 
 type ListInvoicesImpl struct {
-	getManager shared.HttpGetManager
+	getManager tuk.HttpGetManager
 }
 
 func NewListInvoices() ListInvoices {
 	return ListInvoicesImpl{
-		shared.NewHttpGetManager(),
+		tuk.NewHttpGetManager(),
 	}
 }
 
 func (l ListInvoicesImpl) ListYearMonthInvoices(yearMonth time.Time) (string, error) {
-	ym := yearMonth.Format(shared.YearMonthLayout)
+	ym := yearMonth.Format(core.YearMonthLayout)
 	fmt.Println("Llistat de les factures del mes", ym)
 	url := fmt.Sprintf("%s/invoices/search/findByYearMonthIn?yearMonths=%s", viper.GetString("urls.hobbit"), ym)
 	return l.getManager.PrettyJson(url)
@@ -38,7 +39,7 @@ func (l ListInvoicesImpl) ListCustomerInvoices(customerCode int) (string, error)
 }
 
 func (l ListInvoicesImpl) ListCustomerYearMonthInvoices(customerCode int, yearMonth time.Time) (string, error) {
-	ym := yearMonth.Format(shared.YearMonthLayout)
+	ym := yearMonth.Format(core.YearMonthLayout)
 	fmt.Println("Llistat de les factures del client", customerCode, "del mes", ym)
 	url := fmt.Sprintf("%s/invoices/search/findByCustomerIdAndYearMonthIn?customerId=%d&yearMonths=%s", viper.GetString("urls.hobbit"), customerCode, ym)
 	return l.getManager.PrettyJson(url)

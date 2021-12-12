@@ -2,18 +2,18 @@ package list
 
 import (
 	"fmt"
+	"github.com/pjover/sam/internal/adapters/tuk"
 
-	"github.com/pjover/sam/internal/shared"
 	"github.com/spf13/viper"
 )
 
 type ListChildren struct {
-	getManager shared.HttpGetManager
+	getManager tuk.HttpGetManager
 }
 
 func NewListChildren() List {
 	return ListChildren{
-		shared.NewHttpGetManager(),
+		tuk.NewHttpGetManager(),
 	}
 }
 

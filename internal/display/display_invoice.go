@@ -2,18 +2,18 @@ package display
 
 import (
 	"fmt"
+	"github.com/pjover/sam/internal/adapters/tuk"
 
-	"github.com/pjover/sam/internal/shared"
 	"github.com/spf13/viper"
 )
 
 type InvoiceDisplay struct {
-	getManager shared.HttpGetManager
+	getManager tuk.HttpGetManager
 }
 
 func NewInvoiceDisplay() Display {
 	return InvoiceDisplay{
-		shared.NewHttpGetManager(),
+		tuk.NewHttpGetManager(),
 	}
 }
 

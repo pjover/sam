@@ -2,6 +2,7 @@ package reports
 
 import (
 	"fmt"
+	"github.com/pjover/sam/internal/adapters/tuk"
 	"path"
 	"sort"
 	"strings"
@@ -9,17 +10,16 @@ import (
 	"github.com/johnfercher/maroto/pkg/consts"
 	"github.com/pjover/sam/internal/generate"
 	"github.com/pjover/sam/internal/model"
-	"github.com/pjover/sam/internal/shared"
 	"github.com/spf13/viper"
 )
 
 type ProductsReportGenerator struct {
-	getManager shared.HttpGetManager
+	getManager tuk.HttpGetManager
 }
 
 func NewProductsReportGenerator() generate.Generator {
 	return ProductsReportGenerator{
-		shared.NewHttpGetManager(),
+		tuk.NewHttpGetManager(),
 	}
 }
 

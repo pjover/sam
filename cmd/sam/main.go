@@ -20,12 +20,12 @@ import (
 	"fmt"
 	"github.com/pjover/sam/internal/adapters/cfg"
 	"github.com/pjover/sam/internal/adapters/cli"
+	"github.com/pjover/sam/internal/core"
 	"github.com/pjover/sam/internal/di"
-	"github.com/pjover/sam/internal/shared"
 )
 
 func main() {
-	fmt.Printf("Sam v%s\n", shared.Version)
+	fmt.Printf("Sam v%s\n", core.Version)
 
 	configService := cfg.NewConfigService()
 	cmdManager := cli.NewCmdManager(configService)

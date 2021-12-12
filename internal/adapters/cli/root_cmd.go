@@ -1,8 +1,8 @@
 package cli
 
 import (
+	"github.com/pjover/sam/internal/core"
 	"github.com/pjover/sam/internal/core/ports"
-	"github.com/pjover/sam/internal/shared"
 	"github.com/spf13/cobra"
 )
 
@@ -24,7 +24,7 @@ func NewCmdManager(cfgService ports.ConfigService) CmdManager {
 		Short: "A Command Line Interface to Hobbit service",
 		Long: `A Command Line Interface to Hobbit service in Go.
 	Complete documentation is available at https://github.com/pjover/sam`,
-		Version: shared.Version,
+		Version: core.Version,
 	}
 	cobra.OnInitialize(cfgService.Init)
 	return cmdManager{cfgService, rootCmd}

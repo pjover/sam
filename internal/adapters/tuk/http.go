@@ -1,4 +1,4 @@
-package shared
+package tuk
 
 import (
 	"archive/zip"
@@ -12,12 +12,14 @@ import (
 	"os"
 	"path"
 	"strings"
+	"time"
 )
 
 const contentType = "application/json; charset=UTF-8"
+const timeout = 10 * time.Second
 
 func NewHttpClient() *http.Client {
-	return &http.Client{Timeout: httpClientTimeout}
+	return &http.Client{Timeout: timeout}
 }
 
 type HttpGetManager interface {
