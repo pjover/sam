@@ -2,9 +2,9 @@ package list
 
 import (
 	"fmt"
+	"github.com/pjover/sam/internal/adapters/cli"
 
 	"github.com/pjover/sam/internal/list"
-	"github.com/pjover/sam/internal/shared"
 	"github.com/spf13/cobra"
 )
 
@@ -31,12 +31,12 @@ func newListConsumptionsCmd(manager list.ListConsumptions) *cobra.Command {
 			"listconsumptions",
 			"list-consum",
 		},
-		Args: shared.RangeArgs(0, 1),
+		Args: cli.RangeArgs(0, 1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			var msg string
 			var err error
 			if len(args) != 0 {
-				childCode, err := shared.ParseInteger(args[0], "de client")
+				childCode, err := cli.ParseInteger(args[0], "de client")
 				if err != nil {
 					return err
 				}

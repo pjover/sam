@@ -2,11 +2,10 @@ package display
 
 import (
 	"fmt"
+	"github.com/pjover/sam/internal/adapters/cli"
 	"strings"
 
 	"github.com/pjover/sam/internal/display"
-	"github.com/pjover/sam/internal/shared"
-
 	"github.com/spf13/cobra"
 )
 
@@ -32,7 +31,7 @@ func newDisplayInvoiceCmd(dsp display.Display) *cobra.Command {
 			"displayinvoice",
 			"display-invoice",
 		},
-		Args: shared.ExactArgs(1),
+		Args: cli.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			code := strings.ToUpper(args[0])
 			msg, err := dsp.Display(code)

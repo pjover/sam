@@ -2,9 +2,9 @@ package display
 
 import (
 	"fmt"
+	"github.com/pjover/sam/internal/adapters/cli"
 
 	"github.com/pjover/sam/internal/display"
-	"github.com/pjover/sam/internal/shared"
 	"github.com/spf13/cobra"
 )
 
@@ -31,9 +31,9 @@ func newDisplayProductCmd(dsp display.Display) *cobra.Command {
 			"displayproduct",
 			"display-product",
 		},
-		Args: shared.ExactArgs(1),
+		Args: cli.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			code, err := shared.ParseProductCode(args[0])
+			code, err := cli.ParseProductCode(args[0])
 			if err != nil {
 				return err
 			}

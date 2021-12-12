@@ -2,10 +2,10 @@ package list
 
 import (
 	"fmt"
+	"github.com/pjover/sam/internal/adapters/cli"
 	"github.com/pjover/sam/internal/core/os"
 
 	"github.com/pjover/sam/internal/list"
-	"github.com/pjover/sam/internal/shared"
 	"github.com/spf13/cobra"
 )
 
@@ -46,7 +46,7 @@ func (l listInvoicesCmd) Cmd() *cobra.Command {
 			"listinvoices",
 			"list-invoices",
 		},
-		Args: shared.RangeArgs(0, 2),
+		Args: cli.RangeArgs(0, 2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return l.parseListInvoicesArgs(args)
 		},
@@ -61,20 +61,20 @@ func (l listInvoicesCmd) parseListInvoicesArgs(args []string) error {
 		var workingTime = l.timeManager.Now()
 		msg, err = l.listService.ListYearMonthInvoices(workingTime)
 	case 1:
-		customerCode, err := shared.ParseInteger(args[0], "de client")
+		customerCode, err := cli.ParseInteger(args[0], "de client")
 		if err == nil {
 			msg, err = l.listService.ListCustomerInvoices(customerCode)
 		}
-		yearMonth, err := shared.ParseYearMonth(args[0])
+		yearMonth, err := cli.ParseYearMonth(args[0])
 		if err == nil {
 			msg, err = l.listService.ListYearMonthInvoices(yearMonth)
 		}
 	case 2:
-		customerCode, err := shared.ParseInteger(args[0], "de client")
+		customerCode, err := cli.ParseInteger(args[0], "de client")
 		if err != nil {
 			return err
 		}
-		yearMonth, err := shared.ParseYearMonth(args[1])
+		yearMonth, err := cli.ParseYearMonth(args[1])
 		if err != nil {
 			return err
 		}

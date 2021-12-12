@@ -1,10 +1,10 @@
 package edit
 
 import (
+	"github.com/pjover/sam/internal/adapters/cli"
 	"strings"
 
 	"github.com/pjover/sam/internal/edit"
-	"github.com/pjover/sam/internal/shared"
 	"github.com/spf13/cobra"
 )
 
@@ -31,7 +31,7 @@ func newEditInvoiceCmd(editor edit.Editor) *cobra.Command {
 			"editinvoice",
 			"edit-invoice",
 		},
-		Args: shared.ExactArgs(1),
+		Args: cli.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			invoiceCode := strings.ToUpper(args[0])
 			return editor.Edit(invoiceCode)

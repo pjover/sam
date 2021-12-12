@@ -1,8 +1,8 @@
 package edit
 
 import (
+	"github.com/pjover/sam/internal/adapters/cli"
 	"github.com/pjover/sam/internal/edit"
-	"github.com/pjover/sam/internal/shared"
 	"github.com/spf13/cobra"
 )
 
@@ -28,9 +28,9 @@ func newEditCustomerCmd(editor edit.Editor) *cobra.Command {
 			"editcustomer",
 			"edit-customer",
 		},
-		Args: shared.ExactArgs(1),
+		Args: cli.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			_, err := shared.ParseInteger(args[0], "de client")
+			_, err := cli.ParseInteger(args[0], "de client")
 			if err != nil {
 				return err
 			}

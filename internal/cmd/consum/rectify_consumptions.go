@@ -2,9 +2,9 @@ package consum
 
 import (
 	"fmt"
+	"github.com/pjover/sam/internal/adapters/cli"
 
 	"github.com/pjover/sam/internal/consum"
-	"github.com/pjover/sam/internal/shared"
 	"github.com/spf13/cobra"
 )
 
@@ -38,7 +38,7 @@ func newRectifyConsumptionsCmd(manager consum.CustomerConsumptionsManager) *cobr
 			"rectifyconsumptions",
 			"rectify-consum",
 		},
-		Args: shared.MinimumNArgs(3),
+		Args: cli.MinimumNArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ica, err := parseInsertConsumptionsArgs(args, rconNote)
 			if err != nil {

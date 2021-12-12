@@ -2,10 +2,10 @@ package generate
 
 import (
 	"fmt"
+	"github.com/pjover/sam/internal/adapters/cli"
 	"strings"
 
 	"github.com/pjover/sam/internal/generate/invoices"
-	"github.com/pjover/sam/internal/shared"
 	"github.com/spf13/cobra"
 )
 
@@ -32,7 +32,7 @@ func newGenerateSingleInvoiceCmd(generator invoices.SingleInvoiceGenerator) *cob
 			"generatesingleinvoice",
 			"generate-single-invoice",
 		},
-		Args: shared.ExactArgs(1),
+		Args: cli.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			invoiceCode := strings.ToUpper(args[0])
 			msg, err := generator.Generate(invoiceCode)
