@@ -3,7 +3,7 @@ package reports
 import (
 	"fmt"
 	"github.com/pjover/sam/internal/adapters/cfg"
-	"github.com/pjover/sam/internal/adapters/db"
+	"github.com/pjover/sam/internal/adapters/mongo_db"
 	"github.com/pjover/sam/internal/adapters/tuk"
 	"github.com/pjover/sam/internal/core"
 	model2 "github.com/pjover/sam/internal/core/model"
@@ -30,7 +30,7 @@ func NewMonthReportGenerator() generate.Generator {
 	cfgService := cfg.NewConfigService()
 	return MonthReportGenerator{
 		tuk.NewHttpGetManager(),
-		db.NewDbService(),
+		mongo_db.NewDbService(),
 		cfgService,
 		lang.NewLangService(cfgService.Get("lang")),
 	}

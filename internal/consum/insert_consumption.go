@@ -2,7 +2,7 @@ package consum
 
 import (
 	"fmt"
-	"github.com/pjover/sam/internal/adapters/db"
+	"github.com/pjover/sam/internal/adapters/mongo_db"
 	"github.com/pjover/sam/internal/adapters/tuk"
 	"github.com/pjover/sam/internal/core/ports"
 	"github.com/spf13/viper"
@@ -16,7 +16,7 @@ type InsertConsumptionsManager struct {
 func NewInsertConsumptionsManager() CustomerConsumptionsManager {
 	return InsertConsumptionsManager{
 		tuk.NewHttpPostManager(),
-		db.NewDbService(),
+		mongo_db.NewDbService(),
 	}
 }
 
