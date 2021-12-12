@@ -3,24 +3,22 @@ package di
 import (
 	"github.com/pjover/sam/internal/adapters/cli"
 	"github.com/pjover/sam/internal/adapters/cli/admin"
+	"github.com/pjover/sam/internal/adapters/os"
 	"github.com/pjover/sam/internal/cmd/consum"
 	"github.com/pjover/sam/internal/cmd/display"
 	"github.com/pjover/sam/internal/cmd/edit"
 	"github.com/pjover/sam/internal/cmd/generate"
 	"github.com/pjover/sam/internal/cmd/list"
 	"github.com/pjover/sam/internal/cmd/search"
-	"github.com/pjover/sam/internal/core/os"
 	"github.com/pjover/sam/internal/core/ports"
 	"github.com/pjover/sam/internal/core/services"
 )
 
 func InjectDependencies(cfgService ports.ConfigService, cmdManager cli.CmdManager) {
 
-	timeManager := os.NewTimeManager()
-	fileManager := os.NewFileManager()
-	execManager := os.NewExecManager()
+	osService := os.NewOsService()
 
-	adminService := services.NewAdminService(cfgService, timeManager, fileManager, execManager)
+	adminService := services.NewAdminService(cfgService, osService)
 	cmdManager.AddCommand(admin.NewBackupCmd(adminService))
 	cmdManager.AddCommand(admin.NewDirectoryCmd(adminService))
 

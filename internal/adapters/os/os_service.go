@@ -2,26 +2,42 @@ package os
 
 import (
 	"archive/zip"
+	"errors"
+	"github.com/pjover/sam/internal/core/ports"
 	"io"
 	"os"
+	"os/exec"
 	"path"
+	"runtime"
+	"time"
 )
 
-type FileManager interface {
-	CreateDirectory(dirPath string) error
-	Exists(itemPath string) (bool, error)
-	GetTempDirectory() (string, error)
-	Zip(zipFilePath string, files []string) error
+type osService struct {
 }
 
-type fileManager struct {
+func NewOsService() ports.OsService {
+	return osService{}
 }
 
-func NewFileManager() FileManager {
-	return fileManager{}
+func (o osService) OpenUrlInBrowser(url string) error {
+	switch runtime.GOOS {
+	case "linux":
+		return exec.Command("xdg-open", url).Start()
+	case "windows":
+		return exec.Command("rundll32", "url.dll,FileProtocolHandler", url).Start()
+	case "darwin":
+		return exec.Command("open", url).Start()
+	default:
+		return errors.New("unsupported platform")
+	}
 }
 
-func (f fileManager) CreateDirectory(dirPath string) error {
+func (o osService) RunCommand(command string, args ...string) error {
+	_, err := exec.Command(command, args...).Output()
+	return err
+}
+
+func (o osService) CreateDirectory(dirPath string) error {
 	err := os.MkdirAll(dirPath, 0755)
 	if err != nil {
 		return err
@@ -30,7 +46,7 @@ func (f fileManager) CreateDirectory(dirPath string) error {
 	return nil
 }
 
-func (f fileManager) Exists(itemPath string) (bool, error) {
+func (o osService) ItemExists(itemPath string) (bool, error) {
 	_, err := os.Stat(itemPath)
 	if err == nil {
 		return true, nil
@@ -41,26 +57,26 @@ func (f fileManager) Exists(itemPath string) (bool, error) {
 	return false, err
 }
 
-func (f fileManager) GetTempDirectory() (string, error) {
+func (o osService) GetTempDirectory() (string, error) {
 	dirPath := path.Join(os.TempDir(), "sam")
-	exists, err := f.Exists(dirPath)
+	exists, err := o.ItemExists(dirPath)
 	if err != nil {
 		return "", err
 	}
 	if exists {
 		return dirPath, nil
 	}
-	if err := f.CreateDirectory(dirPath); err != nil {
+	if err := o.CreateDirectory(dirPath); err != nil {
 		return "", err
 	}
 	return dirPath, nil
 }
 
-// Zip compresses one or many files into a single zip archive file.
+// CreateZipFile compresses one or many files into a single zip archive file.
 // Param 1: zipFilePath is the output zip file's absolute path.
 // Param 2: files is a list of files absolute path to add to the zip.
 // From: https://golangcode.com/create-zip-files-in-go/
-func (f fileManager) Zip(zipFilePath string, files []string) error {
+func (o osService) CreateZipFile(zipFilePath string, files []string) error {
 
 	newZipFile, err := os.Create(zipFilePath)
 	if err != nil {
@@ -83,14 +99,14 @@ func (f fileManager) Zip(zipFilePath string, files []string) error {
 
 	// Add files to zip
 	for _, file := range files {
-		if err = f.addFileToZip(zipWriter, file); err != nil {
+		if err = o.addFileToZip(zipWriter, file); err != nil {
 			return err
 		}
 	}
 	return nil
 }
 
-func (f fileManager) addFileToZip(zipWriter *zip.Writer, filePath string) error {
+func (o osService) addFileToZip(zipWriter *zip.Writer, filePath string) error {
 
 	fileToZip, err := os.Open(filePath)
 	if err != nil {
@@ -121,4 +137,8 @@ func (f fileManager) addFileToZip(zipWriter *zip.Writer, filePath string) error 
 	}
 	_, err = io.Copy(writer, fileToZip)
 	return err
+}
+
+func (o osService) Now() time.Time {
+	return time.Now()
 }
