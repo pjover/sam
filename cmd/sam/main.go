@@ -27,8 +27,8 @@ import (
 func main() {
 	fmt.Printf("Sam v%s\n", shared.Version)
 
-	cfgService := cfg.NewConfigService()
-	cmdManager := cli.NewCmdManager(cfgService)
-	di.InjectDependencies(cfgService, cmdManager)
+	configService := cfg.NewConfigService()
+	cmdManager := cli.NewCmdManager(configService)
+	di.InjectDependencies(configService, cmdManager)
 	cmdManager.Execute()
 }

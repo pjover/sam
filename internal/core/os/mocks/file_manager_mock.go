@@ -9,13 +9,13 @@ type FileManager struct {
 	mock.Mock
 }
 
-// ChangeToDirectory provides a mock function with given fields: path
-func (_m *FileManager) ChangeToDirectory(path string) error {
-	ret := _m.Called(path)
+// CreateDirectory provides a mock function with given fields: dirPath
+func (_m *FileManager) CreateDirectory(dirPath string) error {
+	ret := _m.Called(dirPath)
 
 	var r0 error
 	if rf, ok := ret.Get(0).(func(string) error); ok {
-		r0 = rf(path)
+		r0 = rf(dirPath)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -23,34 +23,20 @@ func (_m *FileManager) ChangeToDirectory(path string) error {
 	return r0
 }
 
-// CreateDirectory provides a mock function with given fields: dirName
-func (_m *FileManager) CreateDirectory(dirName string) error {
-	ret := _m.Called(dirName)
-
-	var r0 error
-	if rf, ok := ret.Get(0).(func(string) error); ok {
-		r0 = rf(dirName)
-	} else {
-		r0 = ret.Error(0)
-	}
-
-	return r0
-}
-
-// Exists provides a mock function with given fields: path
-func (_m *FileManager) Exists(path string) (bool, error) {
-	ret := _m.Called(path)
+// Exists provides a mock function with given fields: itemPath
+func (_m *FileManager) Exists(itemPath string) (bool, error) {
+	ret := _m.Called(itemPath)
 
 	var r0 bool
 	if rf, ok := ret.Get(0).(func(string) bool); ok {
-		r0 = rf(path)
+		r0 = rf(itemPath)
 	} else {
 		r0 = ret.Get(0).(bool)
 	}
 
 	var r1 error
 	if rf, ok := ret.Get(1).(func(string) error); ok {
-		r1 = rf(path)
+		r1 = rf(itemPath)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -58,13 +44,34 @@ func (_m *FileManager) Exists(path string) (bool, error) {
 	return r0, r1
 }
 
-// RemoveDirectory provides a mock function with given fields: path
-func (_m *FileManager) RemoveDirectory(path string) error {
-	ret := _m.Called(path)
+// GetTempDirectory provides a mock function with given fields:
+func (_m *FileManager) GetTempDirectory() (string, error) {
+	ret := _m.Called()
+
+	var r0 string
+	if rf, ok := ret.Get(0).(func() string); ok {
+		r0 = rf()
+	} else {
+		r0 = ret.Get(0).(string)
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func() error); ok {
+		r1 = rf()
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// Zip provides a mock function with given fields: zipFilePath, files
+func (_m *FileManager) Zip(zipFilePath string, files []string) error {
+	ret := _m.Called(zipFilePath, files)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(string) error); ok {
-		r0 = rf(path)
+	if rf, ok := ret.Get(0).(func(string, []string) error); ok {
+		r0 = rf(zipFilePath, files)
 	} else {
 		r0 = ret.Error(0)
 	}

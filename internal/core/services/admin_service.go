@@ -28,67 +28,54 @@ func NewAdminService(configService ports.ConfigService, timeManager os.TimeManag
 func (a adminService) Backup() (string, error) {
 	fmt.Println("Fent la còpia de seguretat de la base de dades ...")
 
-	dateStr := a.timeManager.Now().Format("060102")
-	backupDirPath, err := a.getBackupDirPath()
+	tmpDirPath, err := a.fileManager.GetTempDirectory()
 	if err != nil {
 		return "", err
 	}
 
-	tmpDirName := fmt.Sprintf("%s-Backup", dateStr)
-	tmpDirPath := path.Join(backupDirPath, tmpDirName)
-	if err := a.fileManager.CreateDirectory(tmpDirPath); err != nil {
-		return "", err
-	}
-
-	if err := a.fileManager.ChangeToDirectory(tmpDirPath); err != nil {
-		return "", err
-	}
-
 	var strSlice = []string{"consumption", "customer", "invoice", "product", "sequence"}
+	var files = []string{}
 	for _, value := range strSlice {
+		fileName := fmt.Sprintf("%s.json", value)
+		filePath := path.Join(tmpDirPath, fileName)
 		err := a.execManager.Run(
 			"mongoexport",
 			"--db=hobbit",
 			fmt.Sprintf("--collection=%s", value),
-			fmt.Sprintf("--out=%s.json", value),
+			fmt.Sprintf("--out=%s", filePath),
 		)
+		files = append(files, filePath)
 		if err != nil {
 			return "", err
 		}
 	}
 
-	if err := a.fileManager.ChangeToDirectory(backupDirPath); err != nil {
+	zipFilePath, err := a.getZipFilePath()
+	if err != nil {
 		return "", err
 	}
 
-	zipFileName := fmt.Sprintf("%s.zip", tmpDirName)
-	if err := a.execManager.Run(
-		"zip",
-		"-r",
-		zipFileName,
-		fmt.Sprintf("%s/", tmpDirName),
-	); err != nil {
+	err = a.fileManager.Zip(zipFilePath, files)
+	if err != nil {
 		return "", err
 	}
 
-	if err := a.fileManager.RemoveDirectory(tmpDirPath); err != nil {
-		return "", err
-	}
-
-	filePath := path.Join(backupDirPath, zipFileName)
-	return fmt.Sprint("Completada la còpia de seguretat de la base de dades a ", filePath, " ..."), nil
+	return fmt.Sprint("Completada la còpia de seguretat de la base de dades a ", zipFilePath, " ..."), nil
 }
 
-func (a adminService) getBackupDirPath() (string, error) {
-	backupDirPath := a.configService.Get("dirs.backup")
-	exists, err := a.fileManager.Exists(backupDirPath)
+func (a adminService) getZipFilePath() (string, error) {
+	backupDir := a.configService.Get("dirs.backup")
+	exists, err := a.fileManager.Exists(backupDir)
 	if err != nil {
 		return "", err
 	}
 	if !exists {
-		return "", fmt.Errorf("el directori %s no existeix", backupDirPath)
+		return "", fmt.Errorf("el directori %s no existeix", backupDir)
 	}
-	return backupDirPath, nil
+	dateStr := a.timeManager.Now().Format("060102")
+	backupFileName := fmt.Sprintf("%s-Backup.zip", dateStr)
+	backupFilePath := path.Join(backupDir, backupFileName)
+	return backupFilePath, nil
 }
 
 func (a adminService) CreateDirectory(previousMonth bool, nextMonth bool) (string, error) {
