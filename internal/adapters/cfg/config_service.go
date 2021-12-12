@@ -84,3 +84,7 @@ func (c configService) loadDefaultConfig(home string) {
 	viper.SetDefault("business.taxIdLine", "TaxIdLine")
 
 }
+
+func (c configService) GetWorkingDirectory() string {
+	return path.Join(viper.GetString("dirs.home"), viper.GetString("dirs.current"))
+}

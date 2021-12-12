@@ -2,6 +2,8 @@ package reports
 
 import (
 	"fmt"
+	"github.com/pjover/sam/internal/adapters/cfg"
+	"github.com/pjover/sam/internal/core/ports"
 	"log"
 	"path"
 	"sort"
@@ -19,12 +21,14 @@ import (
 type MonthReportGenerator struct {
 	getManager      shared.HttpGetManager
 	customerStorage storage.CustomerStorage
+	configService   ports.ConfigService
 }
 
 func NewMonthReportGenerator() generate.Generator {
 	return MonthReportGenerator{
 		shared.NewHttpGetManager(),
 		storage.NewCustomerStorage(),
+		cfg.NewConfigService(),
 	}
 }
 
@@ -41,7 +45,7 @@ func (i MonthReportGenerator) Generate() (string, error) {
 		return "", err
 	}
 	filePath := path.Join(
-		shared.GetWorkingDirectory(),
+		i.configService.GetWorkingDirectory(),
 		viper.GetString("files.invoicesReport"),
 	)
 	month, err := time.Parse(shared.YearMonthLayout, viper.GetString("yearMonth"))

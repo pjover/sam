@@ -2,6 +2,8 @@ package invoices
 
 import (
 	"fmt"
+	"github.com/pjover/sam/internal/adapters/cfg"
+	"github.com/pjover/sam/internal/core/ports"
 	"os"
 	"path"
 
@@ -14,12 +16,14 @@ type MonthInvoicesGenerator interface {
 }
 
 type MonthInvoicesGeneratorImpl struct {
-	postManager shared.HttpPostManager
+	postManager   shared.HttpPostManager
+	configService ports.ConfigService
 }
 
 func NewMonthInvoicesGenerator() MonthInvoicesGenerator {
 	return MonthInvoicesGeneratorImpl{
 		shared.NewHttpPostManager(),
+		cfg.NewConfigService(),
 	}
 }
 
@@ -33,7 +37,7 @@ func (m MonthInvoicesGeneratorImpl) Generate(onlyNew bool) (string, error) {
 		onlyNew,
 	)
 
-	dirPath := path.Join(shared.GetWorkingDirectory(), viper.GetString("dirs.invoicesName"))
+	dirPath := path.Join(m.configService.GetWorkingDirectory(), viper.GetString("dirs.invoicesName"))
 	err := os.MkdirAll(dirPath, 0755)
 	if err != nil {
 		return "", err
