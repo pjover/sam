@@ -2,23 +2,23 @@ package reports
 
 import (
 	"fmt"
+	"github.com/pjover/sam/internal/adapters/tuk"
 	"path"
 	"sort"
 
 	"github.com/johnfercher/maroto/pkg/consts"
 	"github.com/pjover/sam/internal/generate"
 	"github.com/pjover/sam/internal/model"
-	"github.com/pjover/sam/internal/shared"
 	"github.com/spf13/viper"
 )
 
 type CustomersReportGenerator struct {
-	getManager shared.HttpGetManager
+	getManager tuk.HttpGetManager
 }
 
 func NewCustomersReportGenerator() generate.Generator {
 	return CustomersReportGenerator{
-		shared.NewHttpGetManager(),
+		tuk.NewHttpGetManager(),
 	}
 }
 
@@ -70,7 +70,7 @@ type activeCustomers struct {
 	} `json:"_links"`
 }
 
-func (c CustomersReportGenerator) getCustomers(getManager shared.HttpGetManager) (*activeCustomers, error) {
+func (c CustomersReportGenerator) getCustomers(getManager tuk.HttpGetManager) (*activeCustomers, error) {
 	url := fmt.Sprintf(
 		"%s/customers/search/findAllByActiveTrue",
 		viper.GetString("urls.hobbit"),

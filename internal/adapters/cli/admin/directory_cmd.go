@@ -1,21 +1,33 @@
-package adm
+package admin
 
 import (
-	"github.com/pjover/sam/internal/adm"
+	"fmt"
+	"github.com/pjover/sam/internal/adapters/cli"
+	"github.com/pjover/sam/internal/core/ports"
 	"github.com/spf13/cobra"
 )
+
+type directoryCmd struct {
+	adminService ports.AdminService
+}
 
 var previousMonth bool
 var nextMonth bool
 
-func NewDirectoryCmd() *cobra.Command {
-	command := newDirectoryCmd(adm.NewDirectoryManager())
-	command.Flags().BoolVarP(&previousMonth, "anterior", "a", false, "Es treballa al mes anterior al mes actual")
-	command.Flags().BoolVarP(&nextMonth, "seguent", "s", false, "Es treballa al mes següent al mes actual")
-	return command
+func NewDirectoryCmd(adminService ports.AdminService) cli.Cmd {
+	return directoryCmd{
+		adminService: adminService,
+	}
 }
 
-func newDirectoryCmd(manager adm.DirectoryManager) *cobra.Command {
+func (d directoryCmd) Cmd() *cobra.Command {
+	cmd := d.newCmd()
+	cmd.Flags().BoolVarP(&previousMonth, "anterior", "a", false, "Es treballa al mes anterior al mes actual")
+	cmd.Flags().BoolVarP(&nextMonth, "seguent", "s", false, "Es treballa al mes següent al mes actual")
+	return cmd
+}
+
+func (d directoryCmd) newCmd() *cobra.Command {
 	return &cobra.Command{
 		Use:   "directori",
 		Short: "Crea el directori de treball",
@@ -33,7 +45,13 @@ func newDirectoryCmd(manager adm.DirectoryManager) *cobra.Command {
 			"dir",
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return manager.Create(previousMonth, nextMonth)
+			msg, err := d.adminService.CreateDirectory(previousMonth, nextMonth)
+			if err != nil {
+				return err
+			}
+
+			fmt.Println(msg)
+			return nil
 		},
 	}
 }

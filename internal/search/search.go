@@ -2,9 +2,9 @@ package search
 
 import (
 	"fmt"
+	"github.com/pjover/sam/internal/adapters/tuk"
 	"net/url"
 
-	"github.com/pjover/sam/internal/shared"
 	"github.com/spf13/viper"
 )
 
@@ -13,12 +13,12 @@ type SearchManager interface {
 }
 
 type SearchManagerImpl struct {
-	GetManager shared.HttpGetManager
+	GetManager tuk.HttpGetManager
 }
 
 func NewSearchManager() SearchManager {
 	return SearchManagerImpl{
-		GetManager: shared.NewHttpGetManager(),
+		GetManager: tuk.NewHttpGetManager(),
 	}
 }
 

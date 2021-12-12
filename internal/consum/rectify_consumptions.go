@@ -2,19 +2,19 @@ package consum
 
 import (
 	"fmt"
-	"github.com/pjover/sam/internal/shared"
+	"github.com/pjover/sam/internal/adapters/tuk"
 	"github.com/pjover/sam/internal/storage"
 	"github.com/spf13/viper"
 )
 
 type RectifyConsumptionsManager struct {
-	PostManager     shared.HttpPostManager
+	PostManager     tuk.HttpPostManager
 	CustomerStorage storage.CustomerStorage
 }
 
 func NewRectifyConsumptionsManager() CustomerConsumptionsManager {
 	return RectifyConsumptionsManager{
-		shared.NewHttpPostManager(),
+		tuk.NewHttpPostManager(),
 		storage.NewCustomerStorage(),
 	}
 }

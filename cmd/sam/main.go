@@ -16,8 +16,19 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 package main
 
-import "github.com/pjover/sam/internal/cmd"
+import (
+	"fmt"
+	"github.com/pjover/sam/internal/adapters/cfg"
+	"github.com/pjover/sam/internal/adapters/cli"
+	"github.com/pjover/sam/internal/core"
+	"github.com/pjover/sam/internal/di"
+)
 
 func main() {
-	cmd.Execute()
+	fmt.Printf("Sam v%s\n", core.Version)
+
+	configService := cfg.NewConfigService()
+	cmdManager := cli.NewCmdManager(configService)
+	di.InjectDependencies(configService, cmdManager)
+	cmdManager.Execute()
 }

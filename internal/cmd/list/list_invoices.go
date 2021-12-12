@@ -2,17 +2,27 @@ package list
 
 import (
 	"fmt"
+	"github.com/pjover/sam/internal/adapters/cli"
+	"github.com/pjover/sam/internal/core/os"
 
 	"github.com/pjover/sam/internal/list"
-	"github.com/pjover/sam/internal/shared"
 	"github.com/spf13/cobra"
 )
 
-func NewListInvoicesCmd() *cobra.Command {
-	return newListInvoicesCmd(list.NewListInvoices())
+type listInvoicesCmd struct {
+	listService list.ListInvoices
+	timeManager os.TimeManager
 }
 
-func newListInvoicesCmd(manager list.ListInvoices) *cobra.Command {
+func NewListInvoicesCmd() *cobra.Command { //TODO Acabar d'adaptar a hex arch
+	l := listInvoicesCmd{
+		list.NewListInvoices(),
+		os.NewTimeManager(),
+	}
+	return l.Cmd()
+}
+
+func (l listInvoicesCmd) Cmd() *cobra.Command {
 	return &cobra.Command{
 		Use:   "llistaFactures [codiClient] [AAAA-MM]",
 		Short: "Llista les factura del mes i del client",
@@ -36,39 +46,39 @@ func newListInvoicesCmd(manager list.ListInvoices) *cobra.Command {
 			"listinvoices",
 			"list-invoices",
 		},
-		Args: shared.RangeArgs(0, 2),
+		Args: cli.RangeArgs(0, 2),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return parseListInvoicesArgs(manager, args)
+			return l.parseListInvoicesArgs(args)
 		},
 	}
 }
 
-func parseListInvoicesArgs(manager list.ListInvoices, args []string) error {
+func (l listInvoicesCmd) parseListInvoicesArgs(args []string) error {
 	var msg string
 	var err error
 	switch len(args) {
 	case 0:
-		var workingTime = shared.SamTimeManager{}.Now()
-		msg, err = manager.ListYearMonthInvoices(workingTime)
+		var workingTime = l.timeManager.Now()
+		msg, err = l.listService.ListYearMonthInvoices(workingTime)
 	case 1:
-		customerCode, err := shared.ParseInteger(args[0], "de client")
+		customerCode, err := cli.ParseInteger(args[0], "de client")
 		if err == nil {
-			msg, err = manager.ListCustomerInvoices(customerCode)
+			msg, err = l.listService.ListCustomerInvoices(customerCode)
 		}
-		yearMonth, err := shared.ParseYearMonth(args[0])
+		yearMonth, err := cli.ParseYearMonth(args[0])
 		if err == nil {
-			msg, err = manager.ListYearMonthInvoices(yearMonth)
+			msg, err = l.listService.ListYearMonthInvoices(yearMonth)
 		}
 	case 2:
-		customerCode, err := shared.ParseInteger(args[0], "de client")
+		customerCode, err := cli.ParseInteger(args[0], "de client")
 		if err != nil {
 			return err
 		}
-		yearMonth, err := shared.ParseYearMonth(args[1])
+		yearMonth, err := cli.ParseYearMonth(args[1])
 		if err != nil {
 			return err
 		}
-		msg, err = manager.ListCustomerYearMonthInvoices(customerCode, yearMonth)
+		msg, err = l.listService.ListCustomerYearMonthInvoices(customerCode, yearMonth)
 	}
 	if err != nil {
 		return err

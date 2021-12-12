@@ -2,8 +2,8 @@ package list
 
 import (
 	"fmt"
+	"github.com/pjover/sam/internal/adapters/tuk"
 
-	"github.com/pjover/sam/internal/shared"
 	"github.com/spf13/viper"
 )
 
@@ -13,12 +13,12 @@ type ListConsumptions interface {
 }
 
 type ListConsumptionsImpl struct {
-	getManager shared.HttpGetManager
+	getManager tuk.HttpGetManager
 }
 
 func NewListConsumptions() ListConsumptions {
 	return ListConsumptionsImpl{
-		shared.NewHttpGetManager(),
+		tuk.NewHttpGetManager(),
 	}
 }
 

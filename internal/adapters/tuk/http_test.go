@@ -1,4 +1,4 @@
-package shared
+package tuk
 
 import "testing"
 
