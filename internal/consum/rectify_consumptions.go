@@ -2,25 +2,26 @@ package consum
 
 import (
 	"fmt"
+	"github.com/pjover/sam/internal/adapters/db"
 	"github.com/pjover/sam/internal/adapters/tuk"
-	"github.com/pjover/sam/internal/storage"
+	"github.com/pjover/sam/internal/core/ports"
 	"github.com/spf13/viper"
 )
 
 type RectifyConsumptionsManager struct {
-	PostManager     tuk.HttpPostManager
-	CustomerStorage storage.CustomerStorage
+	PostManager tuk.HttpPostManager
+	dbService   ports.DbService
 }
 
 func NewRectifyConsumptionsManager() CustomerConsumptionsManager {
 	return RectifyConsumptionsManager{
 		tuk.NewHttpPostManager(),
-		storage.NewCustomerStorage(),
+		db.NewDbService(),
 	}
 }
 
 func (r RectifyConsumptionsManager) Run(args CustomerConsumptionsArgs) (string, error) {
-	child, err := r.CustomerStorage.GetChild(args.Code)
+	child, err := r.dbService.GetChild(args.Code)
 	if err != nil {
 		return "", err
 	}

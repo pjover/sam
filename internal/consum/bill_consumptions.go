@@ -2,9 +2,10 @@ package consum
 
 import (
 	"fmt"
+	"github.com/pjover/sam/internal/adapters/db"
 	"github.com/pjover/sam/internal/adapters/tuk"
+	"github.com/pjover/sam/internal/core/ports"
 
-	"github.com/pjover/sam/internal/storage"
 	"github.com/spf13/viper"
 )
 
@@ -13,14 +14,14 @@ type BillConsumptionsManager interface {
 }
 
 type BillConsumptionsManagerImpl struct {
-	PostManager     tuk.HttpPostManager
-	CustomerStorage storage.CustomerStorage
+	PostManager tuk.HttpPostManager
+	dbService   ports.DbService
 }
 
 func NewBillConsumptionsManager() BillConsumptionsManager {
 	return BillConsumptionsManagerImpl{
 		tuk.NewHttpPostManager(),
-		storage.NewCustomerStorage(),
+		db.NewDbService(),
 	}
 }
 

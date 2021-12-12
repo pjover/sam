@@ -83,6 +83,8 @@ func (c configService) loadDefaultConfig(home string) {
 	viper.SetDefault("business.addressLine4", "AddressLine4")
 	viper.SetDefault("business.taxIdLine", "TaxIdLine")
 
+	viper.SetDefault("lang", "cat")
+
 }
 
 func (c configService) GetWorkingDirectory() string {

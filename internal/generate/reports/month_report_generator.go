@@ -3,10 +3,12 @@ package reports
 import (
 	"fmt"
 	"github.com/pjover/sam/internal/adapters/cfg"
+	"github.com/pjover/sam/internal/adapters/db"
 	"github.com/pjover/sam/internal/adapters/tuk"
 	"github.com/pjover/sam/internal/core"
 	model2 "github.com/pjover/sam/internal/core/model"
 	"github.com/pjover/sam/internal/core/ports"
+	"github.com/pjover/sam/internal/core/services/lang"
 	"log"
 	"path"
 	"sort"
@@ -14,22 +16,23 @@ import (
 
 	"github.com/johnfercher/maroto/pkg/consts"
 	"github.com/pjover/sam/internal/generate"
-	"github.com/pjover/sam/internal/storage"
-	"github.com/pjover/sam/internal/translate"
 	"github.com/spf13/viper"
 )
 
 type MonthReportGenerator struct {
-	getManager      tuk.HttpGetManager
-	customerStorage storage.CustomerStorage
-	configService   ports.ConfigService
+	getManager    tuk.HttpGetManager
+	dbService     ports.DbService
+	configService ports.ConfigService
+	langService   lang.LangService
 }
 
 func NewMonthReportGenerator() generate.Generator {
+	cfgService := cfg.NewConfigService()
 	return MonthReportGenerator{
 		tuk.NewHttpGetManager(),
-		storage.NewCustomerStorage(),
-		cfg.NewConfigService(),
+		db.NewDbService(),
+		cfgService,
+		lang.NewLangService(cfgService.Get("lang")),
 	}
 }
 
@@ -57,7 +60,7 @@ func (i MonthReportGenerator) Generate() (string, error) {
 	reportInfo := ReportInfo{
 		consts.Landscape,
 		consts.Left,
-		fmt.Sprintf("Factures %s", translate.MonthName(month)),
+		fmt.Sprintf("Factures %s", i.langService.MonthName(month)),
 		[]Column{
 			{"Factura", 1},
 			{"Data", 1},
@@ -125,7 +128,7 @@ func (i MonthReportGenerator) buildContents(invoices *monthInvoices) ([][]string
 }
 
 func (i MonthReportGenerator) customer(invoice model2.Invoice) (model2.Customer, error) {
-	customer, err := i.customerStorage.GetCustomer(invoice.CustomerID)
+	customer, err := i.dbService.GetCustomer(invoice.CustomerID)
 	if err != nil {
 		return model2.Customer{}, err
 	}

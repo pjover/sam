@@ -3,7 +3,7 @@ package services
 import (
 	"fmt"
 	"github.com/pjover/sam/internal/core/ports"
-	"github.com/pjover/sam/internal/translate"
+	"github.com/pjover/sam/internal/core/services/lang"
 	"path"
 	"time"
 )
@@ -11,12 +11,14 @@ import (
 type adminService struct {
 	configService ports.ConfigService
 	osService     ports.OsService
+	langService   lang.LangService
 }
 
-func NewAdminService(configService ports.ConfigService, osService ports.OsService) ports.AdminService {
+func NewAdminService(configService ports.ConfigService, osService ports.OsService, langService lang.LangService) ports.AdminService {
 	return adminService{
 		configService: configService,
 		osService:     osService,
+		langService:   langService,
 	}
 }
 
@@ -76,7 +78,7 @@ func (a adminService) getZipFilePath() (string, error) {
 func (a adminService) CreateDirectory(previousMonth bool, nextMonth bool) (string, error) {
 	workingTime := a.getWorkingTime(previousMonth, nextMonth)
 	yearMonth := workingTime.Format("2006-01")
-	dirName := translate.WorkingDir(workingTime)
+	dirName := a.langService.WorkingDir(workingTime)
 
 	dirPath := path.Join(a.configService.Get("dirs.home"), dirName)
 	exists, err := a.osService.ItemExists(dirPath)

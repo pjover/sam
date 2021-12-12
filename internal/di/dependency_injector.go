@@ -12,17 +12,21 @@ import (
 	"github.com/pjover/sam/internal/cmd/search"
 	"github.com/pjover/sam/internal/core/ports"
 	"github.com/pjover/sam/internal/core/services"
+	"github.com/pjover/sam/internal/core/services/lang"
 )
 
 func InjectDependencies(cfgService ports.ConfigService, cmdManager cli.CmdManager) {
 
 	osService := os.NewOsService()
+	langService := lang.NewLangService(cfgService.Get("lang"))
 
-	adminService := services.NewAdminService(cfgService, osService)
+	adminServiceDI(cfgService, cmdManager, osService, langService)
+
+	adminService := services.NewAdminService(cfgService, osService, langService)
 	cmdManager.AddCommand(admin.NewBackupCmd(adminService))
 	cmdManager.AddCommand(admin.NewDirectoryCmd(adminService))
 
-	// TODO move to DI
+	// TODO move to DI and remove method AddTmpCommand
 	cmdManager.AddTmpCommand(consum.NewBillConsumptionsCmd())
 	cmdManager.AddTmpCommand(consum.NewInsertConsumptionsCmd())
 	cmdManager.AddTmpCommand(consum.NewRectifyConsumptionsCmd())

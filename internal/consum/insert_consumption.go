@@ -2,25 +2,26 @@ package consum
 
 import (
 	"fmt"
+	"github.com/pjover/sam/internal/adapters/db"
 	"github.com/pjover/sam/internal/adapters/tuk"
-	"github.com/pjover/sam/internal/storage"
+	"github.com/pjover/sam/internal/core/ports"
 	"github.com/spf13/viper"
 )
 
 type InsertConsumptionsManager struct {
-	PostManager     tuk.HttpPostManager
-	CustomerStorage storage.CustomerStorage
+	PostManager tuk.HttpPostManager
+	dbService   ports.DbService
 }
 
 func NewInsertConsumptionsManager() CustomerConsumptionsManager {
 	return InsertConsumptionsManager{
 		tuk.NewHttpPostManager(),
-		storage.NewCustomerStorage(),
+		db.NewDbService(),
 	}
 }
 
 func (i InsertConsumptionsManager) Run(args CustomerConsumptionsArgs) (string, error) {
-	child, err := i.CustomerStorage.GetChild(args.Code)
+	child, err := i.dbService.GetChild(args.Code)
 	if err != nil {
 		return "", err
 	}
