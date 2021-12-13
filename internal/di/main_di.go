@@ -12,13 +12,13 @@ import (
 	"github.com/pjover/sam/internal/core/services/lang"
 )
 
-func MainDI(cfgService ports.ConfigService, cmdManager cli.CmdManager) {
+func MainDI(configService ports.ConfigService, cmdManager cli.CmdManager) {
 
 	osService := os.NewOsService()
-	langService := lang.NewLangService(cfgService.Get("lang"))
+	langService := lang.NewLangService(configService.Get("lang"))
 
-	adminServiceDI(cfgService, cmdManager, osService, langService)
-	editServiceDI(cmdManager, osService)
+	adminServiceDI(configService, cmdManager, osService, langService)
+	editServiceDI(configService, cmdManager, osService)
 
 	// TODO move to DI and remove method AddTmpCommand
 	cmdManager.AddTmpCommand(consum.NewBillConsumptionsCmd())

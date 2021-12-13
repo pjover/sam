@@ -15,7 +15,7 @@ func NewLangService(language string) LangService {
 	case "cat":
 		return catLangService{}
 	default:
-		log.Fatalln("Not implemented")
+		log.Fatalf("Language '%s' not implemented", language)
 	}
 	return nil
 }

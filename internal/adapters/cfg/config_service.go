@@ -12,7 +12,9 @@ type configService struct {
 }
 
 func NewConfigService() ports.ConfigService {
-	return configService{}
+	service := configService{}
+	service.Init()
+	return service
 }
 
 func (c configService) Get(key string) string {
