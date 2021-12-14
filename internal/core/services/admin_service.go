@@ -2,33 +2,30 @@ package services
 
 import (
 	"fmt"
-	"github.com/pjover/sam/internal/core/os"
 	"github.com/pjover/sam/internal/core/ports"
-	"github.com/pjover/sam/internal/translate"
+	"github.com/pjover/sam/internal/core/services/lang"
 	"path"
 	"time"
 )
 
 type adminService struct {
 	configService ports.ConfigService
-	timeManager   os.TimeManager
-	fileManager   os.FileManager
-	execManager   os.ExecManager
+	osService     ports.OsService
+	langService   lang.LangService
 }
 
-func NewAdminService(configService ports.ConfigService, timeManager os.TimeManager, fileManager os.FileManager, execManager os.ExecManager) ports.AdminService {
+func NewAdminService(configService ports.ConfigService, osService ports.OsService, langService lang.LangService) ports.AdminService {
 	return adminService{
 		configService: configService,
-		timeManager:   timeManager,
-		fileManager:   fileManager,
-		execManager:   execManager,
+		osService:     osService,
+		langService:   langService,
 	}
 }
 
 func (a adminService) Backup() (string, error) {
 	fmt.Println("Fent la còpia de seguretat de la base de dades ...")
 
-	tmpDirPath, err := a.fileManager.GetTempDirectory()
+	tmpDirPath, err := a.osService.GetTempDirectory()
 	if err != nil {
 		return "", err
 	}
@@ -38,7 +35,7 @@ func (a adminService) Backup() (string, error) {
 	for _, value := range strSlice {
 		fileName := fmt.Sprintf("%s.json", value)
 		filePath := path.Join(tmpDirPath, fileName)
-		err := a.execManager.Run(
+		err := a.osService.RunCommand(
 			"mongoexport",
 			"--db=hobbit",
 			fmt.Sprintf("--collection=%s", value),
@@ -55,7 +52,7 @@ func (a adminService) Backup() (string, error) {
 		return "", err
 	}
 
-	err = a.fileManager.Zip(zipFilePath, files)
+	err = a.osService.CreateZipFile(zipFilePath, files)
 	if err != nil {
 		return "", err
 	}
@@ -65,14 +62,14 @@ func (a adminService) Backup() (string, error) {
 
 func (a adminService) getZipFilePath() (string, error) {
 	backupDir := a.configService.Get("dirs.backup")
-	exists, err := a.fileManager.Exists(backupDir)
+	exists, err := a.osService.ItemExists(backupDir)
 	if err != nil {
 		return "", err
 	}
 	if !exists {
 		return "", fmt.Errorf("el directori %s no existeix", backupDir)
 	}
-	dateStr := a.timeManager.Now().Format("060102")
+	dateStr := a.osService.Now().Format("060102")
 	backupFileName := fmt.Sprintf("%s-Backup.zip", dateStr)
 	backupFilePath := path.Join(backupDir, backupFileName)
 	return backupFilePath, nil
@@ -81,10 +78,10 @@ func (a adminService) getZipFilePath() (string, error) {
 func (a adminService) CreateDirectory(previousMonth bool, nextMonth bool) (string, error) {
 	workingTime := a.getWorkingTime(previousMonth, nextMonth)
 	yearMonth := workingTime.Format("2006-01")
-	dirName := translate.WorkingDir(workingTime)
+	dirName := a.langService.WorkingDir(workingTime)
 
 	dirPath := path.Join(a.configService.Get("dirs.home"), dirName)
-	exists, err := a.fileManager.Exists(dirPath)
+	exists, err := a.osService.ItemExists(dirPath)
 	if err != nil {
 		return "", err
 	}
@@ -93,7 +90,7 @@ func (a adminService) CreateDirectory(previousMonth bool, nextMonth bool) (strin
 		return fmt.Sprintf("El directori %s ja existeix", dirPath), nil
 	}
 
-	if err := a.fileManager.CreateDirectory(dirPath); err != nil {
+	if err := a.osService.CreateDirectory(dirPath); err != nil {
 		return "", err
 	}
 
@@ -101,7 +98,7 @@ func (a adminService) CreateDirectory(previousMonth bool, nextMonth bool) (strin
 		return "", err
 	}
 
-	if err := a.execManager.BrowseTo(dirPath); err != nil {
+	if err := a.osService.OpenUrlInBrowser(dirPath); err != nil {
 		return "", err
 	}
 
@@ -109,7 +106,7 @@ func (a adminService) CreateDirectory(previousMonth bool, nextMonth bool) (strin
 }
 
 func (a adminService) getWorkingTime(previousMonth bool, nextMonth bool) time.Time {
-	var t = a.timeManager.Now()
+	var t = a.osService.Now()
 	var workingTime = time.Date(t.Year(), t.Month(), 1, 0, 0, 0, 0, time.Local)
 
 	if previousMonth {

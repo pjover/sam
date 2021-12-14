@@ -2,29 +2,25 @@ package di
 
 import (
 	"github.com/pjover/sam/internal/adapters/cli"
-	"github.com/pjover/sam/internal/adapters/cli/admin"
+	"github.com/pjover/sam/internal/adapters/os"
 	"github.com/pjover/sam/internal/cmd/consum"
 	"github.com/pjover/sam/internal/cmd/display"
-	"github.com/pjover/sam/internal/cmd/edit"
 	"github.com/pjover/sam/internal/cmd/generate"
 	"github.com/pjover/sam/internal/cmd/list"
 	"github.com/pjover/sam/internal/cmd/search"
-	"github.com/pjover/sam/internal/core/os"
 	"github.com/pjover/sam/internal/core/ports"
-	"github.com/pjover/sam/internal/core/services"
+	"github.com/pjover/sam/internal/core/services/lang"
 )
 
-func InjectDependencies(cfgService ports.ConfigService, cmdManager cli.CmdManager) {
+func MainDI(configService ports.ConfigService, cmdManager cli.CmdManager) {
 
-	timeManager := os.NewTimeManager()
-	fileManager := os.NewFileManager()
-	execManager := os.NewExecManager()
+	osService := os.NewOsService()
+	langService := lang.NewLangService(configService.Get("lang"))
 
-	adminService := services.NewAdminService(cfgService, timeManager, fileManager, execManager)
-	cmdManager.AddCommand(admin.NewBackupCmd(adminService))
-	cmdManager.AddCommand(admin.NewDirectoryCmd(adminService))
+	adminServiceDI(configService, cmdManager, osService, langService)
+	editServiceDI(configService, cmdManager, osService)
 
-	// TODO move to DI
+	// TODO move to DI and remove method AddTmpCommand
 	cmdManager.AddTmpCommand(consum.NewBillConsumptionsCmd())
 	cmdManager.AddTmpCommand(consum.NewInsertConsumptionsCmd())
 	cmdManager.AddTmpCommand(consum.NewRectifyConsumptionsCmd())
@@ -32,10 +28,6 @@ func InjectDependencies(cfgService ports.ConfigService, cmdManager cli.CmdManage
 	cmdManager.AddTmpCommand(display.NewDisplayCustomerCmd())
 	cmdManager.AddTmpCommand(display.NewDisplayInvoiceCmd())
 	cmdManager.AddTmpCommand(display.NewDisplayProductCmd())
-
-	cmdManager.AddTmpCommand(edit.NewEditCustomerCmd())
-	cmdManager.AddTmpCommand(edit.NewEditInvoiceCmd())
-	cmdManager.AddTmpCommand(edit.NewEditProductCmd())
 
 	cmdManager.AddTmpCommand(generate.NewGenerateBddCmd())
 	cmdManager.AddTmpCommand(generate.NewGenerateCustomersReportCmd())

@@ -1,18 +1,25 @@
 package edit
 
 import (
+	"fmt"
 	"github.com/pjover/sam/internal/adapters/cli"
+	"github.com/pjover/sam/internal/core/ports"
 	"strings"
 
-	"github.com/pjover/sam/internal/edit"
 	"github.com/spf13/cobra"
 )
 
-func NewEditInvoiceCmd() *cobra.Command {
-	return newEditInvoiceCmd(edit.NewInvoiceEditor())
+type editInvoiceCmd struct {
+	editService ports.EditService
 }
 
-func newEditInvoiceCmd(editor edit.Editor) *cobra.Command {
+func NewEditInvoiceCmd(editService ports.EditService) cli.Cmd {
+	return editInvoiceCmd{
+		editService: editService,
+	}
+}
+
+func (e editInvoiceCmd) Cmd() *cobra.Command {
 	return &cobra.Command{
 		Use:         "editaFactura codiFactura",
 		Short:       "Edita les dades d'una factura",
@@ -33,8 +40,12 @@ func newEditInvoiceCmd(editor edit.Editor) *cobra.Command {
 		},
 		Args: cli.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			invoiceCode := strings.ToUpper(args[0])
-			return editor.Edit(invoiceCode)
+			code := strings.ToUpper(args[0])
+			msg, err := e.editService.EditInvoice(code)
+			if msg != "" {
+				fmt.Println(msg)
+			}
+			return err
 		},
 	}
 }

@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/pjover/sam/internal/core/os"
+	"github.com/pjover/sam/internal/adapters/os"
 	"log"
 	goos "os"
 	"os/exec"
@@ -42,7 +42,7 @@ var heavy_tests = [][]string{
 	{"generateProductsReport"},
 }
 
-var execManager = os.NewExecManager()
+var osService = os.NewOsService()
 
 func main() {
 	args := goos.Args[1:]
@@ -79,7 +79,7 @@ func test(tests [][]string) {
 }
 
 func run(args ...string) (isError bool, msg string) {
-	err := execManager.Run("sam", args...)
+	err := osService.RunCommand("sam", args...)
 	if err != nil {
 		exitError := err.(*exec.ExitError)
 		return true, fmt.Sprintf("🔴 sam %s : %s\n", strings.Join(args, " "), exitError.Error())

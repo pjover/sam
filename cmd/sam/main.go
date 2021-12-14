@@ -29,6 +29,6 @@ func main() {
 
 	configService := cfg.NewConfigService()
 	cmdManager := cli.NewCmdManager(configService)
-	di.InjectDependencies(configService, cmdManager)
+	di.MainDI(configService, cmdManager)
 	cmdManager.Execute()
 }

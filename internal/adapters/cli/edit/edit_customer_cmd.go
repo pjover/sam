@@ -1,15 +1,23 @@
 package edit
 
 import (
+	"fmt"
 	"github.com/pjover/sam/internal/adapters/cli"
-	"github.com/pjover/sam/internal/edit"
+	"github.com/pjover/sam/internal/core/ports"
 	"github.com/spf13/cobra"
 )
 
-func NewEditCustomerCmd() *cobra.Command {
-	return newEditCustomerCmd(edit.NewCustomerEditor())
+type editCustomerCmd struct {
+	editService ports.EditService
 }
-func newEditCustomerCmd(editor edit.Editor) *cobra.Command {
+
+func NewEditCustomerCmd(editService ports.EditService) cli.Cmd {
+	return editCustomerCmd{
+		editService: editService,
+	}
+}
+
+func (e editCustomerCmd) Cmd() *cobra.Command {
 	return &cobra.Command{
 		Use:         "editaClient codiClient",
 		Short:       "Edita les dades d'un client",
@@ -30,11 +38,15 @@ func newEditCustomerCmd(editor edit.Editor) *cobra.Command {
 		},
 		Args: cli.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			_, err := cli.ParseInteger(args[0], "de client")
+			code, err := cli.ParseInteger(args[0], "de client")
 			if err != nil {
 				return err
 			}
-			return editor.Edit(args[0])
+			msg, err := e.editService.EditCustomer(code)
+			if msg != "" {
+				fmt.Println(msg)
+			}
+			return err
 		},
 	}
 }

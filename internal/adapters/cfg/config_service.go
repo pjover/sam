@@ -12,7 +12,9 @@ type configService struct {
 }
 
 func NewConfigService() ports.ConfigService {
-	return configService{}
+	service := configService{}
+	service.Init()
+	return service
 }
 
 func (c configService) Get(key string) string {
@@ -82,6 +84,8 @@ func (c configService) loadDefaultConfig(home string) {
 	viper.SetDefault("business.addressLine3", "AddressLine3")
 	viper.SetDefault("business.addressLine4", "AddressLine4")
 	viper.SetDefault("business.taxIdLine", "TaxIdLine")
+
+	viper.SetDefault("lang", "cat")
 
 }
 

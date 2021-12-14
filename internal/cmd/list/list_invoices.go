@@ -3,7 +3,8 @@ package list
 import (
 	"fmt"
 	"github.com/pjover/sam/internal/adapters/cli"
-	"github.com/pjover/sam/internal/core/os"
+	"github.com/pjover/sam/internal/adapters/os"
+	"github.com/pjover/sam/internal/core/ports"
 
 	"github.com/pjover/sam/internal/list"
 	"github.com/spf13/cobra"
@@ -11,13 +12,13 @@ import (
 
 type listInvoicesCmd struct {
 	listService list.ListInvoices
-	timeManager os.TimeManager
+	osService   ports.OsService
 }
 
 func NewListInvoicesCmd() *cobra.Command { //TODO Acabar d'adaptar a hex arch
 	l := listInvoicesCmd{
 		list.NewListInvoices(),
-		os.NewTimeManager(),
+		os.NewOsService(),
 	}
 	return l.Cmd()
 }
@@ -58,7 +59,7 @@ func (l listInvoicesCmd) parseListInvoicesArgs(args []string) error {
 	var err error
 	switch len(args) {
 	case 0:
-		var workingTime = l.timeManager.Now()
+		var workingTime = l.osService.Now()
 		msg, err = l.listService.ListYearMonthInvoices(workingTime)
 	case 1:
 		customerCode, err := cli.ParseInteger(args[0], "de client")
