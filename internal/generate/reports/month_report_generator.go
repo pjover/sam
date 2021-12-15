@@ -30,7 +30,7 @@ func NewMonthReportGenerator() generate.Generator {
 	cfgService := cfg.NewConfigService()
 	return MonthReportGenerator{
 		tuk.NewHttpGetManager(),
-		mongo_db.NewDbService(),
+		mongo_db.NewDbService(cfgService),
 		cfgService,
 		lang.NewLangService(cfgService.Get("lang")),
 	}

@@ -1,23 +1,25 @@
 package display
 
 import (
-	"fmt"
-	"github.com/pjover/sam/internal/adapters/tuk"
-
-	"github.com/spf13/viper"
+	"github.com/pjover/sam/internal/core/ports"
+	"strconv"
 )
 
 type CustomerDisplay struct {
-	getManager tuk.HttpGetManager
+	dbService ports.DbService
 }
 
-func NewCustomerDisplay() Display {
+func NewCustomerDisplay(dbService ports.DbService) Display {
 	return CustomerDisplay{
-		tuk.NewHttpGetManager(),
+		dbService: dbService,
 	}
 }
 
 func (c CustomerDisplay) Display(code string) (string, error) {
-	url := fmt.Sprintf("%s/customers/%s", viper.GetString("urls.hobbit"), code)
-	return c.getManager.PrettyJson(url)
+	codeI, _ := strconv.Atoi(code)
+	customer, err := c.dbService.GetCustomer(codeI)
+	if err != nil {
+		return "", err
+	}
+	return customer.String(), nil
 }

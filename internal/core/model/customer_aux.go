@@ -5,6 +5,10 @@ import (
 	"strings"
 )
 
+func (c Customer) String() string {
+	return fmt.Sprintf("%#v", c)
+}
+
 func (c Customer) FirstAdult() Adult {
 	for _, adult := range c.Adults {
 		if adult.Role == "MOTHER" {

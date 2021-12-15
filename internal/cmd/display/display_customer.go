@@ -2,13 +2,15 @@ package display
 
 import (
 	"fmt"
+	"github.com/pjover/sam/internal/adapters/cfg"
 	"github.com/pjover/sam/internal/adapters/cli"
+	"github.com/pjover/sam/internal/adapters/mongo_db"
 	"github.com/pjover/sam/internal/display"
 	"github.com/spf13/cobra"
 )
 
 func NewDisplayCustomerCmd() *cobra.Command {
-	return newDisplayCustomerCmd(display.NewCustomerDisplay())
+	return newDisplayCustomerCmd(display.NewCustomerDisplay(mongo_db.NewDbService(cfg.NewConfigService())))
 }
 
 func newDisplayCustomerCmd(dsp display.Display) *cobra.Command {

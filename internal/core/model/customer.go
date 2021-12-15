@@ -50,10 +50,11 @@ type InvoiceHolder struct {
 }
 
 type Customer struct {
+	//TODO Id            int           `json:"_id"`
+	Active        bool          `json:"active"`
 	Children      []Child       `json:"children"`
 	Adults        []Adult       `json:"adults"`
 	InvoiceHolder InvoiceHolder `json:"invoiceHolder"`
 	Note          interface{}   `json:"note"`
 	Language      string        `json:"language"`
-	Active        bool          `json:"active"`
 }

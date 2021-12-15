@@ -2,6 +2,7 @@ package consum
 
 import (
 	"fmt"
+	"github.com/pjover/sam/internal/adapters/cfg"
 	"github.com/pjover/sam/internal/adapters/mongo_db"
 	"github.com/pjover/sam/internal/adapters/tuk"
 	"github.com/pjover/sam/internal/core/ports"
@@ -16,7 +17,7 @@ type RectifyConsumptionsManager struct {
 func NewRectifyConsumptionsManager() CustomerConsumptionsManager {
 	return RectifyConsumptionsManager{
 		tuk.NewHttpPostManager(),
-		mongo_db.NewDbService(),
+		mongo_db.NewDbService(cfg.NewConfigService()),
 	}
 }
 
