@@ -10,4 +10,5 @@ import (
 func displayServiceDI(dbService ports.DbService, cmdManager cli.CmdManager) {
 	displayService := services.NewDisplayService(dbService)
 	cmdManager.AddCommand(display.NewDisplayCustomerCmd(displayService))
+	cmdManager.AddCommand(display.NewDisplayInvoiceCmd(displayService))
 }

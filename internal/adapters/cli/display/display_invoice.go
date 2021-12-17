@@ -3,16 +3,22 @@ package display
 import (
 	"fmt"
 	"github.com/pjover/sam/internal/adapters/cli"
-	"strings"
-
-	"github.com/pjover/sam/internal/display"
+	"github.com/pjover/sam/internal/core/ports"
 	"github.com/spf13/cobra"
+	"strings"
 )
 
-func NewDisplayInvoiceCmd() *cobra.Command {
-	return newDisplayInvoiceCmd(display.NewInvoiceDisplay())
+type displayInvoiceCmd struct {
+	displayService ports.DisplayService
 }
-func newDisplayInvoiceCmd(dsp display.Display) *cobra.Command {
+
+func NewDisplayInvoiceCmd(displayService ports.DisplayService) cli.Cmd {
+	return displayInvoiceCmd{
+		displayService: displayService,
+	}
+}
+
+func (e displayInvoiceCmd) Cmd() *cobra.Command {
 	return &cobra.Command{
 		Use:         "mostraFactura codiFactura",
 		Short:       "Mostra les dades d'una factura",
@@ -34,13 +40,11 @@ func newDisplayInvoiceCmd(dsp display.Display) *cobra.Command {
 		Args: cli.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			code := strings.ToUpper(args[0])
-			msg, err := dsp.Display(code)
-			if err != nil {
-				return err
+			msg, err := e.displayService.DisplayInvoice(code)
+			if msg != "" {
+				fmt.Println(msg)
 			}
-
-			fmt.Println(msg)
-			return nil
+			return err
 		},
 	}
 }

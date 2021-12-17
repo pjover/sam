@@ -3,7 +3,7 @@ package dbo
 import "time"
 
 type Invoice struct {
-	Id            int       `bson:"_id"`
+	Id            string    `bson:"_id"`
 	CustomerID    int       `bson:"customerId"`
 	Date          time.Time `bson:"date"`
 	YearMonth     string    `bson:"yearMonth"`

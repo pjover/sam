@@ -19,3 +19,11 @@ func (d displayService) DisplayCustomer(code int) (string, error) {
 	}
 	return customer.String(), nil
 }
+
+func (d displayService) DisplayInvoice(code string) (string, error) {
+	invoice, err := d.dbService.GetInvoice(code)
+	if err != nil {
+		return "", err
+	}
+	return invoice.String(), nil
+}

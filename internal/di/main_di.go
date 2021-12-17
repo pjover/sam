@@ -28,7 +28,6 @@ func MainDI(configService ports.ConfigService, cmdManager cli.CmdManager) {
 	cmdManager.AddTmpCommand(consum.NewInsertConsumptionsCmd())
 	cmdManager.AddTmpCommand(consum.NewRectifyConsumptionsCmd())
 
-	cmdManager.AddTmpCommand(display.NewDisplayInvoiceCmd())
 	cmdManager.AddTmpCommand(display.NewDisplayProductCmd())
 
 	cmdManager.AddTmpCommand(generate.NewGenerateBddCmd())

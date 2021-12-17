@@ -5,6 +5,10 @@ import (
 	"strings"
 )
 
+func (i Invoice) String() string {
+	return fmt.Sprintf("%#v", i)
+}
+
 func (i Invoice) Code() string {
 	url := i.Links.Self.Href
 	parts := strings.Split(url, "/")

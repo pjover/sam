@@ -3,7 +3,7 @@ package model
 import "time"
 
 type Invoice struct {
-	Id            int
+	Id            string
 	CustomerID    int       `json:"customerId"`
 	Date          time.Time `json:"date"`
 	YearMonth     string    `json:"yearMonth"`
