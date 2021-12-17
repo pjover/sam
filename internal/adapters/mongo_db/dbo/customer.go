@@ -2,6 +2,16 @@ package dbo
 
 import "time"
 
+type Customer struct {
+	Id            int           `bson:"_id"`
+	Active        bool          `bson:"active"`
+	Children      []Child       `bson:"children"`
+	Adults        []Adult       `bson:"adults"`
+	InvoiceHolder InvoiceHolder `bson:"invoiceHolder"`
+	Note          string        `bson:"note"`
+	Language      string        `bson:"language"`
+}
+
 type Child struct {
 	Code          int       `bson:"code"`
 	Name          string    `bson:"name"`
@@ -49,14 +59,4 @@ type InvoiceHolder struct {
 	PaymentType string  `bson:"paymentType"`
 	BankAccount string  `bson:"bankAccount"`
 	IsBusiness  bool    `bson:"isBusiness"`
-}
-
-type Customer struct {
-	Id            int           `bson:"_id"`
-	Active        bool          `bson:"active"`
-	Children      []Child       `bson:"children"`
-	Adults        []Adult       `bson:"adults"`
-	InvoiceHolder InvoiceHolder `bson:"invoiceHolder"`
-	Note          string        `bson:"note"`
-	Language      string        `bson:"language"`
 }

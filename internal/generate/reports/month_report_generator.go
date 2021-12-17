@@ -112,7 +112,7 @@ func (i MonthReportGenerator) buildContents(invoices *monthInvoices) ([][]string
 
 		var line = []string{
 			invoice.Code(),
-			invoice.Date,
+			invoice.Date.String(),
 			customer.FirstAdultNameWithCode(),
 			customer.ChildrenNames("\n"),
 			invoice.LinesFmt(", "),

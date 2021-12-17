@@ -1,6 +1,7 @@
 package model
 
 type Product struct {
+	Id            int
 	Name          string  `json:"name"`
 	ShortName     string  `json:"shortName"`
 	Price         float64 `json:"price"`

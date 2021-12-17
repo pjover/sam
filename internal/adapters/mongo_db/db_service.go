@@ -64,7 +64,7 @@ func (d dbService) GetCustomer(code int) (model.Customer, error) {
 		return model.Customer{}, err
 	}
 
-	return dbo.Convert(customer), nil
+	return dbo.ConvertCustomer(customer), nil
 }
 
 func (d dbService) GetChild(code int) (model.Child, error) {

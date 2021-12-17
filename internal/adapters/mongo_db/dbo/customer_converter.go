@@ -4,7 +4,7 @@ import (
 	"github.com/pjover/sam/internal/core/model"
 )
 
-func Convert(customer Customer) model.Customer {
+func ConvertCustomer(customer Customer) model.Customer {
 	return model.Customer{
 		Id:            customer.Id,
 		Active:        customer.Active,

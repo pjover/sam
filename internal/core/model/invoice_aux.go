@@ -11,8 +11,8 @@ func (i Invoice) Code() string {
 	return parts[len(parts)-1]
 }
 
-func (i Invoice) Amount() float32 {
-	var amount float32
+func (i Invoice) Amount() float64 {
+	var amount float64
 	for _, line := range i.Lines {
 		amount += line.Units * line.ProductPrice
 	}
