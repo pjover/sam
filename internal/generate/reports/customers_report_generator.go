@@ -94,7 +94,7 @@ func (c CustomersReportGenerator) buildContents(customers *activeCustomers) [][]
 			var line = []string{
 				child.NameWithCode(),
 				child.Group,
-				child.BirthDate,
+				child.BirthDate.String(),
 				adult.NameSurnameFmt(),
 				adult.MobilePhoneFmt(),
 				adult.Email,

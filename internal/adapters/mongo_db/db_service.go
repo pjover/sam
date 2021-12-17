@@ -2,9 +2,8 @@ package mongo_db
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
-	"github.com/pjover/sam/internal/adapters/tuk"
+	"github.com/pjover/sam/internal/adapters/mongo_db/dbo"
 	"github.com/pjover/sam/internal/core/model"
 	"github.com/pjover/sam/internal/core/ports"
 	"go.mongodb.org/mongo-driver/bson"
@@ -15,7 +14,6 @@ import (
 
 type dbService struct {
 	configService ports.ConfigService
-	getManager    tuk.HttpGetManager
 	ctx           context.Context
 	uri           string
 }
@@ -24,13 +22,7 @@ func NewDbService(configService ports.ConfigService) ports.DbService {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	uri := configService.Get("db.server")
-
-	return dbService{
-		configService,
-		tuk.NewHttpGetManager(),
-		ctx,
-		uri,
-	}
+	return dbService{configService, ctx, uri}
 }
 
 func (d dbService) open() (*mongo.Client, error) {
@@ -50,46 +42,35 @@ func (d dbService) GetCustomer(code int) (model.Customer, error) {
 		return model.Customer{}, err
 	}
 
+	var result bson.D
 	coll := client.Database("hobbit").Collection("customer")
-	var result bson.M
-	err = coll.FindOne(context.TODO(), bson.D{{"_id", code}}).Decode(&result)
+	filter := bson.D{{"_id", code}}
+	err = coll.FindOne(context.TODO(), filter).Decode(&result)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
-			// This error means your query did not match any documents.
-			return model.Customer{}, fmt.Errorf("customer %d not found", code)
+			return model.Customer{}, fmt.Errorf("no s'ha trobat el ckient amb codi %d", code)
 		}
 		return model.Customer{}, err
 	}
-	// end findOne
 
-	output, err := json.MarshalIndent(result, "", "    ")
-	if err != nil {
-		panic(err)
-	}
-	fmt.Printf("Customer:\n%s\n", output)
-
-	customer := new(model.Customer)
-	err = json.Unmarshal([]byte(output), &customer)
+	doc, err := bson.Marshal(result)
 	if err != nil {
 		return model.Customer{}, err
 	}
-	//baseUrl := d.configService.Get("urls.hobbit")
-	//url := fmt.Sprintf("%s/customers/%d", baseUrl, code)
-	//
-	//
-	//err = d.getManager.Type(url, customer)
-	//if err != nil {
-	//	return model.Customer{}, err
-	//}
-	return *customer, nil
+
+	var customer dbo.Customer
+	err = bson.Unmarshal(doc, &customer)
+	if err != nil { // TODO Error: error decoding key children.0.birthDate: cannot decode UTC datetime into a string type
+		return model.Customer{}, err
+	}
+
+	return dbo.Convert(customer), nil
 }
 
 func (d dbService) GetChild(code int) (model.Child, error) {
-	baseUrl := d.configService.Get("urls.hobbit")
-	url := fmt.Sprintf("%s/customers/%d", baseUrl, code/10)
-	customer := new(model.Customer)
 
-	err := d.getManager.Type(url, customer)
+	var childCode = code / 10
+	customer, err := d.GetCustomer(childCode)
 	if err != nil {
 		return model.Child{}, err
 	}
@@ -102,7 +83,7 @@ func (d dbService) GetChild(code int) (model.Child, error) {
 		}
 	}
 	if child == (model.Child{}) {
-		return model.Child{}, fmt.Errorf("No s'ha trobat l'infant amb codi %d", code)
+		return model.Child{}, fmt.Errorf("no s'ha trobat l'infant amb codi %d", code)
 	}
 	return child, nil
 }

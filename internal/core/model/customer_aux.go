@@ -20,11 +20,7 @@ func (c Customer) FirstAdult() Adult {
 
 func (c Customer) FirstAdultNameWithCode() string {
 	adult := c.FirstAdult()
-	return fmt.Sprintf("%s %s (%d)", adult.Name, adult.Surname, c.Id())
-}
-
-func (c Customer) Id() int {
-	return c.Children[0].Code / 10
+	return fmt.Sprintf("%s %s (%d)", adult.Name, adult.Surname, c.Id)
 }
 
 func (c Customer) ChildrenNames(joinWith string) string {
