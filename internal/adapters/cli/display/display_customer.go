@@ -2,18 +2,22 @@ package display
 
 import (
 	"fmt"
-	"github.com/pjover/sam/internal/adapters/cfg"
 	"github.com/pjover/sam/internal/adapters/cli"
-	"github.com/pjover/sam/internal/adapters/mongo_db"
-	"github.com/pjover/sam/internal/display"
+	"github.com/pjover/sam/internal/core/ports"
 	"github.com/spf13/cobra"
 )
 
-func NewDisplayCustomerCmd() *cobra.Command {
-	return newDisplayCustomerCmd(display.NewCustomerDisplay(mongo_db.NewDbService(cfg.NewConfigService())))
+type displayCustomerCmd struct {
+	displayService ports.DisplayService
 }
 
-func newDisplayCustomerCmd(dsp display.Display) *cobra.Command {
+func NewDisplayCustomerCmd(displayService ports.DisplayService) cli.Cmd {
+	return displayCustomerCmd{
+		displayService: displayService,
+	}
+}
+
+func (e displayCustomerCmd) Cmd() *cobra.Command {
 	return &cobra.Command{
 		Use:         "mostraClient codiClient",
 		Short:       "Mostra les dades d'un client",
@@ -34,18 +38,15 @@ func newDisplayCustomerCmd(dsp display.Display) *cobra.Command {
 		},
 		Args: cli.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			_, err := cli.ParseInteger(args[0], "de client")
+			code, err := cli.ParseInteger(args[0], "de client")
 			if err != nil {
 				return err
 			}
-
-			msg, err := dsp.Display(args[0])
-			if err != nil {
-				return err
+			msg, err := e.displayService.DisplayCustomer(code)
+			if msg != "" {
+				fmt.Println(msg)
 			}
-
-			fmt.Println(msg)
-			return nil
+			return err
 		},
 	}
 }
