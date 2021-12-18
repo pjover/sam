@@ -2,16 +2,23 @@ package list
 
 import (
 	"fmt"
+	"github.com/pjover/sam/internal/adapters/cli"
+	"github.com/pjover/sam/internal/core/ports"
 
-	"github.com/pjover/sam/internal/list"
 	"github.com/spf13/cobra"
 )
 
-func NewListProductsCmd() *cobra.Command {
-	return newListProductsCmd(list.NewListProducts())
+type listProductCmd struct {
+	listService ports.ListService
 }
 
-func newListProductsCmd(manager list.List) *cobra.Command {
+func NewListProductCmd(listService ports.ListService) cli.Cmd {
+	return listProductCmd{
+		listService: listService,
+	}
+}
+
+func (e listProductCmd) Cmd() *cobra.Command {
 	return &cobra.Command{
 		Use:         "llistaProductes",
 		Short:       "Llista tots els productes",
@@ -30,13 +37,12 @@ func newListProductsCmd(manager list.List) *cobra.Command {
 			"list-products",
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
-			msg, err := manager.List()
+			msg, err := e.listService.ListProducts()
 			if err != nil {
 				return err
 			}
-
-			fmt.Println(msg)
-			return nil
+			_, err = fmt.Fprintln(cmd.OutOrStdout(), msg)
+			return err
 		},
 	}
 }
