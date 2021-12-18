@@ -7,8 +7,8 @@ func ConvertProduct(product Product) model.Product {
 		Id:            product.Id,
 		Name:          product.Name,
 		ShortName:     product.ShortName,
-		Price:         product.Price,
-		TaxPercentage: product.TaxPercentage,
+		Price:         Decimal128ToFloat64(product.Price),
+		TaxPercentage: Decimal128ToFloat64(product.TaxPercentage),
 		IsSubsidy:     product.IsSubsidy,
 	}
 }

@@ -7,11 +7,8 @@ import (
 	"github.com/pjover/sam/internal/core/model"
 	"github.com/pjover/sam/internal/core/ports"
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/bsoncodec"
-	"go.mongodb.org/mongo-driver/bson/bsontype"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"reflect"
 	"time"
 )
 
@@ -53,21 +50,18 @@ func (d dbService) GetCustomer(code int) (model.Customer, error) {
 		if err == mongo.ErrNoDocuments {
 			return model.Customer{}, fmt.Errorf("no s'ha trobat el client amb codi %d", code)
 		}
-		return model.Customer{}, fmt.Errorf("error llegint el client %d des de la base de dades: %s", code, err)
+		return model.Customer{}, fmt.Errorf("llegint el client %d des de la base de dades: %s", code, err)
 	}
 
 	doc, err := bson.Marshal(result)
 	if err != nil {
-		return model.Customer{}, fmt.Errorf("error decodificant el client %d: %s", code, err)
+		return model.Customer{}, fmt.Errorf("decodificant el client %d: %s", code, err)
 	}
-
-	registryBuilder := bsoncodec.NewRegistryBuilder()
-	registryBuilder.RegisterTypeMapEntry(bsontype.Decimal128, reflect.TypeOf(float64(0)))
 
 	var customer dbo.Customer
 	err = bson.Unmarshal(doc, &customer)
 	if err != nil {
-		return model.Customer{}, fmt.Errorf("error deserialitzant el client %d: %s", code, err)
+		return model.Customer{}, fmt.Errorf("deserialitzant el client %d: %s", code, err)
 	}
 
 	return dbo.ConvertCustomer(customer), nil
@@ -98,7 +92,7 @@ func (d dbService) GetInvoice(code string) (model.Invoice, error) {
 	client, err := d.open()
 	defer d.close(client)
 	if err != nil {
-		return model.Invoice{}, fmt.Errorf("error connectant a la base de dades: %s", err)
+		return model.Invoice{}, fmt.Errorf("connectant a la base de dades: %s", err)
 	}
 
 	var result bson.D
@@ -109,19 +103,51 @@ func (d dbService) GetInvoice(code string) (model.Invoice, error) {
 		if err == mongo.ErrNoDocuments {
 			return model.Invoice{}, fmt.Errorf("no s'ha trobat la factura amb codi %s", code)
 		}
-		return model.Invoice{}, fmt.Errorf("error llegint la factura %s des de la base de dades: %s", code, err)
+		return model.Invoice{}, fmt.Errorf("llegint la factura %s des de la base de dades: %s", code, err)
 	}
 
 	doc, err := bson.Marshal(result)
 	if err != nil {
-		return model.Invoice{}, fmt.Errorf("error decodificant la factura %s: %s", code, err)
+		return model.Invoice{}, fmt.Errorf("decodificant la factura %s: %s", code, err)
 	}
 
 	var invoice dbo.Invoice
 	err = bson.Unmarshal(doc, &invoice)
 	if err != nil {
-		return model.Invoice{}, fmt.Errorf("error deserialitzant la factura %s: %s", code, err)
+		return model.Invoice{}, fmt.Errorf("deserialitzant la factura %s: %s", code, err)
 	}
 
 	return dbo.ConvertInvoice(invoice), nil
+}
+
+func (d dbService) GetProduct(code string) (model.Product, error) {
+	client, err := d.open()
+	defer d.close(client)
+	if err != nil {
+		return model.Product{}, fmt.Errorf("connectant a la base de dades: %s", err)
+	}
+
+	var result bson.D
+	coll := client.Database("hobbit").Collection("product")
+	filter := bson.D{{"_id", code}}
+	err = coll.FindOne(context.TODO(), filter).Decode(&result)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return model.Product{}, fmt.Errorf("no s'ha trobat el producte amb codi %s", code)
+		}
+		return model.Product{}, fmt.Errorf("llegint el producte %s des de la base de dades: %s", code, err)
+	}
+
+	doc, err := bson.Marshal(result)
+	if err != nil {
+		return model.Product{}, fmt.Errorf("decodificant el producte %s: %s", code, err)
+	}
+
+	var product dbo.Product
+	err = bson.Unmarshal(doc, &product)
+	if err != nil {
+		return model.Product{}, fmt.Errorf("deserialitzant el producte %s: %s", code, err)
+	}
+
+	return dbo.ConvertProduct(product), nil
 }

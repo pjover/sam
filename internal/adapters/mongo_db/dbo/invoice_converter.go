@@ -1,6 +1,11 @@
 package dbo
 
-import "github.com/pjover/sam/internal/core/model"
+import (
+	"fmt"
+	"github.com/pjover/sam/internal/core/model"
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"strconv"
+)
 
 func ConvertInvoice(invoice Invoice) model.Invoice {
 	return model.Invoice{
@@ -29,9 +34,17 @@ func lines(lines []Line) []model.Line {
 func line(line Line) model.Line {
 	return model.Line{
 		ProductID:     line.ProductID,
-		Units:         line.Units,
-		ProductPrice:  line.ProductPrice,
-		TaxPercentage: line.TaxPercentage,
+		Units:         Decimal128ToFloat64(line.Units),
+		ProductPrice:  Decimal128ToFloat64(line.ProductPrice),
+		TaxPercentage: Decimal128ToFloat64(line.TaxPercentage),
 		ChildCode:     line.ChildCode,
 	}
+}
+
+func Decimal128ToFloat64(d128 primitive.Decimal128) float64 {
+	float, err := strconv.ParseFloat(d128.String(), 64)
+	if err != nil {
+		panic(fmt.Sprintf("converting Decimal128 %s to float", d128.String()))
+	}
+	return float
 }

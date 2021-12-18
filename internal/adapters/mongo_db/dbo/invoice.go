@@ -1,6 +1,9 @@
 package dbo
 
-import "time"
+import (
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"time"
+)
 
 type Invoice struct {
 	Id            string    `bson:"_id"`
@@ -17,9 +20,9 @@ type Invoice struct {
 }
 
 type Line struct {
-	ProductID     string  `bson:"productId"`
-	Units         float64 `bson:"units"`
-	ProductPrice  float64 `bson:"productPrice"`
-	TaxPercentage float64 `bson:"taxPercentage"`
-	ChildCode     int     `bson:"childCode"`
+	ProductID     string               `bson:"productId"`
+	Units         primitive.Decimal128 `bson:"units"`
+	ProductPrice  primitive.Decimal128 `bson:"productPrice"`
+	TaxPercentage primitive.Decimal128 `bson:"taxPercentage"`
+	ChildCode     int                  `bson:"childCode"`
 }
