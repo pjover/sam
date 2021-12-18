@@ -5,7 +5,6 @@ import (
 	"github.com/pjover/sam/internal/adapters/mongo_db"
 	"github.com/pjover/sam/internal/adapters/os"
 	"github.com/pjover/sam/internal/cmd/consum"
-	"github.com/pjover/sam/internal/cmd/display"
 	"github.com/pjover/sam/internal/cmd/generate"
 	"github.com/pjover/sam/internal/cmd/list"
 	"github.com/pjover/sam/internal/cmd/search"
@@ -27,8 +26,6 @@ func MainDI(configService ports.ConfigService, cmdManager cli.CmdManager) {
 	cmdManager.AddTmpCommand(consum.NewBillConsumptionsCmd())
 	cmdManager.AddTmpCommand(consum.NewInsertConsumptionsCmd())
 	cmdManager.AddTmpCommand(consum.NewRectifyConsumptionsCmd())
-
-	cmdManager.AddTmpCommand(display.NewDisplayProductCmd())
 
 	cmdManager.AddTmpCommand(generate.NewGenerateBddCmd())
 	cmdManager.AddTmpCommand(generate.NewGenerateCustomersReportCmd())

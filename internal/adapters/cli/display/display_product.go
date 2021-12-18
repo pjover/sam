@@ -3,16 +3,21 @@ package display
 import (
 	"fmt"
 	"github.com/pjover/sam/internal/adapters/cli"
-
-	"github.com/pjover/sam/internal/display"
+	"github.com/pjover/sam/internal/core/ports"
 	"github.com/spf13/cobra"
 )
 
-func NewDisplayProductCmd() *cobra.Command {
-	return newDisplayProductCmd(display.NewProductDisplay())
+type displayProductCmd struct {
+	displayService ports.DisplayService
 }
 
-func newDisplayProductCmd(dsp display.Display) *cobra.Command {
+func NewDisplayProductCmd(displayService ports.DisplayService) cli.Cmd {
+	return displayProductCmd{
+		displayService: displayService,
+	}
+}
+
+func (e displayProductCmd) Cmd() *cobra.Command {
 	return &cobra.Command{
 		Use:         "mostraProducte codiProducte",
 		Short:       "Mostra les dades d'un producte",
@@ -38,13 +43,11 @@ func newDisplayProductCmd(dsp display.Display) *cobra.Command {
 				return err
 			}
 
-			msg, err := dsp.Display(code)
-			if err != nil {
-				return err
+			msg, err := e.displayService.DisplayProduct(code)
+			if msg != "" {
+				fmt.Println(msg)
 			}
-
-			fmt.Println(msg)
-			return nil
+			return err
 		},
 	}
 }
