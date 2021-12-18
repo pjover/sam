@@ -25,7 +25,7 @@ type ReportInfo struct {
 	FilePath    string
 }
 
-func PdfReport(reportInfo ReportInfo) error {
+func Report(reportInfo ReportInfo) error {
 	m := setupStandardPage(reportInfo)
 	header(m)
 	footer(m)

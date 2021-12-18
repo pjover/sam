@@ -7,4 +7,5 @@ type DbService interface {
 	GetChild(code int) (model.Child, error)
 	GetInvoice(code string) (model.Invoice, error)
 	GetProduct(code string) (model.Product, error)
+	GetAllProducts() ([]model.Product, error)
 }

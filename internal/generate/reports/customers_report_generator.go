@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/pjover/sam/internal/adapters/tuk"
 	"github.com/pjover/sam/internal/core/model"
+	"github.com/pjover/sam/internal/core/services/generate/reports"
 	"path"
 	"sort"
 
@@ -36,11 +37,11 @@ func (c CustomersReportGenerator) Generate() (string, error) {
 		viper.GetString("dirs.reports"),
 		viper.GetString("files.customersReport"),
 	)
-	reportInfo := ReportInfo{
+	reportInfo := reports.ReportInfo{
 		consts.Landscape,
 		consts.Left,
 		"Llistat de clients",
-		[]Column{
+		[]reports.Column{
 			{"Infant", 2},
 			{"Grup", 1},
 			{"Neixament", 1},
@@ -52,7 +53,7 @@ func (c CustomersReportGenerator) Generate() (string, error) {
 		contents,
 		filePath,
 	}
-	err = PdfReport(reportInfo)
+	err = reports.Report(reportInfo)
 	if err != nil {
 		return "", err
 	}

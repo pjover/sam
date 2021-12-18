@@ -2,10 +2,11 @@ package reports
 
 import (
 	"fmt"
-	"github.com/pjover/sam/internal/adapters/tuk"
 	"github.com/pjover/sam/internal/core/model"
+	"github.com/pjover/sam/internal/core/ports"
 	"path"
 	"sort"
+	"strconv"
 	"strings"
 
 	"github.com/johnfercher/maroto/pkg/consts"
@@ -14,19 +15,19 @@ import (
 )
 
 type ProductsReportGenerator struct {
-	getManager tuk.HttpGetManager
+	dbService ports.DbService
 }
 
-func NewProductsReportGenerator() generate.Generator {
+func NewProductsReportGenerator(dbService ports.DbService) generate.Generator {
 	return ProductsReportGenerator{
-		tuk.NewHttpGetManager(),
+		dbService: dbService,
 	}
 }
 
 func (p ProductsReportGenerator) Generate() (string, error) {
 	fmt.Println("Generant l'informe de productes ...")
 
-	products, err := p.getProducts()
+	products, err := p.dbService.GetAllProducts()
 	if err != nil {
 		return "", err
 	}
@@ -48,54 +49,21 @@ func (p ProductsReportGenerator) Generate() (string, error) {
 		contents,
 		filePath,
 	}
-	err = PdfReport(reportInfo)
+	err = Report(reportInfo)
 	if err != nil {
 		return "", err
 	}
 	return fmt.Sprintf("Generat l'informe de productes a '%s'", filePath), nil
 }
 
-type products struct {
-	Embedded struct {
-		Products []model.Product `json:"products"`
-	} `json:"_embedded"`
-	Links struct {
-		Self struct {
-			Href string `json:"href"`
-		} `json:"self"`
-		Profile struct {
-			Href string `json:"href"`
-		} `json:"profile"`
-	} `json:"_links"`
-	Page struct {
-		Size          int `json:"size"`
-		TotalElements int `json:"totalElements"`
-		TotalPages    int `json:"totalPages"`
-		Number        int `json:"number"`
-	} `json:"page"`
-}
-
-func (p ProductsReportGenerator) getProducts() (*products, error) {
-	url := fmt.Sprintf(
-		"%s/products?page=0&size=999",
-		viper.GetString("urls.hobbit"),
-	)
-	products := new(products)
-	err := p.getManager.Type(url, products)
-	if err != nil {
-		return nil, err
-	}
-	return products, nil
-}
-
-func (p ProductsReportGenerator) buildContents(products *products) [][]string {
+func (p ProductsReportGenerator) buildContents(products []model.Product) [][]string {
 	var contents [][]string
-	for _, product := range products.Embedded.Products {
+	for _, product := range products {
 		var line = []string{
-			p.getCode(product),
+			product.Id,
 			product.Name,
-			fmt.Sprintf("%.2f", product.Price),
-			fmt.Sprintf("%.2f", product.TaxPercentage),
+			strconv.FormatFloat(product.Price, 'f', 2, 64),
+			strconv.FormatFloat(product.TaxPercentage, 'f', 2, 64),
 			p.formatIsSubsidy(product.IsSubsidy),
 		}
 		contents = append(contents, line)

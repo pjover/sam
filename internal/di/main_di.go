@@ -21,6 +21,7 @@ func MainDI(configService ports.ConfigService, cmdManager cli.CmdManager) {
 	adminServiceDI(configService, cmdManager, osService, langService)
 	editServiceDI(configService, cmdManager, osService)
 	displayServiceDI(dbService, cmdManager)
+	generateServiceDI(dbService, cmdManager)
 
 	// TODO move to DI and remove method AddTmpCommand
 	cmdManager.AddTmpCommand(consum.NewBillConsumptionsCmd())
@@ -31,7 +32,6 @@ func MainDI(configService ports.ConfigService, cmdManager cli.CmdManager) {
 	cmdManager.AddTmpCommand(generate.NewGenerateCustomersReportCmd())
 	cmdManager.AddTmpCommand(generate.NewGenerateMonthInvoicesCmd())
 	cmdManager.AddTmpCommand(generate.NewGenerateMonthReportCmd())
-	cmdManager.AddTmpCommand(generate.NewGenerateProductsReportCmd())
 	cmdManager.AddTmpCommand(generate.NewGenerateSingleInvoiceCmd())
 
 	cmdManager.AddTmpCommand(list.NewListChildrenCmd())

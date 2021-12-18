@@ -1,4 +1,4 @@
-package services
+package display
 
 import "github.com/pjover/sam/internal/core/ports"
 

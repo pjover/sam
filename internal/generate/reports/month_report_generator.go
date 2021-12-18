@@ -8,6 +8,7 @@ import (
 	"github.com/pjover/sam/internal/core"
 	model2 "github.com/pjover/sam/internal/core/model"
 	"github.com/pjover/sam/internal/core/ports"
+	"github.com/pjover/sam/internal/core/services/generate/reports"
 	"github.com/pjover/sam/internal/core/services/lang"
 	"log"
 	"path"
@@ -57,11 +58,11 @@ func (i MonthReportGenerator) Generate() (string, error) {
 		log.Fatal(err)
 	}
 
-	reportInfo := ReportInfo{
+	reportInfo := reports.ReportInfo{
 		consts.Landscape,
 		consts.Left,
 		fmt.Sprintf("Factures %s", i.langService.MonthName(month)),
-		[]Column{
+		[]reports.Column{
 			{"Factura", 1},
 			{"Data", 1},
 			{"Client", 2},
@@ -73,7 +74,7 @@ func (i MonthReportGenerator) Generate() (string, error) {
 		contents,
 		filePath,
 	}
-	err = PdfReport(reportInfo)
+	err = reports.Report(reportInfo)
 	if err != nil {
 		return "", err
 	}

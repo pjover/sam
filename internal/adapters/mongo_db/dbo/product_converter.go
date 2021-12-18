@@ -12,3 +12,11 @@ func ConvertProduct(product Product) model.Product {
 		IsSubsidy:     product.IsSubsidy,
 	}
 }
+
+func ConvertProducts(products []Product) []model.Product {
+	var out []model.Product
+	for _, product := range products {
+		out = append(out, ConvertProduct(product))
+	}
+	return out
+}

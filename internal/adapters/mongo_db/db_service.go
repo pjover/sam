@@ -29,14 +29,13 @@ func NewDbService(configService ports.ConfigService) ports.DbService {
 
 func (d dbService) GetCustomer(code int) (model.Customer, error) {
 	var result dbo.Customer
-	if err := d.getOne(code, &result, "customer", "el client"); err != nil {
+	if err := d.getOne("customer", code, &result, "el client"); err != nil {
 		return model.Customer{}, err
 	}
 	return dbo.ConvertCustomer(result), nil
 }
 
 func (d dbService) GetChild(code int) (model.Child, error) {
-
 	var childCode = code / 10
 	customer, err := d.GetCustomer(childCode)
 	if err != nil {
@@ -58,7 +57,7 @@ func (d dbService) GetChild(code int) (model.Child, error) {
 
 func (d dbService) GetInvoice(code string) (model.Invoice, error) {
 	var result dbo.Invoice
-	if err := d.getOne(code, &result, "invoice", "la factura"); err != nil {
+	if err := d.getOne("invoice", code, &result, "la factura"); err != nil {
 		return model.Invoice{}, err
 	}
 	return dbo.ConvertInvoice(result), nil
@@ -66,14 +65,13 @@ func (d dbService) GetInvoice(code string) (model.Invoice, error) {
 
 func (d dbService) GetProduct(code string) (model.Product, error) {
 	var result dbo.Product
-
-	if err := d.getOne(code, &result, "product", "el producte"); err != nil {
+	if err := d.getOne("product", code, &result, "el producte"); err != nil {
 		return model.Product{}, err
 	}
 	return dbo.ConvertProduct(result), nil
 }
 
-func (d dbService) getOne(code interface{}, result interface{}, collection string, name string) error {
+func (d dbService) getOne(collection string, code interface{}, result interface{}, name string) error {
 	client, err := d.open()
 	defer d.close(client)
 	if err != nil {
@@ -99,4 +97,33 @@ func (d dbService) close(client *mongo.Client) {
 	if err := client.Disconnect(d.ctx); err != nil {
 		panic(err)
 	}
+}
+
+func (d dbService) GetAllProducts() ([]model.Product, error) {
+	var results []dbo.Product
+	filter := bson.D{}
+	if err := d.getMany("product", filter, &results, "tots els productes"); err != nil {
+		return nil, err
+	}
+	return dbo.ConvertProducts(results), nil
+}
+
+func (d dbService) getMany(collection string, filter bson.D, results interface{}, name string) error {
+	client, err := d.open()
+	defer d.close(client)
+	if err != nil {
+		return fmt.Errorf("connectant a la base de dades: %s", err)
+	}
+
+	coll := client.Database(d.database).Collection(collection)
+	cur, err := coll.Find(context.TODO(), filter)
+	if err != nil {
+		return fmt.Errorf("llegint %s des de la base de dades: %s", name, err)
+	}
+
+	err = cur.All(context.Background(), results)
+	if err != nil {
+		return fmt.Errorf("decodificant %s: %s", name, err)
+	}
+	return nil
 }
