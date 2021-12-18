@@ -2,7 +2,7 @@ package list
 
 import (
 	"fmt"
-	"github.com/pjover/sam/internal/adapters/tuk"
+	"github.com/pjover/sam/internal/adapters/hobbit"
 	"github.com/pjover/sam/internal/core"
 	"time"
 
@@ -16,12 +16,12 @@ type ListInvoices interface {
 }
 
 type ListInvoicesImpl struct {
-	getManager tuk.HttpGetManager
+	getManager hobbit.HttpGetManager
 }
 
 func NewListInvoices() ListInvoices {
 	return ListInvoicesImpl{
-		tuk.NewHttpGetManager(),
+		hobbit.NewHttpGetManager(),
 	}
 }
 

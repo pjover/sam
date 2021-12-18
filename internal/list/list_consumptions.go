@@ -2,7 +2,7 @@ package list
 
 import (
 	"fmt"
-	"github.com/pjover/sam/internal/adapters/tuk"
+	"github.com/pjover/sam/internal/adapters/hobbit"
 
 	"github.com/spf13/viper"
 )
@@ -13,12 +13,12 @@ type ListConsumptions interface {
 }
 
 type ListConsumptionsImpl struct {
-	getManager tuk.HttpGetManager
+	getManager hobbit.HttpGetManager
 }
 
 func NewListConsumptions() ListConsumptions {
 	return ListConsumptionsImpl{
-		tuk.NewHttpGetManager(),
+		hobbit.NewHttpGetManager(),
 	}
 }
 

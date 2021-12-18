@@ -2,16 +2,14 @@ package reports
 
 import (
 	"fmt"
+	"github.com/johnfercher/maroto/pkg/consts"
 	"github.com/pjover/sam/internal/core/model"
 	"github.com/pjover/sam/internal/core/ports"
+	"github.com/pjover/sam/internal/generate"
+	"github.com/spf13/viper"
 	"path"
 	"sort"
 	"strconv"
-	"strings"
-
-	"github.com/johnfercher/maroto/pkg/consts"
-	"github.com/pjover/sam/internal/generate"
-	"github.com/spf13/viper"
 )
 
 type ProductsReportGenerator struct {
@@ -72,12 +70,6 @@ func (p ProductsReportGenerator) buildContents(products []model.Product) [][]str
 		return contents[i][0] < contents[j][0]
 	})
 	return contents
-}
-
-func (p ProductsReportGenerator) getCode(product model.Product) string {
-	url := product.Links.Self.Href
-	parts := strings.Split(url, "/")
-	return parts[len(parts)-1]
 }
 
 func (p ProductsReportGenerator) formatIsSubsidy(subsidy bool) string {

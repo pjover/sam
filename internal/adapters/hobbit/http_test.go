@@ -1,4 +1,4 @@
-package tuk
+package hobbit
 
 import "testing"
 

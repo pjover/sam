@@ -3,8 +3,8 @@ package reports
 import (
 	"fmt"
 	"github.com/pjover/sam/internal/adapters/cfg"
+	"github.com/pjover/sam/internal/adapters/hobbit"
 	"github.com/pjover/sam/internal/adapters/mongo_db"
-	"github.com/pjover/sam/internal/adapters/tuk"
 	"github.com/pjover/sam/internal/core"
 	model2 "github.com/pjover/sam/internal/core/model"
 	"github.com/pjover/sam/internal/core/ports"
@@ -21,7 +21,7 @@ import (
 )
 
 type MonthReportGenerator struct {
-	getManager    tuk.HttpGetManager
+	getManager    hobbit.HttpGetManager
 	dbService     ports.DbService
 	configService ports.ConfigService
 	langService   lang.LangService
@@ -30,7 +30,7 @@ type MonthReportGenerator struct {
 func NewMonthReportGenerator() generate.Generator {
 	cfgService := cfg.NewConfigService()
 	return MonthReportGenerator{
-		tuk.NewHttpGetManager(),
+		hobbit.NewHttpGetManager(),
 		mongo_db.NewDbService(cfgService),
 		cfgService,
 		lang.NewLangService(cfgService.Get("lang")),
@@ -92,7 +92,7 @@ type monthInvoices struct {
 	} `json:"_links"`
 }
 
-func (i MonthReportGenerator) getInvoices(getManager tuk.HttpGetManager) (*monthInvoices, error) {
+func (i MonthReportGenerator) getInvoices(getManager hobbit.HttpGetManager) (*monthInvoices, error) {
 	ym := viper.GetString("yearMonth")
 	url := fmt.Sprintf("%s/invoices/search/findByYearMonthIn?yearMonths=%s", viper.GetString("urls.hobbit"), ym)
 	invoices := new(monthInvoices)

@@ -3,7 +3,7 @@ package invoices
 import (
 	"fmt"
 	"github.com/pjover/sam/internal/adapters/cfg"
-	"github.com/pjover/sam/internal/adapters/tuk"
+	"github.com/pjover/sam/internal/adapters/hobbit"
 	"github.com/pjover/sam/internal/core/ports"
 	"os"
 	"path"
@@ -16,13 +16,13 @@ type MonthInvoicesGenerator interface {
 }
 
 type MonthInvoicesGeneratorImpl struct {
-	postManager   tuk.HttpPostManager
+	postManager   hobbit.HttpPostManager
 	configService ports.ConfigService
 }
 
 func NewMonthInvoicesGenerator() MonthInvoicesGenerator {
 	return MonthInvoicesGeneratorImpl{
-		tuk.NewHttpPostManager(),
+		hobbit.NewHttpPostManager(),
 		cfg.NewConfigService(),
 	}
 }

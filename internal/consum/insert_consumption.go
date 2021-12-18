@@ -3,20 +3,20 @@ package consum
 import (
 	"fmt"
 	"github.com/pjover/sam/internal/adapters/cfg"
+	"github.com/pjover/sam/internal/adapters/hobbit"
 	"github.com/pjover/sam/internal/adapters/mongo_db"
-	"github.com/pjover/sam/internal/adapters/tuk"
 	"github.com/pjover/sam/internal/core/ports"
 	"github.com/spf13/viper"
 )
 
 type InsertConsumptionsManager struct {
-	PostManager tuk.HttpPostManager
+	PostManager hobbit.HttpPostManager
 	dbService   ports.DbService
 }
 
 func NewInsertConsumptionsManager() CustomerConsumptionsManager {
 	return InsertConsumptionsManager{
-		tuk.NewHttpPostManager(),
+		hobbit.NewHttpPostManager(),
 		mongo_db.NewDbService(cfg.NewConfigService()),
 	}
 }

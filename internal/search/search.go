@@ -2,7 +2,7 @@ package search
 
 import (
 	"fmt"
-	"github.com/pjover/sam/internal/adapters/tuk"
+	"github.com/pjover/sam/internal/adapters/hobbit"
 	"net/url"
 
 	"github.com/spf13/viper"
@@ -13,12 +13,12 @@ type SearchManager interface {
 }
 
 type SearchManagerImpl struct {
-	GetManager tuk.HttpGetManager
+	GetManager hobbit.HttpGetManager
 }
 
 func NewSearchManager() SearchManager {
 	return SearchManagerImpl{
-		GetManager: tuk.NewHttpGetManager(),
+		GetManager: hobbit.NewHttpGetManager(),
 	}
 }
 

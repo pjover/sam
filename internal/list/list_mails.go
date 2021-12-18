@@ -2,7 +2,7 @@ package list
 
 import (
 	"fmt"
-	"github.com/pjover/sam/internal/adapters/tuk"
+	"github.com/pjover/sam/internal/adapters/hobbit"
 
 	"github.com/spf13/viper"
 )
@@ -12,12 +12,12 @@ type ListMails interface {
 }
 
 type ListMailsImpl struct {
-	getManager tuk.HttpGetManager
+	getManager hobbit.HttpGetManager
 }
 
 func NewListMails() ListMails {
 	return ListMailsImpl{
-		tuk.NewHttpGetManager(),
+		hobbit.NewHttpGetManager(),
 	}
 }
 
