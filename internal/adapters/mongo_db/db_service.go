@@ -16,55 +16,23 @@ type dbService struct {
 	configService ports.ConfigService
 	ctx           context.Context
 	uri           string
+	database      string
 }
 
 func NewDbService(configService ports.ConfigService) ports.DbService {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	uri := configService.Get("db.server")
-	return dbService{configService, ctx, uri}
-}
-
-func (d dbService) open() (*mongo.Client, error) {
-	return mongo.Connect(d.ctx, options.Client().ApplyURI(d.uri))
-}
-
-func (d dbService) close(client *mongo.Client) {
-	if err := client.Disconnect(d.ctx); err != nil {
-		panic(err)
-	}
+	database := configService.Get("db.name")
+	return dbService{configService, ctx, uri, database}
 }
 
 func (d dbService) GetCustomer(code int) (model.Customer, error) {
-	client, err := d.open()
-	defer d.close(client)
-	if err != nil {
-		return model.Customer{}, fmt.Errorf("error connectant a la base de dades: %s", err)
+	var result dbo.Customer
+	if err := d.getOne(code, &result, "customer", "el client"); err != nil {
+		return model.Customer{}, err
 	}
-
-	var result bson.D
-	coll := client.Database("hobbit").Collection("customer")
-	filter := bson.D{{"_id", code}}
-	err = coll.FindOne(context.TODO(), filter).Decode(&result)
-	if err != nil {
-		if err == mongo.ErrNoDocuments {
-			return model.Customer{}, fmt.Errorf("no s'ha trobat el client amb codi %d", code)
-		}
-		return model.Customer{}, fmt.Errorf("llegint el client %d des de la base de dades: %s", code, err)
-	}
-
-	doc, err := bson.Marshal(result)
-	if err != nil {
-		return model.Customer{}, fmt.Errorf("decodificant el client %d: %s", code, err)
-	}
-
-	var customer dbo.Customer
-	err = bson.Unmarshal(doc, &customer)
-	if err != nil {
-		return model.Customer{}, fmt.Errorf("deserialitzant el client %d: %s", code, err)
-	}
-
-	return dbo.ConvertCustomer(customer), nil
+	return dbo.ConvertCustomer(result), nil
 }
 
 func (d dbService) GetChild(code int) (model.Child, error) {
@@ -89,65 +57,46 @@ func (d dbService) GetChild(code int) (model.Child, error) {
 }
 
 func (d dbService) GetInvoice(code string) (model.Invoice, error) {
-	client, err := d.open()
-	defer d.close(client)
-	if err != nil {
-		return model.Invoice{}, fmt.Errorf("connectant a la base de dades: %s", err)
+	var result dbo.Invoice
+	if err := d.getOne(code, &result, "invoice", "la factura"); err != nil {
+		return model.Invoice{}, err
 	}
-
-	var result bson.D
-	coll := client.Database("hobbit").Collection("invoice")
-	filter := bson.D{{"_id", code}}
-	err = coll.FindOne(context.TODO(), filter).Decode(&result)
-	if err != nil {
-		if err == mongo.ErrNoDocuments {
-			return model.Invoice{}, fmt.Errorf("no s'ha trobat la factura amb codi %s", code)
-		}
-		return model.Invoice{}, fmt.Errorf("llegint la factura %s des de la base de dades: %s", code, err)
-	}
-
-	doc, err := bson.Marshal(result)
-	if err != nil {
-		return model.Invoice{}, fmt.Errorf("decodificant la factura %s: %s", code, err)
-	}
-
-	var invoice dbo.Invoice
-	err = bson.Unmarshal(doc, &invoice)
-	if err != nil {
-		return model.Invoice{}, fmt.Errorf("deserialitzant la factura %s: %s", code, err)
-	}
-
-	return dbo.ConvertInvoice(invoice), nil
+	return dbo.ConvertInvoice(result), nil
 }
 
 func (d dbService) GetProduct(code string) (model.Product, error) {
+	var result dbo.Product
+
+	if err := d.getOne(code, &result, "product", "el producte"); err != nil {
+		return model.Product{}, err
+	}
+	return dbo.ConvertProduct(result), nil
+}
+
+func (d dbService) getOne(code interface{}, result interface{}, collection string, name string) error {
 	client, err := d.open()
 	defer d.close(client)
 	if err != nil {
-		return model.Product{}, fmt.Errorf("connectant a la base de dades: %s", err)
+		return fmt.Errorf("connectant a la base de dades: %s", err)
 	}
 
-	var result bson.D
-	coll := client.Database("hobbit").Collection("product")
-	filter := bson.D{{"_id", code}}
-	err = coll.FindOne(context.TODO(), filter).Decode(&result)
+	coll := client.Database(d.database).Collection(collection)
+	err = coll.FindOne(context.TODO(), bson.D{{"_id", code}}).Decode(result)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
-			return model.Product{}, fmt.Errorf("no s'ha trobat el producte amb codi %s", code)
+			return fmt.Errorf("no s'ha trobat %s amb codi %s", name, code)
 		}
-		return model.Product{}, fmt.Errorf("llegint el producte %s des de la base de dades: %s", code, err)
+		return fmt.Errorf("llegint %s amb codi %s des de la base de dades: %s", name, code, err)
 	}
+	return nil
+}
 
-	doc, err := bson.Marshal(result)
-	if err != nil {
-		return model.Product{}, fmt.Errorf("decodificant el producte %s: %s", code, err)
+func (d dbService) open() (*mongo.Client, error) {
+	return mongo.Connect(d.ctx, options.Client().ApplyURI(d.uri))
+}
+
+func (d dbService) close(client *mongo.Client) {
+	if err := client.Disconnect(d.ctx); err != nil {
+		panic(err)
 	}
-
-	var product dbo.Product
-	err = bson.Unmarshal(doc, &product)
-	if err != nil {
-		return model.Product{}, fmt.Errorf("deserialitzant el producte %s: %s", code, err)
-	}
-
-	return dbo.ConvertProduct(product), nil
 }

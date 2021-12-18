@@ -88,6 +88,7 @@ func (c configService) loadDefaultConfig(home string) {
 	viper.SetDefault("lang", "cat")
 
 	viper.SetDefault("db.server", "mongodb://localhost:27017")
+	viper.SetDefault("db.name", "hobbit")
 }
 
 func (c configService) GetWorkingDirectory() string {
