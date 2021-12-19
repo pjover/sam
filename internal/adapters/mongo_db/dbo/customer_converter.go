@@ -86,3 +86,11 @@ func holder(holder InvoiceHolder) model.InvoiceHolder {
 		IsBusiness:  holder.IsBusiness,
 	}
 }
+
+func ConvertCustomers(customers []Customer) []model.Customer {
+	var out []model.Customer
+	for _, customer := range customers {
+		out = append(out, ConvertCustomer(customer))
+	}
+	return out
+}

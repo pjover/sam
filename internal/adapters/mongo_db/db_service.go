@@ -145,6 +145,17 @@ func (d dbService) FindInvoicesByCustomerAndYearMonth(customerCode string, yearM
 	return dbo.ConvertInvoices(results), nil
 }
 
+func (d dbService) FindActiveCustomers() ([]model.Customer, error) {
+	var results []dbo.Customer
+	filter := bson.D{
+		{"active", true},
+	}
+	if err := d.findMany("customer", filter, &results, "clients actius"); err != nil {
+		return nil, err
+	}
+	return dbo.ConvertCustomers(results), nil
+}
+
 func (d dbService) findMany(collection string, filter bson.D, results interface{}, name string) error {
 	client, err := d.open()
 	defer d.close(client)
