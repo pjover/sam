@@ -3,31 +3,23 @@ package model
 import "time"
 
 type Invoice struct {
-	Id            string
-	CustomerID    int       `json:"customerId"`
-	Date          time.Time `json:"date"`
-	YearMonth     string    `json:"yearMonth"`
-	ChildrenCodes []int     `json:"childrenCodes"`
-	Lines         []Line    `json:"lines"`
-	PaymentType   string    `json:"paymentType"`
-	Note          string    `json:"note"`
-	Emailed       bool      `json:"emailed"`
-	Printed       bool      `json:"printed"`
-	SentToBank    bool      `json:"sentToBank"`
-	Links         struct {
-		Self struct {
-			Href string `json:"href"`
-		} `json:"self"`
-		Invoice struct {
-			Href string `json:"href"`
-		} `json:"invoice"`
-	} `json:"_links"`
+	Code          string
+	CustomerID    int
+	Date          time.Time
+	YearMonth     string
+	ChildrenCodes []int
+	Lines         []Line
+	PaymentType   string
+	Note          string
+	Emailed       bool
+	Printed       bool
+	SentToBank    bool
 }
 
 type Line struct {
-	ProductID     string  `json:"productId"`
-	Units         float64 `json:"units"`
-	ProductPrice  float64 `json:"productPrice"`
-	TaxPercentage float64 `json:"taxPercentage"`
-	ChildCode     int     `json:"childCode"`
+	ProductID     string
+	Units         float64
+	ProductPrice  float64
+	TaxPercentage float64
+	ChildCode     int
 }

@@ -9,7 +9,7 @@ import (
 
 func ConvertInvoice(invoice Invoice) model.Invoice {
 	return model.Invoice{
-		Id:            invoice.Id,
+		Code:          invoice.Id,
 		CustomerID:    invoice.CustomerID,
 		Date:          invoice.Date,
 		YearMonth:     invoice.YearMonth,

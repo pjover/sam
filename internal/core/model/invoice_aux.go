@@ -9,12 +9,6 @@ func (i Invoice) String() string {
 	return fmt.Sprintf("%#v", i)
 }
 
-func (i Invoice) Code() string {
-	url := i.Links.Self.Href
-	parts := strings.Split(url, "/")
-	return parts[len(parts)-1]
-}
-
 func (i Invoice) Amount() float64 {
 	var amount float64
 	for _, line := range i.Lines {

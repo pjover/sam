@@ -86,7 +86,7 @@ func (m MonthReport) buildContents(invoices []model.Invoice) ([][]string, error)
 		}
 
 		var line = []string{
-			invoice.Code(),
+			invoice.Code,
 			invoice.Date.String(),
 			customer.FirstAdultNameWithCode(),
 			customer.ChildrenNames("\n"),
