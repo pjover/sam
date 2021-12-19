@@ -2,19 +2,24 @@ package generate
 
 import (
 	"fmt"
-
-	"github.com/pjover/sam/internal/generate"
-	"github.com/pjover/sam/internal/generate/reports"
+	"github.com/pjover/sam/internal/adapters/cli"
+	"github.com/pjover/sam/internal/core/ports"
 	"github.com/spf13/cobra"
 )
 
-func NewGenerateMonthReportCmd() *cobra.Command {
-	return newGenerateMonthReportCmd(reports.NewMonthReportGenerator())
+type generateMonthReportCmd struct {
+	generateService ports.GenerateService
 }
 
-func newGenerateMonthReportCmd(generator generate.Generator) *cobra.Command {
+func NewGenerateMonthReportCmd(generateService ports.GenerateService) cli.Cmd {
+	return generateMonthReportCmd{
+		generateService: generateService,
+	}
+}
+
+func (e generateMonthReportCmd) Cmd() *cobra.Command {
 	return &cobra.Command{
-		Use:         "generaInformeMes [AAAA-MM]",
+		Use:         "generaInformeMes",
 		Short:       "Genera l'informe de les factures del mes actual",
 		Long:        "`Genera l'informe de totes les factures del mes actual",
 		Example:     "   generaInformeMes      Genera l'informe de les factures del mes actual",
@@ -32,7 +37,7 @@ func newGenerateMonthReportCmd(generator generate.Generator) *cobra.Command {
 			"generate-month-report",
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
-			msg, err := generator.Generate()
+			msg, err := e.generateService.MonthReport()
 			if err != nil {
 				return err
 			}

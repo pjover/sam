@@ -1,5 +1,7 @@
 package ports
 
 type GenerateService interface {
-	GenerateProduct() (string, error)
+	CustomerReport() (string, error)
+	MonthReport() (string, error)
+	ProductReport() (string, error)
 }

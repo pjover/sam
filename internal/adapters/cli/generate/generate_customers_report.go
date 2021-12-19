@@ -2,17 +2,22 @@ package generate
 
 import (
 	"fmt"
-
-	"github.com/pjover/sam/internal/generate"
-	"github.com/pjover/sam/internal/generate/reports"
+	"github.com/pjover/sam/internal/adapters/cli"
+	"github.com/pjover/sam/internal/core/ports"
 	"github.com/spf13/cobra"
 )
 
-func NewGenerateCustomersReportCmd() *cobra.Command {
-	return newGenerateCustomersReportCmd(reports.NewCustomersReportGenerator())
+type generateCustomerReportCmd struct {
+	generateService ports.GenerateService
 }
 
-func newGenerateCustomersReportCmd(generator generate.Generator) *cobra.Command {
+func NewGenerateCustomerReportCmd(generateService ports.GenerateService) cli.Cmd {
+	return generateCustomerReportCmd{
+		generateService: generateService,
+	}
+}
+
+func (e generateCustomerReportCmd) Cmd() *cobra.Command {
 	return &cobra.Command{
 		Use:         "generaInformeClients",
 		Short:       "Genera l'informe dels clients",
@@ -32,7 +37,7 @@ func newGenerateCustomersReportCmd(generator generate.Generator) *cobra.Command 
 			"generate-customers-report",
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
-			msg, err := generator.Generate()
+			msg, err := e.generateService.CustomerReport()
 			if err != nil {
 				return err
 			}

@@ -2,31 +2,29 @@ package reports
 
 import (
 	"fmt"
-	"github.com/pjover/sam/internal/adapters/hobbit"
 	"github.com/pjover/sam/internal/core/model"
-	"github.com/pjover/sam/internal/core/services/generate/reports"
+	"github.com/pjover/sam/internal/core/ports"
 	"path"
 	"sort"
 
 	"github.com/johnfercher/maroto/pkg/consts"
-	"github.com/pjover/sam/internal/generate"
 	"github.com/spf13/viper"
 )
 
-type CustomersReportGenerator struct {
-	getManager hobbit.HttpGetManager
+type CustomerReport struct {
+	dbService ports.DbService
 }
 
-func NewCustomersReportGenerator() generate.Generator {
-	return CustomersReportGenerator{
-		hobbit.NewHttpGetManager(),
+func NewCustomerReport(dbService ports.DbService) CustomerReport {
+	return CustomerReport{
+		dbService: dbService,
 	}
 }
 
-func (c CustomersReportGenerator) Generate() (string, error) {
+func (c CustomerReport) Run() (string, error) {
 	fmt.Println("Generant l'informe de clients ...")
 
-	customers, err := c.getCustomers(c.getManager)
+	customers, err := c.getCustomers()
 	if err != nil {
 		return "", err
 	}
@@ -37,11 +35,11 @@ func (c CustomersReportGenerator) Generate() (string, error) {
 		viper.GetString("dirs.reports"),
 		viper.GetString("files.customersReport"),
 	)
-	reportInfo := reports.ReportInfo{
+	reportInfo := ReportInfo{
 		consts.Landscape,
 		consts.Left,
 		"Llistat de clients",
-		[]reports.Column{
+		[]Column{
 			{"Infant", 2},
 			{"Grup", 1},
 			{"Neixament", 1},
@@ -53,40 +51,24 @@ func (c CustomersReportGenerator) Generate() (string, error) {
 		contents,
 		filePath,
 	}
-	err = reports.Report(reportInfo)
+	err = Report(reportInfo)
 	if err != nil {
 		return "", err
 	}
 	return fmt.Sprintf("Generat l'informe de clients a '%s'", filePath), nil
 }
 
-type activeCustomers struct {
-	Embedded struct {
-		Customers []model.Customer `json:"customers"`
-	} `json:"_embedded"`
-	Links struct {
-		Self struct {
-			Href string `json:"href"`
-		} `json:"self"`
-	} `json:"_links"`
-}
-
-func (c CustomersReportGenerator) getCustomers(getManager hobbit.HttpGetManager) (*activeCustomers, error) {
-	url := fmt.Sprintf(
-		"%s/customers/search/findAllByActiveTrue",
-		viper.GetString("urls.hobbit"),
-	)
-	customers := new(activeCustomers)
-	err := getManager.Type(url, customers)
+func (c CustomerReport) getCustomers() ([]model.Customer, error) {
+	customers, err := c.dbService.FindActiveCustomers()
 	if err != nil {
 		return nil, err
 	}
 	return customers, nil
 }
 
-func (c CustomersReportGenerator) buildContents(customers *activeCustomers) [][]string {
+func (c CustomerReport) buildContents(customers []model.Customer) [][]string {
 	var contents [][]string
-	for _, customer := range customers.Embedded.Customers {
+	for _, customer := range customers {
 		adult := customer.FirstAdult()
 		for _, child := range customer.Children {
 			if !child.Active {

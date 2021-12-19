@@ -3,19 +3,34 @@ package generate
 import (
 	"github.com/pjover/sam/internal/core/ports"
 	"github.com/pjover/sam/internal/core/services/generate/reports"
+	"github.com/pjover/sam/internal/core/services/lang"
 )
 
 type generateService struct {
-	dbService ports.DbService
+	configService ports.ConfigService
+	langService   lang.LangService
+	dbService     ports.DbService
 }
 
-func NewGenerateService(dbService ports.DbService) ports.GenerateService {
+func NewGenerateService(configService ports.ConfigService, langService lang.LangService, dbService ports.DbService) ports.GenerateService {
 	return generateService{
-		dbService: dbService,
+		configService: configService,
+		langService:   langService,
+		dbService:     dbService,
 	}
 }
 
-func (g generateService) GenerateProduct() (string, error) {
-	generator := reports.NewProductsReportGenerator(g.dbService)
-	return generator.Generate()
+func (g generateService) CustomerReport() (string, error) {
+	generator := reports.NewCustomerReport(g.dbService)
+	return generator.Run()
+}
+
+func (g generateService) MonthReport() (string, error) {
+	generator := reports.NewMonthReport(g.configService, g.langService, g.dbService)
+	return generator.Run()
+}
+
+func (g generateService) ProductReport() (string, error) {
+	generator := reports.NewProductsReport(g.dbService)
+	return generator.Run()
 }

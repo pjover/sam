@@ -5,10 +5,10 @@ import (
 	"github.com/pjover/sam/internal/adapters/cfg"
 	"github.com/pjover/sam/internal/adapters/hobbit"
 	"github.com/pjover/sam/internal/core/ports"
+	"github.com/pjover/sam/internal/generate"
 	"io/fs"
 	"path/filepath"
 
-	"github.com/pjover/sam/internal/generate"
 	"github.com/spf13/viper"
 )
 

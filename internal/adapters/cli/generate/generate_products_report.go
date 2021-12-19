@@ -7,17 +7,17 @@ import (
 	"github.com/spf13/cobra"
 )
 
-type generateProductCmd struct {
+type generateProductReportCmd struct {
 	generateService ports.GenerateService
 }
 
-func NewGenerateProductCmd(generateService ports.GenerateService) cli.Cmd {
-	return generateProductCmd{
+func NewGenerateProductReportCmd(generateService ports.GenerateService) cli.Cmd {
+	return generateProductReportCmd{
 		generateService: generateService,
 	}
 }
 
-func (e generateProductCmd) Cmd() *cobra.Command {
+func (e generateProductReportCmd) Cmd() *cobra.Command {
 	return &cobra.Command{
 		Use:         "generaInformeProductes",
 		Short:       "Genera l'informe dels productes",
@@ -37,7 +37,7 @@ func (e generateProductCmd) Cmd() *cobra.Command {
 			"generate-products-report",
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
-			msg, err := e.generateService.GenerateProduct()
+			msg, err := e.generateService.ProductReport()
 			if err != nil {
 				return err
 			}

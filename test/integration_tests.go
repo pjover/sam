@@ -9,9 +9,9 @@ import (
 	"strings"
 )
 
-var light_tests = [][]string{
+var lightTests = [][]string{
 	{"directory"},
-	{"displayCustomer", "181"},
+	{"displayCustomer", "263"},
 	{"displayInvoice", "f-3945"},
 	{"displayProduct", "age"},
 	{"listChildren"},
@@ -29,7 +29,7 @@ var light_tests = [][]string{
 	{"billConsumptions"},
 }
 
-var heavy_tests = [][]string{
+var heavyTests = [][]string{
 	{"backup"},
 	{"editCustomer", "246"},
 	{"editInvoice", "f-3945"},
@@ -51,11 +51,11 @@ func main() {
 	}
 	switch args[0] {
 	case "light":
-		test(light_tests)
+		test(lightTests)
 	case "heavy":
-		test(heavy_tests)
+		test(heavyTests)
 	case "all":
-		test(append(light_tests, heavy_tests...))
+		test(append(lightTests, heavyTests...))
 	}
 }
 

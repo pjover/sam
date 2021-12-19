@@ -2,7 +2,6 @@ package generate
 
 import (
 	"fmt"
-
 	"github.com/pjover/sam/internal/generate"
 	"github.com/pjover/sam/internal/generate/bbd"
 	"github.com/spf13/cobra"

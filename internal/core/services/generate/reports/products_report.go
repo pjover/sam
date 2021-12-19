@@ -5,24 +5,23 @@ import (
 	"github.com/johnfercher/maroto/pkg/consts"
 	"github.com/pjover/sam/internal/core/model"
 	"github.com/pjover/sam/internal/core/ports"
-	"github.com/pjover/sam/internal/generate"
 	"github.com/spf13/viper"
 	"path"
 	"sort"
 	"strconv"
 )
 
-type ProductsReportGenerator struct {
+type ProductsReport struct {
 	dbService ports.DbService
 }
 
-func NewProductsReportGenerator(dbService ports.DbService) generate.Generator {
-	return ProductsReportGenerator{
+func NewProductsReport(dbService ports.DbService) ProductsReport {
+	return ProductsReport{
 		dbService: dbService,
 	}
 }
 
-func (p ProductsReportGenerator) Generate() (string, error) {
+func (p ProductsReport) Run() (string, error) {
 	fmt.Println("Generant l'informe de productes ...")
 
 	products, err := p.dbService.FindAllProducts()
@@ -32,7 +31,7 @@ func (p ProductsReportGenerator) Generate() (string, error) {
 
 	contents := p.buildContents(products)
 
-	filePath := path.Join(viper.GetString("dirs.reports"), viper.GetString("files.productsReport"))
+	filePath := path.Join(viper.GetString("dirs.reports"), viper.GetString("files.ProductsReport"))
 	reportInfo := ReportInfo{
 		consts.Portrait,
 		consts.Left,
@@ -54,7 +53,7 @@ func (p ProductsReportGenerator) Generate() (string, error) {
 	return fmt.Sprintf("Generat l'informe de productes a '%s'", filePath), nil
 }
 
-func (p ProductsReportGenerator) buildContents(products []model.Product) [][]string {
+func (p ProductsReport) buildContents(products []model.Product) [][]string {
 	var contents [][]string
 	for _, product := range products {
 		var line = []string{
@@ -72,7 +71,7 @@ func (p ProductsReportGenerator) buildContents(products []model.Product) [][]str
 	return contents
 }
 
-func (p ProductsReportGenerator) formatIsSubsidy(subsidy bool) string {
+func (p ProductsReport) formatIsSubsidy(subsidy bool) string {
 	if subsidy {
 		return "Si"
 	} else {

@@ -5,9 +5,12 @@ import (
 	generateCli "github.com/pjover/sam/internal/adapters/cli/generate"
 	"github.com/pjover/sam/internal/core/ports"
 	"github.com/pjover/sam/internal/core/services/generate"
+	"github.com/pjover/sam/internal/core/services/lang"
 )
 
-func generateServiceDI(dbService ports.DbService, cmdManager cli.CmdManager) {
-	generateService := generate.NewGenerateService(dbService)
-	cmdManager.AddCommand(generateCli.NewGenerateProductCmd(generateService))
+func generateServiceDI(configService ports.ConfigService, langService lang.LangService, dbService ports.DbService, cmdManager cli.CmdManager) {
+	generateService := generate.NewGenerateService(configService, langService, dbService)
+	cmdManager.AddCommand(generateCli.NewGenerateCustomerReportCmd(generateService))
+	cmdManager.AddCommand(generateCli.NewGenerateMonthReportCmd(generateService))
+	cmdManager.AddCommand(generateCli.NewGenerateProductReportCmd(generateService))
 }
