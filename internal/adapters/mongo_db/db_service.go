@@ -119,7 +119,7 @@ func (d dbService) FindInvoicesByYearMonth(yearMonth string) ([]model.Invoice, e
 	return dbo.ConvertInvoices(results), nil
 }
 
-func (d dbService) FindInvoicesByCustomer(customerCode string) ([]model.Invoice, error) {
+func (d dbService) FindInvoicesByCustomer(customerCode int) ([]model.Invoice, error) {
 	var results []dbo.Invoice
 	filter := bson.D{
 		{"customerId", customerCode},
@@ -130,7 +130,7 @@ func (d dbService) FindInvoicesByCustomer(customerCode string) ([]model.Invoice,
 	return dbo.ConvertInvoices(results), nil
 }
 
-func (d dbService) FindInvoicesByCustomerAndYearMonth(customerCode string, yearMonth string) ([]model.Invoice, error) {
+func (d dbService) FindInvoicesByCustomerAndYearMonth(customerCode int, yearMonth string) ([]model.Invoice, error) {
 	var results []dbo.Invoice
 	filter := bson.D{
 		{"$and",

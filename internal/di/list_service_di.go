@@ -7,7 +7,8 @@ import (
 	"github.com/pjover/sam/internal/core/services/list"
 )
 
-func listServiceDI(dbService ports.DbService, cmdManager cli.CmdManager) {
+func listServiceDI(dbService ports.DbService, cmdManager cli.CmdManager, osService ports.OsService) {
 	listService := list.NewListService(dbService)
-	cmdManager.AddCommand(listCli.NewListProductCmd(listService))
+	cmdManager.AddCommand(listCli.NewListProductsCmd(listService))
+	cmdManager.AddCommand(listCli.NewListInvoicesCmd(listService, osService))
 }

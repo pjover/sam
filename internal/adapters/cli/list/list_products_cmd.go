@@ -8,17 +8,17 @@ import (
 	"github.com/spf13/cobra"
 )
 
-type listProductCmd struct {
+type listProductsCmd struct {
 	listService ports.ListService
 }
 
-func NewListProductCmd(listService ports.ListService) cli.Cmd {
-	return listProductCmd{
+func NewListProductsCmd(listService ports.ListService) cli.Cmd {
+	return listProductsCmd{
 		listService: listService,
 	}
 }
 
-func (e listProductCmd) Cmd() *cobra.Command {
+func (e listProductsCmd) Cmd() *cobra.Command {
 	return &cobra.Command{
 		Use:         "llistaProductes",
 		Short:       "Llista tots els productes",

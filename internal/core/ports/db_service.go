@@ -9,7 +9,7 @@ type DbService interface {
 	FindProduct(code string) (model.Product, error)
 	FindAllProducts() ([]model.Product, error)
 	FindInvoicesByYearMonth(yearMonth string) ([]model.Invoice, error)
-	FindInvoicesByCustomer(customerCode string) ([]model.Invoice, error)
-	FindInvoicesByCustomerAndYearMonth(customerCode string, yearMonth string) ([]model.Invoice, error)
+	FindInvoicesByCustomer(customerCode int) ([]model.Invoice, error)
+	FindInvoicesByCustomerAndYearMonth(customerCode int, yearMonth string) ([]model.Invoice, error)
 	FindActiveCustomers() ([]model.Customer, error)
 }
