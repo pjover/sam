@@ -25,7 +25,7 @@ func NewProductsReportGenerator(dbService ports.DbService) generate.Generator {
 func (p ProductsReportGenerator) Generate() (string, error) {
 	fmt.Println("Generant l'informe de productes ...")
 
-	products, err := p.dbService.GetAllProducts()
+	products, err := p.dbService.FindAllProducts()
 	if err != nil {
 		return "", err
 	}

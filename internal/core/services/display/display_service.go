@@ -13,7 +13,7 @@ func NewDisplayService(dbService ports.DbService) ports.DisplayService {
 }
 
 func (d displayService) DisplayCustomer(code int) (string, error) {
-	customer, err := d.dbService.GetCustomer(code)
+	customer, err := d.dbService.FindCustomer(code)
 	if err != nil {
 		return "", err
 	}
@@ -21,7 +21,7 @@ func (d displayService) DisplayCustomer(code int) (string, error) {
 }
 
 func (d displayService) DisplayInvoice(code string) (string, error) {
-	invoice, err := d.dbService.GetInvoice(code)
+	invoice, err := d.dbService.FindInvoice(code)
 	if err != nil {
 		return "", err
 	}
@@ -29,7 +29,7 @@ func (d displayService) DisplayInvoice(code string) (string, error) {
 }
 
 func (d displayService) DisplayProduct(code string) (string, error) {
-	product, err := d.dbService.GetProduct(code)
+	product, err := d.dbService.FindProduct(code)
 	if err != nil {
 		return "", err
 	}

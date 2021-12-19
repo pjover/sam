@@ -48,3 +48,11 @@ func Decimal128ToFloat64(d128 primitive.Decimal128) float64 {
 	}
 	return float
 }
+
+func ConvertInvoices(invoices []Invoice) []model.Invoice {
+	var out []model.Invoice
+	for _, invoice := range invoices {
+		out = append(out, ConvertInvoice(invoice))
+	}
+	return out
+}

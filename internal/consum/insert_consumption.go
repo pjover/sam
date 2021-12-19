@@ -22,7 +22,7 @@ func NewInsertConsumptionsManager() CustomerConsumptionsManager {
 }
 
 func (i InsertConsumptionsManager) Run(args CustomerConsumptionsArgs) (string, error) {
-	child, err := i.dbService.GetChild(args.Code)
+	child, err := i.dbService.FindChild(args.Code)
 	if err != nil {
 		return "", err
 	}

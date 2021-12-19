@@ -129,7 +129,7 @@ func (i MonthReportGenerator) buildContents(invoices *monthInvoices) ([][]string
 }
 
 func (i MonthReportGenerator) customer(invoice model2.Invoice) (model2.Customer, error) {
-	customer, err := i.dbService.GetCustomer(invoice.CustomerID)
+	customer, err := i.dbService.FindCustomer(invoice.CustomerID)
 	if err != nil {
 		return model2.Customer{}, err
 	}

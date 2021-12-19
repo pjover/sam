@@ -17,7 +17,7 @@ func NewListService(dbService ports.DbService) ports.ListService {
 }
 
 func (l listService) ListProducts() (string, error) {
-	products, err := l.dbService.GetAllProducts()
+	products, err := l.dbService.FindAllProducts()
 	if err != nil {
 		return "", err
 	}

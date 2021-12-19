@@ -22,7 +22,7 @@ func NewRectifyConsumptionsManager() CustomerConsumptionsManager {
 }
 
 func (r RectifyConsumptionsManager) Run(args CustomerConsumptionsArgs) (string, error) {
-	child, err := r.dbService.GetChild(args.Code)
+	child, err := r.dbService.FindChild(args.Code)
 	if err != nil {
 		return "", err
 	}
