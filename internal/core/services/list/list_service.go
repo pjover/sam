@@ -2,7 +2,6 @@ package list
 
 import (
 	"bytes"
-	"fmt"
 	"github.com/pjover/sam/internal/core/model"
 	"github.com/pjover/sam/internal/core/ports"
 )
@@ -57,7 +56,7 @@ func (l listService) ListProducts() (string, error) {
 
 	var buffer bytes.Buffer
 	for _, product := range products {
-		buffer.WriteString(fmt.Sprintf("%s  %.2f \t %s\n", product.Id, product.Price, product.Name))
+		buffer.WriteString(product.String())
 	}
 	return buffer.String(), nil
 }
