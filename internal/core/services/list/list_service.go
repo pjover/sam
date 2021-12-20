@@ -43,7 +43,7 @@ func (l listService) ListYearMonthInvoices(yearMonth string) (string, error) {
 func listInvoices(invoices []model.Invoice) (string, error) {
 	var buffer bytes.Buffer
 	for _, invoice := range invoices {
-		buffer.WriteString(fmt.Sprintf("%d  %s  %s  %.2f  %s  %s\n", invoice.CustomerID, invoice.Code, invoice.YearMonth, invoice.Amount(), invoice.PaymentFmt(), invoice.LinesFmt(",")))
+		buffer.WriteString(invoice.String())
 	}
 	return buffer.String(), nil
 }
