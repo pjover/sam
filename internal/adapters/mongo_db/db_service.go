@@ -102,7 +102,9 @@ func (d dbService) close(client *mongo.Client) {
 func (d dbService) FindAllProducts() ([]model.Product, error) {
 	var results []dbo.Product
 	filter := bson.D{}
-	if err := d.findMany("product", filter, &results, "tots els productes"); err != nil {
+	findOptions := options.Find()
+	findOptions.SetSort(bson.D{{"_id", 1}})
+	if err := d.findMany("product", filter, findOptions, &results, "tots els productes"); err != nil {
 		return nil, err
 	}
 	return dbo.ConvertProducts(results), nil
@@ -110,10 +112,10 @@ func (d dbService) FindAllProducts() ([]model.Product, error) {
 
 func (d dbService) FindInvoicesByYearMonth(yearMonth string) ([]model.Invoice, error) {
 	var results []dbo.Invoice
-	filter := bson.D{
-		{"year", yearMonth},
-	}
-	if err := d.findMany("invoice", filter, &results, "factures per any i mes"); err != nil {
+	filter := bson.D{{"year", yearMonth}}
+	findOptions := options.Find()
+	findOptions.SetSort(bson.D{{"_id", 1}})
+	if err := d.findMany("invoice", filter, findOptions, &results, "factures per any i mes"); err != nil {
 		return nil, err
 	}
 	return dbo.ConvertInvoices(results), nil
@@ -121,10 +123,10 @@ func (d dbService) FindInvoicesByYearMonth(yearMonth string) ([]model.Invoice, e
 
 func (d dbService) FindInvoicesByCustomer(customerCode int) ([]model.Invoice, error) {
 	var results []dbo.Invoice
-	filter := bson.D{
-		{"customerId", customerCode},
-	}
-	if err := d.findMany("invoice", filter, &results, "factures per client"); err != nil {
+	filter := bson.D{{"customerId", customerCode}}
+	findOptions := options.Find()
+	findOptions.SetSort(bson.D{{"_id", 1}})
+	if err := d.findMany("invoice", filter, findOptions, &results, "factures per client"); err != nil {
 		return nil, err
 	}
 	return dbo.ConvertInvoices(results), nil
@@ -139,7 +141,9 @@ func (d dbService) FindInvoicesByCustomerAndYearMonth(customerCode int, yearMont
 				bson.D{{"year", yearMonth}},
 			}},
 	}
-	if err := d.findMany("invoice", filter, &results, "factures per client, any i mes"); err != nil {
+	findOptions := options.Find()
+	findOptions.SetSort(bson.D{{"_id", 1}})
+	if err := d.findMany("invoice", filter, findOptions, &results, "factures per client, any i mes"); err != nil {
 		return nil, err
 	}
 	return dbo.ConvertInvoices(results), nil
@@ -147,16 +151,16 @@ func (d dbService) FindInvoicesByCustomerAndYearMonth(customerCode int, yearMont
 
 func (d dbService) FindActiveCustomers() ([]model.Customer, error) {
 	var results []dbo.Customer
-	filter := bson.D{
-		{"active", true},
-	}
-	if err := d.findMany("customer", filter, &results, "clients actius"); err != nil {
+	filter := bson.D{{"active", true}}
+	findOptions := options.Find()
+	findOptions.SetSort(bson.D{{"_id", 1}})
+	if err := d.findMany("customer", filter, findOptions, &results, "clients actius"); err != nil {
 		return nil, err
 	}
 	return dbo.ConvertCustomers(results), nil
 }
 
-func (d dbService) findMany(collection string, filter bson.D, results interface{}, name string) error {
+func (d dbService) findMany(collection string, filter bson.D, findOptions *options.FindOptions, results interface{}, name string) error {
 	client, err := d.open()
 	defer d.close(client)
 	if err != nil {
@@ -164,7 +168,7 @@ func (d dbService) findMany(collection string, filter bson.D, results interface{
 	}
 
 	coll := client.Database(d.database).Collection(collection)
-	cur, err := coll.Find(context.TODO(), filter)
+	cur, err := coll.Find(context.TODO(), filter, findOptions)
 	if err != nil {
 		return fmt.Errorf("llegint %s des de la base de dades: %s", name, err)
 	}
