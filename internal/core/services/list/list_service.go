@@ -73,3 +73,16 @@ func (l listService) ListCustomers() (string, error) {
 	}
 	return buffer.String(), nil
 }
+
+func (l listService) ListChildren() (string, error) {
+	children, err := l.dbService.FindActiveChildren()
+	if err != nil {
+		return "", err
+	}
+
+	var buffer bytes.Buffer
+	for _, child := range children {
+		buffer.WriteString(child.String() + "\n")
+	}
+	return buffer.String(), nil
+}

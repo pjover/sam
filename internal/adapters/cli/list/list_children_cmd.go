@@ -2,17 +2,23 @@ package list
 
 import (
 	"fmt"
-
-	"github.com/pjover/sam/internal/list"
+	"github.com/pjover/sam/internal/adapters/cli"
+	"github.com/pjover/sam/internal/core/ports"
 
 	"github.com/spf13/cobra"
 )
 
-func NewListChildrenCmd() *cobra.Command {
-	return newListChildrenCmd(list.NewListChildren())
+type listChildrenCmd struct {
+	listService ports.ListService
 }
 
-func newListChildrenCmd(manager list.List) *cobra.Command {
+func NewListChildrenCmd(listService ports.ListService) cli.Cmd {
+	return listChildrenCmd{
+		listService: listService,
+	}
+}
+
+func (l listChildrenCmd) Cmd() *cobra.Command {
 	return &cobra.Command{
 		Use:         "llistaInfants",
 		Short:       "Llista tots els infants",
@@ -27,13 +33,12 @@ func newListChildrenCmd(manager list.List) *cobra.Command {
 			"listChildren", "listchildren", "list-children",
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
-			msg, err := manager.List()
+			msg, err := l.listService.ListChildren()
 			if err != nil {
 				return err
 			}
-
-			fmt.Println(msg)
-			return nil
+			_, err = fmt.Fprintln(cmd.OutOrStdout(), msg)
+			return err
 		},
 	}
 }

@@ -36,6 +36,14 @@ func (c Customer) ChildrenNames(joinWith string) string {
 	return strings.Join(names, joinWith)
 }
 
+func (c Child) String() string {
+	return fmt.Sprintf("%d  %-30s  %s  %s", c.Code, c.NameAndSurname(), c.Group, c.BirthDate.Format("2006-01-02"))
+}
+
+func (c Child) NameAndSurname() string {
+	return fmt.Sprintf("%s %s", c.Name, c.Surname)
+}
+
 func (c Child) NameWithCode() string {
 	return fmt.Sprintf("%s %s (%d)", c.Name, c.Surname, c.Code)
 }

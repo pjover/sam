@@ -6,4 +6,5 @@ type ListService interface {
 	ListProducts() (string, error)
 	ListYearMonthInvoices(yearMonth string) (string, error)
 	ListCustomers() (string, error)
+	ListChildren() (string, error)
 }

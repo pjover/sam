@@ -160,6 +160,23 @@ func (d dbService) FindActiveCustomers() ([]model.Customer, error) {
 	return dbo.ConvertCustomers(results), nil
 }
 
+func (d dbService) FindActiveChildren() ([]model.Child, error) {
+	customers, err := d.FindActiveCustomers()
+	if err != nil {
+		return nil, err
+	}
+
+	var children []model.Child
+	for _, customer := range customers {
+		for _, child := range customer.Children {
+			if child.Active {
+				children = append(children, child)
+			}
+		}
+	}
+	return children, nil
+}
+
 func (d dbService) findMany(collection string, filter bson.D, findOptions *options.FindOptions, results interface{}, name string) error {
 	client, err := d.open()
 	defer d.close(client)
