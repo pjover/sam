@@ -43,7 +43,7 @@ func (l listService) ListYearMonthInvoices(yearMonth string) (string, error) {
 func listInvoices(invoices []model.Invoice) (string, error) {
 	var buffer bytes.Buffer
 	for _, invoice := range invoices {
-		buffer.WriteString(invoice.String())
+		buffer.WriteString(invoice.String() + "\n")
 	}
 	return buffer.String(), nil
 }
@@ -56,7 +56,20 @@ func (l listService) ListProducts() (string, error) {
 
 	var buffer bytes.Buffer
 	for _, product := range products {
-		buffer.WriteString(product.String())
+		buffer.WriteString(product.String() + "\n")
+	}
+	return buffer.String(), nil
+}
+
+func (l listService) ListCustomers() (string, error) {
+	customers, err := l.dbService.FindActiveCustomers()
+	if err != nil {
+		return "", err
+	}
+
+	var buffer bytes.Buffer
+	for _, customer := range customers {
+		buffer.WriteString(customer.String() + "\n")
 	}
 	return buffer.String(), nil
 }

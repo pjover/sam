@@ -6,7 +6,7 @@ import (
 )
 
 func (c Customer) String() string {
-	return fmt.Sprintf("%#v", c)
+	return fmt.Sprintf("%d  %-25s  %-55s  %s", c.Id, c.FirstAdultName(), c.ChildrenNames(", "), c.InvoiceHolder.PaymentInfoFmt())
 }
 
 func (c Customer) FirstAdult() Adult {
@@ -16,6 +16,11 @@ func (c Customer) FirstAdult() Adult {
 		}
 	}
 	return c.Adults[0]
+}
+
+func (c Customer) FirstAdultName() string {
+	adult := c.FirstAdult()
+	return fmt.Sprintf("%s %s", adult.Name, adult.Surname)
 }
 
 func (c Customer) FirstAdultNameWithCode() string {

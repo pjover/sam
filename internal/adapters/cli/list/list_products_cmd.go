@@ -18,7 +18,7 @@ func NewListProductsCmd(listService ports.ListService) cli.Cmd {
 	}
 }
 
-func (e listProductsCmd) Cmd() *cobra.Command {
+func (l listProductsCmd) Cmd() *cobra.Command {
 	return &cobra.Command{
 		Use:         "llistaProductes",
 		Short:       "Llista tots els productes",
@@ -37,7 +37,7 @@ func (e listProductsCmd) Cmd() *cobra.Command {
 			"list-products",
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
-			msg, err := e.listService.ListProducts()
+			msg, err := l.listService.ListProducts()
 			if err != nil {
 				return err
 			}

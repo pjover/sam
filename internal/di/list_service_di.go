@@ -11,4 +11,5 @@ func listServiceDI(dbService ports.DbService, cmdManager cli.CmdManager, osServi
 	listService := list.NewListService(dbService)
 	cmdManager.AddCommand(listCli.NewListProductsCmd(listService))
 	cmdManager.AddCommand(listCli.NewListInvoicesCmd(listService, osService))
+	cmdManager.AddCommand(listCli.NewListCustomersCmd(listService))
 }

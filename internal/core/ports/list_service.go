@@ -5,4 +5,5 @@ type ListService interface {
 	ListCustomerYearMonthInvoices(customerCode int, yearMonth string) (string, error)
 	ListProducts() (string, error)
 	ListYearMonthInvoices(yearMonth string) (string, error)
+	ListCustomers() (string, error)
 }
