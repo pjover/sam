@@ -13,7 +13,7 @@ type listMailsCmd struct {
 	ei1         bool
 	ei2         bool
 	ei3         bool
-	i           bool
+	language    bool
 }
 
 func NewListMailsCmd(listService ports.ListService) cli.Cmd {
@@ -59,22 +59,22 @@ func (l listMailsCmd) Cmd() *cobra.Command {
 	command.Flags().BoolVarP(&l.ei1, "ei1", "1", false, "Educació infantil 1")
 	command.Flags().BoolVarP(&l.ei2, "ei2", "2", false, "Educació infantil 2")
 	command.Flags().BoolVarP(&l.ei3, "ei3", "3", false, "Educació infantil 3")
-	command.Flags().BoolVarP(&l.i, "idioma", "i", false, "Tots els correus electrònics separats per idioma")
+	command.Flags().BoolVarP(&l.language, "idioma", "i", false, "Tots els correus electrònics separats per idioma")
 	return command
 }
 
 func (l listMailsCmd) callListMails() (string, error) {
-	if l.i {
-		return l.listService.ListMails("", true)
+	if l.language {
+		return l.listService.ListMailsByLanguage()
 	} else {
 		if l.ei1 {
-			return l.listService.ListMails("EI_1", false)
+			return l.listService.ListGroupMails("EI_1")
 		} else if l.ei2 {
-			return l.listService.ListMails("EI_2", false)
+			return l.listService.ListGroupMails("EI_2")
 		} else if l.ei3 {
-			return l.listService.ListMails("EI_3", false)
+			return l.listService.ListGroupMails("EI_3")
 		} else {
-			return l.listService.ListMails("ALL", false)
+			return l.listService.ListMails()
 		}
 	}
 }
