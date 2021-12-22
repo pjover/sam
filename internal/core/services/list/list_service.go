@@ -141,3 +141,27 @@ func (l listService) ListGroupMails(group string) (string, error) {
 	}
 	return buffer.String(), nil
 }
+
+func (l listService) ListConsumptions() (string, error) {
+	consumptions, err := l.dbService.FindAllConsumptions()
+	if err != nil {
+		return "", err
+	}
+	return l.printConsumptions(consumptions)
+}
+
+func (l listService) ListChildConsumptions(childCode int) (string, error) {
+	consumptions, err := l.dbService.FindChildConsumptions(childCode)
+	if err != nil {
+		return "", err
+	}
+	return l.printConsumptions(consumptions)
+}
+
+func (l listService) printConsumptions(consumptions []model.Consumption) (string, error) {
+	var buffer bytes.Buffer
+	for _, consumption := range consumptions {
+		buffer.WriteString(consumption.String() + "\n")
+	}
+	return buffer.String(), nil
+}

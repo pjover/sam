@@ -3,16 +3,22 @@ package list
 import (
 	"fmt"
 	"github.com/pjover/sam/internal/adapters/cli"
+	"github.com/pjover/sam/internal/core/ports"
 
-	"github.com/pjover/sam/internal/list"
 	"github.com/spf13/cobra"
 )
 
-func NewListConsumptionsCmd() *cobra.Command {
-	return newListConsumptionsCmd(list.NewListConsumptions())
+type listConsumptionsCmd struct {
+	listService ports.ListService
 }
 
-func newListConsumptionsCmd(manager list.ListConsumptions) *cobra.Command {
+func NewListConsumptionsCmd(listService ports.ListService) cli.Cmd {
+	return listConsumptionsCmd{
+		listService: listService,
+	}
+}
+
+func (l listConsumptionsCmd) Cmd() *cobra.Command {
 	return &cobra.Command{
 		Use:   "llistaConsums [codiInfant]",
 		Short: "Mostra els consums d'un infant",
@@ -40,16 +46,15 @@ func newListConsumptionsCmd(manager list.ListConsumptions) *cobra.Command {
 				if err != nil {
 					return err
 				}
-				msg, err = manager.ListOne(childCode)
+				msg, err = l.listService.ListChildConsumptions(childCode)
 			} else {
-				msg, err = manager.List()
+				msg, err = l.listService.ListConsumptions()
 			}
 			if err != nil {
 				return err
 			}
-
-			fmt.Println(msg)
-			return nil
+			_, err = fmt.Fprintln(cmd.OutOrStdout(), msg)
+			return err
 		},
 	}
 }

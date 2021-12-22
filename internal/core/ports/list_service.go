@@ -10,4 +10,6 @@ type ListService interface {
 	ListMails() (string, error)
 	ListMailsByLanguage() (string, error)
 	ListGroupMails(group string) (string, error)
+	ListConsumptions() (string, error)
+	ListChildConsumptions(childCode int) (string, error)
 }

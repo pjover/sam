@@ -177,6 +177,26 @@ func (d dbService) FindActiveChildren() ([]model.Child, error) {
 	return children, nil
 }
 
+func (d dbService) FindAllConsumptions() ([]model.Consumption, error) {
+	var results []dbo.Consumption
+	filter := bson.D{}
+	findOptions := options.Find()
+	if err := d.findMany("consumption", filter, findOptions, &results, "tots els consums"); err != nil {
+		return nil, err
+	}
+	return dbo.ConvertConsumptions(results), nil
+}
+
+func (d dbService) FindChildConsumptions(code int) ([]model.Consumption, error) {
+	var results []dbo.Consumption
+	filter := bson.D{{"childCode", code}}
+	findOptions := options.Find()
+	if err := d.findMany("consumption", filter, findOptions, &results, "consums per infant"); err != nil {
+		return nil, err
+	}
+	return dbo.ConvertConsumptions(results), nil
+}
+
 func (d dbService) findMany(collection string, filter bson.D, findOptions *options.FindOptions, results interface{}, name string) error {
 	client, err := d.open()
 	defer d.close(client)

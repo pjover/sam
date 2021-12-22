@@ -6,7 +6,6 @@ import (
 	"github.com/pjover/sam/internal/adapters/os"
 	"github.com/pjover/sam/internal/cmd/consum"
 	"github.com/pjover/sam/internal/cmd/generate"
-	"github.com/pjover/sam/internal/cmd/list"
 	"github.com/pjover/sam/internal/cmd/search"
 	"github.com/pjover/sam/internal/core/ports"
 	"github.com/pjover/sam/internal/core/services/lang"
@@ -32,8 +31,6 @@ func MainDI(configService ports.ConfigService, cmdManager cli.CmdManager) {
 	cmdManager.AddTmpCommand(generate.NewGenerateBddCmd())
 	cmdManager.AddTmpCommand(generate.NewGenerateMonthInvoicesCmd())
 	cmdManager.AddTmpCommand(generate.NewGenerateSingleInvoiceCmd())
-
-	cmdManager.AddTmpCommand(list.NewListConsumptionsCmd())
 
 	cmdManager.AddTmpCommand(search.NewSearchCustomerCmd())
 }

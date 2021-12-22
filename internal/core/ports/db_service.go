@@ -13,4 +13,6 @@ type DbService interface {
 	FindInvoicesByCustomerAndYearMonth(customerCode int, yearMonth string) ([]model.Invoice, error)
 	FindActiveCustomers() ([]model.Customer, error)
 	FindActiveChildren() ([]model.Child, error)
+	FindAllConsumptions() ([]model.Consumption, error)
+	FindChildConsumptions(code int) ([]model.Consumption, error)
 }
