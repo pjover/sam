@@ -78,6 +78,10 @@ func (i InvoiceHolder) BankAccountFmt() string {
 	)
 }
 
+func (i InvoiceHolder) Mail() string {
+	return fmt.Sprintf("%s <%s>", i.Name, i.Email)
+}
+
 func (a Adult) MobilePhoneFmt() string {
 	if len(a.MobilePhone) != 9 {
 		return a.MobilePhone

@@ -34,7 +34,6 @@ func MainDI(configService ports.ConfigService, cmdManager cli.CmdManager) {
 	cmdManager.AddTmpCommand(generate.NewGenerateSingleInvoiceCmd())
 
 	cmdManager.AddTmpCommand(list.NewListConsumptionsCmd())
-	cmdManager.AddTmpCommand(list.NewListMailsCmd())
 
 	cmdManager.AddTmpCommand(search.NewSearchCustomerCmd())
 }

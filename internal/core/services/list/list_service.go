@@ -86,3 +86,58 @@ func (l listService) ListChildren() (string, error) {
 	}
 	return buffer.String(), nil
 }
+
+func (l listService) ListMails(group string, groupByLanguage bool) (string, error) {
+	customers, err := l.dbService.FindActiveCustomers()
+	if err != nil {
+		return "", err
+	}
+
+	if groupByLanguage {
+		return l.listMailsByLanguage(customers)
+	} else if group == "ALL" {
+		return l.listAllMails(customers)
+	} else {
+		return l.listMailsByGroup(group, customers)
+	}
+}
+
+func (l listService) listMailsByLanguage(customers []model.Customer) (string, error) {
+	var caBuffer, esBuffer bytes.Buffer
+	caBuffer.WriteString("CA:\n")
+	esBuffer.WriteString("ES:\n")
+	for _, customer := range customers {
+		if customer.Language == "CA" {
+			caBuffer.WriteString(customer.InvoiceHolder.Mail() + ", ")
+		} else {
+			esBuffer.WriteString(customer.InvoiceHolder.Mail() + ", ")
+		}
+	}
+	return caBuffer.String() + "\n" + esBuffer.String(), nil
+}
+
+func (l listService) listAllMails(customers []model.Customer) (string, error) {
+	var buffer bytes.Buffer
+	for _, customer := range customers {
+		buffer.WriteString(customer.InvoiceHolder.Mail() + ", ")
+	}
+	return buffer.String(), nil
+}
+
+func (l listService) listMailsByGroup(group string, customers []model.Customer) (string, error) {
+	var buffer bytes.Buffer
+	buffer.WriteString(group + ":\n")
+	for _, customer := range customers {
+		var in bool
+		for _, child := range customer.Children {
+			if child.Group == group {
+				in = true
+				break
+			}
+		}
+		if in {
+			buffer.WriteString(customer.InvoiceHolder.Mail() + ", ")
+		}
+	}
+	return buffer.String(), nil
+}
