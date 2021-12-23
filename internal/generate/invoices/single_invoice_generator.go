@@ -3,7 +3,7 @@ package invoices
 import (
 	"fmt"
 	"github.com/pjover/sam/internal/adapters/cfg"
-	"github.com/pjover/sam/internal/adapters/tuk"
+	"github.com/pjover/sam/internal/adapters/hobbit"
 	"github.com/pjover/sam/internal/core/ports"
 
 	"github.com/spf13/viper"
@@ -14,13 +14,13 @@ type SingleInvoiceGenerator interface {
 }
 
 type SingleInvoiceGeneratorImpl struct {
-	postManager   tuk.HttpPostManager
+	postManager   hobbit.HttpPostManager
 	configService ports.ConfigService
 }
 
 func NewSingleInvoiceGenerator() SingleInvoiceGenerator {
 	return SingleInvoiceGeneratorImpl{
-		tuk.NewHttpPostManager(),
+		hobbit.NewHttpPostManager(),
 		cfg.NewConfigService(),
 	}
 }

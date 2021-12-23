@@ -5,14 +5,13 @@ import (
 	"strings"
 )
 
-func (i Invoice) Code() string {
-	url := i.Links.Self.Href
-	parts := strings.Split(url, "/")
-	return parts[len(parts)-1]
+func (i Invoice) String() string {
+	return fmt.Sprintf("%d  %s  %s  % 7.2f  %s  %s", i.CustomerID, i.Code, i.YearMonth, i.Amount(), i.PaymentFmt(), i.LinesFmt(","))
+
 }
 
-func (i Invoice) Amount() float32 {
-	var amount float32
+func (i Invoice) Amount() float64 {
+	var amount float64
 	for _, line := range i.Lines {
 		amount += line.Units * line.ProductPrice
 	}

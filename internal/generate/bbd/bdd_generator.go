@@ -3,23 +3,23 @@ package bbd
 import (
 	"fmt"
 	"github.com/pjover/sam/internal/adapters/cfg"
-	"github.com/pjover/sam/internal/adapters/tuk"
+	"github.com/pjover/sam/internal/adapters/hobbit"
 	"github.com/pjover/sam/internal/core/ports"
+	"github.com/pjover/sam/internal/generate"
 	"io/fs"
 	"path/filepath"
 
-	"github.com/pjover/sam/internal/generate"
 	"github.com/spf13/viper"
 )
 
 type BddGeneratorImpl struct {
-	postManager   tuk.HttpPostManager
+	postManager   hobbit.HttpPostManager
 	configService ports.ConfigService
 }
 
 func NewBddGenerator() generate.Generator {
 	return BddGeneratorImpl{
-		tuk.NewHttpPostManager(),
+		hobbit.NewHttpPostManager(),
 		cfg.NewConfigService(),
 	}
 }

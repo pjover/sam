@@ -5,6 +5,10 @@ import (
 	"strings"
 )
 
+func (c Customer) String() string {
+	return fmt.Sprintf("%d  %-25s  %-55s  %s", c.Id, c.FirstAdultName(), c.ChildrenNames(", "), c.InvoiceHolder.PaymentInfoFmt())
+}
+
 func (c Customer) FirstAdult() Adult {
 	for _, adult := range c.Adults {
 		if adult.Role == "MOTHER" {
@@ -14,13 +18,14 @@ func (c Customer) FirstAdult() Adult {
 	return c.Adults[0]
 }
 
-func (c Customer) FirstAdultNameWithCode() string {
+func (c Customer) FirstAdultName() string {
 	adult := c.FirstAdult()
-	return fmt.Sprintf("%s %s (%d)", adult.Name, adult.Surname, c.Id())
+	return fmt.Sprintf("%s %s", adult.Name, adult.Surname)
 }
 
-func (c Customer) Id() int {
-	return c.Children[0].Code / 10
+func (c Customer) FirstAdultNameWithCode() string {
+	adult := c.FirstAdult()
+	return fmt.Sprintf("%s %s (%d)", adult.Name, adult.Surname, c.Id)
 }
 
 func (c Customer) ChildrenNames(joinWith string) string {
@@ -29,6 +34,14 @@ func (c Customer) ChildrenNames(joinWith string) string {
 		names = append(names, child.NameWithCode())
 	}
 	return strings.Join(names, joinWith)
+}
+
+func (c Child) String() string {
+	return fmt.Sprintf("%d  %-30s  %s  %s", c.Code, c.NameAndSurname(), c.Group, c.BirthDate.Format("2006-01-02"))
+}
+
+func (c Child) NameAndSurname() string {
+	return fmt.Sprintf("%s %s", c.Name, c.Surname)
 }
 
 func (c Child) NameWithCode() string {
@@ -63,6 +76,10 @@ func (i InvoiceHolder) BankAccountFmt() string {
 		i.BankAccount[16:20],
 		i.BankAccount[20:24],
 	)
+}
+
+func (i InvoiceHolder) Mail() string {
+	return fmt.Sprintf("%s <%s>", i.Name, i.Email)
 }
 
 func (a Adult) MobilePhoneFmt() string {
