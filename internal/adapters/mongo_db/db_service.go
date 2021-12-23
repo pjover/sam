@@ -9,6 +9,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"log"
 	"time"
 )
 
@@ -24,7 +25,35 @@ func NewDbService(configService ports.ConfigService) ports.DbService {
 	defer cancel()
 	uri := configService.Get("db.server")
 	database := configService.Get("db.name")
-	return dbService{configService, ctx, uri, database}
+	d := dbService{configService, ctx, uri, database}
+	d.createIndexes()
+	return d
+}
+
+func (d dbService) createIndexes() {
+	client, err := d.open()
+	defer d.close(client)
+	if err != nil {
+		log.Println("Could not connect to database to create indexes", err)
+		return
+	}
+
+	opt := options.Index()
+	opt.SetWeights(bson.M{
+		"adults.name":    10,
+		"adults.surname": 7,
+		"children.name":  1007,
+	})
+	index := mongo.IndexModel{Keys: bson.M{
+		"adults.name":    "text",
+		"adults.surname": "text",
+		"children.name":  "text",
+	}, Options: opt}
+
+	collection := client.Database(d.database).Collection("customer")
+	if _, err := collection.Indexes().CreateOne(context.TODO(), index); err != nil {
+		log.Println("Could not create text index:", err)
+	}
 }
 
 func (d dbService) FindCustomer(code int) (model.Customer, error) {
