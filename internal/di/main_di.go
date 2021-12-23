@@ -6,7 +6,6 @@ import (
 	"github.com/pjover/sam/internal/adapters/os"
 	"github.com/pjover/sam/internal/cmd/consum"
 	"github.com/pjover/sam/internal/cmd/generate"
-	"github.com/pjover/sam/internal/cmd/search"
 	"github.com/pjover/sam/internal/core/ports"
 	"github.com/pjover/sam/internal/core/services/lang"
 )
@@ -22,6 +21,7 @@ func MainDI(configService ports.ConfigService, cmdManager cli.CmdManager) {
 	displayServiceDI(dbService, cmdManager)
 	generateServiceDI(configService, langService, dbService, cmdManager)
 	listServiceDI(dbService, cmdManager, osService)
+	searchServiceDI(dbService, cmdManager)
 
 	// TODO move to DI and remove method AddTmpCommand
 	cmdManager.AddTmpCommand(consum.NewBillConsumptionsCmd())
@@ -31,6 +31,4 @@ func MainDI(configService ports.ConfigService, cmdManager cli.CmdManager) {
 	cmdManager.AddTmpCommand(generate.NewGenerateBddCmd())
 	cmdManager.AddTmpCommand(generate.NewGenerateMonthInvoicesCmd())
 	cmdManager.AddTmpCommand(generate.NewGenerateSingleInvoiceCmd())
-
-	cmdManager.AddTmpCommand(search.NewSearchCustomerCmd())
 }

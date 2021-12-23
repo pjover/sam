@@ -189,6 +189,17 @@ func (d dbService) FindActiveCustomers() ([]model.Customer, error) {
 	return dbo.ConvertCustomers(results), nil
 }
 
+func (d dbService) SearchCustomers(searchText string) ([]model.Customer, error) {
+	var results []dbo.Customer
+	filter := bson.M{"$text": bson.M{"$search": searchText}}
+	findOptions := options.Find()
+	findOptions.SetSort(bson.M{"score": bson.M{"$meta": "textScore"}})
+	if err := d.findMany("customer", filter, findOptions, &results, "clients actius"); err != nil {
+		return nil, err
+	}
+	return dbo.ConvertCustomers(results), nil
+}
+
 func (d dbService) FindActiveChildren() ([]model.Child, error) {
 	customers, err := d.FindActiveCustomers()
 	if err != nil {
@@ -226,7 +237,7 @@ func (d dbService) FindChildConsumptions(code int) ([]model.Consumption, error) 
 	return dbo.ConvertConsumptions(results), nil
 }
 
-func (d dbService) findMany(collection string, filter bson.D, findOptions *options.FindOptions, results interface{}, name string) error {
+func (d dbService) findMany(collection string, filter interface{}, findOptions *options.FindOptions, results interface{}, name string) error {
 	client, err := d.open()
 	defer d.close(client)
 	if err != nil {

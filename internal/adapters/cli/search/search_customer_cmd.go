@@ -3,16 +3,22 @@ package search
 import (
 	"fmt"
 	"github.com/pjover/sam/internal/adapters/cli"
+	"github.com/pjover/sam/internal/core/ports"
 
-	"github.com/pjover/sam/internal/search"
 	"github.com/spf13/cobra"
 )
 
-func NewSearchCustomerCmd() *cobra.Command {
-	return newSearchCustomerCmd(search.NewSearchManager())
+type searchCustomerCmd struct {
+	searchService ports.SearchService
 }
 
-func newSearchCustomerCmd(manager search.SearchManager) *cobra.Command {
+func NewSearchCustomerCmd(searchService ports.SearchService) cli.Cmd {
+	return searchCustomerCmd{
+		searchService: searchService,
+	}
+}
+
+func (e searchCustomerCmd) Cmd() *cobra.Command {
 	return &cobra.Command{
 		Use:         "buscaClient nomDelClient",
 		Short:       "Busca els clients que tenguin 'nomDelClient'",
@@ -36,13 +42,12 @@ func newSearchCustomerCmd(manager search.SearchManager) *cobra.Command {
 		},
 		Args: cli.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			msg, err := manager.SearchCustomer(args)
-			if err != nil {
-				return err
+			searchText := fmt.Sprint(args)
+			msg, err := e.searchService.SearchCustomer(searchText)
+			if msg != "" {
+				fmt.Println(msg)
 			}
-
-			fmt.Println(msg)
-			return nil
+			return err
 		},
 	}
 }
