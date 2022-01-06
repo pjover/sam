@@ -8,6 +8,10 @@ import (
 type catLangService struct {
 }
 
+func NewCatLangService() LangService {
+	return catLangService{}
+}
+
 var layout = "060100-Factures del mes January"
 
 func (c catLangService) WorkingDir(month time.Time) string {

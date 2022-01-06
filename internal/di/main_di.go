@@ -13,7 +13,7 @@ import (
 func MainDI(configService ports.ConfigService, cmdManager cli.CmdManager) {
 
 	osService := os.NewOsService()
-	langService := lang.NewLangService(configService.Get("lang"))
+	langService := lang.NewCatLangService()
 	dbService := mongo_db.NewDbService(configService)
 
 	adminServiceDI(configService, cmdManager, osService, langService)

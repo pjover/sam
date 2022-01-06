@@ -19,7 +19,7 @@ func Test_CreateDirectory(t *testing.T) {
 	mockedOsService.On("CreateDirectory", mock.Anything).Return(nil)
 	mockedOsService.On("OpenUrlInBrowser", mock.Anything).Return(nil)
 
-	sut := NewAdminService(mockedConfigService, mockedOsService, lang.NewLangService("cat"))
+	sut := NewAdminService(mockedConfigService, mockedOsService, lang.NewCatLangService())
 
 	t.Run("Should return current month", func(t *testing.T) {
 		msg, err := sut.CreateDirectory(false, false)
@@ -54,7 +54,7 @@ func Test_Backup_ok(t *testing.T) {
 	mockedOsService.On("RunCommand", "mongoexport", "--db=hobbit", "--collection=product", "--out=/tmp/sam/product.json").Return(nil)
 	mockedOsService.On("RunCommand", "mongoexport", "--db=hobbit", "--collection=sequence", "--out=/tmp/sam/sequence.json").Return(nil)
 
-	sut := NewAdminService(mockedConfigService, mockedOsService, lang.NewLangService("cat"))
+	sut := NewAdminService(mockedConfigService, mockedOsService, lang.NewCatLangService())
 
 	t.Run("Should return message with right filename", func(t *testing.T) {
 		msg, err := sut.Backup()

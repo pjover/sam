@@ -85,8 +85,6 @@ func (c configService) loadDefaultConfig(home string) {
 	viper.SetDefault("business.addressLine4", "AddressLine4")
 	viper.SetDefault("business.taxIdLine", "TaxIdLine")
 
-	viper.SetDefault("lang", "cat")
-
 	viper.SetDefault("db.server", "mongodb://localhost:27017")
 	viper.SetDefault("db.name", "hobbit")
 }
