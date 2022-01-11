@@ -45,10 +45,11 @@ func (m MonthReport) Run() (string, error) {
 		return "", err
 	}
 
-	filePath := path.Join(
-		m.configService.GetWorkingDirectory(),
-		m.configService.Get("files.invoicesReport"),
-	)
+	wd, err := m.configService.GetWorkingDirectory()
+	if err != nil {
+		return "", err
+	}
+	filePath := path.Join(wd, m.configService.Get("files.invoicesReport"))
 
 	reportInfo := ReportInfo{
 		consts.Landscape,

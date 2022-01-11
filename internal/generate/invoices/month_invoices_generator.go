@@ -5,9 +5,6 @@ import (
 	"github.com/pjover/sam/internal/adapters/cfg"
 	"github.com/pjover/sam/internal/adapters/hobbit"
 	"github.com/pjover/sam/internal/core/ports"
-	"os"
-	"path"
-
 	"github.com/spf13/viper"
 )
 
@@ -37,8 +34,7 @@ func (m MonthInvoicesGeneratorImpl) Generate(onlyNew bool) (string, error) {
 		onlyNew,
 	)
 
-	dirPath := path.Join(m.configService.GetWorkingDirectory(), viper.GetString("dirs.invoicesName"))
-	err := os.MkdirAll(dirPath, 0755)
+	dirPath, err := m.configService.GetInvoicesDirectory()
 	if err != nil {
 		return "", err
 	}

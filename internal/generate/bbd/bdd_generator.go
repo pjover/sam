@@ -31,7 +31,10 @@ func (b BddGeneratorImpl) Generate() (string, error) {
 		viper.GetString("yearMonth"),
 	)
 
-	dir := b.configService.GetWorkingDirectory()
+	dir, err := b.configService.GetWorkingDirectory()
+	if err != nil {
+		return "", err
+	}
 	currentFilenames := listFiles(dir, ".qx1")
 	filename := getNextBddFilename(currentFilenames)
 	return b.postManager.File(url, dir, filename)

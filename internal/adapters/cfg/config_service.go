@@ -1,6 +1,7 @@
 package cfg
 
 import (
+	"fmt"
 	"github.com/pjover/sam/internal/core/ports"
 	"github.com/spf13/viper"
 	"log"
@@ -89,6 +90,24 @@ func (c configService) loadDefaultConfig(home string) {
 	viper.SetDefault("db.name", "hobbit")
 }
 
-func (c configService) GetWorkingDirectory() string {
-	return path.Join(viper.GetString("dirs.home"), viper.GetString("dirs.current"))
+func (c configService) GetWorkingDirectory() (string, error) {
+	dirPath := path.Join(viper.GetString("dirs.home"), viper.GetString("dirs.current"))
+	return c.createDir(dirPath)
+}
+
+func (c configService) GetInvoicesDirectory() (string, error) {
+	wd, err := c.GetWorkingDirectory()
+	if err != nil {
+		return "", err
+	}
+	dirPath := path.Join(wd, viper.GetString("dirs.invoicesName"))
+	return c.createDir(dirPath)
+}
+
+func (c configService) createDir(dirPath string) (string, error) {
+	err := os.MkdirAll(dirPath, 0755)
+	if err != nil {
+		return "", fmt.Errorf("error creant el directori %s: %s", dirPath, err)
+	}
+	return dirPath, nil
 }

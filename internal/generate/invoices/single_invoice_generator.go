@@ -5,7 +5,6 @@ import (
 	"github.com/pjover/sam/internal/adapters/cfg"
 	"github.com/pjover/sam/internal/adapters/hobbit"
 	"github.com/pjover/sam/internal/core/ports"
-
 	"github.com/spf13/viper"
 )
 
@@ -30,5 +29,9 @@ func (s SingleInvoiceGeneratorImpl) Generate(invoiceCode string) (string, error)
 
 	url := fmt.Sprintf("%s/generate/pdf/%s", viper.GetString("urls.hobbit"), invoiceCode)
 
-	return s.postManager.FileWithDefaultName(url, s.configService.GetWorkingDirectory())
+	dirPath, err := s.configService.GetInvoicesDirectory()
+	if err != nil {
+		return "", err
+	}
+	return s.postManager.FileWithDefaultName(url, dirPath)
 }
