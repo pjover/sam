@@ -2,12 +2,17 @@ package model
 
 import (
 	"fmt"
+	"github.com/pjover/sam/internal/core"
 	"strings"
 )
 
 func (i Invoice) String() string {
 	return fmt.Sprintf("%d  %s  %s  % 7.2f  %s  %s", i.CustomerID, i.Code, i.YearMonth, i.Amount(), i.PaymentFmt(), i.LinesFmt(","))
 
+}
+
+func (i Invoice) DateFmt() string {
+	return i.Date.Format(core.YearMonthDayLayout)
 }
 
 func (i Invoice) Amount() float64 {
