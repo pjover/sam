@@ -9,7 +9,24 @@ import (
 	"time"
 )
 
-func Test_CreateDirectory(t *testing.T) {
+func Test_CreateDirectory_exists(t *testing.T) {
+	mockedConfigService := new(mocks.ConfigService)
+	mockedConfigService.On("Get", "dirs.home").Return("/fake/dir")
+	mockedConfigService.On("Set", mock.Anything, mock.Anything).Return(nil)
+	mockedOsService := new(mocks.OsService)
+	mockedOsService.On("Now").Return(time.Date(2021, time.October, 31, 21, 14, 0, 0, time.UTC))
+	mockedOsService.On("ItemExists", mock.Anything).Return(true, nil)
+
+	sut := NewAdminService(mockedConfigService, mockedOsService, lang.NewCatLangService())
+
+	t.Run("Should not create the directory if exists", func(t *testing.T) {
+		msg, err := sut.CreateWorkingDirectory()
+		assert.Equal(t, "Treballant al directori /fake/dir/211000-Factures del mes d'Octubre", msg)
+		assert.Equal(t, nil, err)
+	})
+}
+
+func Test_CreateDirectory_does_not_exists(t *testing.T) {
 	mockedConfigService := new(mocks.ConfigService)
 	mockedConfigService.On("Get", "dirs.home").Return("/fake/dir")
 	mockedConfigService.On("Set", mock.Anything, mock.Anything).Return(nil)
@@ -21,29 +38,21 @@ func Test_CreateDirectory(t *testing.T) {
 
 	sut := NewAdminService(mockedConfigService, mockedOsService, lang.NewCatLangService())
 
-	t.Run("Should return current month", func(t *testing.T) {
-		msg, err := sut.CreateDirectory(false, false)
+	t.Run("Should create the directory if does not exists", func(t *testing.T) {
+		msg, err := sut.CreateWorkingDirectory()
 		assert.Equal(t, "Creat el directori /fake/dir/211000-Factures del mes d'Octubre", msg)
-		assert.Equal(t, nil, err)
-	})
-
-	t.Run("Should return previous month", func(t *testing.T) {
-		msg, err := sut.CreateDirectory(true, false)
-		assert.Equal(t, "Creat el directori /fake/dir/210900-Factures del mes de Setembre", msg)
-		assert.Equal(t, nil, err)
-	})
-
-	t.Run("Should return next month", func(t *testing.T) {
-		msg, err := sut.CreateDirectory(false, true)
-		assert.Equal(t, "Creat el directori /fake/dir/211100-Factures del mes de Novembre", msg)
 		assert.Equal(t, nil, err)
 	})
 }
 
 func Test_Backup_ok(t *testing.T) {
 	mockedConfigService := new(mocks.ConfigService)
-	mockedConfigService.On("Get", "dirs.backup").Return("/fake/dir")
+	mockedConfigService.On("Get", "dirs.home").Return("/fake/dir")
+	mockedConfigService.On("Set", mock.Anything, mock.Anything).Return(nil)
 	mockedOsService := new(mocks.OsService)
+	mockedOsService.On("Now").Return(time.Date(2021, time.October, 31, 21, 14, 0, 0, time.UTC))
+	mockedOsService.On("ItemExists", mock.Anything).Return(true, nil)
+	mockedConfigService.On("Get", "dirs.backup").Return("/fake/dir")
 	mockedOsService.On("Now").Return(time.Date(2021, time.October, 31, 21, 14, 0, 0, time.UTC))
 	mockedOsService.On("GetTempDirectory").Return("/tmp/sam", nil)
 	mockedOsService.On("ItemExists", "/fake/dir").Return(true, nil)

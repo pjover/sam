@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/pjover/sam/internal/core/ports"
 	"github.com/pjover/sam/internal/core/services/lang"
+	"log"
 	"path"
 	"time"
 )
@@ -15,11 +16,17 @@ type adminService struct {
 }
 
 func NewAdminService(configService ports.ConfigService, osService ports.OsService, langService lang.LangService) ports.AdminService {
-	return adminService{
+	service := adminService{
 		configService: configService,
 		osService:     osService,
 		langService:   langService,
 	}
+	msg, err := service.CreateWorkingDirectory()
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(msg)
+	return service
 }
 
 func (a adminService) Backup() (string, error) {
@@ -75,8 +82,8 @@ func (a adminService) getZipFilePath() (string, error) {
 	return backupFilePath, nil
 }
 
-func (a adminService) CreateDirectory(previousMonth bool, nextMonth bool) (string, error) {
-	workingTime := a.getWorkingTime(previousMonth, nextMonth)
+func (a adminService) CreateWorkingDirectory() (string, error) {
+	workingTime := a.getWorkingTime()
 	yearMonth := workingTime.Format("2006-01")
 	dirName := a.langService.WorkingDir(workingTime)
 
@@ -87,7 +94,7 @@ func (a adminService) CreateDirectory(previousMonth bool, nextMonth bool) (strin
 	}
 	if exists {
 		_ = a.updateConfig(yearMonth, dirName)
-		return fmt.Sprintf("El directori %s ja existeix", dirPath), nil
+		return fmt.Sprint("Treballant al directori ", dirPath), nil
 	}
 
 	if err := a.osService.CreateDirectory(dirPath); err != nil {
@@ -105,16 +112,9 @@ func (a adminService) CreateDirectory(previousMonth bool, nextMonth bool) (strin
 	return fmt.Sprint("Creat el directori ", dirPath), nil
 }
 
-func (a adminService) getWorkingTime(previousMonth bool, nextMonth bool) time.Time {
+func (a adminService) getWorkingTime() time.Time {
 	var t = a.osService.Now()
-	var workingTime = time.Date(t.Year(), t.Month(), 1, 0, 0, 0, 0, time.Local)
-
-	if previousMonth {
-		workingTime = workingTime.AddDate(0, -1, 0)
-	} else if nextMonth {
-		workingTime = workingTime.AddDate(0, 1, 0)
-	}
-	return workingTime
+	return time.Date(t.Year(), t.Month(), 1, 0, 0, 0, 0, time.Local)
 }
 
 func (a adminService) updateConfig(yearMonth string, dirName string) error {
