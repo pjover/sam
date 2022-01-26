@@ -2,9 +2,7 @@ package consum
 
 import (
 	"fmt"
-	"github.com/pjover/sam/internal/adapters/cfg"
 	"github.com/pjover/sam/internal/adapters/hobbit"
-	"github.com/pjover/sam/internal/adapters/mongo_db"
 	"github.com/pjover/sam/internal/core/ports"
 	"github.com/spf13/viper"
 )
@@ -14,10 +12,10 @@ type RectifyConsumptionsManager struct {
 	dbService   ports.DbService
 }
 
-func NewRectifyConsumptionsManager() CustomerConsumptionsManager {
+func NewRectifyConsumptionsManager(httpPostManager hobbit.HttpPostManager, dbService ports.DbService) CustomerConsumptionsManager {
 	return RectifyConsumptionsManager{
-		hobbit.NewHttpPostManager(),
-		mongo_db.NewDbService(cfg.NewConfigService()),
+		httpPostManager,
+		dbService,
 	}
 }
 

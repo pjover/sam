@@ -2,9 +2,7 @@ package consum
 
 import (
 	"fmt"
-	"github.com/pjover/sam/internal/adapters/cfg"
 	"github.com/pjover/sam/internal/adapters/hobbit"
-	"github.com/pjover/sam/internal/adapters/mongo_db"
 	"github.com/pjover/sam/internal/core/ports"
 	"github.com/spf13/viper"
 )
@@ -14,10 +12,10 @@ type InsertConsumptionsManager struct {
 	dbService   ports.DbService
 }
 
-func NewInsertConsumptionsManager() CustomerConsumptionsManager {
+func NewInsertConsumptionsManager(httpPostManager hobbit.HttpPostManager, dbService ports.DbService) CustomerConsumptionsManager {
 	return InsertConsumptionsManager{
-		hobbit.NewHttpPostManager(),
-		mongo_db.NewDbService(cfg.NewConfigService()),
+		httpPostManager,
+		dbService,
 	}
 }
 
