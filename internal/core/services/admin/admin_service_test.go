@@ -1,6 +1,8 @@
 package admin
 
 import (
+	"fmt"
+	"github.com/pjover/sam/internal/core"
 	"github.com/pjover/sam/internal/core/ports/mocks"
 	"github.com/pjover/sam/internal/core/services/lang"
 	"github.com/stretchr/testify/assert"
@@ -21,7 +23,7 @@ func Test_CreateDirectory_exists(t *testing.T) {
 
 	t.Run("Should not create the directory if exists", func(t *testing.T) {
 		msg, err := sut.CreateWorkingDirectory()
-		assert.Equal(t, "Treballant al directori /fake/dir/211000-Factures del mes d'Octubre", msg)
+		assert.Equal(t, fmt.Sprintf("%sSam v%s    [/fake/dir/211000-Factures del mes d'Octubre]%s", core.ColorGreen, core.Version, core.ColorReset), msg)
 		assert.Equal(t, nil, err)
 	})
 }
