@@ -1,6 +1,6 @@
 package dbo
 
-import "github.com/pjover/sam/internal/core/model"
+import "github.com/pjover/sam/internal/domain/model"
 
 func ConvertConsumption(consumption Consumption) model.Consumption {
 	return model.Consumption{

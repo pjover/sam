@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/pjover/sam/internal/adapters/cfg"
 	"github.com/pjover/sam/internal/adapters/hobbit"
-	"github.com/pjover/sam/internal/core/ports"
+	"github.com/pjover/sam/internal/domain/ports"
 	"github.com/pjover/sam/internal/generate"
 	"io/fs"
 	"path/filepath"
@@ -31,7 +31,10 @@ func (b BddGeneratorImpl) Generate() (string, error) {
 		viper.GetString("yearMonth"),
 	)
 
-	dir := b.configService.GetWorkingDirectory()
+	dir, err := b.configService.GetWorkingDirectory()
+	if err != nil {
+		return "", err
+	}
 	currentFilenames := listFiles(dir, ".qx1")
 	filename := getNextBddFilename(currentFilenames)
 	return b.postManager.File(url, dir, filename)

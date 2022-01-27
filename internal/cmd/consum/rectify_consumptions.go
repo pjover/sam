@@ -3,6 +3,8 @@ package consum
 import (
 	"fmt"
 	"github.com/pjover/sam/internal/adapters/cli"
+	"github.com/pjover/sam/internal/adapters/hobbit"
+	"github.com/pjover/sam/internal/domain/ports"
 
 	"github.com/pjover/sam/internal/consum"
 	"github.com/spf13/cobra"
@@ -10,8 +12,8 @@ import (
 
 var rconNote string
 
-func NewRectifyConsumptionsCmd() *cobra.Command {
-	command := newRectifyConsumptionsCmd(consum.NewRectifyConsumptionsManager())
+func NewRectifyConsumptionsCmd(httpPostManager hobbit.HttpPostManager, dbService ports.DbService) *cobra.Command {
+	command := newRectifyConsumptionsCmd(consum.NewRectifyConsumptionsManager(httpPostManager, dbService))
 	command.Flags().StringVarP(&rconNote, "nota", "n", "", "Afegeix una nota al consum")
 	return command
 }

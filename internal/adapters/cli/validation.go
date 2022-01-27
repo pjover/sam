@@ -2,7 +2,7 @@ package cli
 
 import (
 	"fmt"
-	"github.com/pjover/sam/internal/core"
+	"github.com/pjover/sam/internal/domain"
 	"github.com/spf13/cobra"
 	"strconv"
 	"strings"
@@ -56,7 +56,7 @@ func ParseFloat(value string) (float64, error) {
 }
 
 func ParseYearMonth(yearMonth string) (time.Time, error) {
-	ym, err := time.Parse(core.YearMonthLayout, yearMonth)
+	ym, err := time.Parse(domain.YearMonthLayout, yearMonth)
 	if err != nil {
 		return time.Time{}, fmt.Errorf("error al introduïr el mes: %s", err.Error())
 	}

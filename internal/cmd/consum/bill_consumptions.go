@@ -2,13 +2,15 @@ package consum
 
 import (
 	"fmt"
+	"github.com/pjover/sam/internal/adapters/hobbit"
+	"github.com/pjover/sam/internal/domain/ports"
 
 	"github.com/pjover/sam/internal/consum"
 	"github.com/spf13/cobra"
 )
 
-func NewBillConsumptionsCmd() *cobra.Command {
-	return newBillConsumptionsCmd(consum.NewBillConsumptionsManager())
+func NewBillConsumptionsCmd(httpPostManager hobbit.HttpPostManager, dbService ports.DbService) *cobra.Command {
+	return newBillConsumptionsCmd(consum.NewBillConsumptionsManager(httpPostManager, dbService))
 }
 
 func newBillConsumptionsCmd(manager consum.BillConsumptionsManager) *cobra.Command {

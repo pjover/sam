@@ -1,9 +1,10 @@
 package reports
 
 import (
+	"bytes"
 	"fmt"
-	"github.com/pjover/sam/internal/core/model"
-	"github.com/pjover/sam/internal/core/ports"
+	"github.com/pjover/sam/internal/domain/model"
+	"github.com/pjover/sam/internal/domain/ports"
 	"path"
 	"sort"
 
@@ -22,7 +23,8 @@ func NewCustomerReport(dbService ports.DbService) CustomerReport {
 }
 
 func (c CustomerReport) Run() (string, error) {
-	fmt.Println("Generant l'informe de clients ...")
+	var buffer bytes.Buffer
+	buffer.WriteString("Generant l'informe de clients ...\n")
 
 	customers, err := c.getCustomers()
 	if err != nil {
@@ -55,7 +57,9 @@ func (c CustomerReport) Run() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return fmt.Sprintf("Generat l'informe de clients a '%s'", filePath), nil
+
+	buffer.WriteString(fmt.Sprintf("Generat l'informe de clients a '%s'\n", filePath))
+	return buffer.String(), nil
 }
 
 func (c CustomerReport) getCustomers() ([]model.Customer, error) {

@@ -16,7 +16,7 @@ func Test_GenerateSingleInvoiceCmd(t *testing.T) {
 	tests := []struct {
 		name      string
 		args      args
-		mocketArg string
+		mockedArg string
 		want      string
 		wantErr   error
 	}{
@@ -37,7 +37,7 @@ func Test_GenerateSingleInvoiceCmd(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			mockedGenerator.On("Generate", tt.mocketArg).Return(tt.want, tt.wantErr)
+			mockedGenerator.On("Generate", tt.mockedArg).Return(tt.want, tt.wantErr)
 
 			sut.SetArgs(tt.args.args)
 			_ = sut.Execute()

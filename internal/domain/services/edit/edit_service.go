@@ -2,7 +2,7 @@ package edit
 
 import (
 	"fmt"
-	"github.com/pjover/sam/internal/core/ports"
+	"github.com/pjover/sam/internal/domain/ports"
 	"strconv"
 )
 

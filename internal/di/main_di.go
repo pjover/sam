@@ -2,18 +2,19 @@ package di
 
 import (
 	"github.com/pjover/sam/internal/adapters/cli"
+	"github.com/pjover/sam/internal/adapters/hobbit"
 	"github.com/pjover/sam/internal/adapters/mongo_db"
 	"github.com/pjover/sam/internal/adapters/os"
 	"github.com/pjover/sam/internal/cmd/consum"
 	"github.com/pjover/sam/internal/cmd/generate"
-	"github.com/pjover/sam/internal/core/ports"
-	"github.com/pjover/sam/internal/core/services/lang"
+	"github.com/pjover/sam/internal/domain/ports"
+	"github.com/pjover/sam/internal/domain/services/lang"
 )
 
 func MainDI(configService ports.ConfigService, cmdManager cli.CmdManager) {
 
 	osService := os.NewOsService()
-	langService := lang.NewLangService(configService.Get("lang"))
+	langService := lang.NewCatLangService()
 	dbService := mongo_db.NewDbService(configService)
 
 	adminServiceDI(configService, cmdManager, osService, langService)
@@ -24,9 +25,10 @@ func MainDI(configService ports.ConfigService, cmdManager cli.CmdManager) {
 	searchServiceDI(dbService, cmdManager)
 
 	// TODO move to DI and remove method AddTmpCommand
-	cmdManager.AddTmpCommand(consum.NewBillConsumptionsCmd())
-	cmdManager.AddTmpCommand(consum.NewInsertConsumptionsCmd())
-	cmdManager.AddTmpCommand(consum.NewRectifyConsumptionsCmd())
+	httpPostManager := hobbit.NewHttpPostManager()
+	cmdManager.AddTmpCommand(consum.NewBillConsumptionsCmd(httpPostManager, dbService))
+	cmdManager.AddTmpCommand(consum.NewInsertConsumptionsCmd(httpPostManager, dbService))
+	cmdManager.AddTmpCommand(consum.NewRectifyConsumptionsCmd(httpPostManager, dbService))
 
 	cmdManager.AddTmpCommand(generate.NewGenerateBddCmd())
 	cmdManager.AddTmpCommand(generate.NewGenerateMonthInvoicesCmd())

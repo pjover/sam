@@ -2,7 +2,7 @@ package search
 
 import (
 	"bytes"
-	"github.com/pjover/sam/internal/core/ports"
+	"github.com/pjover/sam/internal/domain/ports"
 )
 
 type searchService struct {

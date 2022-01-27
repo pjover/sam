@@ -1,11 +1,12 @@
 package reports
 
 import (
+	"bytes"
 	"fmt"
-	"github.com/pjover/sam/internal/core"
-	"github.com/pjover/sam/internal/core/model"
-	"github.com/pjover/sam/internal/core/ports"
-	"github.com/pjover/sam/internal/core/services/lang"
+	"github.com/pjover/sam/internal/domain"
+	"github.com/pjover/sam/internal/domain/model"
+	"github.com/pjover/sam/internal/domain/ports"
+	"github.com/pjover/sam/internal/domain/services/lang"
 	"log"
 	"path"
 	"sort"
@@ -29,25 +30,26 @@ func NewMonthReport(configService ports.ConfigService, langService lang.LangServ
 }
 
 func (m MonthReport) Run() (string, error) {
-	fmt.Println("Generant l'informe de factures del mes ...")
+	yearMonth, month := m.getMonth()
+	var buffer bytes.Buffer
+	buffer.WriteString(fmt.Sprintf("Generant l'informe de factures del mes %s ...\n", yearMonth))
 
-	invoices, err := m.getInvoices()
+	invoices, err := m.getInvoices(yearMonth)
 	if err != nil {
 		return "", err
 	}
+	buffer.WriteString(fmt.Sprintf("Recuperades %d factures del mes %s\n", len(invoices), yearMonth))
 
 	contents, err := m.buildContents(invoices)
 	if err != nil {
 		return "", err
 	}
-	filePath := path.Join(
-		m.configService.GetWorkingDirectory(),
-		m.configService.Get("files.invoicesReport"),
-	)
-	month, err := time.Parse(core.YearMonthLayout, m.configService.Get("yearMonth"))
+
+	wd, err := m.configService.GetWorkingDirectory()
 	if err != nil {
-		log.Fatal(err)
+		return "", err
 	}
+	filePath := path.Join(wd, m.configService.Get("files.invoicesReport"))
 
 	reportInfo := ReportInfo{
 		consts.Landscape,
@@ -67,14 +69,22 @@ func (m MonthReport) Run() (string, error) {
 	}
 	err = Report(reportInfo)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("error generant l'informe: %s", err)
 	}
-	return fmt.Sprintf("Generat l'informe de clients a '%s'", filePath), nil
+
+	buffer.WriteString(fmt.Sprintf("Generat l'informe de clients a '%s'", filePath))
+	return buffer.String(), nil
 }
 
-func (m MonthReport) getInvoices() ([]model.Invoice, error) {
-	ym := m.configService.Get("yearMonth")
-	return m.dbService.FindInvoicesByYearMonth(ym)
+func (m MonthReport) getInvoices(yearMonth string) ([]model.Invoice, error) {
+	invoices, err := m.dbService.FindInvoicesByYearMonth(yearMonth)
+	if err != nil {
+		return nil, fmt.Errorf("error recuperant les factures del mes %s: %s", yearMonth, err)
+	}
+	if len(invoices) == 0 {
+		return nil, fmt.Errorf("no s'han trobat factures al mes %s", yearMonth)
+	}
+	return invoices, nil
 }
 
 func (m MonthReport) buildContents(invoices []model.Invoice) ([][]string, error) {
@@ -82,12 +92,12 @@ func (m MonthReport) buildContents(invoices []model.Invoice) ([][]string, error)
 	for _, invoice := range invoices {
 		customer, err := m.customer(invoice)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("error al recuperar el client %d de la factura %s: %s", invoice.CustomerID, invoice.Code, err)
 		}
 
 		var line = []string{
 			invoice.Code,
-			invoice.Date.String(),
+			invoice.DateFmt(),
 			customer.FirstAdultNameWithCode(),
 			customer.ChildrenNames("\n"),
 			invoice.LinesFmt(", "),
@@ -100,6 +110,15 @@ func (m MonthReport) buildContents(invoices []model.Invoice) ([][]string, error)
 		return contents[i][0] < contents[j][0]
 	})
 	return contents, nil
+}
+
+func (m MonthReport) getMonth() (string, time.Time) {
+	yearMonth := m.configService.Get("yearMonth")
+	month, err := time.Parse(domain.YearMonthLayout, yearMonth)
+	if err != nil {
+		log.Fatal(fmt.Errorf("format incorrecte a la variable de configuració yearMonth '%s': %s", yearMonth, err))
+	}
+	return yearMonth, month
 }
 
 func (m MonthReport) customer(invoice model.Invoice) (model.Customer, error) {

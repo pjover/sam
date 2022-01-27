@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 	"github.com/pjover/sam/internal/adapters/mongo_db/dbo"
-	"github.com/pjover/sam/internal/core/model"
-	"github.com/pjover/sam/internal/core/ports"
+	"github.com/pjover/sam/internal/domain/model"
+	"github.com/pjover/sam/internal/domain/ports"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -31,13 +31,24 @@ func NewDbService(configService ports.ConfigService) ports.DbService {
 }
 
 func (d dbService) createIndexes() {
+
 	client, err := d.open()
 	defer d.close(client)
 	if err != nil {
-		log.Println("Could not connect to database to create indexes", err)
+		log.Println("Could not connect to database", err)
+		return
+	}
+	collection := client.Database(d.database).Collection("customer")
+	indexes, err := collection.Indexes().List(context.TODO())
+	if err != nil {
+		log.Println("Could not read customer text indexes:", err)
+		return
+	}
+	if indexes.RemainingBatchLength() > 0 {
 		return
 	}
 
+	log.Println("Creating MongoDB text indexes ...")
 	opt := options.Index()
 	opt.SetWeights(bson.M{
 		"adults.name":    10,
@@ -50,9 +61,8 @@ func (d dbService) createIndexes() {
 		"children.name":  "text",
 	}, Options: opt}
 
-	collection := client.Database(d.database).Collection("customer")
 	if _, err := collection.Indexes().CreateOne(context.TODO(), index); err != nil {
-		log.Println("Could not create text index:", err)
+		log.Println("Could not create customer text index:", err)
 	}
 }
 
@@ -141,7 +151,7 @@ func (d dbService) FindAllProducts() ([]model.Product, error) {
 
 func (d dbService) FindInvoicesByYearMonth(yearMonth string) ([]model.Invoice, error) {
 	var results []dbo.Invoice
-	filter := bson.D{{"year", yearMonth}}
+	filter := bson.D{{"yearMonth", yearMonth}}
 	findOptions := options.Find()
 	findOptions.SetSort(bson.D{{"_id", 1}})
 	if err := d.findMany("invoice", filter, findOptions, &results, "factures per any i mes"); err != nil {

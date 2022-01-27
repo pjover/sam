@@ -3,7 +3,7 @@ package os
 import (
 	"archive/zip"
 	"errors"
-	"github.com/pjover/sam/internal/core/ports"
+	"github.com/pjover/sam/internal/domain/ports"
 	"io"
 	"os"
 	"os/exec"

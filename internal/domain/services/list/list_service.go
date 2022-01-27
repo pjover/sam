@@ -2,8 +2,9 @@ package list
 
 import (
 	"bytes"
-	"github.com/pjover/sam/internal/core/model"
-	"github.com/pjover/sam/internal/core/ports"
+	"fmt"
+	"github.com/pjover/sam/internal/domain/model"
+	"github.com/pjover/sam/internal/domain/ports"
 )
 
 type listService struct {
@@ -21,7 +22,8 @@ func (l listService) ListCustomerInvoices(customerCode int) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return listInvoices(invoices)
+	titleMessage := fmt.Sprintf("Lists of customer %d invoices:", customerCode)
+	return listInvoices(titleMessage, invoices)
 }
 
 func (l listService) ListCustomerYearMonthInvoices(customerCode int, yearMonth string) (string, error) {
@@ -29,7 +31,8 @@ func (l listService) ListCustomerYearMonthInvoices(customerCode int, yearMonth s
 	if err != nil {
 		return "", err
 	}
-	return listInvoices(invoices)
+	titleMessage := fmt.Sprintf("Lists of customer %d and %s year-month invoices:", customerCode, yearMonth)
+	return listInvoices(titleMessage, invoices)
 }
 
 func (l listService) ListYearMonthInvoices(yearMonth string) (string, error) {
@@ -37,13 +40,15 @@ func (l listService) ListYearMonthInvoices(yearMonth string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return listInvoices(invoices)
+	titleMessage := fmt.Sprintf("Lists of all %s year-month invoices:", yearMonth)
+	return listInvoices(titleMessage, invoices)
 }
 
-func listInvoices(invoices []model.Invoice) (string, error) {
+func listInvoices(titleMessage string, invoices []model.Invoice) (string, error) {
 	var buffer bytes.Buffer
+	buffer.WriteString(titleMessage + "\n")
 	for _, invoice := range invoices {
-		buffer.WriteString(invoice.String() + "\n")
+		buffer.WriteString(" - " + invoice.String() + "\n")
 	}
 	return buffer.String(), nil
 }

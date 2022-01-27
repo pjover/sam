@@ -1,7 +1,7 @@
 package dbo
 
 import (
-	"github.com/pjover/sam/internal/core/model"
+	"github.com/pjover/sam/internal/domain/model"
 )
 
 func ConvertInvoice(invoice Invoice) model.Invoice {

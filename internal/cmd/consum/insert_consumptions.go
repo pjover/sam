@@ -4,6 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"github.com/pjover/sam/internal/adapters/cli"
+	"github.com/pjover/sam/internal/adapters/hobbit"
+	"github.com/pjover/sam/internal/domain/ports"
 
 	"github.com/pjover/sam/internal/consum"
 	"github.com/spf13/cobra"
@@ -11,8 +13,8 @@ import (
 
 var iconNote string
 
-func NewInsertConsumptionsCmd() *cobra.Command {
-	command := newInsertConsumptionsCmd(consum.NewInsertConsumptionsManager())
+func NewInsertConsumptionsCmd(httpPostManager hobbit.HttpPostManager, dbService ports.DbService) *cobra.Command {
+	command := newInsertConsumptionsCmd(consum.NewInsertConsumptionsManager(httpPostManager, dbService))
 	command.Flags().StringVarP(&iconNote, "nota", "n", "", "Afegeix una nota al consum")
 	return command
 }
