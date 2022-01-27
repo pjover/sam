@@ -2,7 +2,7 @@ package mongo_express
 
 import (
 	"fmt"
-	"github.com/pjover/sam/internal/core/ports"
+	"github.com/pjover/sam/internal/domain/ports"
 	"net/url"
 )
 

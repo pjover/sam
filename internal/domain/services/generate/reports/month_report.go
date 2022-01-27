@@ -3,10 +3,10 @@ package reports
 import (
 	"bytes"
 	"fmt"
-	"github.com/pjover/sam/internal/core"
-	"github.com/pjover/sam/internal/core/model"
-	"github.com/pjover/sam/internal/core/ports"
-	"github.com/pjover/sam/internal/core/services/lang"
+	"github.com/pjover/sam/internal/domain"
+	"github.com/pjover/sam/internal/domain/model"
+	"github.com/pjover/sam/internal/domain/ports"
+	"github.com/pjover/sam/internal/domain/services/lang"
 	"log"
 	"path"
 	"sort"
@@ -114,7 +114,7 @@ func (m MonthReport) buildContents(invoices []model.Invoice) ([][]string, error)
 
 func (m MonthReport) getMonth() (string, time.Time) {
 	yearMonth := m.configService.Get("yearMonth")
-	month, err := time.Parse(core.YearMonthLayout, yearMonth)
+	month, err := time.Parse(domain.YearMonthLayout, yearMonth)
 	if err != nil {
 		log.Fatal(fmt.Errorf("format incorrecte a la variable de configuració yearMonth '%s': %s", yearMonth, err))
 	}

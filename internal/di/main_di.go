@@ -7,8 +7,8 @@ import (
 	"github.com/pjover/sam/internal/adapters/os"
 	"github.com/pjover/sam/internal/cmd/consum"
 	"github.com/pjover/sam/internal/cmd/generate"
-	"github.com/pjover/sam/internal/core/ports"
-	"github.com/pjover/sam/internal/core/services/lang"
+	"github.com/pjover/sam/internal/domain/ports"
+	"github.com/pjover/sam/internal/domain/services/lang"
 )
 
 func MainDI(configService ports.ConfigService, cmdManager cli.CmdManager) {

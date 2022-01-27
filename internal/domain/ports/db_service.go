@@ -1,6 +1,6 @@
 package ports
 
-import "github.com/pjover/sam/internal/core/model"
+import "github.com/pjover/sam/internal/domain/model"
 
 type DbService interface {
 	FindCustomer(code int) (model.Customer, error)

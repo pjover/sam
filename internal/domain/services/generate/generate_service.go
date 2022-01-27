@@ -1,9 +1,9 @@
 package generate
 
 import (
-	"github.com/pjover/sam/internal/core/ports"
-	"github.com/pjover/sam/internal/core/services/generate/reports"
-	"github.com/pjover/sam/internal/core/services/lang"
+	"github.com/pjover/sam/internal/domain/ports"
+	"github.com/pjover/sam/internal/domain/services/generate/reports"
+	"github.com/pjover/sam/internal/domain/services/lang"
 )
 
 type generateService struct {

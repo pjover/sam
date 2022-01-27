@@ -1,4 +1,4 @@
-package core
+package domain
 
 const Version = "0.13.1"
 

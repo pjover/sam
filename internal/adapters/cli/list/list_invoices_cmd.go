@@ -3,8 +3,8 @@ package list
 import (
 	"fmt"
 	"github.com/pjover/sam/internal/adapters/cli"
-	"github.com/pjover/sam/internal/core"
-	"github.com/pjover/sam/internal/core/ports"
+	"github.com/pjover/sam/internal/domain"
+	"github.com/pjover/sam/internal/domain/ports"
 
 	"github.com/spf13/cobra"
 )
@@ -58,7 +58,7 @@ func (l listInvoicesCmd) parseListInvoicesArgs(args []string) error {
 	switch len(args) {
 	case 0:
 		yearMonth := l.osService.Now()
-		msg, err = l.listService.ListYearMonthInvoices(yearMonth.Format(core.YearMonthLayout))
+		msg, err = l.listService.ListYearMonthInvoices(yearMonth.Format(domain.YearMonthLayout))
 	case 1:
 		customerCode, err := cli.ParseInteger(args[0], "de client")
 		if err == nil {
@@ -66,7 +66,7 @@ func (l listInvoicesCmd) parseListInvoicesArgs(args []string) error {
 		}
 		yearMonth, err := cli.ParseYearMonth(args[0])
 		if err == nil {
-			msg, err = l.listService.ListYearMonthInvoices(yearMonth.Format(core.YearMonthLayout))
+			msg, err = l.listService.ListYearMonthInvoices(yearMonth.Format(domain.YearMonthLayout))
 		}
 	case 2:
 		customerCode, err := cli.ParseInteger(args[0], "de client")
@@ -77,7 +77,7 @@ func (l listInvoicesCmd) parseListInvoicesArgs(args []string) error {
 		if err != nil {
 			return err
 		}
-		msg, err = l.listService.ListCustomerYearMonthInvoices(customerCode, yearMonth.Format(core.YearMonthLayout))
+		msg, err = l.listService.ListCustomerYearMonthInvoices(customerCode, yearMonth.Format(domain.YearMonthLayout))
 	}
 	if err != nil {
 		return err

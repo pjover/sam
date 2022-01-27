@@ -2,9 +2,9 @@ package admin
 
 import (
 	"fmt"
-	"github.com/pjover/sam/internal/core"
-	"github.com/pjover/sam/internal/core/ports"
-	"github.com/pjover/sam/internal/core/services/lang"
+	"github.com/pjover/sam/internal/domain"
+	"github.com/pjover/sam/internal/domain/ports"
+	"github.com/pjover/sam/internal/domain/services/lang"
 	"log"
 	"path"
 	"time"
@@ -95,7 +95,7 @@ func (a adminService) CreateWorkingDirectory() (string, error) {
 	}
 	if exists {
 		_ = a.updateConfig(yearMonth, dirName)
-		return fmt.Sprintf("%sSam v%s    [%s]%s", core.ColorGreen, core.Version, dirPath, core.ColorReset), nil
+		return fmt.Sprintf("%sSam v%s    [%s]%s", domain.ColorGreen, domain.Version, dirPath, domain.ColorReset), nil
 	}
 
 	if err := a.osService.CreateDirectory(dirPath); err != nil {

@@ -3,8 +3,8 @@ package list
 import (
 	"bytes"
 	"fmt"
-	"github.com/pjover/sam/internal/core/model"
-	"github.com/pjover/sam/internal/core/ports"
+	"github.com/pjover/sam/internal/domain/model"
+	"github.com/pjover/sam/internal/domain/ports"
 )
 
 type listService struct {

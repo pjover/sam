@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/pjover/sam/internal/adapters/cli"
 	"github.com/pjover/sam/internal/adapters/hobbit"
-	"github.com/pjover/sam/internal/core/ports"
+	"github.com/pjover/sam/internal/domain/ports"
 
 	"github.com/pjover/sam/internal/consum"
 	"github.com/spf13/cobra"

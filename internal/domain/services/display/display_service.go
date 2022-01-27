@@ -1,6 +1,6 @@
 package display
 
-import "github.com/pjover/sam/internal/core/ports"
+import "github.com/pjover/sam/internal/domain/ports"
 
 type displayService struct {
 	dbService ports.DbService

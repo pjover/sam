@@ -2,7 +2,7 @@ package model
 
 import (
 	"fmt"
-	"github.com/pjover/sam/internal/core"
+	"github.com/pjover/sam/internal/domain"
 	"strings"
 )
 
@@ -12,7 +12,7 @@ func (i Invoice) String() string {
 }
 
 func (i Invoice) DateFmt() string {
-	return i.Date.Format(core.YearMonthDayLayout)
+	return i.Date.Format(domain.YearMonthDayLayout)
 }
 
 func (i Invoice) Amount() float64 {

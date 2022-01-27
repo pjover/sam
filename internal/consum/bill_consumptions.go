@@ -3,7 +3,7 @@ package consum
 import (
 	"fmt"
 	"github.com/pjover/sam/internal/adapters/hobbit"
-	"github.com/pjover/sam/internal/core/ports"
+	"github.com/pjover/sam/internal/domain/ports"
 
 	"github.com/spf13/viper"
 )
