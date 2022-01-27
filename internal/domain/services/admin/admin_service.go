@@ -95,7 +95,7 @@ func (a adminService) CreateWorkingDirectory() (string, error) {
 	}
 	if exists {
 		_ = a.updateConfig(yearMonth, dirName)
-		return fmt.Sprintf("%sSam v%s    [%s]%s", domain.ColorGreen, domain.Version, dirPath, domain.ColorReset), nil
+		return a.getInfoText(dirPath), nil
 	}
 
 	if err := a.osService.CreateDirectory(dirPath); err != nil {
@@ -111,6 +111,26 @@ func (a adminService) CreateWorkingDirectory() (string, error) {
 	}
 
 	return fmt.Sprint("Creat el directori ", dirPath), nil
+}
+
+func (a adminService) getInfoText(dirPath string) string {
+	days := a.numberOfDaysUntilEndOfMonth()
+	var color string
+	if days < 2 {
+		color = domain.ColorRed
+	} else if days < 5 {
+		color = domain.ColorYellow
+	} else {
+		color = domain.ColorGreen
+	}
+
+	return fmt.Sprintf("%sSam v%s    %s%s", color, domain.Version, dirPath, domain.ColorReset)
+}
+
+func (a adminService) numberOfDaysUntilEndOfMonth() int {
+	now := a.osService.Now()
+	endOfMonth := time.Date(now.Year(), now.Month()+1, 1, 0, 0, 0, 0, time.UTC)
+	return int(endOfMonth.Sub(now).Hours() / 24)
 }
 
 func (a adminService) getWorkingTime() time.Time {
