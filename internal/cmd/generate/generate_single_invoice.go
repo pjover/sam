@@ -9,8 +9,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func NewGenerateSingleInvoiceCmd() *cobra.Command {
-	return newGenerateSingleInvoiceCmd(invoices.NewSingleInvoiceGenerator())
+func NewGenerateSingleInvoiceCmd(generator invoices.SingleInvoiceGenerator) *cobra.Command {
+	return newGenerateSingleInvoiceCmd(generator)
 }
 
 func newGenerateSingleInvoiceCmd(generator invoices.SingleInvoiceGenerator) *cobra.Command {
