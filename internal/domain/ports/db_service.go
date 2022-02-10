@@ -16,4 +16,5 @@ type DbService interface {
 	FindActiveChildren() ([]model.Child, error)
 	FindAllConsumptions() ([]model.Consumption, error)
 	FindChildConsumptions(code int) ([]model.Consumption, error)
+	InsertConsumptions(consumptions []model.Consumption) error
 }

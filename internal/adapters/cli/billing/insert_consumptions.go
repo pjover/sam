@@ -1,26 +1,27 @@
-package consum
+package billing
 
 import (
 	"errors"
 	"fmt"
 	"github.com/pjover/sam/internal/adapters/cli"
-	"github.com/pjover/sam/internal/adapters/hobbit"
-	"github.com/pjover/sam/internal/domain/ports"
-
 	"github.com/pjover/sam/internal/consum"
 	"github.com/spf13/cobra"
 )
 
 var iconNote string
 
-func NewInsertConsumptionsCmd(httpPostManager hobbit.HttpPostManager, dbService ports.DbService) *cobra.Command {
-	command := newInsertConsumptionsCmd(consum.NewInsertConsumptionsManager(httpPostManager, dbService))
-	command.Flags().StringVarP(&iconNote, "nota", "n", "", "Afegeix una nota al consum")
-	return command
+type insertConsumptionsCmd struct {
+	manager consum.CustomerConsumptionsManager
 }
 
-func newInsertConsumptionsCmd(manager consum.CustomerConsumptionsManager) *cobra.Command {
-	return &cobra.Command{
+func NewInsertConsumptionsCmd(manager consum.CustomerConsumptionsManager) cli.Cmd {
+	return insertConsumptionsCmd{
+		manager: manager,
+	}
+}
+
+func (i insertConsumptionsCmd) Cmd() *cobra.Command {
+	command := &cobra.Command{
 		Use:   "insertaConsums codiInfant unitats codiProducte [unitats codiProducte ...] [-n nota]",
 		Short: "Inserta consums per a un infant",
 		Long: `Inserta consums per a un infant al mes de treball
@@ -42,12 +43,12 @@ func newInsertConsumptionsCmd(manager consum.CustomerConsumptionsManager) *cobra
 		},
 		Args: cli.MinimumNArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			ica, err := parseInsertConsumptionsArgs(args, iconNote)
+			ica, err := ParseInsertConsumptionsArgs(args, iconNote)
 			if err != nil {
 				return err
 			}
 
-			msg, err := manager.Run(ica)
+			msg, err := i.manager.Run(ica)
 			if err != nil {
 				return err
 			}
@@ -56,9 +57,11 @@ func newInsertConsumptionsCmd(manager consum.CustomerConsumptionsManager) *cobra
 			return nil
 		},
 	}
+	command.Flags().StringVarP(&iconNote, "nota", "n", "", "Afegeix una nota al consum")
+	return command
 }
 
-func parseInsertConsumptionsArgs(args []string, noteArg string) (consum.CustomerConsumptionsArgs, error) {
+func ParseInsertConsumptionsArgs(args []string, noteArg string) (consum.CustomerConsumptionsArgs, error) {
 	code, err := cli.ParseInteger(args[0], "d'infant")
 	if err != nil {
 		return consum.CustomerConsumptionsArgs{}, err

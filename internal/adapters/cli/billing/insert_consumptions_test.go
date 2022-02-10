@@ -1,4 +1,4 @@
-package consum
+package billing
 
 import (
 	"errors"
@@ -70,7 +70,7 @@ func Test_parseInsertConsumptionsArgs(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := parseInsertConsumptionsArgs(tt.args.args, tt.args.noteArg)
+			got, err := ParseInsertConsumptionsArgs(tt.args.args, tt.args.noteArg)
 			if (err != nil) && !reflect.DeepEqual(err, tt.wantErr) {
 				t.Errorf("parseInsertConsumptionsArgs() error = %v, wantErr %v", err, tt.wantErr)
 				return

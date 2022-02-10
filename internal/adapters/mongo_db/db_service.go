@@ -266,3 +266,27 @@ func (d dbService) findMany(collection string, filter interface{}, findOptions *
 	}
 	return nil
 }
+
+func (d dbService) InsertConsumptions(consumptions []model.Consumption) error {
+	documents := dbo.ConvertConsumptionsToDbo(consumptions)
+	err := d.insertMany("consumption", documents, "consum")
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (d dbService) insertMany(collection string, documents []interface{}, name string) error {
+	client, err := d.open()
+	defer d.close(client)
+	if err != nil {
+		return fmt.Errorf("connectant a la base de dades: %s", err)
+	}
+
+	coll := client.Database(d.database).Collection(collection)
+	_, err = coll.InsertMany(context.TODO(), documents)
+	if err != nil {
+		return fmt.Errorf("escrivint %s a la base de dades: %s", name, err)
+	}
+	return nil
+}
