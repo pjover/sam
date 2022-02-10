@@ -4,7 +4,7 @@ import (
 	"github.com/pjover/sam/internal/domain/model"
 )
 
-func ConvertCustomer(customer Customer) model.Customer {
+func ConvertCustomerToModel(customer Customer) model.Customer {
 	return model.Customer{
 		Id:            customer.Id,
 		Active:        customer.Active,
@@ -87,10 +87,10 @@ func holder(holder InvoiceHolder) model.InvoiceHolder {
 	}
 }
 
-func ConvertCustomers(customers []Customer) []model.Customer {
+func ConvertCustomersToModel(customers []Customer) []model.Customer {
 	var out []model.Customer
 	for _, customer := range customers {
-		out = append(out, ConvertCustomer(customer))
+		out = append(out, ConvertCustomerToModel(customer))
 	}
 	return out
 }

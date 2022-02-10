@@ -2,7 +2,7 @@ package dbo
 
 import "github.com/pjover/sam/internal/domain/model"
 
-func ConvertConsumption(consumption Consumption) model.Consumption {
+func ConvertConsumptionToModel(consumption Consumption) model.Consumption {
 	return model.Consumption{
 		Code:            consumption.Code,
 		ChildCode:       consumption.ChildCode,
@@ -15,10 +15,10 @@ func ConvertConsumption(consumption Consumption) model.Consumption {
 	}
 }
 
-func ConvertConsumptions(consumptions []Consumption) []model.Consumption {
+func ConvertConsumptionsToModel(consumptions []Consumption) []model.Consumption {
 	var out []model.Consumption
 	for _, consumption := range consumptions {
-		out = append(out, ConvertConsumption(consumption))
+		out = append(out, ConvertConsumptionToModel(consumption))
 	}
 	return out
 }

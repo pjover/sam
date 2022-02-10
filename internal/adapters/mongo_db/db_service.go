@@ -71,7 +71,7 @@ func (d dbService) FindCustomer(code int) (model.Customer, error) {
 	if err := d.findOne("customer", code, &result, "el client"); err != nil {
 		return model.Customer{}, err
 	}
-	return dbo.ConvertCustomer(result), nil
+	return dbo.ConvertCustomerToModel(result), nil
 }
 
 func (d dbService) FindChild(code int) (model.Child, error) {
@@ -99,7 +99,7 @@ func (d dbService) FindInvoice(code string) (model.Invoice, error) {
 	if err := d.findOne("invoice", code, &result, "la factura"); err != nil {
 		return model.Invoice{}, err
 	}
-	return dbo.ConvertInvoice(result), nil
+	return dbo.ConvertInvoiceToModel(result), nil
 }
 
 func (d dbService) FindProduct(code string) (model.Product, error) {
@@ -107,7 +107,7 @@ func (d dbService) FindProduct(code string) (model.Product, error) {
 	if err := d.findOne("product", code, &result, "el producte"); err != nil {
 		return model.Product{}, err
 	}
-	return dbo.ConvertProduct(result), nil
+	return dbo.ConvertProductToModel(result), nil
 }
 
 func (d dbService) findOne(collection string, code interface{}, result interface{}, name string) error {
@@ -146,7 +146,7 @@ func (d dbService) FindAllProducts() ([]model.Product, error) {
 	if err := d.findMany("product", filter, findOptions, &results, "tots els productes"); err != nil {
 		return nil, err
 	}
-	return dbo.ConvertProducts(results), nil
+	return dbo.ConvertProductsToModel(results), nil
 }
 
 func (d dbService) FindInvoicesByYearMonth(yearMonth string) ([]model.Invoice, error) {
@@ -157,7 +157,7 @@ func (d dbService) FindInvoicesByYearMonth(yearMonth string) ([]model.Invoice, e
 	if err := d.findMany("invoice", filter, findOptions, &results, "factures per any i mes"); err != nil {
 		return nil, err
 	}
-	return dbo.ConvertInvoices(results), nil
+	return dbo.ConvertInvoicesToModel(results), nil
 }
 
 func (d dbService) FindInvoicesByCustomer(customerCode int) ([]model.Invoice, error) {
@@ -168,7 +168,7 @@ func (d dbService) FindInvoicesByCustomer(customerCode int) ([]model.Invoice, er
 	if err := d.findMany("invoice", filter, findOptions, &results, "factures per client"); err != nil {
 		return nil, err
 	}
-	return dbo.ConvertInvoices(results), nil
+	return dbo.ConvertInvoicesToModel(results), nil
 }
 
 func (d dbService) FindInvoicesByCustomerAndYearMonth(customerCode int, yearMonth string) ([]model.Invoice, error) {
@@ -185,7 +185,7 @@ func (d dbService) FindInvoicesByCustomerAndYearMonth(customerCode int, yearMont
 	if err := d.findMany("invoice", filter, findOptions, &results, "factures per client, any i mes"); err != nil {
 		return nil, err
 	}
-	return dbo.ConvertInvoices(results), nil
+	return dbo.ConvertInvoicesToModel(results), nil
 }
 
 func (d dbService) FindActiveCustomers() ([]model.Customer, error) {
@@ -196,7 +196,7 @@ func (d dbService) FindActiveCustomers() ([]model.Customer, error) {
 	if err := d.findMany("customer", filter, findOptions, &results, "clients actius"); err != nil {
 		return nil, err
 	}
-	return dbo.ConvertCustomers(results), nil
+	return dbo.ConvertCustomersToModel(results), nil
 }
 
 func (d dbService) SearchCustomers(searchText string) ([]model.Customer, error) {
@@ -207,7 +207,7 @@ func (d dbService) SearchCustomers(searchText string) ([]model.Customer, error) 
 	if err := d.findMany("customer", filter, findOptions, &results, "clients actius"); err != nil {
 		return nil, err
 	}
-	return dbo.ConvertCustomers(results), nil
+	return dbo.ConvertCustomersToModel(results), nil
 }
 
 func (d dbService) FindActiveChildren() ([]model.Child, error) {
@@ -234,7 +234,7 @@ func (d dbService) FindAllConsumptions() ([]model.Consumption, error) {
 	if err := d.findMany("consumption", filter, findOptions, &results, "tots els consums"); err != nil {
 		return nil, err
 	}
-	return dbo.ConvertConsumptions(results), nil
+	return dbo.ConvertConsumptionsToModel(results), nil
 }
 
 func (d dbService) FindChildConsumptions(code int) ([]model.Consumption, error) {
@@ -244,7 +244,7 @@ func (d dbService) FindChildConsumptions(code int) ([]model.Consumption, error) 
 	if err := d.findMany("consumption", filter, findOptions, &results, "consums per infant"); err != nil {
 		return nil, err
 	}
-	return dbo.ConvertConsumptions(results), nil
+	return dbo.ConvertConsumptionsToModel(results), nil
 }
 
 func (d dbService) findMany(collection string, filter interface{}, findOptions *options.FindOptions, results interface{}, name string) error {

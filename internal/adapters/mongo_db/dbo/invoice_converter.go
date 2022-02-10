@@ -4,7 +4,7 @@ import (
 	"github.com/pjover/sam/internal/domain/model"
 )
 
-func ConvertInvoice(invoice Invoice) model.Invoice {
+func ConvertInvoiceToModel(invoice Invoice) model.Invoice {
 	return model.Invoice{
 		Code:          invoice.Id,
 		CustomerID:    invoice.CustomerID,
@@ -38,10 +38,10 @@ func line(line Line) model.Line {
 	}
 }
 
-func ConvertInvoices(invoices []Invoice) []model.Invoice {
+func ConvertInvoicesToModel(invoices []Invoice) []model.Invoice {
 	var out []model.Invoice
 	for _, invoice := range invoices {
-		out = append(out, ConvertInvoice(invoice))
+		out = append(out, ConvertInvoiceToModel(invoice))
 	}
 	return out
 }
