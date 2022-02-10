@@ -42,7 +42,6 @@ func (o osService) CreateDirectory(dirPath string) error {
 	if err != nil {
 		return err
 	}
-
 	return nil
 }
 

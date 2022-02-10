@@ -22,11 +22,10 @@ func NewAdminService(configService ports.ConfigService, osService ports.OsServic
 		osService:     osService,
 		langService:   langService,
 	}
-	msg, err := service.CreateWorkingDirectory()
+	_, err := service.CreateWorkingDirectory()
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(msg)
 	return service
 }
 
