@@ -3,7 +3,6 @@ package consum
 import (
 	"fmt"
 	"github.com/pjover/sam/internal/adapters/cli"
-	"github.com/pjover/sam/internal/adapters/cli/billing"
 	"github.com/pjover/sam/internal/adapters/hobbit"
 	"github.com/pjover/sam/internal/domain/ports"
 
@@ -43,7 +42,7 @@ func newRectifyConsumptionsCmd(manager consum.CustomerConsumptionsManager) *cobr
 		},
 		Args: cli.MinimumNArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			ica, err := billing.ParseInsertConsumptionsArgs(args, rconNote)
+			ica, err := consum.ParseInsertConsumptionsArgs(args, rconNote)
 			if err != nil {
 				return err
 			}

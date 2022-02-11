@@ -4,19 +4,19 @@ import (
 	"errors"
 	"fmt"
 	"github.com/pjover/sam/internal/adapters/cli"
-	"github.com/pjover/sam/internal/consum"
+	"github.com/pjover/sam/internal/domain/services/billing"
 	"github.com/spf13/cobra"
 )
 
 var iconNote string
 
 type insertConsumptionsCmd struct {
-	manager consum.CustomerConsumptionsManager
+	service billing.BillingService
 }
 
-func NewInsertConsumptionsCmd(manager consum.CustomerConsumptionsManager) cli.Cmd {
+func NewInsertConsumptionsCmd(manager billing.BillingService) cli.Cmd {
 	return insertConsumptionsCmd{
-		manager: manager,
+		service: manager,
 	}
 }
 
@@ -43,12 +43,12 @@ func (i insertConsumptionsCmd) Cmd() *cobra.Command {
 		},
 		Args: cli.MinimumNArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			ica, err := ParseInsertConsumptionsArgs(args, iconNote)
+			code, consumptions, note, err := parseInsertConsumptionsArgs(args, iconNote)
 			if err != nil {
 				return err
 			}
 
-			msg, err := i.manager.Run(ica)
+			msg, err := i.service.InsertConsumptions(code, consumptions, note)
 			if err != nil {
 				return err
 			}
@@ -61,34 +61,34 @@ func (i insertConsumptionsCmd) Cmd() *cobra.Command {
 	return command
 }
 
-func ParseInsertConsumptionsArgs(args []string, noteArg string) (consum.CustomerConsumptionsArgs, error) {
-	code, err := cli.ParseInteger(args[0], "d'infant")
+func parseInsertConsumptionsArgs(args []string, noteArg string) (code int, consumptions map[string]float64, note string, err error) {
+	code, err = cli.ParseInteger(args[0], "d'infant")
 	if err != nil {
-		return consum.CustomerConsumptionsArgs{}, err
+		return 0, nil, "", err
 	}
 
 	var consMap = make(map[string]float64)
 	for i := 1; i < len(args); i = i + 2 {
 		if i >= len(args)-1 {
-			return consum.CustomerConsumptionsArgs{}, errors.New("no s'ha indroduit el codi del darrer producte")
+			return 0, nil, "", errors.New("no s'ha indroduit el codi del darrer producte")
 		}
 
 		consUnits, err := cli.ParseFloat(args[i])
 		if err != nil {
-			return consum.CustomerConsumptionsArgs{}, err
+			return 0, nil, "", err
 		}
 
 		productCode, err := cli.ParseProductCode(args[i+1])
 		if err != nil {
-			return consum.CustomerConsumptionsArgs{}, err
+			return 0, nil, "", err
 		}
 
 		if _, ok := consMap[productCode]; ok {
-			return consum.CustomerConsumptionsArgs{}, errors.New("hi ha un codi de producte repetit")
+			return 0, nil, "", errors.New("hi ha un codi de producte repetit")
 		}
 
 		consMap[productCode] = consUnits
 	}
 
-	return consum.CustomerConsumptionsArgs{Code: code, Consumptions: consMap, Note: noteArg}, nil
+	return code, consMap, noteArg, nil
 }
