@@ -148,11 +148,33 @@ func (l listService) ListGroupMails(group string) (string, error) {
 }
 
 func (l listService) ListConsumptions() (string, error) {
-	consumptions, err := l.dbService.FindAllConsumptions()
+	consumptions, err := l.dbService.FindAllActiveConsumptions()
 	if err != nil {
 		return "", err
 	}
-	return l.printConsumptions(consumptions)
+
+	children, err := l.dbService.FindActiveChildren()
+	if err != nil {
+		return "", err
+	}
+	products, err := l.dbService.FindAllProducts()
+	if err != nil {
+		return "", err
+	}
+
+	var buffer bytes.Buffer
+	for _, child := range children {
+		var cons []model.Consumption
+		for _, c := range consumptions {
+			if c.ChildCode == child.Code {
+				cons = append(cons, c)
+			}
+		}
+		if len(cons) > 0 {
+			buffer.WriteString(model.ConsumptionListToString(consumptions, child, products))
+		}
+	}
+	return buffer.String(), nil
 }
 
 func (l listService) ListChildConsumptions(childCode int) (string, error) {
@@ -171,12 +193,4 @@ func (l listService) ListChildConsumptions(childCode int) (string, error) {
 	}
 
 	return model.ConsumptionListToString(consumptions, child, products), nil
-}
-
-func (l listService) printConsumptions(consumptions []model.Consumption) (string, error) {
-	var buffer bytes.Buffer
-	for _, consumption := range consumptions {
-		buffer.WriteString(consumption.String() + "\n")
-	}
-	return buffer.String(), nil
 }
