@@ -15,6 +15,6 @@ type DbService interface {
 	SearchCustomers(searchText string) ([]model.Customer, error)
 	FindActiveChildren() ([]model.Child, error)
 	FindAllConsumptions() ([]model.Consumption, error)
-	FindChildConsumptions(code int) ([]model.Consumption, error)
+	FindActiveChildConsumptions(code int) ([]model.Consumption, error)
 	InsertConsumptions(consumptions []model.Consumption) error
 }

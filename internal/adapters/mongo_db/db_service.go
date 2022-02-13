@@ -237,9 +237,9 @@ func (d dbService) FindAllConsumptions() ([]model.Consumption, error) {
 	return dbo.ConvertConsumptionsToModel(results), nil
 }
 
-func (d dbService) FindChildConsumptions(code int) ([]model.Consumption, error) {
+func (d dbService) FindActiveChildConsumptions(code int) ([]model.Consumption, error) {
 	var results []dbo.Consumption
-	filter := bson.D{{"childCode", code}}
+	filter := bson.D{{"childCode", code}, {"invoiceId", ""}}
 	findOptions := options.Find()
 	if err := d.findMany("consumption", filter, findOptions, &results, "consums per infant"); err != nil {
 		return nil, err

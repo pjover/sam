@@ -156,7 +156,7 @@ func (l listService) ListConsumptions() (string, error) {
 }
 
 func (l listService) ListChildConsumptions(childCode int) (string, error) {
-	consumptions, err := l.dbService.FindChildConsumptions(childCode)
+	consumptions, err := l.dbService.FindActiveChildConsumptions(childCode)
 	if err != nil {
 		return "", err
 	}
@@ -170,13 +170,7 @@ func (l listService) ListChildConsumptions(childCode int) (string, error) {
 		return "", err
 	}
 
-	var con []model.Consumption
-	for _, c := range consumptions {
-		if c.InvoiceCode == "" {
-			con = append(con, c)
-		}
-	}
-	return model.ConsumptionListToString(con, child, products), nil
+	return model.ConsumptionListToString(consumptions, child, products), nil
 }
 
 func (l listService) printConsumptions(consumptions []model.Consumption) (string, error) {
