@@ -160,7 +160,17 @@ func (l listService) ListChildConsumptions(childCode int) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return l.printConsumptions(consumptions)
+
+	child, err := l.dbService.FindChild(childCode)
+	if err != nil {
+		return "", err
+	}
+	products, err := l.dbService.FindAllProducts()
+	if err != nil {
+		return "", err
+	}
+
+	return model.ConsumptionListToString(consumptions, child, products), nil
 }
 
 func (l listService) printConsumptions(consumptions []model.Consumption) (string, error) {
