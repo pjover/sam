@@ -153,7 +153,7 @@ func (d dbService) FindInvoicesByYearMonth(yearMonth string) ([]model.Invoice, e
 	var results []dbo.Invoice
 	filter := bson.D{{"yearMonth", yearMonth}}
 	findOptions := options.Find()
-	findOptions.SetSort(bson.D{{"_id", 1}})
+	findOptions.SetSort(bson.D{{"customerId", 1}})
 	if err := d.findMany("invoice", filter, findOptions, &results, "factures per any i mes"); err != nil {
 		return nil, err
 	}
