@@ -14,9 +14,9 @@ type insertConsumptionsCmd struct {
 	service billing.BillingService
 }
 
-func NewInsertConsumptionsCmd(manager billing.BillingService) cli.Cmd {
+func NewInsertConsumptionsCmd(service billing.BillingService) cli.Cmd {
 	return insertConsumptionsCmd{
-		service: manager,
+		service: service,
 	}
 }
 

@@ -229,7 +229,7 @@ func (d dbService) FindActiveChildren() ([]model.Child, error) {
 
 func (d dbService) FindAllActiveConsumptions() ([]model.Consumption, error) {
 	var results []dbo.Consumption
-	filter := bson.D{{"invoiceId", ""}}
+	filter := bson.D{{"invoiceId", "NONE"}}
 	findOptions := options.Find()
 	if err := d.findMany("consumption", filter, findOptions, &results, "tots els consums"); err != nil {
 		return nil, err
@@ -239,7 +239,7 @@ func (d dbService) FindAllActiveConsumptions() ([]model.Consumption, error) {
 
 func (d dbService) FindActiveChildConsumptions(code int) ([]model.Consumption, error) {
 	var results []dbo.Consumption
-	filter := bson.D{{"childCode", code}, {"invoiceId", ""}}
+	filter := bson.D{{"childCode", code}, {"invoiceId", "NONE"}}
 	findOptions := options.Find()
 	if err := d.findMany("consumption", filter, findOptions, &results, "consums per infant"); err != nil {
 		return nil, err

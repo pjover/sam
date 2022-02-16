@@ -3,6 +3,7 @@ package billing
 import (
 	"bytes"
 	"fmt"
+	"github.com/pjover/sam/internal/adapters/hobbit"
 	"github.com/pjover/sam/internal/domain/model"
 	"github.com/pjover/sam/internal/domain/ports"
 	"github.com/pjover/sam/internal/domain/services/common"
@@ -11,22 +12,25 @@ import (
 
 type BillingService interface {
 	InsertConsumptions(Code int, Consumptions map[string]float64, Note string) (string, error)
+	BillConsumptions() (string, error)
 }
 
 type billingService struct {
-	dbService ports.DbService
+	dbService   ports.DbService
+	postManager hobbit.HttpPostManager
 }
 
-func NewBillingService(dbService ports.DbService) BillingService {
+func NewBillingService(dbService ports.DbService, postManager hobbit.HttpPostManager) BillingService {
 	return billingService{
-		dbService,
+		dbService:   dbService,
+		postManager: postManager,
 	}
 }
 
-func (i billingService) InsertConsumptions(childCode int, consumptions map[string]float64, note string) (string, error) {
+func (b billingService) InsertConsumptions(childCode int, consumptions map[string]float64, note string) (string, error) {
 	var buffer bytes.Buffer
 
-	child, err := i.dbService.FindChild(childCode)
+	child, err := b.dbService.FindChild(childCode)
 	if err != nil {
 		return "", err
 	}
@@ -35,7 +39,7 @@ func (i billingService) InsertConsumptions(childCode int, consumptions map[strin
 	}
 
 	customerCode := childCode / 10
-	customer, err := i.dbService.FindCustomer(customerCode)
+	customer, err := b.dbService.FindCustomer(customerCode)
 	if err != nil {
 		return "", err
 	}
@@ -43,7 +47,7 @@ func (i billingService) InsertConsumptions(childCode int, consumptions map[strin
 		return "", fmt.Errorf("el client %s no està activat, edita'l per activar-lo abans d'insertar consums", customer.FirstAdultNameWithCode())
 	}
 
-	products, err := i.dbService.FindAllProducts()
+	products, err := b.dbService.FindAllProducts()
 	if err != nil {
 		return "", err
 	}
@@ -59,6 +63,7 @@ func (i billingService) InsertConsumptions(childCode int, consumptions map[strin
 			Units:           units,
 			YearMonth:       yearMonth,
 			IsRectification: false,
+			InvoiceCode:     "NONE",
 		}
 		if first {
 			c.Note = note
@@ -67,7 +72,7 @@ func (i billingService) InsertConsumptions(childCode int, consumptions map[strin
 		completeConsumptions = append(completeConsumptions, c)
 	}
 
-	err = i.dbService.InsertConsumptions(completeConsumptions)
+	err = b.dbService.InsertConsumptions(completeConsumptions)
 	if err != nil {
 		return "", err
 	}
@@ -75,4 +80,16 @@ func (i billingService) InsertConsumptions(childCode int, consumptions map[strin
 	buffer.WriteString(model.ConsumptionListToString(completeConsumptions, child, products))
 
 	return buffer.String(), nil
+}
+
+func (b billingService) BillConsumptions() (string, error) {
+	fmt.Println("Facturant els consums pendents de facturar de tots els infants")
+
+	url := fmt.Sprintf("%s/billing/billConsumptions", viper.GetString("urls.hobbit"))
+	var data []byte
+	return b.postManager.PrettyJson(url, data)
+}
+
+func (b billingService) consumptionsToInvoices(consumptions []model.Consumption) (invoices []model.Invoice, err error) {
+	return nil, nil
 }

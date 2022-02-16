@@ -1,19 +1,23 @@
-package consum
+package billing
 
 import (
 	"fmt"
-	"github.com/pjover/sam/internal/adapters/hobbit"
-	"github.com/pjover/sam/internal/domain/ports"
-
-	"github.com/pjover/sam/internal/consum"
+	"github.com/pjover/sam/internal/adapters/cli"
+	"github.com/pjover/sam/internal/domain/services/billing"
 	"github.com/spf13/cobra"
 )
 
-func NewBillConsumptionsCmd(httpPostManager hobbit.HttpPostManager, dbService ports.DbService) *cobra.Command {
-	return newBillConsumptionsCmd(consum.NewBillConsumptionsManager(httpPostManager, dbService))
+type billConsumptionsCmd struct {
+	service billing.BillingService
 }
 
-func newBillConsumptionsCmd(manager consum.BillConsumptionsManager) *cobra.Command {
+func NewBillConsumptionsCmd(service billing.BillingService) cli.Cmd {
+	return billConsumptionsCmd{
+		service: service,
+	}
+}
+
+func (i billConsumptionsCmd) Cmd() *cobra.Command {
 	return &cobra.Command{
 		Use:   "facturaConsums",
 		Short: "Factura els consums no facturats",
@@ -38,7 +42,7 @@ func newBillConsumptionsCmd(manager consum.BillConsumptionsManager) *cobra.Comma
 			"bill-consum",
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
-			msg, err := manager.Run()
+			msg, err := i.service.BillConsumptions()
 			if err != nil {
 				return err
 			}

@@ -18,6 +18,7 @@ func MainDI(configService ports.ConfigService, cmdManager cli.CmdManager) {
 	osService := os.NewOsService()
 	langService := lang.NewCatLangService()
 	dbService := mongo_db.NewDbService(configService)
+	postManager := hobbit.NewHttpPostManager()
 
 	adminServiceDI(configService, cmdManager, osService, langService)
 	editServiceDI(configService, cmdManager, osService)
@@ -25,13 +26,10 @@ func MainDI(configService ports.ConfigService, cmdManager cli.CmdManager) {
 	generateServiceDI(configService, langService, dbService, cmdManager)
 	listServiceDI(dbService, cmdManager, osService)
 	searchServiceDI(dbService, cmdManager)
-	billingServiceDI(dbService, cmdManager)
+	billingServiceDI(dbService, cmdManager, postManager)
 
 	// TODO move to DI and remove method AddTmpCommand
-	httpPostManager := hobbit.NewHttpPostManager()
-
-	cmdManager.AddTmpCommand(consumCmd.NewBillConsumptionsCmd(httpPostManager, dbService))
-	cmdManager.AddTmpCommand(consumCmd.NewRectifyConsumptionsCmd(httpPostManager, dbService))
+	cmdManager.AddTmpCommand(consumCmd.NewRectifyConsumptionsCmd(postManager, dbService))
 
 	cmdManager.AddTmpCommand(generate.NewGenerateBddCmd(bbd.NewBddGenerator()))
 	cmdManager.AddTmpCommand(generate.NewGenerateMonthInvoicesCmd(invoices.NewMonthInvoicesGenerator()))
