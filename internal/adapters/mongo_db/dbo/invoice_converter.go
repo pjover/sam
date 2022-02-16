@@ -30,7 +30,7 @@ func lines(lines []Line) []model.Line {
 
 func line(line Line) model.Line {
 	return model.Line{
-		ProductID:     line.ProductID,
+		ProductId:     line.ProductID,
 		Units:         Decimal128ToFloat64(line.Units),
 		ProductPrice:  Decimal128ToFloat64(line.ProductPrice),
 		TaxPercentage: Decimal128ToFloat64(line.TaxPercentage),

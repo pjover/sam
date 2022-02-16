@@ -29,7 +29,7 @@ func (i Invoice) LinesFmt(joinWith string) string {
 		lines = append(lines, fmt.Sprintf(
 			"%.1f %s (%.2f)",
 			line.Units,
-			line.ProductID,
+			line.ProductId,
 			line.Units*line.ProductPrice,
 		),
 		)

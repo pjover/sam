@@ -17,7 +17,7 @@ type Invoice struct {
 }
 
 type Line struct {
-	ProductID     string
+	ProductId     string
 	Units         float64
 	ProductPrice  float64
 	TaxPercentage float64
