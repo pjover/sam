@@ -6,7 +6,7 @@ import (
 )
 
 func (c Consumption) String() string {
-	return fmt.Sprintf("%d  %s  %4.1f  %s  %-5v  %s  %s", c.ChildCode, c.YearMonth, c.Units, c.ProductID, c.IsRectification, c.InvoiceCode, c.Note)
+	return fmt.Sprintf("%d  %s  %4.1f  %s  %-5v  %s  %s", c.ChildCode, c.YearMonth, c.Units, c.ProductId, c.IsRectification, c.InvoiceCode, c.Note)
 }
 
 func ConsumptionListToString(consumptions []Consumption, child Child, products []Product) string {
@@ -16,13 +16,13 @@ func ConsumptionListToString(consumptions []Consumption, child Child, products [
 		if c.ChildCode != child.Code {
 			continue
 		}
-		product := GetProduct(c.ProductID, products)
+		product := GetProduct(c.ProductId, products)
 		price := c.Units * product.Price
 		total += price
 		buffer.WriteString(fmt.Sprintf("  [%s]  %4.1f x %s : % 7.2f\n",
 			c.YearMonth,
 			c.Units,
-			c.ProductID,
+			c.ProductId,
 			price,
 		))
 	}

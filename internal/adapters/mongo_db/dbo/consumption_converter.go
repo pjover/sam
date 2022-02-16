@@ -6,7 +6,7 @@ func ConvertConsumptionToModel(consumption Consumption) model.Consumption {
 	return model.Consumption{
 		Code:            consumption.Code,
 		ChildCode:       consumption.ChildCode,
-		ProductID:       consumption.ProductID,
+		ProductId:       consumption.ProductID,
 		Units:           Decimal128ToFloat64(consumption.Units),
 		YearMonth:       consumption.YearMonth,
 		Note:            consumption.Note,
@@ -27,7 +27,7 @@ func ConvertConsumptionToDbo(consumption model.Consumption) Consumption {
 	return Consumption{
 		Code:            consumption.Code,
 		ChildCode:       consumption.ChildCode,
-		ProductID:       consumption.ProductID,
+		ProductID:       consumption.ProductId,
 		Units:           Float64ToDecimal128(consumption.Units),
 		YearMonth:       consumption.YearMonth,
 		Note:            consumption.Note,

@@ -5,7 +5,7 @@ const ConsumptionCodeLength = 8
 type Consumption struct {
 	Code            string
 	ChildCode       int
-	ProductID       string
+	ProductId       string
 	Units           float64
 	YearMonth       string
 	Note            string

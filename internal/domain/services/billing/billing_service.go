@@ -59,7 +59,7 @@ func (b billingService) InsertConsumptions(childCode int, consumptions map[strin
 		c := model.Consumption{
 			Code:            common.RandString(model.ConsumptionCodeLength),
 			ChildCode:       childCode,
-			ProductID:       id,
+			ProductId:       id,
 			Units:           units,
 			YearMonth:       yearMonth,
 			IsRectification: false,
