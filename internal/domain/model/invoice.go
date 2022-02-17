@@ -6,17 +6,17 @@ import (
 )
 
 type Invoice struct {
-	Code          string
-	CustomerID    int
-	Date          time.Time
-	YearMonth     string
-	ChildrenCodes []int
-	Lines         []Line
-	PaymentType   payment_type.PaymentType
-	Note          string
-	Emailed       bool
-	Printed       bool
-	SentToBank    bool
+	Code        string
+	CustomerId  int
+	Date        time.Time
+	YearMonth   string
+	ChildrenIds []int
+	Lines       []Line
+	PaymentType payment_type.PaymentType
+	Note        string
+	Emailed     bool
+	Printed     bool
+	SentToBank  bool
 }
 
 type Line struct {

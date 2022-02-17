@@ -77,18 +77,17 @@ func Test_billingService_consumptionsToInvoices(t *testing.T) {
 		name         string
 		consumptions []model.Consumption
 		wantInvoices []model.Invoice
-		wantErr      error
 	}{
 		{
 			name:         "without rectification",
 			consumptions: noRectificationConsumptions,
 			wantInvoices: []model.Invoice{
 				{
-					Code:          "",
-					CustomerID:    185,
-					Date:          today,
-					YearMonth:     yearMonth,
-					ChildrenCodes: []int{1850, 1851},
+					Code:        "",
+					CustomerId:  185,
+					Date:        today,
+					YearMonth:   yearMonth,
+					ChildrenIds: []int{1850, 1851},
 					Lines: []model.Line{
 						{
 							ProductId:     "TST",
@@ -114,11 +113,11 @@ func Test_billingService_consumptionsToInvoices(t *testing.T) {
 					Note:        "Note 1, Note 2, Note 3, Note 4",
 				},
 				{
-					Code:          "",
-					CustomerID:    186,
-					Date:          today,
-					YearMonth:     yearMonth,
-					ChildrenCodes: []int{1860},
+					Code:        "",
+					CustomerId:  186,
+					Date:        today,
+					YearMonth:   yearMonth,
+					ChildrenIds: []int{1860},
 					Lines: []model.Line{
 						{
 							ProductId:    "TST",
@@ -130,7 +129,6 @@ func Test_billingService_consumptionsToInvoices(t *testing.T) {
 					Note:        "Note 5",
 				},
 			},
-			wantErr: nil,
 		},
 	}
 
@@ -140,9 +138,8 @@ func Test_billingService_consumptionsToInvoices(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			sut := billingService{osService: mockedOsService}
-			gotInvoices, gotErr := sut.consumptionsToInvoices(tt.consumptions)
-			assert.Equal(t, tt.wantInvoices, gotInvoices)
-			assert.Equal(t, tt.wantErr, gotErr)
+			got := sut.consumptionsToInvoices(tt.consumptions)
+			assert.Equal(t, tt.wantInvoices, got)
 		})
 	}
 }

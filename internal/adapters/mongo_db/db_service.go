@@ -83,7 +83,7 @@ func (d dbService) FindChild(code int) (model.Child, error) {
 
 	var child model.Child
 	for _, value := range customer.Children {
-		if value.Code == code {
+		if value.Id == code {
 			child = value
 			break
 		}

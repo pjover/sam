@@ -92,7 +92,7 @@ func (m MonthReport) buildContents(invoices []model.Invoice) ([][]string, error)
 	for _, invoice := range invoices {
 		customer, err := m.customer(invoice)
 		if err != nil {
-			return nil, fmt.Errorf("error al recuperar el client %d de la factura %s: %s", invoice.CustomerID, invoice.Code, err)
+			return nil, fmt.Errorf("error al recuperar el client %d de la factura %s: %s", invoice.CustomerId, invoice.Code, err)
 		}
 
 		var line = []string{
@@ -122,7 +122,7 @@ func (m MonthReport) getMonth() (string, time.Time) {
 }
 
 func (m MonthReport) customer(invoice model.Invoice) (model.Customer, error) {
-	customer, err := m.dbService.FindCustomer(invoice.CustomerID)
+	customer, err := m.dbService.FindCustomer(invoice.CustomerId)
 	if err != nil {
 		return model.Customer{}, err
 	}

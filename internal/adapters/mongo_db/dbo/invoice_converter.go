@@ -8,17 +8,17 @@ import (
 
 func ConvertInvoiceToModel(invoice Invoice) model.Invoice {
 	return model.Invoice{
-		Code:          invoice.Id,
-		CustomerID:    invoice.CustomerID,
-		Date:          invoice.Date,
-		YearMonth:     invoice.YearMonth,
-		ChildrenCodes: invoice.ChildrenCodes,
-		Lines:         lines(invoice.Lines),
-		PaymentType:   convertToPaymentType(invoice.PaymentType),
-		Note:          invoice.Note,
-		Emailed:       invoice.Emailed,
-		Printed:       invoice.Printed,
-		SentToBank:    invoice.SentToBank,
+		Code:        invoice.Id,
+		CustomerId:  invoice.CustomerID,
+		Date:        invoice.Date,
+		YearMonth:   invoice.YearMonth,
+		ChildrenIds: invoice.ChildrenCodes,
+		Lines:       lines(invoice.Lines),
+		PaymentType: convertToPaymentType(invoice.PaymentType),
+		Note:        invoice.Note,
+		Emailed:     invoice.Emailed,
+		Printed:     invoice.Printed,
+		SentToBank:  invoice.SentToBank,
 	}
 }
 

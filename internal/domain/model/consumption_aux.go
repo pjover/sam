@@ -13,7 +13,7 @@ func ConsumptionListToString(consumptions []Consumption, child Child, products [
 	var total float64
 	var buffer bytes.Buffer
 	for _, c := range consumptions {
-		if c.ChildCode != child.Code {
+		if c.ChildCode != child.Id {
 			continue
 		}
 		product := GetProduct(c.ProductId, products)

@@ -37,7 +37,7 @@ func (c Customer) ChildrenNames(joinWith string) string {
 }
 
 func (c Child) String() string {
-	return fmt.Sprintf("%d  %-30s  %s  %s", c.Code, c.NameAndSurname(), c.Group, c.BirthDate.Format("2006-01-02"))
+	return fmt.Sprintf("%d  %-30s  %s  %s", c.Id, c.NameAndSurname(), c.Group, c.BirthDate.Format("2006-01-02"))
 }
 
 func (c Child) NameAndSurname() string {
@@ -45,7 +45,7 @@ func (c Child) NameAndSurname() string {
 }
 
 func (c Child) NameWithCode() string {
-	return fmt.Sprintf("%s %s (%d)", c.Name, c.Surname, c.Code)
+	return fmt.Sprintf("%s %s (%d)", c.Name, c.Surname, c.Id)
 }
 
 func (i InvoiceHolder) PaymentInfoFmt() string {

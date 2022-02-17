@@ -3,7 +3,7 @@ package model
 import "time"
 
 type Child struct {
-	Code          int
+	Id            int
 	Name          string
 	Surname       string
 	SecondSurname string

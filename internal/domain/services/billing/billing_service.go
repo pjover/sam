@@ -92,9 +92,15 @@ func (b billingService) BillConsumptions() (string, error) {
 	return b.postManager.PrettyJson(url, data)
 }
 
-func (b billingService) consumptionsToInvoices(consumptions []model.Consumption) (invoices []model.Invoice, err error) {
+func (b billingService) consumptionsToInvoices(consumptions []model.Consumption) []model.Invoice {
 
-	return nil, nil
+	var invoices []model.Invoice
+	groupedByCustomer := b.groupConsumptionsByCustomer(consumptions)
+	for customerCode, cons := range groupedByCustomer {
+		invoice := b.consumptionsToInvoice(customerCode, cons)
+		invoices = append(invoices, invoice)
+	}
+	return invoices
 }
 
 func (b billingService) groupConsumptionsByCustomer(consumptions []model.Consumption) map[int][]model.Consumption {
@@ -106,4 +112,11 @@ func (b billingService) groupConsumptionsByCustomer(consumptions []model.Consump
 		auxMap[customerCode] = cons
 	}
 	return auxMap
+}
+
+func (b billingService) consumptionsToInvoice(customerCode int, consumptions []model.Consumption) model.Invoice {
+
+	return model.Invoice{
+		CustomerId: customerCode,
+	}
 }
