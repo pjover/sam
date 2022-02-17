@@ -7,7 +7,7 @@ import (
 )
 
 func (i Invoice) String() string {
-	return fmt.Sprintf("%d  %s  %s  % 7.2f  %s  %s", i.CustomerID, i.Code, i.YearMonth, i.Amount(), i.PaymentFmt(), i.LinesFmt(","))
+	return fmt.Sprintf("%d  %s  %s  % 7.2f  %s  %s", i.CustomerID, i.Code, i.YearMonth, i.Amount(), i.PaymentType.String(), i.LinesFmt(","))
 
 }
 
@@ -35,19 +35,4 @@ func (i Invoice) LinesFmt(joinWith string) string {
 		)
 	}
 	return strings.Join(lines, joinWith)
-}
-
-func (i Invoice) PaymentFmt() string {
-	switch i.PaymentType {
-	case "BANK_DIRECT_DEBIT":
-		return "Rebut"
-	case "BANK_TRANSFER":
-		return "Tranferència"
-	case "CASH":
-		return "Efectiu"
-	case "VOUCHER":
-		return "Xec escoleta"
-	default:
-		return "Indefinit"
-	}
 }

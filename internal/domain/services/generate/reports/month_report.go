@@ -102,7 +102,7 @@ func (m MonthReport) buildContents(invoices []model.Invoice) ([][]string, error)
 			customer.ChildrenNames("\n"),
 			invoice.LinesFmt(", "),
 			fmt.Sprintf("%.2f", invoice.Amount()),
-			invoice.PaymentFmt(),
+			invoice.PaymentType.String(),
 		}
 		contents = append(contents, line)
 	}

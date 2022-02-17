@@ -2,6 +2,8 @@ package dbo
 
 import (
 	"github.com/pjover/sam/internal/domain/model"
+	"github.com/pjover/sam/internal/domain/model/payment_type"
+	"strings"
 )
 
 func ConvertInvoiceToModel(invoice Invoice) model.Invoice {
@@ -12,7 +14,7 @@ func ConvertInvoiceToModel(invoice Invoice) model.Invoice {
 		YearMonth:     invoice.YearMonth,
 		ChildrenCodes: invoice.ChildrenCodes,
 		Lines:         lines(invoice.Lines),
-		PaymentType:   invoice.PaymentType,
+		PaymentType:   convertToPaymentType(invoice.PaymentType),
 		Note:          invoice.Note,
 		Emailed:       invoice.Emailed,
 		Printed:       invoice.Printed,
@@ -44,4 +46,22 @@ func ConvertInvoicesToModel(invoices []Invoice) []model.Invoice {
 		out = append(out, ConvertInvoiceToModel(invoice))
 	}
 	return out
+}
+
+var values = []string{
+	"BANK_DIRECT_DEBIT",
+	"BANK_TRANSFER",
+	"VOUCHER",
+	"CASH",
+	"RECTIFICATION",
+}
+
+func convertToPaymentType(value string) payment_type.PaymentType {
+	value = strings.ToLower(value)
+	for i, val := range values {
+		if strings.ToLower(val) == value {
+			return payment_type.PaymentType(i)
+		}
+	}
+	return payment_type.Invalid
 }

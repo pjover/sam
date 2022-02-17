@@ -1,6 +1,9 @@
 package model
 
-import "time"
+import (
+	"github.com/pjover/sam/internal/domain/model/payment_type"
+	"time"
+)
 
 type Invoice struct {
 	Code          string
@@ -9,7 +12,7 @@ type Invoice struct {
 	YearMonth     string
 	ChildrenCodes []int
 	Lines         []Line
-	PaymentType   string
+	PaymentType   payment_type.PaymentType
 	Note          string
 	Emailed       bool
 	Printed       bool
