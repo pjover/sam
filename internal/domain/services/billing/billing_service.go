@@ -17,12 +17,14 @@ type BillingService interface {
 
 type billingService struct {
 	dbService   ports.DbService
+	osService   ports.OsService
 	postManager hobbit.HttpPostManager
 }
 
-func NewBillingService(dbService ports.DbService, postManager hobbit.HttpPostManager) BillingService {
+func NewBillingService(dbService ports.DbService, osService ports.OsService, postManager hobbit.HttpPostManager) BillingService {
 	return billingService{
 		dbService:   dbService,
+		osService:   osService,
 		postManager: postManager,
 	}
 }
