@@ -91,37 +91,54 @@ func (b billingService) InsertConsumptions(childId int, consumptions map[string]
 func (b billingService) BillConsumptions() (string, error) {
 	fmt.Println("Facturant els consums pendents de facturar de tots els infants")
 
+	//consumptions, err := b.dbService.FindAllActiveConsumptions()
+	//if err != nil {
+	//	return "", err
+	//}
+	//
+	//invoices, customers, err := b.consumptionsToInvoices(consumptions)
+	//if err != nil {
+	//	return "", err
+	//}
+
+	// TODO Build invoices sequences
+
+	// TODO Save invoices
+
+	// TODO Display invoices grouped by PaymentType with totals
+
 	url := fmt.Sprintf("%s/billing/billConsumptions", viper.GetString("urls.hobbit"))
 	var data []byte
 	return b.postManager.PrettyJson(url, data)
 }
 
-func (b billingService) consumptionsToInvoices(consumptions []model.Consumption) ([]model.Invoice, error) {
-	var invoices []model.Invoice
+func (b billingService) consumptionsToInvoices(consumptions []model.Consumption) (invoices []model.Invoice, customers []model.Customer, err error) {
 	groupedByCustomer := b.groupConsumptionsByCustomer(consumptions)
 	for customerId, cons := range groupedByCustomer {
 		cid, _ := strconv.Atoi(customerId)
-		invoice, err := b.consumptionsToInvoice(cid, cons)
+
+		customer, err := b.dbService.FindCustomer(cid)
 		if err != nil {
-			return nil, err
+			return nil, nil, err
 		}
+
+		invoice, err := b.consumptionsToInvoice(customer, cons)
+		if err != nil {
+			return nil, nil, err
+		}
+		customers = append(customers, customer)
 		invoices = append(invoices, invoice)
 	}
-	return invoices, nil
+	return invoices, customers, nil
 }
 
 func (b billingService) groupConsumptionsByCustomer(consumptions []model.Consumption) map[string][]model.Consumption {
 	return b.groupConsumptions(b.groupByCustomer, consumptions)
 }
 
-func (b billingService) consumptionsToInvoice(customerId int, consumptions []model.Consumption) (model.Invoice, error) {
+func (b billingService) consumptionsToInvoice(customer model.Customer, consumptions []model.Consumption) (model.Invoice, error) {
 	yearMonth := b.cfgService.GetString("yearMonth")
 	today := b.osService.Now()
-
-	customer, err := b.dbService.FindCustomer(customerId)
-	if err != nil {
-		return model.Invoice{}, err
-	}
 
 	lines, childrenIds, err := b.childrenLines(consumptions)
 	if err != nil {
@@ -129,7 +146,7 @@ func (b billingService) consumptionsToInvoice(customerId int, consumptions []mod
 	}
 
 	return model.Invoice{
-		CustomerId:  customerId,
+		CustomerId:  customer.Id,
 		Date:        today,
 		YearMonth:   yearMonth,
 		ChildrenIds: childrenIds,

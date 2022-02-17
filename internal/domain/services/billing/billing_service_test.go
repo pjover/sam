@@ -106,9 +106,10 @@ var productYYY = model.Product{
 
 func Test_billingService_consumptionsToInvoices(t *testing.T) {
 	tests := []struct {
-		name         string
-		consumptions []model.Consumption
-		wantInvoices []model.Invoice
+		name          string
+		consumptions  []model.Consumption
+		wantInvoices  []model.Invoice
+		wantCustomers []model.Customer
 	}{
 		{
 			name:         "without rectification",
@@ -162,6 +163,10 @@ func Test_billingService_consumptionsToInvoices(t *testing.T) {
 					Note:        "Note 5",
 				},
 			},
+			wantCustomers: []model.Customer{
+				customer185,
+				customer186,
+			},
 		},
 	}
 
@@ -186,8 +191,9 @@ func Test_billingService_consumptionsToInvoices(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 
-			got, _ := sut.consumptionsToInvoices(tt.consumptions)
-			assert.Equal(t, tt.wantInvoices, got)
+			gotInvoices, gotCustomers, _ := sut.consumptionsToInvoices(tt.consumptions)
+			assert.Equal(t, tt.wantInvoices, gotInvoices)
+			assert.Equal(t, tt.wantCustomers, gotCustomers)
 		})
 	}
 }
