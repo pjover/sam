@@ -93,5 +93,17 @@ func (b billingService) BillConsumptions() (string, error) {
 }
 
 func (b billingService) consumptionsToInvoices(consumptions []model.Consumption) (invoices []model.Invoice, err error) {
+
 	return nil, nil
+}
+
+func (b billingService) groupConsumptionsByCustomer(consumptions []model.Consumption) map[int][]model.Consumption {
+	var auxMap = make(map[int][]model.Consumption)
+	for _, con := range consumptions {
+		var customerCode = con.ChildCode / 10
+		cons := auxMap[customerCode]
+		cons = append(cons, con)
+		auxMap[customerCode] = cons
+	}
+	return auxMap
 }
