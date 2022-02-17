@@ -9,7 +9,7 @@ import (
 )
 
 type SingleInvoiceGenerator interface {
-	Generate(invoiceCode string) (string, error)
+	Generate(invoiceId string) (string, error)
 }
 
 type SingleInvoiceGeneratorImpl struct {
@@ -24,10 +24,10 @@ func NewSingleInvoiceGenerator() SingleInvoiceGenerator {
 	}
 }
 
-func (s SingleInvoiceGeneratorImpl) Generate(invoiceCode string) (string, error) {
-	fmt.Println("Generant la factura", invoiceCode)
+func (s SingleInvoiceGeneratorImpl) Generate(invoiceId string) (string, error) {
+	fmt.Println("Generant la factura", invoiceId)
 
-	url := fmt.Sprintf("%s/generate/pdf/%s", viper.GetString("urls.hobbit"), invoiceCode)
+	url := fmt.Sprintf("%s/generate/pdf/%s", viper.GetString("urls.hobbit"), invoiceId)
 
 	dirPath, err := s.configService.GetInvoicesDirectory()
 	if err != nil {

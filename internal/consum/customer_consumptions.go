@@ -10,13 +10,13 @@ type CustomerConsumptionsManager interface {
 }
 
 type CustomerConsumptionsArgs struct {
-	Code         int
+	Id           int
 	Consumptions map[string]float64
 	Note         string
 }
 
 func ParseInsertConsumptionsArgs(args []string, noteArg string) (CustomerConsumptionsArgs, error) {
-	code, err := cli.ParseInteger(args[0], "d'infant")
+	id, err := cli.ParseInteger(args[0], "d'infant")
 	if err != nil {
 		return CustomerConsumptionsArgs{}, err
 	}
@@ -32,17 +32,17 @@ func ParseInsertConsumptionsArgs(args []string, noteArg string) (CustomerConsump
 			return CustomerConsumptionsArgs{}, err
 		}
 
-		productCode, err := cli.ParseProductCode(args[i+1])
+		productId, err := cli.ParseProductId(args[i+1])
 		if err != nil {
 			return CustomerConsumptionsArgs{}, err
 		}
 
-		if _, ok := consMap[productCode]; ok {
+		if _, ok := consMap[productId]; ok {
 			return CustomerConsumptionsArgs{}, errors.New("hi ha un codi de producte repetit")
 		}
 
-		consMap[productCode] = consUnits
+		consMap[productId] = consUnits
 	}
 
-	return CustomerConsumptionsArgs{Code: code, Consumptions: consMap, Note: noteArg}, nil
+	return CustomerConsumptionsArgs{Id: id, Consumptions: consMap, Note: noteArg}, nil
 }

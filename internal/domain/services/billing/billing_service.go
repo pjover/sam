@@ -11,7 +11,7 @@ import (
 )
 
 type BillingService interface {
-	InsertConsumptions(Code int, Consumptions map[string]float64, Note string) (string, error)
+	InsertConsumptions(id int, consumptions map[string]float64, note string) (string, error)
 	BillConsumptions() (string, error)
 }
 
@@ -29,24 +29,24 @@ func NewBillingService(dbService ports.DbService, osService ports.OsService, pos
 	}
 }
 
-func (b billingService) InsertConsumptions(childCode int, consumptions map[string]float64, note string) (string, error) {
+func (b billingService) InsertConsumptions(childId int, consumptions map[string]float64, note string) (string, error) {
 	var buffer bytes.Buffer
 
-	child, err := b.dbService.FindChild(childCode)
+	child, err := b.dbService.FindChild(childId)
 	if err != nil {
 		return "", err
 	}
 	if !child.Active {
-		return "", fmt.Errorf("l'infant %s no està activat, edita'l per activar-lo abans d'insertar consums", child.NameWithCode())
+		return "", fmt.Errorf("l'infant %s no està activat, edita'l per activar-lo abans d'insertar consums", child.NameWithId())
 	}
 
-	customerCode := childCode / 10
-	customer, err := b.dbService.FindCustomer(customerCode)
+	customerId := childId / 10
+	customer, err := b.dbService.FindCustomer(customerId)
 	if err != nil {
 		return "", err
 	}
 	if !customer.Active {
-		return "", fmt.Errorf("el client %s no està activat, edita'l per activar-lo abans d'insertar consums", customer.FirstAdultNameWithCode())
+		return "", fmt.Errorf("el client %s no està activat, edita'l per activar-lo abans d'insertar consums", customer.FirstAdultNameWithId())
 	}
 
 	products, err := b.dbService.FindAllProducts()
@@ -59,13 +59,13 @@ func (b billingService) InsertConsumptions(childCode int, consumptions map[strin
 	var completeConsumptions []model.Consumption
 	for id, units := range consumptions {
 		c := model.Consumption{
-			Code:            common.RandString(model.ConsumptionCodeLength),
-			ChildCode:       childCode,
+			Id:              common.RandString(model.ConsumptionIdLength),
+			ChildId:         childId,
 			ProductId:       id,
 			Units:           units,
 			YearMonth:       yearMonth,
 			IsRectification: false,
-			InvoiceCode:     "NONE",
+			InvoiceId:       "NONE",
 		}
 		if first {
 			c.Note = note
@@ -96,8 +96,8 @@ func (b billingService) consumptionsToInvoices(consumptions []model.Consumption)
 
 	var invoices []model.Invoice
 	groupedByCustomer := b.groupConsumptionsByCustomer(consumptions)
-	for customerCode, cons := range groupedByCustomer {
-		invoice := b.consumptionsToInvoice(customerCode, cons)
+	for customerId, cons := range groupedByCustomer {
+		invoice := b.consumptionsToInvoice(customerId, cons)
 		invoices = append(invoices, invoice)
 	}
 	return invoices
@@ -106,17 +106,17 @@ func (b billingService) consumptionsToInvoices(consumptions []model.Consumption)
 func (b billingService) groupConsumptionsByCustomer(consumptions []model.Consumption) map[int][]model.Consumption {
 	var auxMap = make(map[int][]model.Consumption)
 	for _, con := range consumptions {
-		var customerCode = con.ChildCode / 10
-		cons := auxMap[customerCode]
+		var customerId = con.ChildId / 10
+		cons := auxMap[customerId]
 		cons = append(cons, con)
-		auxMap[customerCode] = cons
+		auxMap[customerId] = cons
 	}
 	return auxMap
 }
 
-func (b billingService) consumptionsToInvoice(customerCode int, consumptions []model.Consumption) model.Invoice {
+func (b billingService) consumptionsToInvoice(customerId int, consumptions []model.Consumption) model.Invoice {
 
 	return model.Invoice{
-		CustomerId: customerCode,
+		CustomerId: customerId,
 	}
 }

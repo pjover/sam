@@ -92,13 +92,13 @@ func (m MonthReport) buildContents(invoices []model.Invoice) ([][]string, error)
 	for _, invoice := range invoices {
 		customer, err := m.customer(invoice)
 		if err != nil {
-			return nil, fmt.Errorf("error al recuperar el client %d de la factura %s: %s", invoice.CustomerId, invoice.Code, err)
+			return nil, fmt.Errorf("error al recuperar el client %d de la factura %s: %s", invoice.CustomerId, invoice.Id, err)
 		}
 
 		var line = []string{
-			invoice.Code,
+			invoice.Id,
 			invoice.DateFmt(),
-			customer.FirstAdultNameWithCode(),
+			customer.FirstAdultNameWithId(),
 			customer.ChildrenNames("\n"),
 			invoice.LinesFmt(", "),
 			fmt.Sprintf("%.2f", invoice.Amount()),

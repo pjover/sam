@@ -42,11 +42,11 @@ func (l listConsumptionsCmd) Cmd() *cobra.Command {
 			var msg string
 			var err error
 			if len(args) != 0 {
-				childCode, err := cli.ParseInteger(args[0], "de client")
+				childId, err := cli.ParseInteger(args[0], "de client")
 				if err != nil {
 					return err
 				}
-				msg, err = l.listService.ListChildConsumptions(childCode)
+				msg, err = l.listService.ListChildConsumptions(childId)
 			} else {
 				msg, err = l.listService.ListConsumptions()
 			}

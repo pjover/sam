@@ -34,8 +34,8 @@ func newGenerateSingleInvoiceCmd(generator invoices.SingleInvoiceGenerator) *cob
 		},
 		Args: cli.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			invoiceCode := strings.ToUpper(args[0])
-			msg, err := generator.Generate(invoiceCode)
+			invoiceId := strings.ToUpper(args[0])
+			msg, err := generator.Generate(invoiceId)
 			if err != nil {
 				return err
 			}

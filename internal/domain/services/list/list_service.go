@@ -17,21 +17,21 @@ func NewListService(dbService ports.DbService) ports.ListService {
 	}
 }
 
-func (l listService) ListCustomerInvoices(customerCode int) (string, error) {
-	invoices, err := l.dbService.FindInvoicesByCustomer(customerCode)
+func (l listService) ListCustomerInvoices(customerId int) (string, error) {
+	invoices, err := l.dbService.FindInvoicesByCustomer(customerId)
 	if err != nil {
 		return "", err
 	}
-	titleMessage := fmt.Sprintf("Lists of customer %d invoices:", customerCode)
+	titleMessage := fmt.Sprintf("Lists of customer %d invoices:", customerId)
 	return listInvoices(titleMessage, invoices)
 }
 
-func (l listService) ListCustomerYearMonthInvoices(customerCode int, yearMonth string) (string, error) {
-	invoices, err := l.dbService.FindInvoicesByCustomerAndYearMonth(customerCode, yearMonth)
+func (l listService) ListCustomerYearMonthInvoices(customerId int, yearMonth string) (string, error) {
+	invoices, err := l.dbService.FindInvoicesByCustomerAndYearMonth(customerId, yearMonth)
 	if err != nil {
 		return "", err
 	}
-	titleMessage := fmt.Sprintf("Lists of customer %d and %s year-month invoices:", customerCode, yearMonth)
+	titleMessage := fmt.Sprintf("Lists of customer %d and %s year-month invoices:", customerId, yearMonth)
 	return listInvoices(titleMessage, invoices)
 }
 
@@ -166,7 +166,7 @@ func (l listService) ListConsumptions() (string, error) {
 	for _, child := range children {
 		var cons []model.Consumption
 		for _, c := range consumptions {
-			if c.ChildCode == child.Id {
+			if c.ChildId == child.Id {
 				cons = append(cons, c)
 			}
 		}
@@ -177,13 +177,13 @@ func (l listService) ListConsumptions() (string, error) {
 	return buffer.String(), nil
 }
 
-func (l listService) ListChildConsumptions(childCode int) (string, error) {
-	consumptions, err := l.dbService.FindActiveChildConsumptions(childCode)
+func (l listService) ListChildConsumptions(childId int) (string, error) {
+	consumptions, err := l.dbService.FindActiveChildConsumptions(childId)
 	if err != nil {
 		return "", err
 	}
 
-	child, err := l.dbService.FindChild(childCode)
+	child, err := l.dbService.FindChild(childId)
 	if err != nil {
 		return "", err
 	}

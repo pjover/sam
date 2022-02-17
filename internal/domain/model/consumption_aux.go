@@ -6,14 +6,14 @@ import (
 )
 
 func (c Consumption) String() string {
-	return fmt.Sprintf("%d  %s  %4.1f  %s  %-5v  %s  %s", c.ChildCode, c.YearMonth, c.Units, c.ProductId, c.IsRectification, c.InvoiceCode, c.Note)
+	return fmt.Sprintf("%d  %s  %4.1f  %s  %-5v  %s  %s", c.ChildId, c.YearMonth, c.Units, c.ProductId, c.IsRectification, c.InvoiceId, c.Note)
 }
 
 func ConsumptionListToString(consumptions []Consumption, child Child, products []Product) string {
 	var total float64
 	var buffer bytes.Buffer
 	for _, c := range consumptions {
-		if c.ChildCode != child.Id {
+		if c.ChildId != child.Id {
 			continue
 		}
 		product := GetProduct(c.ProductId, products)
@@ -26,6 +26,6 @@ func ConsumptionListToString(consumptions []Consumption, child Child, products [
 			price,
 		))
 	}
-	title := fmt.Sprintf("%s: %.02f €\n", child.NameWithCode(), total)
+	title := fmt.Sprintf("%s: %.02f €\n", child.NameWithId(), total)
 	return title + buffer.String()
 }

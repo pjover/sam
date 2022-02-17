@@ -1,7 +1,7 @@
 package ports
 
 type ExternalEditor interface {
-	Edit(entity Entity, code string) (string, error)
+	Edit(entity Entity, id string) (string, error)
 }
 
 type Entity uint

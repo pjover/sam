@@ -43,12 +43,12 @@ func (i insertConsumptionsCmd) Cmd() *cobra.Command {
 		},
 		Args: cli.MinimumNArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			code, consumptions, note, err := parseInsertConsumptionsArgs(args, iconNote)
+			id, consumptions, note, err := parseInsertConsumptionsArgs(args, iconNote)
 			if err != nil {
 				return err
 			}
 
-			msg, err := i.service.InsertConsumptions(code, consumptions, note)
+			msg, err := i.service.InsertConsumptions(id, consumptions, note)
 			if err != nil {
 				return err
 			}
@@ -61,8 +61,8 @@ func (i insertConsumptionsCmd) Cmd() *cobra.Command {
 	return command
 }
 
-func parseInsertConsumptionsArgs(args []string, noteArg string) (code int, consumptions map[string]float64, note string, err error) {
-	code, err = cli.ParseInteger(args[0], "d'infant")
+func parseInsertConsumptionsArgs(args []string, noteArg string) (id int, consumptions map[string]float64, note string, err error) {
+	id, err = cli.ParseInteger(args[0], "d'infant")
 	if err != nil {
 		return 0, nil, "", err
 	}
@@ -78,17 +78,17 @@ func parseInsertConsumptionsArgs(args []string, noteArg string) (code int, consu
 			return 0, nil, "", err
 		}
 
-		productCode, err := cli.ParseProductCode(args[i+1])
+		productId, err := cli.ParseProductId(args[i+1])
 		if err != nil {
 			return 0, nil, "", err
 		}
 
-		if _, ok := consMap[productCode]; ok {
+		if _, ok := consMap[productId]; ok {
 			return 0, nil, "", errors.New("hi ha un codi de producte repetit")
 		}
 
-		consMap[productCode] = consUnits
+		consMap[productId] = consUnits
 	}
 
-	return code, consMap, noteArg, nil
+	return id, consMap, noteArg, nil
 }

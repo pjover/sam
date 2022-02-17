@@ -6,7 +6,7 @@ import (
 )
 
 type Invoice struct {
-	Code        string
+	Id          string
 	CustomerId  int
 	Date        time.Time
 	YearMonth   string
@@ -24,5 +24,5 @@ type Line struct {
 	Units         float64
 	ProductPrice  float64
 	TaxPercentage float64
-	ChildCode     int
+	ChildId       int
 }

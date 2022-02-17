@@ -12,7 +12,7 @@ type ConsumptionBody struct {
 	Note      string  `json:"note"`
 }
 type ChildBody struct {
-	Code         int               `json:"code"`
+	Id           int               `json:"code"`
 	Consumptions []ConsumptionBody `json:"consumptions"`
 }
 type Body struct {
@@ -41,7 +41,7 @@ func buildConsumptionsBody(args CustomerConsumptionsArgs) Body {
 	consumptionsBody := Body{
 		YearMonth: viper.GetString("yearMonth"),
 		Children: []ChildBody{
-			{args.Code, consumptions},
+			{args.Id, consumptions},
 		},
 	}
 	return consumptionsBody

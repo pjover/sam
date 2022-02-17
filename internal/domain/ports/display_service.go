@@ -1,7 +1,7 @@
 package ports
 
 type DisplayService interface {
-	DisplayCustomer(code int) (string, error)
-	DisplayInvoice(code string) (string, error)
-	DisplayProduct(code string) (string, error)
+	DisplayCustomer(id int) (string, error)
+	DisplayInvoice(id string) (string, error)
+	DisplayProduct(id string) (string, error)
 }

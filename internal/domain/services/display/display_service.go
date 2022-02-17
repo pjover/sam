@@ -12,24 +12,24 @@ func NewDisplayService(dbService ports.DbService) ports.DisplayService {
 	}
 }
 
-func (d displayService) DisplayCustomer(code int) (string, error) {
-	customer, err := d.dbService.FindCustomer(code)
+func (d displayService) DisplayCustomer(id int) (string, error) {
+	customer, err := d.dbService.FindCustomer(id)
 	if err != nil {
 		return "", err
 	}
 	return customer.String(), nil
 }
 
-func (d displayService) DisplayInvoice(code string) (string, error) {
-	invoice, err := d.dbService.FindInvoice(code)
+func (d displayService) DisplayInvoice(id string) (string, error) {
+	invoice, err := d.dbService.FindInvoice(id)
 	if err != nil {
 		return "", err
 	}
 	return invoice.String(), nil
 }
 
-func (d displayService) DisplayProduct(code string) (string, error) {
-	product, err := d.dbService.FindProduct(code)
+func (d displayService) DisplayProduct(id string) (string, error) {
+	product, err := d.dbService.FindProduct(id)
 	if err != nil {
 		return "", err
 	}

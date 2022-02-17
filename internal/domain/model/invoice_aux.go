@@ -7,7 +7,7 @@ import (
 )
 
 func (i Invoice) String() string {
-	return fmt.Sprintf("%d  %s  %s  % 7.2f  %s  %s", i.CustomerId, i.Code, i.YearMonth, i.Amount(), i.PaymentType.String(), i.LinesFmt(","))
+	return fmt.Sprintf("%d  %s  %s  % 7.2f  %s  %s", i.CustomerId, i.Id, i.YearMonth, i.Amount(), i.PaymentType.String(), i.LinesFmt(","))
 
 }
 

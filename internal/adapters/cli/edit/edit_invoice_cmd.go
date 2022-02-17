@@ -40,8 +40,8 @@ func (e editInvoiceCmd) Cmd() *cobra.Command {
 		},
 		Args: cli.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			code := strings.ToUpper(args[0])
-			msg, err := e.editService.EditInvoice(code)
+			id := strings.ToUpper(args[0])
+			msg, err := e.editService.EditInvoice(id)
 			if msg != "" {
 				fmt.Println(msg)
 			}

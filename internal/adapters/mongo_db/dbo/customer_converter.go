@@ -26,7 +26,7 @@ func children(children []Child) []model.Child {
 
 func child(child Child) model.Child {
 	return model.Child{
-		Id:            child.Code,
+		Id:            child.Id,
 		Name:          child.Name,
 		Surname:       child.Surname,
 		SecondSurname: child.SecondSurname,

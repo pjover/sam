@@ -38,11 +38,11 @@ func (e displayCustomerCmd) Cmd() *cobra.Command {
 		},
 		Args: cli.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			code, err := cli.ParseInteger(args[0], "de client")
+			id, err := cli.ParseInteger(args[0], "de client")
 			if err != nil {
 				return err
 			}
-			msg, err := e.displayService.DisplayCustomer(code)
+			msg, err := e.displayService.DisplayCustomer(id)
 			if msg != "" {
 				fmt.Println(msg)
 			}

@@ -79,7 +79,7 @@ func (c CustomerReport) buildContents(customers []model.Customer) [][]string {
 				continue
 			}
 			var line = []string{
-				child.NameWithCode(),
+				child.NameWithId(),
 				child.Group,
 				child.BirthDate.String(),
 				adult.NameSurnameFmt(),

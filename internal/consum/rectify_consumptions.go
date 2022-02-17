@@ -20,7 +20,7 @@ func NewRectifyConsumptionsManager(httpPostManager hobbit.HttpPostManager, dbSer
 }
 
 func (r RectifyConsumptionsManager) Run(args CustomerConsumptionsArgs) (string, error) {
-	child, err := r.dbService.FindChild(args.Code)
+	child, err := r.dbService.FindChild(args.Id)
 	if err != nil {
 		return "", err
 	}

@@ -23,7 +23,7 @@ func (c Customer) FirstAdultName() string {
 	return fmt.Sprintf("%s %s", adult.Name, adult.Surname)
 }
 
-func (c Customer) FirstAdultNameWithCode() string {
+func (c Customer) FirstAdultNameWithId() string {
 	adult := c.FirstAdult()
 	return fmt.Sprintf("%s %s (%d)", adult.Name, adult.Surname, c.Id)
 }
@@ -31,7 +31,7 @@ func (c Customer) FirstAdultNameWithCode() string {
 func (c Customer) ChildrenNames(joinWith string) string {
 	var names []string
 	for _, child := range c.Children {
-		names = append(names, child.NameWithCode())
+		names = append(names, child.NameWithId())
 	}
 	return strings.Join(names, joinWith)
 }
@@ -44,7 +44,7 @@ func (c Child) NameAndSurname() string {
 	return fmt.Sprintf("%s %s", c.Name, c.Surname)
 }
 
-func (c Child) NameWithCode() string {
+func (c Child) NameWithId() string {
 	return fmt.Sprintf("%s %s (%d)", c.Name, c.Surname, c.Id)
 }
 

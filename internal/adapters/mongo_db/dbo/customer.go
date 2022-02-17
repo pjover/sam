@@ -13,7 +13,7 @@ type Customer struct {
 }
 
 type Child struct {
-	Code          int       `bson:"code"`
+	Id            int       `bson:"code"`
 	Name          string    `bson:"name"`
 	Surname       string    `bson:"surname"`
 	SecondSurname string    `bson:"secondSurname"`

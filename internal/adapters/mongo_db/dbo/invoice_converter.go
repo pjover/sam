@@ -8,11 +8,11 @@ import (
 
 func ConvertInvoiceToModel(invoice Invoice) model.Invoice {
 	return model.Invoice{
-		Code:        invoice.Id,
+		Id:          invoice.Id,
 		CustomerId:  invoice.CustomerID,
 		Date:        invoice.Date,
 		YearMonth:   invoice.YearMonth,
-		ChildrenIds: invoice.ChildrenCodes,
+		ChildrenIds: invoice.ChildrenIds,
 		Lines:       lines(invoice.Lines),
 		PaymentType: convertToPaymentType(invoice.PaymentType),
 		Note:        invoice.Note,
@@ -36,7 +36,7 @@ func line(line Line) model.Line {
 		Units:         Decimal128ToFloat64(line.Units),
 		ProductPrice:  Decimal128ToFloat64(line.ProductPrice),
 		TaxPercentage: Decimal128ToFloat64(line.TaxPercentage),
-		ChildCode:     line.ChildCode,
+		ChildId:       line.ChildId,
 	}
 }
 

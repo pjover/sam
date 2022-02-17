@@ -37,11 +37,11 @@ func (e editProductCmd) Cmd() *cobra.Command {
 		},
 		Args: cli.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			code, err := cli.ParseProductCode(args[0])
+			id, err := cli.ParseProductId(args[0])
 			if err != nil {
 				return err
 			}
-			msg, err := e.editService.EditProduct(code)
+			msg, err := e.editService.EditProduct(id)
 			if msg != "" {
 				fmt.Println(msg)
 			}

@@ -16,21 +16,21 @@ func NewEditService(externalEditor ports.ExternalEditor) ports.EditService {
 	}
 }
 
-func (e editService) EditCustomer(code int) (string, error) {
-	codeStr := strconv.Itoa(code)
-	url, err := e.externalEditor.Edit(ports.Customer, codeStr)
-	msg := fmt.Sprintf("Editant el client %s a %s", codeStr, url)
+func (e editService) EditCustomer(id int) (string, error) {
+	idStr := strconv.Itoa(id)
+	url, err := e.externalEditor.Edit(ports.Customer, idStr)
+	msg := fmt.Sprintf("Editant el client %s a %s", idStr, url)
 	return msg, err
 }
 
-func (e editService) EditInvoice(code string) (string, error) {
-	url, err := e.externalEditor.Edit(ports.Invoice, code)
-	msg := fmt.Sprintf("Editant la factura %s a %s", code, url)
+func (e editService) EditInvoice(id string) (string, error) {
+	url, err := e.externalEditor.Edit(ports.Invoice, id)
+	msg := fmt.Sprintf("Editant la factura %s a %s", id, url)
 	return msg, err
 }
 
-func (e editService) EditProduct(code string) (string, error) {
-	url, err := e.externalEditor.Edit(ports.Product, code)
-	msg := fmt.Sprintf("Editant el producte %s a %s", code, url)
+func (e editService) EditProduct(id string) (string, error) {
+	url, err := e.externalEditor.Edit(ports.Product, id)
+	msg := fmt.Sprintf("Editant el producte %s a %s", id, url)
 	return msg, err
 }
