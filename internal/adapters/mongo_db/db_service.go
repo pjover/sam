@@ -23,8 +23,8 @@ type dbService struct {
 func NewDbService(configService ports.ConfigService) ports.DbService {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	uri := configService.Get("db.server")
-	database := configService.Get("db.name")
+	uri := configService.GetString("db.server")
+	database := configService.GetString("db.name")
 	d := dbService{configService, ctx, uri, database}
 	d.createIndexes()
 	return d

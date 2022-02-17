@@ -72,6 +72,38 @@ var noRectificationConsumptions = []model.Consumption{
 	},
 }
 
+var customer185 = model.Customer{
+	Id: 185,
+	InvoiceHolder: model.InvoiceHolder{
+		PaymentType: payment_type.BankDirectDebit,
+	},
+}
+
+var customer186 = model.Customer{
+	Id: 186,
+	InvoiceHolder: model.InvoiceHolder{
+		PaymentType: payment_type.BankDirectDebit,
+	},
+}
+
+var productTST = model.Product{
+	Id:            "TST",
+	Price:         10.9,
+	TaxPercentage: 0.0,
+}
+
+var productXXX = model.Product{
+	Id:            "XXX",
+	Price:         9.1,
+	TaxPercentage: 0.0,
+}
+
+var productYYY = model.Product{
+	Id:            "XXX",
+	Price:         9.1,
+	TaxPercentage: 0.0,
+}
+
 func Test_billingService_consumptionsToInvoices(t *testing.T) {
 	tests := []struct {
 		name         string
@@ -121,8 +153,9 @@ func Test_billingService_consumptionsToInvoices(t *testing.T) {
 					Lines: []model.Line{
 						{
 							ProductId:    "TST",
-							Units:        4,
+							Units:        2,
 							ProductPrice: 10.9,
+							ChildId:      1860,
 						},
 					},
 					PaymentType: payment_type.BankDirectDebit,
@@ -132,13 +165,28 @@ func Test_billingService_consumptionsToInvoices(t *testing.T) {
 		},
 	}
 
+	mockedCfgService := new(mocks.ConfigService)
+	mockedCfgService.On("GetString", "yearMonth").Return(yearMonth)
+
+	mockedDbService := new(mocks.DbService)
+	mockedDbService.On("FindCustomer", 185).Return(customer185, nil)
+	mockedDbService.On("FindCustomer", 186).Return(customer186, nil)
+	mockedDbService.On("FindProduct", "TST").Return(productTST, nil)
+	mockedDbService.On("FindProduct", "XXX").Return(productXXX, nil)
+	mockedDbService.On("FindProduct", "YYY").Return(productYYY, nil)
+
 	mockedOsService := new(mocks.OsService)
 	mockedOsService.On("Now").Return(today)
 
+	sut := billingService{
+		cfgService: mockedCfgService,
+		osService:  mockedOsService,
+		dbService:  mockedDbService,
+	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			sut := billingService{osService: mockedOsService}
-			got := sut.consumptionsToInvoices(tt.consumptions)
+
+			got, _ := sut.consumptionsToInvoices(tt.consumptions)
 			assert.Equal(t, tt.wantInvoices, got)
 		})
 	}
@@ -148,19 +196,19 @@ func Test_billingService_groupConsumptionsByCustomer(t *testing.T) {
 	tests := []struct {
 		name         string
 		consumptions []model.Consumption
-		want         map[int][]model.Consumption
+		want         map[string][]model.Consumption
 	}{
 		{
 			name:         "group no rectification consumptions",
 			consumptions: noRectificationConsumptions,
-			want: map[int][]model.Consumption{
-				185: {
+			want: map[string][]model.Consumption{
+				"185": {
 					noRectificationConsumptions[0],
 					noRectificationConsumptions[1],
 					noRectificationConsumptions[2],
 					noRectificationConsumptions[3],
 				},
-				186: {
+				"186": {
 					noRectificationConsumptions[4],
 					noRectificationConsumptions[5],
 					noRectificationConsumptions[6],

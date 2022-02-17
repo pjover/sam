@@ -8,8 +8,8 @@ import (
 	"github.com/pjover/sam/internal/domain/services/billing"
 )
 
-func billingServiceDI(dbService ports.DbService, osService ports.OsService, cmdManager cli.CmdManager, postManager hobbit.HttpPostManager) {
-	billingService := billing.NewBillingService(dbService, osService, postManager)
+func billingServiceDI(cfgService ports.ConfigService, dbService ports.DbService, osService ports.OsService, cmdManager cli.CmdManager, postManager hobbit.HttpPostManager) {
+	billingService := billing.NewBillingService(cfgService, dbService, osService, postManager)
 	cmdManager.AddCommand(billingCli.NewInsertConsumptionsCmd(billingService))
 	cmdManager.AddCommand(billingCli.NewBillConsumptionsCmd(billingService))
 }

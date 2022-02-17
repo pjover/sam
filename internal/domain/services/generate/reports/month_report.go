@@ -49,7 +49,7 @@ func (m MonthReport) Run() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	filePath := path.Join(wd, m.configService.Get("files.invoicesReport"))
+	filePath := path.Join(wd, m.configService.GetString("files.invoicesReport"))
 
 	reportInfo := ReportInfo{
 		consts.Landscape,
@@ -113,7 +113,7 @@ func (m MonthReport) buildContents(invoices []model.Invoice) ([][]string, error)
 }
 
 func (m MonthReport) getMonth() (string, time.Time) {
-	yearMonth := m.configService.Get("yearMonth")
+	yearMonth := m.configService.GetString("yearMonth")
 	month, err := time.Parse(domain.YearMonthLayout, yearMonth)
 	if err != nil {
 		log.Fatal(fmt.Errorf("format incorrecte a la variable de configuració yearMonth '%s': %s", yearMonth, err))

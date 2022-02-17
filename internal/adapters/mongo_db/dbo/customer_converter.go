@@ -2,6 +2,7 @@ package dbo
 
 import (
 	"github.com/pjover/sam/internal/domain/model"
+	"github.com/pjover/sam/internal/domain/model/payment_type"
 )
 
 func ConvertCustomerToModel(customer Customer) model.Customer {
@@ -81,7 +82,7 @@ func holder(holder InvoiceHolder) model.InvoiceHolder {
 		Address:     address(holder.Address),
 		Email:       holder.Email,
 		SendEmail:   holder.SendEmail,
-		PaymentType: holder.PaymentType,
+		PaymentType: payment_type.New(holder.PaymentType),
 		BankAccount: holder.BankAccount,
 		IsBusiness:  holder.IsBusiness,
 	}

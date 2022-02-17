@@ -29,7 +29,7 @@ func (e externalEditor) Edit(entity ports.Entity, id string) (string, error) {
 }
 
 func (e externalEditor) getUrlPath(entity ports.Entity, id string) (string, error) {
-	baseUrl := e.cfgService.Get("urls.mongoExpress")
+	baseUrl := e.cfgService.GetString("urls.mongoExpress")
 	switch entity {
 	case ports.Customer:
 		return fmt.Sprintf("%s/customer/%s", baseUrl, id), nil

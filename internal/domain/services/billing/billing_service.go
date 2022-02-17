@@ -8,6 +8,8 @@ import (
 	"github.com/pjover/sam/internal/domain/ports"
 	"github.com/pjover/sam/internal/domain/services/common"
 	"github.com/spf13/viper"
+	"strconv"
+	"strings"
 )
 
 type BillingService interface {
@@ -16,13 +18,15 @@ type BillingService interface {
 }
 
 type billingService struct {
+	cfgService  ports.ConfigService
 	dbService   ports.DbService
 	osService   ports.OsService
 	postManager hobbit.HttpPostManager
 }
 
-func NewBillingService(dbService ports.DbService, osService ports.OsService, postManager hobbit.HttpPostManager) BillingService {
+func NewBillingService(cfgService ports.ConfigService, dbService ports.DbService, osService ports.OsService, postManager hobbit.HttpPostManager) BillingService {
 	return billingService{
+		cfgService:  cfgService,
 		dbService:   dbService,
 		osService:   osService,
 		postManager: postManager,
@@ -92,31 +96,121 @@ func (b billingService) BillConsumptions() (string, error) {
 	return b.postManager.PrettyJson(url, data)
 }
 
-func (b billingService) consumptionsToInvoices(consumptions []model.Consumption) []model.Invoice {
-
+func (b billingService) consumptionsToInvoices(consumptions []model.Consumption) ([]model.Invoice, error) {
 	var invoices []model.Invoice
 	groupedByCustomer := b.groupConsumptionsByCustomer(consumptions)
 	for customerId, cons := range groupedByCustomer {
-		invoice := b.consumptionsToInvoice(customerId, cons)
+		cid, _ := strconv.Atoi(customerId)
+		invoice, err := b.consumptionsToInvoice(cid, cons)
+		if err != nil {
+			return nil, err
+		}
 		invoices = append(invoices, invoice)
 	}
-	return invoices
+	return invoices, nil
 }
 
-func (b billingService) groupConsumptionsByCustomer(consumptions []model.Consumption) map[int][]model.Consumption {
-	var auxMap = make(map[int][]model.Consumption)
+func (b billingService) groupConsumptionsByCustomer(consumptions []model.Consumption) map[string][]model.Consumption {
+	return b.groupConsumptions(b.groupByCustomer, consumptions)
+}
+
+func (b billingService) consumptionsToInvoice(customerId int, consumptions []model.Consumption) (model.Invoice, error) {
+	yearMonth := b.cfgService.GetString("yearMonth")
+	today := b.osService.Now()
+
+	customer, err := b.dbService.FindCustomer(customerId)
+	if err != nil {
+		return model.Invoice{}, err
+	}
+
+	lines, childrenIds, err := b.childrenLines(consumptions)
+	if err != nil {
+		return model.Invoice{}, err
+	}
+
+	return model.Invoice{
+		CustomerId:  customerId,
+		Date:        today,
+		YearMonth:   yearMonth,
+		ChildrenIds: childrenIds,
+		Lines:       lines,
+		PaymentType: customer.InvoiceHolder.PaymentType,
+		Note:        b.notes(consumptions),
+	}, nil
+}
+
+func (b billingService) childrenLines(consumptions []model.Consumption) (lines []model.Line, childrenIds []int, err error) {
+	groupedByChild := b.groupConsumptions(b.groupByChild, consumptions)
+	for childId, cons := range groupedByChild {
+		cid, _ := strconv.Atoi(childId)
+		childrenIds = append(childrenIds, cid)
+		productLines, err := b.productLines(cons)
+		if err != nil {
+			return nil, nil, err
+		}
+		lines = append(lines, productLines...)
+	}
+	return lines, childrenIds, nil
+}
+
+func (b billingService) productLines(consumptions []model.Consumption) (lines []model.Line, err error) {
+	groupedByProduct := b.groupConsumptions(b.groupByProduct, consumptions)
+	for productId, cons := range groupedByProduct {
+		product, err := b.dbService.FindProduct(productId)
+		if err != nil {
+			return nil, err
+		}
+
+		var units float64
+		for _, con := range cons {
+			units += con.Units
+		}
+		if units == 0 {
+			continue
+		}
+
+		line := model.Line{
+			ProductId:     productId,
+			Units:         units,
+			ProductPrice:  product.Price,
+			TaxPercentage: product.TaxPercentage,
+			ChildId:       cons[0].ChildId,
+		}
+		lines = append(lines, line)
+	}
+	return lines, nil
+}
+
+func (b billingService) notes(consumptions []model.Consumption) string {
+	var notes []string
+	for _, consumption := range consumptions {
+		if consumption.Note == "" {
+			continue
+		}
+		notes = append(notes, consumption.Note)
+	}
+	return strings.Join(notes, ", ")
+}
+
+func (b billingService) groupConsumptions(groupBy func(consumption model.Consumption) string, consumptions []model.Consumption) map[string][]model.Consumption {
+	var auxMap = make(map[string][]model.Consumption)
 	for _, con := range consumptions {
-		var customerId = con.ChildId / 10
-		cons := auxMap[customerId]
+		var group = groupBy(con)
+		cons := auxMap[group]
 		cons = append(cons, con)
-		auxMap[customerId] = cons
+		auxMap[group] = cons
 	}
 	return auxMap
 }
 
-func (b billingService) consumptionsToInvoice(customerId int, consumptions []model.Consumption) model.Invoice {
+func (b billingService) groupByCustomer(consumption model.Consumption) string {
+	return strconv.Itoa(consumption.ChildId / 10)
+}
 
-	return model.Invoice{
-		CustomerId: customerId,
-	}
+func (b billingService) groupByChild(consumption model.Consumption) string {
+	return strconv.Itoa(consumption.ChildId)
+}
+
+func (b billingService) groupByProduct(consumption model.Consumption) string {
+	return consumption.ProductId
 }

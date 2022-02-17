@@ -26,7 +26,7 @@ func MainDI(configService ports.ConfigService, cmdManager cli.CmdManager) {
 	generateServiceDI(configService, langService, dbService, cmdManager)
 	listServiceDI(dbService, cmdManager, osService)
 	searchServiceDI(dbService, cmdManager)
-	billingServiceDI(dbService, osService, cmdManager, postManager)
+	billingServiceDI(configService, dbService, osService, cmdManager, postManager)
 
 	// TODO move to DI and remove method AddTmpCommand
 	cmdManager.AddTmpCommand(consumCmd.NewRectifyConsumptionsCmd(postManager, dbService))

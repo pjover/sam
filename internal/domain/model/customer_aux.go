@@ -2,6 +2,7 @@ package model
 
 import (
 	"fmt"
+	"github.com/pjover/sam/internal/domain/model/payment_type"
 	"strings"
 )
 
@@ -50,13 +51,13 @@ func (c Child) NameWithId() string {
 
 func (i InvoiceHolder) PaymentInfoFmt() string {
 	switch i.PaymentType {
-	case "BANK_DIRECT_DEBIT":
+	case payment_type.BankDirectDebit:
 		return fmt.Sprintf("Rebut %s", i.BankAccountFmt())
-	case "BANK_TRANSFER":
+	case payment_type.BankTransfer:
 		return fmt.Sprintf("Trans. %s", i.BankAccountFmt())
-	case "CASH":
+	case payment_type.Cash:
 		return "Efectiu"
-	case "VOUCHER":
+	case payment_type.Voucher:
 		return "Xec escoleta"
 	default:
 		return "Indefinit"

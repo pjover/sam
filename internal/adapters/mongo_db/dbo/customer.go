@@ -1,6 +1,8 @@
 package dbo
 
-import "time"
+import (
+	"time"
+)
 
 type Customer struct {
 	Id            int           `bson:"_id"`

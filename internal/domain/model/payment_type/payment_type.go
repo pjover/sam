@@ -1,5 +1,7 @@
 package payment_type
 
+import "strings"
+
 type PaymentType uint
 
 const (
@@ -22,4 +24,22 @@ var values = []string{
 
 func (s PaymentType) String() string {
 	return values[s]
+}
+
+func New(value string) PaymentType {
+	var _values = []string{
+		"",
+		"BANK_DIRECT_DEBIT",
+		"BANK_TRANSFER",
+		"VOUCHER",
+		"CASH",
+		"RECTIFICATION",
+	}
+	value = strings.ToLower(value)
+	for i, val := range _values {
+		if strings.ToLower(val) == value {
+			return PaymentType(i)
+		}
+	}
+	return Invalid
 }
