@@ -62,3 +62,7 @@ type InvoiceHolder struct {
 	BankAccount string  `bson:"bankAccount"`
 	IsBusiness  bool    `bson:"isBusiness"`
 }
+
+func (c Customer) GetId() interface{} {
+	return c.Id
+}

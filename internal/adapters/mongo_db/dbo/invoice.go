@@ -26,3 +26,7 @@ type Line struct {
 	TaxPercentage primitive.Decimal128 `bson:"taxPercentage"`
 	ChildId       int                  `bson:"childCode"`
 }
+
+func (i Invoice) GetId() interface{} {
+	return i.Id
+}

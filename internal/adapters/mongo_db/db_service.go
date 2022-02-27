@@ -247,6 +247,16 @@ func (d dbService) FindActiveChildConsumptions(id int) ([]model.Consumption, err
 	return dbo.ConvertConsumptionsToModel(results), nil
 }
 
+func (d dbService) FindAllSequences() ([]model.Sequence, error) {
+	var results []dbo.Sequence
+	filter := bson.D{}
+	findOptions := options.Find()
+	if err := d.findMany("sequence", filter, findOptions, &results, "sequències"); err != nil {
+		return nil, err
+	}
+	return dbo.ConvertSequencesToModel(results), nil
+}
+
 func (d dbService) findMany(collection string, filter interface{}, findOptions *options.FindOptions, results interface{}, name string) error {
 	client, err := d.open()
 	defer d.close(client)
@@ -269,7 +279,16 @@ func (d dbService) findMany(collection string, filter interface{}, findOptions *
 
 func (d dbService) InsertConsumptions(consumptions []model.Consumption) error {
 	documents := dbo.ConvertConsumptionsToDbo(consumptions)
-	err := d.insertMany("consumption", documents, "consum")
+	err := d.insertMany("consumption", documents, "consums")
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (d dbService) InsertInvoices(invoices []model.Invoice) error {
+	documents := dbo.ConvertInvoicesToDbo(invoices)
+	err := d.insertMany("invoice", documents, "factures")
 	if err != nil {
 		return err
 	}
@@ -286,7 +305,41 @@ func (d dbService) insertMany(collection string, documents []interface{}, name s
 	coll := client.Database(d.database).Collection(collection)
 	_, err = coll.InsertMany(context.TODO(), documents)
 	if err != nil {
-		return fmt.Errorf("escrivint %s a la base de dades: %s", name, err)
+		return fmt.Errorf("insertant %s a la base de dades: %s", name, err)
+	}
+	return nil
+}
+
+func (d dbService) UpdateSequences(sequences []model.Sequence) error {
+	documents := dbo.ConvertSequencesToDbo(sequences)
+	return d.updateMany("sequence", documents, "seqüències")
+}
+
+func (d dbService) UpdateConsumptions(consumptions []model.Consumption) error {
+	documents := dbo.ConvertConsumptionsToDbo(consumptions)
+	return d.updateMany("consumption", documents, "consums")
+}
+
+func (d dbService) updateMany(collection string, documents []interface{}, name string) error {
+	client, err := d.open()
+	defer d.close(client)
+	if err != nil {
+		return fmt.Errorf("connectant a la base de dades: %s", err)
+	}
+
+	coll := client.Database(d.database).Collection(collection)
+
+	for _, document := range documents {
+		doc := document.(dbo.Dbo)
+		_, err = coll.ReplaceOne(
+			context.TODO(),
+			bson.M{"_id": doc.GetId()},
+			document,
+		)
+
+		if err != nil {
+			return fmt.Errorf("actualitzant %s a la base de dades: %s", name, err)
+		}
 	}
 	return nil
 }

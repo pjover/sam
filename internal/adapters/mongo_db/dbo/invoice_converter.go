@@ -65,3 +65,47 @@ func convertToPaymentType(value string) payment_type.PaymentType {
 	}
 	return payment_type.Invalid
 }
+
+func ConvertInvoicesToDbo(invoices []model.Invoice) []interface{} {
+	var out []interface{}
+	for _, invoice := range invoices {
+		out = append(out, ConvertInvoiceToDbo(invoice))
+	}
+	return out
+}
+
+func ConvertInvoiceToDbo(invoice model.Invoice) Invoice {
+	var lines []Line
+	for _, line := range invoice.Lines {
+		_line := Line{
+			ProductID:     line.ProductId,
+			Units:         Float64ToDecimal128(line.Units),
+			ProductPrice:  Float64ToDecimal128(line.ProductPrice),
+			TaxPercentage: Float64ToDecimal128(line.TaxPercentage),
+			ChildId:       line.ChildId,
+		}
+		lines = append(lines, _line)
+	}
+	return Invoice{
+		Id:          invoice.Id,
+		CustomerID:  invoice.CustomerId,
+		Date:        invoice.Date,
+		YearMonth:   invoice.YearMonth,
+		ChildrenIds: invoice.ChildrenIds,
+		Lines:       lines,
+		PaymentType: paymentTypes[invoice.PaymentType],
+		Note:        invoice.Note,
+		Emailed:     invoice.Emailed,
+		Printed:     invoice.Printed,
+		SentToBank:  invoice.SentToBank,
+	}
+}
+
+var paymentTypes = []string{
+	"",
+	"BANK_DIRECT_DEBIT",
+	"BANK_TRANSFER",
+	"VOUCHER",
+	"CASH",
+	"RECTIFICATION",
+}

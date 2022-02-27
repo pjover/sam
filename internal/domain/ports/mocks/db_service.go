@@ -127,6 +127,29 @@ func (_m *DbService) FindAllProducts() ([]model.Product, error) {
 	return r0, r1
 }
 
+// FindAllSequences provides a mock function with given fields:
+func (_m *DbService) FindAllSequences() ([]model.Sequence, error) {
+	ret := _m.Called()
+
+	var r0 []model.Sequence
+	if rf, ok := ret.Get(0).(func() []model.Sequence); ok {
+		r0 = rf()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]model.Sequence)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func() error); ok {
+		r1 = rf()
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // FindChild provides a mock function with given fields: id
 func (_m *DbService) FindChild(id int) (model.Child, error) {
 	ret := _m.Called(id)
@@ -294,6 +317,20 @@ func (_m *DbService) InsertConsumptions(consumptions []model.Consumption) error 
 	return r0
 }
 
+// InsertInvoices provides a mock function with given fields: invoices
+func (_m *DbService) InsertInvoices(invoices []model.Invoice) error {
+	ret := _m.Called(invoices)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func([]model.Invoice) error); ok {
+		r0 = rf(invoices)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
 // SearchCustomers provides a mock function with given fields: searchText
 func (_m *DbService) SearchCustomers(searchText string) ([]model.Customer, error) {
 	ret := _m.Called(searchText)
@@ -315,4 +352,18 @@ func (_m *DbService) SearchCustomers(searchText string) ([]model.Customer, error
 	}
 
 	return r0, r1
+}
+
+// UpdateSequences provides a mock function with given fields: sequences
+func (_m *DbService) UpdateSequences(sequences []model.Sequence) error {
+	ret := _m.Called(sequences)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func([]model.Sequence) error); ok {
+		r0 = rf(sequences)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
 }

@@ -23,6 +23,14 @@ func ConvertConsumptionsToModel(consumptions []Consumption) []model.Consumption 
 	return out
 }
 
+func ConvertConsumptionsToDbo(consumptions []model.Consumption) []interface{} {
+	var out []interface{}
+	for _, consumption := range consumptions {
+		out = append(out, ConvertConsumptionToDbo(consumption))
+	}
+	return out
+}
+
 func ConvertConsumptionToDbo(consumption model.Consumption) Consumption {
 	return Consumption{
 		Id:              consumption.Id,
@@ -34,12 +42,4 @@ func ConvertConsumptionToDbo(consumption model.Consumption) Consumption {
 		IsRectification: consumption.IsRectification,
 		InvoiceId:       consumption.InvoiceId,
 	}
-}
-
-func ConvertConsumptionsToDbo(consumptions []model.Consumption) []interface{} {
-	var out []interface{}
-	for _, consumption := range consumptions {
-		out = append(out, ConvertConsumptionToDbo(consumption))
-	}
-	return out
 }

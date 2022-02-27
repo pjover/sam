@@ -8,6 +8,7 @@ import (
 	"github.com/pjover/sam/internal/domain/ports"
 	"github.com/pjover/sam/internal/domain/services/common"
 	"github.com/spf13/viper"
+	"log"
 	"strconv"
 	"strings"
 )
@@ -91,33 +92,38 @@ func (b billingService) InsertConsumptions(childId int, consumptions map[string]
 func (b billingService) BillConsumptions() (string, error) {
 	fmt.Println("Facturant els consums pendents de facturar de tots els infants")
 
-	//consumptions, err := b.dbService.FindAllActiveConsumptions()
-	//if err != nil {
-	//	return "", err
-	//}
-	//
-	//invoices, customers, err := b.consumptionsToInvoices(consumptions)
-	//if err != nil {
-	//	return "", err
-	//}
+	consumptions, err := b.dbService.FindAllActiveConsumptions()
+	if err != nil {
+		return "", err
+	}
+	if len(consumptions) == 0 {
+		return "No hi han consums pendents de facturar", nil
+	}
 
-	// TODO Build invoices sequences
+	invoices, customers, err := b.consumptionsToInvoices(consumptions)
+	if err != nil {
+		return "", err
+	}
 
-	// TODO Save invoices
+	invoices, sequences, err := b.addSequencesToInvoices(invoices, customers)
+	if err != nil {
+		return "", err
+	}
 
-	// TODO Display invoices grouped by PaymentType with totals
+	consumptions = b.addInvoiceIdToConsumptions(consumptions, invoices)
 
-	url := fmt.Sprintf("%s/billing/billConsumptions", viper.GetString("urls.hobbit"))
-	var data []byte
-	return b.postManager.PrettyJson(url, data)
+	err = b.updateDatabase(consumptions, invoices, sequences)
+
+	return b.formatInvoicesGroupedByPaymentType(invoices, customers)
 }
 
-func (b billingService) consumptionsToInvoices(consumptions []model.Consumption) (invoices []model.Invoice, customers []model.Customer, err error) {
-	groupedByCustomer := b.groupConsumptionsByCustomer(consumptions)
-	for customerId, cons := range groupedByCustomer {
-		cid, _ := strconv.Atoi(customerId)
+func (b billingService) consumptionsToInvoices(consumptions []model.Consumption) (invoices []model.Invoice, customers map[string]model.Customer, err error) {
+	groupedByCustomer := b.groupConsumptions(b.groupConsumptionsByCustomer, consumptions)
+	customers = make(map[string]model.Customer)
+	for customerIdStr, cons := range groupedByCustomer {
+		customerId, _ := strconv.Atoi(customerIdStr)
 
-		customer, err := b.dbService.FindCustomer(cid)
+		customer, err := b.dbService.FindCustomer(customerId)
 		if err != nil {
 			return nil, nil, err
 		}
@@ -126,14 +132,11 @@ func (b billingService) consumptionsToInvoices(consumptions []model.Consumption)
 		if err != nil {
 			return nil, nil, err
 		}
-		customers = append(customers, customer)
+
+		customers[customerIdStr] = customer
 		invoices = append(invoices, invoice)
 	}
 	return invoices, customers, nil
-}
-
-func (b billingService) groupConsumptionsByCustomer(consumptions []model.Consumption) map[string][]model.Consumption {
-	return b.groupConsumptions(b.groupByCustomer, consumptions)
 }
 
 func (b billingService) consumptionsToInvoice(customer model.Customer, consumptions []model.Consumption) (model.Invoice, error) {
@@ -157,7 +160,7 @@ func (b billingService) consumptionsToInvoice(customer model.Customer, consumpti
 }
 
 func (b billingService) childrenLines(consumptions []model.Consumption) (lines []model.Line, childrenIds []int, err error) {
-	groupedByChild := b.groupConsumptions(b.groupByChild, consumptions)
+	groupedByChild := b.groupConsumptions(b.groupConsumptionsByChild, consumptions)
 	for childId, cons := range groupedByChild {
 		cid, _ := strconv.Atoi(childId)
 		childrenIds = append(childrenIds, cid)
@@ -171,7 +174,7 @@ func (b billingService) childrenLines(consumptions []model.Consumption) (lines [
 }
 
 func (b billingService) productLines(consumptions []model.Consumption) (lines []model.Line, err error) {
-	groupedByProduct := b.groupConsumptions(b.groupByProduct, consumptions)
+	groupedByProduct := b.groupConsumptions(b.groupConsumptionsByProduct, consumptions)
 	for productId, cons := range groupedByProduct {
 		product, err := b.dbService.FindProduct(productId)
 		if err != nil {
@@ -211,23 +214,149 @@ func (b billingService) notes(consumptions []model.Consumption) string {
 
 func (b billingService) groupConsumptions(groupBy func(consumption model.Consumption) string, consumptions []model.Consumption) map[string][]model.Consumption {
 	var auxMap = make(map[string][]model.Consumption)
-	for _, con := range consumptions {
-		var group = groupBy(con)
-		cons := auxMap[group]
-		cons = append(cons, con)
-		auxMap[group] = cons
+	for _, consumption := range consumptions {
+		var group = groupBy(consumption)
+		groupedConsumptions := auxMap[group]
+		groupedConsumptions = append(groupedConsumptions, consumption)
+		auxMap[group] = groupedConsumptions
 	}
 	return auxMap
 }
 
-func (b billingService) groupByCustomer(consumption model.Consumption) string {
+func (b billingService) groupConsumptionsByCustomer(consumption model.Consumption) string {
 	return strconv.Itoa(consumption.ChildId / 10)
 }
 
-func (b billingService) groupByChild(consumption model.Consumption) string {
+func (b billingService) groupConsumptionsByChild(consumption model.Consumption) string {
 	return strconv.Itoa(consumption.ChildId)
 }
 
-func (b billingService) groupByProduct(consumption model.Consumption) string {
+func (b billingService) groupConsumptionsByProduct(consumption model.Consumption) string {
 	return consumption.ProductId
+}
+
+func (b billingService) addSequencesToInvoices(invoices []model.Invoice, customers map[string]model.Customer) ([]model.Invoice, []model.Sequence, error) {
+	sequencesMap, err := b.getSequences()
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var outInvoices []model.Invoice
+	//TODO loop over invoices, as there's one invoice per customer
+	for customerIdStr, groupedInvoices := range b.groupInvoices(b.groupInvoicesByCustomer, invoices) {
+		customer := customers[customerIdStr]
+		for _, invoice := range groupedInvoices {
+			sequenceType := customer.InvoiceHolder.PaymentType.SequenceType()
+			sequence := sequencesMap[sequenceType.String()]
+			newSequence := model.Sequence{
+				Id:      sequenceType,
+				Counter: sequence.Counter + 1,
+			}
+			invoice.Id = fmt.Sprintf("%s-%d", newSequence.Id.Prefix(), newSequence.Counter)
+			outInvoices = append(outInvoices, invoice)
+			sequencesMap[sequenceType.String()] = newSequence
+		}
+	}
+
+	var outSequences []model.Sequence
+	for _, sequence := range sequencesMap {
+		outSequences = append(outSequences, sequence)
+	}
+
+	return outInvoices, outSequences, nil
+}
+
+func (b billingService) getSequences() (sequences map[string]model.Sequence, err error) {
+	allSequences, err := b.dbService.FindAllSequences()
+	if err != nil {
+		return nil, err
+	}
+
+	sequences = make(map[string]model.Sequence)
+	for _, sequence := range allSequences {
+		sequences[sequence.Id.String()] = sequence
+	}
+	return sequences, nil
+}
+
+func (b billingService) groupInvoices(groupBy func(invoice model.Invoice) string, invoices []model.Invoice) map[string][]model.Invoice {
+	var auxMap = make(map[string][]model.Invoice)
+	for _, invoice := range invoices {
+		var group = groupBy(invoice)
+		groupedInvoices := auxMap[group]
+		groupedInvoices = append(groupedInvoices, invoice)
+		auxMap[group] = groupedInvoices
+	}
+	return auxMap
+}
+
+func (b billingService) groupInvoicesByPaymentType(invoice model.Invoice) string {
+	return invoice.PaymentType.String()
+}
+
+func (b billingService) groupInvoicesByCustomer(invoice model.Invoice) string {
+	return strconv.Itoa(invoice.CustomerId)
+}
+
+func (b billingService) addInvoiceIdToConsumptions(consumptions []model.Consumption, invoices []model.Invoice) []model.Consumption {
+	var outConsumptions []model.Consumption
+	for _, consumption := range consumptions {
+		invoiceId := b.findInvoiceId(consumption, invoices)
+		if invoiceId == "" {
+			log.Fatalf("no s'ha trobat cap factura per al consum %s", consumption.String())
+		}
+		consumption.InvoiceId = invoiceId
+		outConsumptions = append(outConsumptions, consumption)
+	}
+	return outConsumptions
+}
+
+func (b billingService) findInvoiceId(consumption model.Consumption, invoices []model.Invoice) string {
+	customerId := consumption.ChildId / 10
+	for _, invoice := range invoices {
+		if invoice.CustomerId == customerId {
+			return invoice.Id
+		}
+	}
+	return ""
+}
+
+func (b billingService) formatInvoicesGroupedByPaymentType(invoices []model.Invoice, customers map[string]model.Customer) (string, error) {
+	var buffer bytes.Buffer
+	total := 0.0
+	for paymentType, groupedInvoices := range b.groupInvoices(b.groupInvoicesByPaymentType, invoices) {
+		subtotal := 0.0
+		for i, invoice := range groupedInvoices {
+			customerId := strconv.Itoa(invoice.CustomerId)
+			customer := customers[customerId]
+			buffer.WriteString(fmt.Sprintf(" %d. %s %s\n", i+1, customer.FirstAdultName(), invoice.String()))
+			subtotal += invoice.Amount()
+		}
+		total += subtotal
+		buffer.WriteString(fmt.Sprintf("Total %d %s: %.02f €\n", len(invoices), paymentType, subtotal))
+	}
+	buffer.WriteString(fmt.Sprintf("TOTAL: %.02f €\n", total))
+	return buffer.String(), nil
+}
+
+func (b billingService) updateDatabase(consumptions []model.Consumption, invoices []model.Invoice, sequences []model.Sequence) error {
+
+	err := b.dbService.InsertInvoices(invoices)
+	if err != nil {
+		return err
+	}
+
+	err = b.dbService.UpdateConsumptions(consumptions)
+	if err != nil {
+		// TODO Delete recently inserted invoices
+		return err
+	}
+
+	err = b.dbService.UpdateSequences(sequences)
+	if err != nil {
+		// TODO Delete recently inserted invoices
+		// TODO Remove invoiceId from recently updated consumptions
+		return err
+	}
+	return nil
 }

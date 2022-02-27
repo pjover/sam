@@ -12,3 +12,7 @@ type Consumption struct {
 	IsRectification bool                 `bson:"isRectification"`
 	InvoiceId       string               `bson:"invoiceId"`
 }
+
+func (c Consumption) GetId() interface{} {
+	return c.Id
+}
