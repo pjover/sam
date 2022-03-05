@@ -3,6 +3,7 @@ package model
 import (
 	"fmt"
 	"github.com/pjover/sam/internal/domain"
+	"sort"
 	"strings"
 )
 
@@ -34,5 +35,8 @@ func (i Invoice) LinesFmt(joinWith string) string {
 		),
 		)
 	}
+	sort.Slice(lines, func(i, j int) bool {
+		return lines[i] < lines[j]
+	})
 	return strings.Join(lines, joinWith)
 }

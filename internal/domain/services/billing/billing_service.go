@@ -8,6 +8,7 @@ import (
 	"github.com/pjover/sam/internal/domain/services/common"
 	"github.com/spf13/viper"
 	"log"
+	"sort"
 	"strconv"
 	"strings"
 )
@@ -238,28 +239,29 @@ func (b billingService) addSequencesToInvoices(invoices []model.Invoice, custome
 		return nil, nil, err
 	}
 
+	sort.Slice(invoices, func(i, j int) bool {
+		return invoices[i].CustomerId < invoices[j].CustomerId
+	})
+
 	var outInvoices []model.Invoice
-	//TODO loop over invoices, as there's one invoice per customer
-	for customerIdStr, groupedInvoices := range b.groupInvoices(b.groupInvoicesByCustomer, invoices) {
+	for _, invoice := range invoices {
+		customerIdStr := strconv.Itoa(invoice.CustomerId)
 		customer := customers[customerIdStr]
-		for _, invoice := range groupedInvoices {
-			sequenceType := customer.InvoiceHolder.PaymentType.SequenceType()
-			sequence := sequencesMap[sequenceType.String()]
-			newSequence := model.Sequence{
-				Id:      sequenceType,
-				Counter: sequence.Counter + 1,
-			}
-			invoice.Id = fmt.Sprintf("%s-%d", newSequence.Id.Prefix(), newSequence.Counter)
-			outInvoices = append(outInvoices, invoice)
-			sequencesMap[sequenceType.String()] = newSequence
+		sequenceType := customer.InvoiceHolder.PaymentType.SequenceType()
+		sequence := sequencesMap[sequenceType.String()]
+		newSequence := model.Sequence{
+			Id:      sequenceType,
+			Counter: sequence.Counter + 1,
 		}
+		invoice.Id = fmt.Sprintf("%s-%d", newSequence.Id.Prefix(), newSequence.Counter)
+		outInvoices = append(outInvoices, invoice)
+		sequencesMap[sequenceType.String()] = newSequence
 	}
 
 	var outSequences []model.Sequence
 	for _, sequence := range sequencesMap {
 		outSequences = append(outSequences, sequence)
 	}
-
 	return outInvoices, outSequences, nil
 }
 
@@ -305,6 +307,7 @@ func (b billingService) addInvoiceIdToConsumptions(consumptions []model.Consumpt
 		consumption.InvoiceId = invoiceId
 		outConsumptions = append(outConsumptions, consumption)
 	}
+
 	return outConsumptions
 }
 
