@@ -354,6 +354,20 @@ func (_m *DbService) SearchCustomers(searchText string) ([]model.Customer, error
 	return r0, r1
 }
 
+// UpdateConsumptions provides a mock function with given fields: consumptions
+func (_m *DbService) UpdateConsumptions(consumptions []model.Consumption) error {
+	ret := _m.Called(consumptions)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func([]model.Consumption) error); ok {
+		r0 = rf(consumptions)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
 // UpdateSequences provides a mock function with given fields: sequences
 func (_m *DbService) UpdateSequences(sequences []model.Sequence) error {
 	ret := _m.Called(sequences)

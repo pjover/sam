@@ -3,7 +3,6 @@ package billing
 import (
 	"bytes"
 	"fmt"
-	"github.com/pjover/sam/internal/adapters/hobbit"
 	"github.com/pjover/sam/internal/domain/model"
 	"github.com/pjover/sam/internal/domain/ports"
 	"github.com/pjover/sam/internal/domain/services/common"
@@ -19,18 +18,16 @@ type BillingService interface {
 }
 
 type billingService struct {
-	cfgService  ports.ConfigService
-	dbService   ports.DbService
-	osService   ports.OsService
-	postManager hobbit.HttpPostManager
+	cfgService ports.ConfigService
+	dbService  ports.DbService
+	osService  ports.OsService
 }
 
-func NewBillingService(cfgService ports.ConfigService, dbService ports.DbService, osService ports.OsService, postManager hobbit.HttpPostManager) BillingService {
+func NewBillingService(cfgService ports.ConfigService, dbService ports.DbService, osService ports.OsService) BillingService {
 	return billingService{
-		cfgService:  cfgService,
-		dbService:   dbService,
-		osService:   osService,
-		postManager: postManager,
+		cfgService: cfgService,
+		dbService:  dbService,
+		osService:  osService,
 	}
 }
 

@@ -5,6 +5,7 @@ import (
 	"github.com/pjover/sam/internal/domain/model/payment_type"
 	"github.com/pjover/sam/internal/domain/ports/mocks"
 	"github.com/stretchr/testify/assert"
+	"sort"
 	"testing"
 	"time"
 )
@@ -109,7 +110,7 @@ func Test_billingService_consumptionsToInvoices(t *testing.T) {
 		name          string
 		consumptions  []model.Consumption
 		wantInvoices  []model.Invoice
-		wantCustomers []model.Customer
+		wantCustomers map[string]model.Customer
 	}{
 		{
 			name:         "without rectification",
@@ -163,9 +164,9 @@ func Test_billingService_consumptionsToInvoices(t *testing.T) {
 					Note:        "Note 5",
 				},
 			},
-			wantCustomers: []model.Customer{
-				customer185,
-				customer186,
+			wantCustomers: map[string]model.Customer{
+				"185": customer185,
+				"186": customer186,
 			},
 		},
 	}
@@ -192,41 +193,11 @@ func Test_billingService_consumptionsToInvoices(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 
 			gotInvoices, gotCustomers, _ := sut.consumptionsToInvoices(tt.consumptions)
+			sort.Slice(gotInvoices, func(i, j int) bool {
+				return gotInvoices[i].CustomerId < gotInvoices[j].CustomerId
+			})
 			assert.Equal(t, tt.wantInvoices, gotInvoices)
 			assert.Equal(t, tt.wantCustomers, gotCustomers)
-		})
-	}
-}
-
-func Test_billingService_groupConsumptionsByCustomer(t *testing.T) {
-	tests := []struct {
-		name         string
-		consumptions []model.Consumption
-		want         map[string][]model.Consumption
-	}{
-		{
-			name:         "group no rectification consumptions",
-			consumptions: noRectificationConsumptions,
-			want: map[string][]model.Consumption{
-				"185": {
-					noRectificationConsumptions[0],
-					noRectificationConsumptions[1],
-					noRectificationConsumptions[2],
-					noRectificationConsumptions[3],
-				},
-				"186": {
-					noRectificationConsumptions[4],
-					noRectificationConsumptions[5],
-					noRectificationConsumptions[6],
-				},
-			},
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			b := billingService{}
-			got := b.groupConsumptionsByCustomer(tt.consumptions)
-			assert.Equal(t, tt.want, got)
 		})
 	}
 }
