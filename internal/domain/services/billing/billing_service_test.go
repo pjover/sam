@@ -100,6 +100,10 @@ var sequences = []model.Sequence{
 		sequence_type.StandardInvoice,
 		188,
 	},
+	{
+		sequence_type.RectificationInvoice,
+		10,
+	},
 }
 
 var customer185 = model.Customer{
@@ -146,7 +150,7 @@ var productYYY = model.Product{
 	TaxPercentage: 0.0,
 }
 
-func Test_billingService_BillConsumptions(t *testing.T) {
+func Test_BillConsumptions_without_rectification(t *testing.T) {
 	tests := []struct {
 		name    string
 		want    string
@@ -194,7 +198,7 @@ func Test_billingService_BillConsumptions(t *testing.T) {
 	}
 }
 
-func Test_billingService_BillConsumptions_with_rectification(t *testing.T) {
+func Test_BillConsumptions_with_rectification(t *testing.T) {
 	tests := []struct {
 		name    string
 		want    string
@@ -202,9 +206,10 @@ func Test_billingService_BillConsumptions_with_rectification(t *testing.T) {
 	}{
 		{
 			name: "BillConsumptions",
-			want: " 1. Cara Santamaria 185  F-189  2022-02    40.00  Rebut  2.0 TST (21.80),2.0 XXX (18.20)\n" +
-				" 2. Bob Novella 186  F-190  2022-02    21.80  Rebut  2.0 TST (21.80)\n" +
-				"Total 2 Rebut: 61.80 €\n" +
+			want: " 1. Cara Santamaria 185  F-189  2022-02    83.60  Rebut  2.0 TST (21.80),2.0 XXX (18.20),4.0 TST (43.60)\n" +
+				" 2. Cara Santamaria 185  R-11  2022-02   -43.60  Rebut  -4.0 TST (-43.60)\n" +
+				" 3. Bob Novella 186  F-190  2022-02    21.80  Rebut  2.0 TST (21.80)\n" +
+				"Total 3 Rebut: 61.80 €\n" +
 				"TOTAL: 61.80 €\n",
 			wantErr: nil,
 		},

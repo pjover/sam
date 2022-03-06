@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"github.com/pjover/sam/internal/domain/model"
+	"github.com/pjover/sam/internal/domain/model/sequence_type"
 	"github.com/pjover/sam/internal/domain/ports"
 	"github.com/pjover/sam/internal/domain/services/common"
 	"github.com/spf13/viper"
@@ -126,15 +127,45 @@ func (b billingService) consumptionsToInvoices(consumptions []model.Consumption)
 			return nil, nil, err
 		}
 
-		invoice, err := b.consumptionsToInvoice(customer, cons)
+		consumptionsWithoutRectification, consumptionsWithRectification := b.splitConsumptions(cons)
+
+		invoices, err = b.addInvoiceIfHasConsumptions(invoices, customer, consumptionsWithoutRectification, false)
+		if err != nil {
+			return nil, nil, err
+		}
+
+		invoices, err = b.addInvoiceIfHasConsumptions(invoices, customer, consumptionsWithRectification, true)
 		if err != nil {
 			return nil, nil, err
 		}
 
 		customers[customerIdStr] = customer
-		invoices = append(invoices, invoice)
+
 	}
 	return invoices, customers, nil
+}
+
+func (b billingService) addInvoiceIfHasConsumptions(invoices []model.Invoice, customer model.Customer, consumptions []model.Consumption, isRectification bool) ([]model.Invoice, error) {
+	if len(consumptions) > 0 {
+		invoice, err := b.consumptionsToInvoice(customer, consumptions)
+		invoice.Id = fmt.Sprintf("TMP_ID_RECTIFICATION=%v", isRectification)
+		if err != nil {
+			return nil, err
+		}
+		invoices = append(invoices, invoice)
+	}
+	return invoices, nil
+}
+
+func (b billingService) splitConsumptions(consumptions []model.Consumption) (consumptionsWithoutRectification []model.Consumption, consumptionsWithRectification []model.Consumption) {
+	for _, consumption := range consumptions {
+		if consumption.IsRectification {
+			consumptionsWithRectification = append(consumptionsWithRectification, consumption)
+		} else {
+			consumptionsWithoutRectification = append(consumptionsWithoutRectification, consumption)
+		}
+	}
+	return consumptionsWithoutRectification, consumptionsWithRectification
 }
 
 func (b billingService) consumptionsToInvoice(customer model.Customer, consumptions []model.Consumption) (model.Invoice, error) {
@@ -247,7 +278,7 @@ func (b billingService) addSequencesToInvoices(invoices []model.Invoice, custome
 	for _, invoice := range invoices {
 		customerIdStr := strconv.Itoa(invoice.CustomerId)
 		customer := customers[customerIdStr]
-		sequenceType := customer.InvoiceHolder.PaymentType.SequenceType()
+		sequenceType := b.getSequenceType(invoice, customer)
 		sequence := sequencesMap[sequenceType.String()]
 		newSequence := model.Sequence{
 			Id:      sequenceType,
@@ -263,6 +294,14 @@ func (b billingService) addSequencesToInvoices(invoices []model.Invoice, custome
 		outSequences = append(outSequences, sequence)
 	}
 	return outInvoices, outSequences, nil
+}
+
+func (b billingService) getSequenceType(invoice model.Invoice, customer model.Customer) sequence_type.SequenceType {
+	if invoice.Id == "TMP_ID_RECTIFICATION=true" {
+		return sequence_type.RectificationInvoice
+	} else {
+		return customer.InvoiceHolder.PaymentType.SequenceType()
+	}
 }
 
 func (b billingService) getSequences() (sequences map[string]model.Sequence, err error) {
