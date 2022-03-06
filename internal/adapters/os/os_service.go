@@ -42,7 +42,6 @@ func (o osService) CreateDirectory(dirPath string) error {
 	if err != nil {
 		return err
 	}
-
 	return nil
 }
 
@@ -119,7 +118,7 @@ func (o osService) addFileToZip(zipWriter *zip.Writer, filePath string) error {
 		}
 	}(fileToZip)
 
-	// Get the file information
+	// GetString the file information
 	info, err := fileToZip.Stat()
 	if err != nil {
 		return err

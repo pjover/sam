@@ -2,6 +2,7 @@ package model
 
 import (
 	"fmt"
+	"github.com/pjover/sam/internal/domain/model/payment_type"
 	"strings"
 )
 
@@ -23,7 +24,7 @@ func (c Customer) FirstAdultName() string {
 	return fmt.Sprintf("%s %s", adult.Name, adult.Surname)
 }
 
-func (c Customer) FirstAdultNameWithCode() string {
+func (c Customer) FirstAdultNameWithId() string {
 	adult := c.FirstAdult()
 	return fmt.Sprintf("%s %s (%d)", adult.Name, adult.Surname, c.Id)
 }
@@ -31,32 +32,32 @@ func (c Customer) FirstAdultNameWithCode() string {
 func (c Customer) ChildrenNames(joinWith string) string {
 	var names []string
 	for _, child := range c.Children {
-		names = append(names, child.NameWithCode())
+		names = append(names, child.NameWithId())
 	}
 	return strings.Join(names, joinWith)
 }
 
 func (c Child) String() string {
-	return fmt.Sprintf("%d  %-30s  %s  %s", c.Code, c.NameAndSurname(), c.Group, c.BirthDate.Format("2006-01-02"))
+	return fmt.Sprintf("%d  %-30s  %s  %s", c.Id, c.NameAndSurname(), c.Group, c.BirthDate.Format("2006-01-02"))
 }
 
 func (c Child) NameAndSurname() string {
 	return fmt.Sprintf("%s %s", c.Name, c.Surname)
 }
 
-func (c Child) NameWithCode() string {
-	return fmt.Sprintf("%s %s (%d)", c.Name, c.Surname, c.Code)
+func (c Child) NameWithId() string {
+	return fmt.Sprintf("%s %s (%d)", c.Name, c.Surname, c.Id)
 }
 
 func (i InvoiceHolder) PaymentInfoFmt() string {
 	switch i.PaymentType {
-	case "BANK_DIRECT_DEBIT":
+	case payment_type.BankDirectDebit:
 		return fmt.Sprintf("Rebut %s", i.BankAccountFmt())
-	case "BANK_TRANSFER":
+	case payment_type.BankTransfer:
 		return fmt.Sprintf("Trans. %s", i.BankAccountFmt())
-	case "CASH":
+	case payment_type.Cash:
 		return "Efectiu"
-	case "VOUCHER":
+	case payment_type.Voucher:
 		return "Xec escoleta"
 	default:
 		return "Indefinit"

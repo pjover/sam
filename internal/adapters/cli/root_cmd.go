@@ -21,9 +21,18 @@ func NewCmdManager(cfgService ports.ConfigService) CmdManager {
 	// RootCmd represents the base command when called without any subcommands
 	rootCmd := &cobra.Command{
 		Use:   "sam",
-		Short: "A Command Line Interface to Hobbit service",
-		Long: `A Command Line Interface to Hobbit service in Go.
-	Complete documentation is available at https://github.com/pjover/sam`,
+		Short: "Gestor de facturació de Hobbiton",
+		Long: `Gestor de facturació de Hobbiton (+ info: https://github.com/pjover/sam)
+
+El cicle normal es:
+  1. insertaConsums: insertar consums
+  2. llistaConsums: resum de consums per comprovar els totals
+  3. facturaConsums: converteix els consums a factures
+  4. generaFactures: generar els PDFs de les factures
+  5. generaInformeMes: per crear el PDF amb el resum de les factures
+  6. generaRebuts: per generar el fitxer de rebuts que després pujarem a CaixaBank
+  7. pujar el fitxer de rebuts a CaixaBanc i signar l'operació amb CaixaSign
+`,
 		Version: domain.Version,
 	}
 	cobra.OnInitialize(cfgService.Init)

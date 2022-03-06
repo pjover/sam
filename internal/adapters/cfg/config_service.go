@@ -18,11 +18,11 @@ func NewConfigService() ports.ConfigService {
 	return service
 }
 
-func (c configService) Get(key string) string {
+func (c configService) GetString(key string) string {
 	return viper.GetString(key)
 }
 
-func (c configService) Set(key string, value string) error {
+func (c configService) SetString(key string, value string) error {
 	viper.Set(key, value)
 	return viper.WriteConfig()
 }

@@ -21,7 +21,7 @@ func Test_GenerateSingleInvoiceCmd(t *testing.T) {
 		wantErr   error
 	}{
 		{
-			"Accepts invoice code",
+			"Accepts invoice id",
 			args{[]string{"f-3945"}},
 			"F-3945",
 			"Generant la factura F-3945",

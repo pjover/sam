@@ -2,7 +2,7 @@ package dbo
 
 import "github.com/pjover/sam/internal/domain/model"
 
-func ConvertProduct(product Product) model.Product {
+func ConvertProductToModel(product Product) model.Product {
 	return model.Product{
 		Id:            product.Id,
 		Name:          product.Name,
@@ -13,10 +13,10 @@ func ConvertProduct(product Product) model.Product {
 	}
 }
 
-func ConvertProducts(products []Product) []model.Product {
+func ConvertProductsToModel(products []Product) []model.Product {
 	var out []model.Product
 	for _, product := range products {
-		out = append(out, ConvertProduct(product))
+		out = append(out, ConvertProductToModel(product))
 	}
 	return out
 }

@@ -17,21 +17,21 @@ func NewListService(dbService ports.DbService) ports.ListService {
 	}
 }
 
-func (l listService) ListCustomerInvoices(customerCode int) (string, error) {
-	invoices, err := l.dbService.FindInvoicesByCustomer(customerCode)
+func (l listService) ListCustomerInvoices(customerId int) (string, error) {
+	invoices, err := l.dbService.FindInvoicesByCustomer(customerId)
 	if err != nil {
 		return "", err
 	}
-	titleMessage := fmt.Sprintf("Lists of customer %d invoices:", customerCode)
+	titleMessage := fmt.Sprintf("Lists of customer %d invoices:", customerId)
 	return listInvoices(titleMessage, invoices)
 }
 
-func (l listService) ListCustomerYearMonthInvoices(customerCode int, yearMonth string) (string, error) {
-	invoices, err := l.dbService.FindInvoicesByCustomerAndYearMonth(customerCode, yearMonth)
+func (l listService) ListCustomerYearMonthInvoices(customerId int, yearMonth string) (string, error) {
+	invoices, err := l.dbService.FindInvoicesByCustomerAndYearMonth(customerId, yearMonth)
 	if err != nil {
 		return "", err
 	}
-	titleMessage := fmt.Sprintf("Lists of customer %d and %s year-month invoices:", customerCode, yearMonth)
+	titleMessage := fmt.Sprintf("Lists of customer %d and %s year-month invoices:", customerId, yearMonth)
 	return listInvoices(titleMessage, invoices)
 }
 
@@ -148,25 +148,49 @@ func (l listService) ListGroupMails(group string) (string, error) {
 }
 
 func (l listService) ListConsumptions() (string, error) {
-	consumptions, err := l.dbService.FindAllConsumptions()
+	consumptions, err := l.dbService.FindAllActiveConsumptions()
 	if err != nil {
 		return "", err
 	}
-	return l.printConsumptions(consumptions)
-}
 
-func (l listService) ListChildConsumptions(childCode int) (string, error) {
-	consumptions, err := l.dbService.FindChildConsumptions(childCode)
+	children, err := l.dbService.FindActiveChildren()
 	if err != nil {
 		return "", err
 	}
-	return l.printConsumptions(consumptions)
-}
+	products, err := l.dbService.FindAllProducts()
+	if err != nil {
+		return "", err
+	}
 
-func (l listService) printConsumptions(consumptions []model.Consumption) (string, error) {
 	var buffer bytes.Buffer
-	for _, consumption := range consumptions {
-		buffer.WriteString(consumption.String() + "\n")
+	for _, child := range children {
+		var cons []model.Consumption
+		for _, c := range consumptions {
+			if c.ChildId == child.Id {
+				cons = append(cons, c)
+			}
+		}
+		if len(cons) > 0 {
+			buffer.WriteString(model.ConsumptionListToString(consumptions, child, products))
+		}
 	}
 	return buffer.String(), nil
+}
+
+func (l listService) ListChildConsumptions(childId int) (string, error) {
+	consumptions, err := l.dbService.FindActiveChildConsumptions(childId)
+	if err != nil {
+		return "", err
+	}
+
+	child, err := l.dbService.FindChild(childId)
+	if err != nil {
+		return "", err
+	}
+	products, err := l.dbService.FindAllProducts()
+	if err != nil {
+		return "", err
+	}
+
+	return model.ConsumptionListToString(consumptions, child, products), nil
 }

@@ -22,11 +22,10 @@ func NewAdminService(configService ports.ConfigService, osService ports.OsServic
 		osService:     osService,
 		langService:   langService,
 	}
-	msg, err := service.CreateWorkingDirectory()
+	_, err := service.CreateWorkingDirectory()
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(msg)
 	return service
 }
 
@@ -69,7 +68,7 @@ func (a adminService) Backup() (string, error) {
 }
 
 func (a adminService) getZipFilePath() (string, error) {
-	backupDir := a.configService.Get("dirs.backup")
+	backupDir := a.configService.GetString("dirs.backup")
 	exists, err := a.osService.ItemExists(backupDir)
 	if err != nil {
 		return "", err
@@ -88,7 +87,7 @@ func (a adminService) CreateWorkingDirectory() (string, error) {
 	yearMonth := workingTime.Format("2006-01")
 	dirName := a.langService.WorkingDir(workingTime)
 
-	dirPath := path.Join(a.configService.Get("dirs.home"), dirName)
+	dirPath := path.Join(a.configService.GetString("dirs.home"), dirName)
 	exists, err := a.osService.ItemExists(dirPath)
 	if err != nil {
 		return "", err
@@ -139,10 +138,10 @@ func (a adminService) getWorkingTime() time.Time {
 }
 
 func (a adminService) updateConfig(yearMonth string, dirName string) error {
-	if err := a.configService.Set("yearMonth", yearMonth); err != nil {
+	if err := a.configService.SetString("yearMonth", yearMonth); err != nil {
 		return err
 	}
-	if err := a.configService.Set("dirs.current", dirName); err != nil {
+	if err := a.configService.SetString("dirs.current", dirName); err != nil {
 		return err
 	}
 	return nil

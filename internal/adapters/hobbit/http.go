@@ -71,7 +71,7 @@ func processError(url string, body []byte, response *http.Response) ([]byte, err
 	if bodyText == "" {
 		bodyText = "<empty>"
 	}
-	return nil, fmt.Errorf("Error %d (%s) al cridar a %s", response.StatusCode, bodyText, url)
+	return nil, fmt.Errorf("error %d (%s) al cridar a %s", response.StatusCode, bodyText, url)
 }
 
 func (s SamHttpGetManager) PrettyJson(url string) (string, error) {

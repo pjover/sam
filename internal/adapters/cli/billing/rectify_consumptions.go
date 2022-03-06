@@ -1,25 +1,26 @@
-package consum
+package billing
 
 import (
 	"fmt"
 	"github.com/pjover/sam/internal/adapters/cli"
-	"github.com/pjover/sam/internal/adapters/hobbit"
-	"github.com/pjover/sam/internal/domain/ports"
-
-	"github.com/pjover/sam/internal/consum"
+	"github.com/pjover/sam/internal/domain/services/billing"
 	"github.com/spf13/cobra"
 )
 
 var rconNote string
 
-func NewRectifyConsumptionsCmd(httpPostManager hobbit.HttpPostManager, dbService ports.DbService) *cobra.Command {
-	command := newRectifyConsumptionsCmd(consum.NewRectifyConsumptionsManager(httpPostManager, dbService))
-	command.Flags().StringVarP(&rconNote, "nota", "n", "", "Afegeix una nota al consum")
-	return command
+type rectifyConsumptionsCmd struct {
+	service billing.BillingService
 }
 
-func newRectifyConsumptionsCmd(manager consum.CustomerConsumptionsManager) *cobra.Command {
-	return &cobra.Command{
+func NewRectifyConsumptionsCmd(service billing.BillingService) cli.Cmd {
+	return rectifyConsumptionsCmd{
+		service: service,
+	}
+}
+
+func (i rectifyConsumptionsCmd) Cmd() *cobra.Command {
+	command := &cobra.Command{
 		Use:   "rectificaConsums codiInfant unitats codiProducte [unitats codiProducte ...] [-n nota]",
 		Short: "Rectifica els consums d'un infant",
 		Long: `Rectifica els consums d'un infant al mes de treball
@@ -42,12 +43,12 @@ func newRectifyConsumptionsCmd(manager consum.CustomerConsumptionsManager) *cobr
 		},
 		Args: cli.MinimumNArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			ica, err := parseInsertConsumptionsArgs(args, rconNote)
+			id, consumptions, note, err := parseConsumptionsArgs(args, rconNote)
 			if err != nil {
 				return err
 			}
 
-			msg, err := manager.Run(ica)
+			msg, err := i.service.RectifyConsumptions(id, consumptions, note)
 			if err != nil {
 				return err
 			}
@@ -56,4 +57,6 @@ func newRectifyConsumptionsCmd(manager consum.CustomerConsumptionsManager) *cobr
 			return nil
 		},
 	}
+	command.Flags().StringVarP(&rconNote, "nota", "n", "", "Afegeix una nota al consum")
+	return command
 }

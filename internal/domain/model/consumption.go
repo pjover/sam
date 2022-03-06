@@ -1,11 +1,14 @@
 package model
 
+const ConsumptionIdLength = 8
+
 type Consumption struct {
-	Code            string
-	ChildCode       int
-	ProductID       string
+	Id              string
+	ChildId         int
+	ProductId       string
 	Units           float64
 	YearMonth       string
+	Note            string
 	IsRectification bool
-	InvoiceCode     string
+	InvoiceId       string
 }

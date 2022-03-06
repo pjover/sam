@@ -9,8 +9,8 @@ import (
 
 var onlyNew bool
 
-func NewGenerateMonthInvoicesCmd() *cobra.Command {
-	command := newGenerateMonthInvoicesCmd(invoices.NewMonthInvoicesGenerator())
+func NewGenerateMonthInvoicesCmd(generator invoices.MonthInvoicesGenerator) *cobra.Command {
+	command := newGenerateMonthInvoicesCmd(generator)
 	command.Flags().BoolVarP(&onlyNew, "nomes_noves", "n", true, "Genera les factures noves, que no s'han generat abans")
 	return command
 }

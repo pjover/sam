@@ -1,7 +1,7 @@
 package ports
 
 type EditService interface {
-	EditCustomer(code int) (string, error)
-	EditInvoice(code string) (string, error)
-	EditProduct(code string) (string, error)
+	EditCustomer(id int) (string, error)
+	EditInvoice(id string) (string, error)
+	EditProduct(id string) (string, error)
 }

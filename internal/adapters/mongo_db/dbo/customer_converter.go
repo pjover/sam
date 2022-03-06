@@ -2,9 +2,11 @@ package dbo
 
 import (
 	"github.com/pjover/sam/internal/domain/model"
+	"github.com/pjover/sam/internal/domain/model/payment_type"
+	"strings"
 )
 
-func ConvertCustomer(customer Customer) model.Customer {
+func ConvertCustomerToModel(customer Customer) model.Customer {
 	return model.Customer{
 		Id:            customer.Id,
 		Active:        customer.Active,
@@ -26,7 +28,7 @@ func children(children []Child) []model.Child {
 
 func child(child Child) model.Child {
 	return model.Child{
-		Code:          child.Code,
+		Id:            child.Id,
 		Name:          child.Name,
 		Surname:       child.Surname,
 		SecondSurname: child.SecondSurname,
@@ -81,16 +83,34 @@ func holder(holder InvoiceHolder) model.InvoiceHolder {
 		Address:     address(holder.Address),
 		Email:       holder.Email,
 		SendEmail:   holder.SendEmail,
-		PaymentType: holder.PaymentType,
+		PaymentType: newPaymentType(holder.PaymentType),
 		BankAccount: holder.BankAccount,
 		IsBusiness:  holder.IsBusiness,
 	}
 }
 
-func ConvertCustomers(customers []Customer) []model.Customer {
+func ConvertCustomersToModel(customers []Customer) []model.Customer {
 	var out []model.Customer
 	for _, customer := range customers {
-		out = append(out, ConvertCustomer(customer))
+		out = append(out, ConvertCustomerToModel(customer))
 	}
 	return out
+}
+
+func newPaymentType(value string) payment_type.PaymentType {
+	var _values = []string{
+		"",
+		"BANK_DIRECT_DEBIT",
+		"BANK_TRANSFER",
+		"VOUCHER",
+		"CASH",
+		"RECTIFICATION",
+	}
+	value = strings.ToLower(value)
+	for i, val := range _values {
+		if strings.ToLower(val) == value {
+			return payment_type.PaymentType(i)
+		}
+	}
+	return payment_type.Invalid
 }

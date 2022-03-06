@@ -1,8 +1,8 @@
 package ports
 
 type ListService interface {
-	ListCustomerInvoices(customerCode int) (string, error)
-	ListCustomerYearMonthInvoices(customerCode int, yearMonth string) (string, error)
+	ListCustomerInvoices(customerId int) (string, error)
+	ListCustomerYearMonthInvoices(customerId int, yearMonth string) (string, error)
 	ListProducts() (string, error)
 	ListYearMonthInvoices(yearMonth string) (string, error)
 	ListCustomers() (string, error)
@@ -11,5 +11,5 @@ type ListService interface {
 	ListMailsByLanguage() (string, error)
 	ListGroupMails(group string) (string, error)
 	ListConsumptions() (string, error)
-	ListChildConsumptions(childCode int) (string, error)
+	ListChildConsumptions(childId int) (string, error)
 }

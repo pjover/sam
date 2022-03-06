@@ -2,13 +2,13 @@ package di
 
 import (
 	"github.com/pjover/sam/internal/adapters/cli"
-	"github.com/pjover/sam/internal/adapters/hobbit"
 	"github.com/pjover/sam/internal/adapters/mongo_db"
 	"github.com/pjover/sam/internal/adapters/os"
-	"github.com/pjover/sam/internal/cmd/consum"
 	"github.com/pjover/sam/internal/cmd/generate"
 	"github.com/pjover/sam/internal/domain/ports"
 	"github.com/pjover/sam/internal/domain/services/lang"
+	"github.com/pjover/sam/internal/generate/bbd"
+	"github.com/pjover/sam/internal/generate/invoices"
 )
 
 func MainDI(configService ports.ConfigService, cmdManager cli.CmdManager) {
@@ -23,14 +23,10 @@ func MainDI(configService ports.ConfigService, cmdManager cli.CmdManager) {
 	generateServiceDI(configService, langService, dbService, cmdManager)
 	listServiceDI(dbService, cmdManager, osService)
 	searchServiceDI(dbService, cmdManager)
+	billingServiceDI(configService, dbService, osService, cmdManager)
 
 	// TODO move to DI and remove method AddTmpCommand
-	httpPostManager := hobbit.NewHttpPostManager()
-	cmdManager.AddTmpCommand(consum.NewBillConsumptionsCmd(httpPostManager, dbService))
-	cmdManager.AddTmpCommand(consum.NewInsertConsumptionsCmd(httpPostManager, dbService))
-	cmdManager.AddTmpCommand(consum.NewRectifyConsumptionsCmd(httpPostManager, dbService))
-
-	cmdManager.AddTmpCommand(generate.NewGenerateBddCmd())
-	cmdManager.AddTmpCommand(generate.NewGenerateMonthInvoicesCmd())
-	cmdManager.AddTmpCommand(generate.NewGenerateSingleInvoiceCmd())
+	cmdManager.AddTmpCommand(generate.NewGenerateBddCmd(bbd.NewBddGenerator()))
+	cmdManager.AddTmpCommand(generate.NewGenerateMonthInvoicesCmd(invoices.NewMonthInvoicesGenerator()))
+	cmdManager.AddTmpCommand(generate.NewGenerateSingleInvoiceCmd(invoices.NewSingleInvoiceGenerator()))
 }

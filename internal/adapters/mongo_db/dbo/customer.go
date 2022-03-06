@@ -1,6 +1,8 @@
 package dbo
 
-import "time"
+import (
+	"time"
+)
 
 type Customer struct {
 	Id            int           `bson:"_id"`
@@ -13,7 +15,7 @@ type Customer struct {
 }
 
 type Child struct {
-	Code          int       `bson:"code"`
+	Id            int       `bson:"code"`
 	Name          string    `bson:"name"`
 	Surname       string    `bson:"surname"`
 	SecondSurname string    `bson:"secondSurname"`
@@ -59,4 +61,8 @@ type InvoiceHolder struct {
 	PaymentType string  `bson:"paymentType"`
 	BankAccount string  `bson:"bankAccount"`
 	IsBusiness  bool    `bson:"isBusiness"`
+}
+
+func (c Customer) GetId() interface{} {
+	return c.Id
 }

@@ -38,12 +38,12 @@ func (e displayProductCmd) Cmd() *cobra.Command {
 		},
 		Args: cli.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			code, err := cli.ParseProductCode(args[0])
+			id, err := cli.ParseProductId(args[0])
 			if err != nil {
 				return err
 			}
 
-			msg, err := e.displayService.DisplayProduct(code)
+			msg, err := e.displayService.DisplayProduct(id)
 			if msg != "" {
 				fmt.Println(msg)
 			}

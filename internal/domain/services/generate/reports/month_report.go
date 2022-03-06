@@ -49,7 +49,7 @@ func (m MonthReport) Run() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	filePath := path.Join(wd, m.configService.Get("files.invoicesReport"))
+	filePath := path.Join(wd, m.configService.GetString("files.invoicesReport"))
 
 	reportInfo := ReportInfo{
 		consts.Landscape,
@@ -92,17 +92,17 @@ func (m MonthReport) buildContents(invoices []model.Invoice) ([][]string, error)
 	for _, invoice := range invoices {
 		customer, err := m.customer(invoice)
 		if err != nil {
-			return nil, fmt.Errorf("error al recuperar el client %d de la factura %s: %s", invoice.CustomerID, invoice.Code, err)
+			return nil, fmt.Errorf("error al recuperar el client %d de la factura %s: %s", invoice.CustomerId, invoice.Id, err)
 		}
 
 		var line = []string{
-			invoice.Code,
+			invoice.Id,
 			invoice.DateFmt(),
-			customer.FirstAdultNameWithCode(),
+			customer.FirstAdultNameWithId(),
 			customer.ChildrenNames("\n"),
 			invoice.LinesFmt(", "),
 			fmt.Sprintf("%.2f", invoice.Amount()),
-			invoice.PaymentFmt(),
+			invoice.PaymentType.String(),
 		}
 		contents = append(contents, line)
 	}
@@ -113,7 +113,7 @@ func (m MonthReport) buildContents(invoices []model.Invoice) ([][]string, error)
 }
 
 func (m MonthReport) getMonth() (string, time.Time) {
-	yearMonth := m.configService.Get("yearMonth")
+	yearMonth := m.configService.GetString("yearMonth")
 	month, err := time.Parse(domain.YearMonthLayout, yearMonth)
 	if err != nil {
 		log.Fatal(fmt.Errorf("format incorrecte a la variable de configuració yearMonth '%s': %s", yearMonth, err))
@@ -122,7 +122,7 @@ func (m MonthReport) getMonth() (string, time.Time) {
 }
 
 func (m MonthReport) customer(invoice model.Invoice) (model.Customer, error) {
-	customer, err := m.dbService.FindCustomer(invoice.CustomerID)
+	customer, err := m.dbService.FindCustomer(invoice.CustomerId)
 	if err != nil {
 		return model.Customer{}, err
 	}

@@ -39,8 +39,8 @@ func (e displayInvoiceCmd) Cmd() *cobra.Command {
 		},
 		Args: cli.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			code := strings.ToUpper(args[0])
-			msg, err := e.displayService.DisplayInvoice(code)
+			id := strings.ToUpper(args[0])
+			msg, err := e.displayService.DisplayInvoice(id)
 			if msg != "" {
 				fmt.Println(msg)
 			}

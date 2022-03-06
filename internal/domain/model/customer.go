@@ -1,9 +1,12 @@
 package model
 
-import "time"
+import (
+	"github.com/pjover/sam/internal/domain/model/payment_type"
+	"time"
+)
 
 type Child struct {
-	Code          int
+	Id            int
 	Name          string
 	Surname       string
 	SecondSurname string
@@ -44,7 +47,7 @@ type InvoiceHolder struct {
 	Address     Address
 	Email       string
 	SendEmail   bool
-	PaymentType string
+	PaymentType payment_type.PaymentType
 	BankAccount string
 	IsBusiness  bool
 }

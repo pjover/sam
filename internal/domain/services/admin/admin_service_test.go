@@ -13,8 +13,8 @@ import (
 
 func Test_CreateDirectory_exists(t *testing.T) {
 	mockedConfigService := new(mocks.ConfigService)
-	mockedConfigService.On("Get", "dirs.home").Return("/fake/dir")
-	mockedConfigService.On("Set", mock.Anything, mock.Anything).Return(nil)
+	mockedConfigService.On("GetString", "dirs.home").Return("/fake/dir")
+	mockedConfigService.On("SetString", mock.Anything, mock.Anything).Return(nil)
 	mockedOsService := new(mocks.OsService)
 	mockedOsService.On("Now").Return(time.Date(2021, time.October, 31, 21, 14, 0, 0, time.UTC))
 	mockedOsService.On("ItemExists", mock.Anything).Return(true, nil)
@@ -23,15 +23,15 @@ func Test_CreateDirectory_exists(t *testing.T) {
 
 	t.Run("Should not create the directory if exists", func(t *testing.T) {
 		msg, err := sut.CreateWorkingDirectory()
-		assert.Equal(t, fmt.Sprintf("%sSam v%s    [/fake/dir/211000-Factures del mes d'Octubre]%s", domain.ColorGreen, domain.Version, domain.ColorReset), msg)
+		assert.Equal(t, fmt.Sprintf("%sSam v%s    /fake/dir/211000-Factures del mes d'Octubre%s", domain.ColorRed, domain.Version, domain.ColorReset), msg)
 		assert.Equal(t, nil, err)
 	})
 }
 
 func Test_CreateDirectory_does_not_exists(t *testing.T) {
 	mockedConfigService := new(mocks.ConfigService)
-	mockedConfigService.On("Get", "dirs.home").Return("/fake/dir")
-	mockedConfigService.On("Set", mock.Anything, mock.Anything).Return(nil)
+	mockedConfigService.On("GetString", "dirs.home").Return("/fake/dir")
+	mockedConfigService.On("SetString", mock.Anything, mock.Anything).Return(nil)
 	mockedOsService := new(mocks.OsService)
 	mockedOsService.On("Now").Return(time.Date(2021, time.October, 31, 21, 14, 0, 0, time.UTC))
 	mockedOsService.On("ItemExists", mock.Anything).Return(false, nil)
@@ -49,12 +49,12 @@ func Test_CreateDirectory_does_not_exists(t *testing.T) {
 
 func Test_Backup_ok(t *testing.T) {
 	mockedConfigService := new(mocks.ConfigService)
-	mockedConfigService.On("Get", "dirs.home").Return("/fake/dir")
-	mockedConfigService.On("Set", mock.Anything, mock.Anything).Return(nil)
+	mockedConfigService.On("GetString", "dirs.home").Return("/fake/dir")
+	mockedConfigService.On("SetString", mock.Anything, mock.Anything).Return(nil)
 	mockedOsService := new(mocks.OsService)
 	mockedOsService.On("Now").Return(time.Date(2021, time.October, 31, 21, 14, 0, 0, time.UTC))
 	mockedOsService.On("ItemExists", mock.Anything).Return(true, nil)
-	mockedConfigService.On("Get", "dirs.backup").Return("/fake/dir")
+	mockedConfigService.On("GetString", "dirs.backup").Return("/fake/dir")
 	mockedOsService.On("Now").Return(time.Date(2021, time.October, 31, 21, 14, 0, 0, time.UTC))
 	mockedOsService.On("GetTempDirectory").Return("/tmp/sam", nil)
 	mockedOsService.On("ItemExists", "/fake/dir").Return(true, nil)

@@ -39,12 +39,12 @@ func ExactArgs(n int) cobra.PositionalArgs {
 	}
 }
 
-func ParseInteger(strCode string, codeType string) (int, error) {
-	code, err := strconv.Atoi(strCode)
+func ParseInteger(strId string, idType string) (int, error) {
+	id, err := strconv.Atoi(strId)
 	if err != nil {
-		return 0, fmt.Errorf("el codi %s introduit és invàlid: %s", codeType, strCode)
+		return 0, fmt.Errorf("el codi %s introduit és invàlid: %s", idType, strId)
 	}
-	return code, nil
+	return id, nil
 }
 
 func ParseFloat(value string) (float64, error) {
@@ -63,9 +63,9 @@ func ParseYearMonth(yearMonth string) (time.Time, error) {
 	return ym, nil
 }
 
-func ParseProductCode(code string) (string, error) {
-	if len(code) != 3 {
-		return "", fmt.Errorf("el codi de producte introduit és invàlid: %s", code)
+func ParseProductId(id string) (string, error) {
+	if len(id) != 3 {
+		return "", fmt.Errorf("el codi de producte introduit és invàlid: %s", id)
 	}
-	return strings.ToUpper(code), nil
+	return strings.ToUpper(id), nil
 }

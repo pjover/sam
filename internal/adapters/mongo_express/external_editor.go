@@ -18,8 +18,8 @@ func NewExternalEditor(cfgService ports.ConfigService, osService ports.OsService
 	}
 }
 
-func (e externalEditor) Edit(entity ports.Entity, code string) (string, error) {
-	editUrl, err := e.getUrlPath(entity, code)
+func (e externalEditor) Edit(entity ports.Entity, id string) (string, error) {
+	editUrl, err := e.getUrlPath(entity, id)
 	if err != nil {
 		return "", err
 	}
@@ -28,15 +28,15 @@ func (e externalEditor) Edit(entity ports.Entity, code string) (string, error) {
 	return editUrl, err
 }
 
-func (e externalEditor) getUrlPath(entity ports.Entity, code string) (string, error) {
-	baseUrl := e.cfgService.Get("urls.mongoExpress")
+func (e externalEditor) getUrlPath(entity ports.Entity, id string) (string, error) {
+	baseUrl := e.cfgService.GetString("urls.mongoExpress")
 	switch entity {
 	case ports.Customer:
-		return fmt.Sprintf("%s/customer/%s", baseUrl, code), nil
+		return fmt.Sprintf("%s/customer/%s", baseUrl, id), nil
 	case ports.Invoice:
-		return fmt.Sprintf("%s/invoice/%s", baseUrl, url.QueryEscape(fmt.Sprintf("\"%s\"", code))), nil
+		return fmt.Sprintf("%s/invoice/%s", baseUrl, url.QueryEscape(fmt.Sprintf("\"%s\"", id))), nil
 	case ports.Product:
-		return fmt.Sprintf("%s/product/%s", baseUrl, url.QueryEscape(fmt.Sprintf("\"%s\"", code))), nil
+		return fmt.Sprintf("%s/product/%s", baseUrl, url.QueryEscape(fmt.Sprintf("\"%s\"", id))), nil
 
 	}
 	return "", fmt.Errorf("unknown entity %#v", entity)

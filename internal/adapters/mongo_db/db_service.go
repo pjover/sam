@@ -23,8 +23,8 @@ type dbService struct {
 func NewDbService(configService ports.ConfigService) ports.DbService {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	uri := configService.Get("db.server")
-	database := configService.Get("db.name")
+	uri := configService.GetString("db.server")
+	database := configService.GetString("db.name")
 	d := dbService{configService, ctx, uri, database}
 	d.createIndexes()
 	return d
@@ -66,51 +66,51 @@ func (d dbService) createIndexes() {
 	}
 }
 
-func (d dbService) FindCustomer(code int) (model.Customer, error) {
+func (d dbService) FindCustomer(id int) (model.Customer, error) {
 	var result dbo.Customer
-	if err := d.findOne("customer", code, &result, "el client"); err != nil {
+	if err := d.findOne("customer", id, &result, "el client"); err != nil {
 		return model.Customer{}, err
 	}
-	return dbo.ConvertCustomer(result), nil
+	return dbo.ConvertCustomerToModel(result), nil
 }
 
-func (d dbService) FindChild(code int) (model.Child, error) {
-	var childCode = code / 10
-	customer, err := d.FindCustomer(childCode)
+func (d dbService) FindChild(id int) (model.Child, error) {
+	var childId = id / 10
+	customer, err := d.FindCustomer(childId)
 	if err != nil {
 		return model.Child{}, err
 	}
 
 	var child model.Child
 	for _, value := range customer.Children {
-		if value.Code == code {
+		if value.Id == id {
 			child = value
 			break
 		}
 	}
 	if child == (model.Child{}) {
-		return model.Child{}, fmt.Errorf("no s'ha trobat l'infant amb codi %d", code)
+		return model.Child{}, fmt.Errorf("no s'ha trobat l'infant amb codi %d", id)
 	}
 	return child, nil
 }
 
-func (d dbService) FindInvoice(code string) (model.Invoice, error) {
+func (d dbService) FindInvoice(id string) (model.Invoice, error) {
 	var result dbo.Invoice
-	if err := d.findOne("invoice", code, &result, "la factura"); err != nil {
+	if err := d.findOne("invoice", id, &result, "la factura"); err != nil {
 		return model.Invoice{}, err
 	}
-	return dbo.ConvertInvoice(result), nil
+	return dbo.ConvertInvoiceToModel(result), nil
 }
 
-func (d dbService) FindProduct(code string) (model.Product, error) {
+func (d dbService) FindProduct(id string) (model.Product, error) {
 	var result dbo.Product
-	if err := d.findOne("product", code, &result, "el producte"); err != nil {
+	if err := d.findOne("product", id, &result, "el producte"); err != nil {
 		return model.Product{}, err
 	}
-	return dbo.ConvertProduct(result), nil
+	return dbo.ConvertProductToModel(result), nil
 }
 
-func (d dbService) findOne(collection string, code interface{}, result interface{}, name string) error {
+func (d dbService) findOne(collection string, id interface{}, result interface{}, name string) error {
 	client, err := d.open()
 	defer d.close(client)
 	if err != nil {
@@ -118,12 +118,12 @@ func (d dbService) findOne(collection string, code interface{}, result interface
 	}
 
 	coll := client.Database(d.database).Collection(collection)
-	err = coll.FindOne(context.TODO(), bson.D{{"_id", code}}).Decode(result)
+	err = coll.FindOne(context.TODO(), bson.D{{"_id", id}}).Decode(result)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
-			return fmt.Errorf("no s'ha trobat %s amb codi %s", name, code)
+			return fmt.Errorf("no s'ha trobat %s amb codi %s", name, id)
 		}
-		return fmt.Errorf("llegint %s amb codi %s des de la base de dades: %s", name, code, err)
+		return fmt.Errorf("llegint %s amb codi %s des de la base de dades: %s", name, id, err)
 	}
 	return nil
 }
@@ -146,37 +146,37 @@ func (d dbService) FindAllProducts() ([]model.Product, error) {
 	if err := d.findMany("product", filter, findOptions, &results, "tots els productes"); err != nil {
 		return nil, err
 	}
-	return dbo.ConvertProducts(results), nil
+	return dbo.ConvertProductsToModel(results), nil
 }
 
 func (d dbService) FindInvoicesByYearMonth(yearMonth string) ([]model.Invoice, error) {
 	var results []dbo.Invoice
 	filter := bson.D{{"yearMonth", yearMonth}}
 	findOptions := options.Find()
-	findOptions.SetSort(bson.D{{"_id", 1}})
+	findOptions.SetSort(bson.D{{"customerId", 1}})
 	if err := d.findMany("invoice", filter, findOptions, &results, "factures per any i mes"); err != nil {
 		return nil, err
 	}
-	return dbo.ConvertInvoices(results), nil
+	return dbo.ConvertInvoicesToModel(results), nil
 }
 
-func (d dbService) FindInvoicesByCustomer(customerCode int) ([]model.Invoice, error) {
+func (d dbService) FindInvoicesByCustomer(customerId int) ([]model.Invoice, error) {
 	var results []dbo.Invoice
-	filter := bson.D{{"customerId", customerCode}}
+	filter := bson.D{{"customerId", customerId}}
 	findOptions := options.Find()
 	findOptions.SetSort(bson.D{{"_id", 1}})
 	if err := d.findMany("invoice", filter, findOptions, &results, "factures per client"); err != nil {
 		return nil, err
 	}
-	return dbo.ConvertInvoices(results), nil
+	return dbo.ConvertInvoicesToModel(results), nil
 }
 
-func (d dbService) FindInvoicesByCustomerAndYearMonth(customerCode int, yearMonth string) ([]model.Invoice, error) {
+func (d dbService) FindInvoicesByCustomerAndYearMonth(customerId int, yearMonth string) ([]model.Invoice, error) {
 	var results []dbo.Invoice
 	filter := bson.D{
 		{"$and",
 			bson.A{
-				bson.D{{"customerId", customerCode}},
+				bson.D{{"customerId", customerId}},
 				bson.D{{"year", yearMonth}},
 			}},
 	}
@@ -185,7 +185,7 @@ func (d dbService) FindInvoicesByCustomerAndYearMonth(customerCode int, yearMont
 	if err := d.findMany("invoice", filter, findOptions, &results, "factures per client, any i mes"); err != nil {
 		return nil, err
 	}
-	return dbo.ConvertInvoices(results), nil
+	return dbo.ConvertInvoicesToModel(results), nil
 }
 
 func (d dbService) FindActiveCustomers() ([]model.Customer, error) {
@@ -196,7 +196,7 @@ func (d dbService) FindActiveCustomers() ([]model.Customer, error) {
 	if err := d.findMany("customer", filter, findOptions, &results, "clients actius"); err != nil {
 		return nil, err
 	}
-	return dbo.ConvertCustomers(results), nil
+	return dbo.ConvertCustomersToModel(results), nil
 }
 
 func (d dbService) SearchCustomers(searchText string) ([]model.Customer, error) {
@@ -207,7 +207,7 @@ func (d dbService) SearchCustomers(searchText string) ([]model.Customer, error) 
 	if err := d.findMany("customer", filter, findOptions, &results, "clients actius"); err != nil {
 		return nil, err
 	}
-	return dbo.ConvertCustomers(results), nil
+	return dbo.ConvertCustomersToModel(results), nil
 }
 
 func (d dbService) FindActiveChildren() ([]model.Child, error) {
@@ -227,24 +227,34 @@ func (d dbService) FindActiveChildren() ([]model.Child, error) {
 	return children, nil
 }
 
-func (d dbService) FindAllConsumptions() ([]model.Consumption, error) {
+func (d dbService) FindAllActiveConsumptions() ([]model.Consumption, error) {
 	var results []dbo.Consumption
-	filter := bson.D{}
+	filter := bson.D{{"invoiceId", "NONE"}}
 	findOptions := options.Find()
 	if err := d.findMany("consumption", filter, findOptions, &results, "tots els consums"); err != nil {
 		return nil, err
 	}
-	return dbo.ConvertConsumptions(results), nil
+	return dbo.ConvertConsumptionsToModel(results), nil
 }
 
-func (d dbService) FindChildConsumptions(code int) ([]model.Consumption, error) {
+func (d dbService) FindActiveChildConsumptions(id int) ([]model.Consumption, error) {
 	var results []dbo.Consumption
-	filter := bson.D{{"childCode", code}}
+	filter := bson.D{{"childCode", id}, {"invoiceId", "NONE"}}
 	findOptions := options.Find()
 	if err := d.findMany("consumption", filter, findOptions, &results, "consums per infant"); err != nil {
 		return nil, err
 	}
-	return dbo.ConvertConsumptions(results), nil
+	return dbo.ConvertConsumptionsToModel(results), nil
+}
+
+func (d dbService) FindAllSequences() ([]model.Sequence, error) {
+	var results []dbo.Sequence
+	filter := bson.D{}
+	findOptions := options.Find()
+	if err := d.findMany("sequence", filter, findOptions, &results, "sequències"); err != nil {
+		return nil, err
+	}
+	return dbo.ConvertSequencesToModel(results), nil
 }
 
 func (d dbService) findMany(collection string, filter interface{}, findOptions *options.FindOptions, results interface{}, name string) error {
@@ -263,6 +273,73 @@ func (d dbService) findMany(collection string, filter interface{}, findOptions *
 	err = cur.All(context.Background(), results)
 	if err != nil {
 		return fmt.Errorf("decodificant %s: %s", name, err)
+	}
+	return nil
+}
+
+func (d dbService) InsertConsumptions(consumptions []model.Consumption) error {
+	documents := dbo.ConvertConsumptionsToDbo(consumptions)
+	err := d.insertMany("consumption", documents, "consums")
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (d dbService) InsertInvoices(invoices []model.Invoice) error {
+	documents := dbo.ConvertInvoicesToDbo(invoices)
+	err := d.insertMany("invoice", documents, "factures")
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (d dbService) insertMany(collection string, documents []interface{}, name string) error {
+	client, err := d.open()
+	defer d.close(client)
+	if err != nil {
+		return fmt.Errorf("connectant a la base de dades: %s", err)
+	}
+
+	coll := client.Database(d.database).Collection(collection)
+	_, err = coll.InsertMany(context.TODO(), documents)
+	if err != nil {
+		return fmt.Errorf("insertant %s a la base de dades: %s", name, err)
+	}
+	return nil
+}
+
+func (d dbService) UpdateSequences(sequences []model.Sequence) error {
+	documents := dbo.ConvertSequencesToDbo(sequences)
+	return d.updateMany("sequence", documents, "seqüències")
+}
+
+func (d dbService) UpdateConsumptions(consumptions []model.Consumption) error {
+	documents := dbo.ConvertConsumptionsToDbo(consumptions)
+	return d.updateMany("consumption", documents, "consums")
+}
+
+func (d dbService) updateMany(collection string, documents []interface{}, name string) error {
+	client, err := d.open()
+	defer d.close(client)
+	if err != nil {
+		return fmt.Errorf("connectant a la base de dades: %s", err)
+	}
+
+	coll := client.Database(d.database).Collection(collection)
+
+	for _, document := range documents {
+		doc := document.(dbo.Dbo)
+		_, err = coll.ReplaceOne(
+			context.TODO(),
+			bson.M{"_id": doc.GetId()},
+			document,
+		)
+
+		if err != nil {
+			return fmt.Errorf("actualitzant %s a la base de dades: %s", name, err)
+		}
 	}
 	return nil
 }
