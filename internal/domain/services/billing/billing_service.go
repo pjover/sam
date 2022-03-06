@@ -17,6 +17,7 @@ import (
 type BillingService interface {
 	InsertConsumptions(id int, consumptions map[string]float64, note string) (string, error)
 	BillConsumptions() (string, error)
+	RectifyConsumptions(id int, consumptions map[string]float64, note string) (string, error)
 }
 
 type billingService struct {
@@ -34,6 +35,10 @@ func NewBillingService(cfgService ports.ConfigService, dbService ports.DbService
 }
 
 func (b billingService) InsertConsumptions(childId int, consumptions map[string]float64, note string) (string, error) {
+	return b.insertConsumptions(childId, consumptions, note, false)
+}
+
+func (b billingService) insertConsumptions(childId int, consumptions map[string]float64, note string, isRectification bool) (string, error) {
 	var buffer bytes.Buffer
 
 	child, err := b.dbService.FindChild(childId)
@@ -53,11 +58,27 @@ func (b billingService) InsertConsumptions(childId int, consumptions map[string]
 		return "", fmt.Errorf("el client %s no està activat, edita'l per activar-lo abans d'insertar consums", customer.FirstAdultNameWithId())
 	}
 
+	completeConsumptions := b.completeConsumptions(consumptions, childId, note, isRectification)
+
+	err = b.dbService.InsertConsumptions(completeConsumptions)
+	if err != nil {
+		return "", err
+	}
+	if err != nil {
+		return "", err
+	}
+
 	products, err := b.dbService.FindAllProducts()
 	if err != nil {
 		return "", err
 	}
 
+	buffer.WriteString(model.ConsumptionListToString(completeConsumptions, child, products))
+
+	return buffer.String(), nil
+}
+
+func (b billingService) completeConsumptions(consumptions map[string]float64, childId int, note string, isRectification bool) []model.Consumption {
 	yearMonth := viper.GetString("yearMonth")
 	var first = true
 	var completeConsumptions []model.Consumption
@@ -68,7 +89,7 @@ func (b billingService) InsertConsumptions(childId int, consumptions map[string]
 			ProductId:       id,
 			Units:           units,
 			YearMonth:       yearMonth,
-			IsRectification: false,
+			IsRectification: isRectification,
 			InvoiceId:       "NONE",
 		}
 		if first {
@@ -78,14 +99,11 @@ func (b billingService) InsertConsumptions(childId int, consumptions map[string]
 		completeConsumptions = append(completeConsumptions, c)
 	}
 
-	err = b.dbService.InsertConsumptions(completeConsumptions)
-	if err != nil {
-		return "", err
-	}
+	return completeConsumptions
+}
 
-	buffer.WriteString(model.ConsumptionListToString(completeConsumptions, child, products))
-
-	return buffer.String(), nil
+func (b billingService) RectifyConsumptions(childId int, consumptions map[string]float64, note string) (string, error) {
+	return b.insertConsumptions(childId, consumptions, note, true)
 }
 
 func (b billingService) BillConsumptions() (string, error) {
