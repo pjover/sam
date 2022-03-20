@@ -52,10 +52,11 @@ func (m MonthReport) Run() (string, error) {
 	filePath := path.Join(wd, m.configService.GetString("files.invoicesReport"))
 
 	reportInfo := ReportInfo{
-		consts.Landscape,
-		consts.Left,
-		fmt.Sprintf("Factures %s", m.langService.MonthName(month)),
-		[]Column{
+		Orientation: consts.Landscape,
+		Align:       consts.Left,
+		Title:       fmt.Sprintf("Factures %s", m.langService.MonthName(month)),
+		FilePath:    filePath,
+		Columns: []Column{
 			{"Factura", 1},
 			{"Data", 1},
 			{"Client", 2},
@@ -64,8 +65,7 @@ func (m MonthReport) Run() (string, error) {
 			{"Import", 1},
 			{"Pagament", 1},
 		},
-		contents,
-		filePath,
+		Contents: contents,
 	}
 	err = Report(reportInfo)
 	if err != nil {

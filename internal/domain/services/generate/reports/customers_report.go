@@ -31,29 +31,43 @@ func (c CustomerReport) Run() (string, error) {
 		return "", err
 	}
 
-	contents := c.buildContents(customers)
-
 	filePath := path.Join(
 		viper.GetString("dirs.reports"),
 		viper.GetString("files.customersReport"),
 	)
-	reportInfo := ReportInfo{
-		consts.Landscape,
-		consts.Left,
-		"Llistat de clients",
-		[]Column{
-			{"Infant", 2},
-			{"Grup", 1},
-			{"Neixament", 1},
-			{"Mare", 2},
-			{"Mòbil", 1},
-			{"Correu", 2},
-			{"Pagament", 3},
+
+	reportDefinition := ReportDefinition{
+		PageOrientation: consts.Landscape,
+		Title:           "Llistat de clients",
+		FilePath:        filePath,
+		SubReports: []SubReport{
+			{
+				Style: Table,
+				Align: consts.Left,
+				Captions: []string{
+					"Infant",
+					"Grup",
+					"Neixament",
+					"Mare",
+					"Mòbil",
+					"Correu",
+					"Pagament",
+				},
+				Widths: []uint{
+					2,
+					1,
+					1,
+					2,
+					1,
+					2,
+					3,
+				},
+				Data: c.buildData(customers),
+			},
 		},
-		contents,
-		filePath,
 	}
-	err = Report(reportInfo)
+
+	err = reportDefinition.Generate()
 	if err != nil {
 		return "", err
 	}
@@ -94,4 +108,30 @@ func (c CustomerReport) buildContents(customers []model.Customer) [][]string {
 		return contents[i][0] < contents[j][0]
 	})
 	return contents
+}
+
+func (c CustomerReport) buildData(customers []model.Customer) [][]string {
+	var data [][]string
+	for _, customer := range customers {
+		adult := customer.FirstAdult()
+		for _, child := range customer.Children {
+			if !child.Active {
+				continue
+			}
+			var dataLine = []string{
+				child.NameWithId(),
+				child.Group,
+				child.BirthDate.Format("2006-02-01"),
+				adult.NameSurnameFmt(),
+				adult.MobilePhoneFmt(),
+				adult.Email,
+				customer.InvoiceHolder.PaymentInfoFmt(),
+			}
+			data = append(data, dataLine)
+		}
+	}
+	sort.SliceStable(data, func(i, j int) bool {
+		return data[i][0] < data[j][0]
+	})
+	return data
 }

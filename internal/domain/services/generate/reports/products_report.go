@@ -35,18 +35,18 @@ func (p ProductsReport) Run() (string, error) {
 
 	filePath := path.Join(viper.GetString("dirs.reports"), viper.GetString("files.ProductsReport"))
 	reportInfo := ReportInfo{
-		consts.Portrait,
-		consts.Left,
-		"Llistat de productes",
-		[]Column{
+		Orientation: consts.Portrait,
+		Align:       consts.Left,
+		Title:       "Llistat de productes",
+		FilePath:    filePath,
+		Columns: []Column{
 			{"Codi", 2},
 			{"Nom", 4},
 			{"Preu", 2},
 			{"IVA", 2},
 			{"És ajuda?", 2},
 		},
-		contents,
-		filePath,
+		Contents: contents,
 	}
 	err = Report(reportInfo)
 	if err != nil {
