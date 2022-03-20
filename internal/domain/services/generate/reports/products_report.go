@@ -31,15 +31,9 @@ func (p ProductsReport) Run() (string, error) {
 		return "", err
 	}
 
-	filePath := path.Join(
-		viper.GetString("dirs.reports"),
-		viper.GetString("files.ProductsReport"),
-	)
-
-	reportDefinition := ReportDefinition{
+	report := Report{
 		PageOrientation: consts.Portrait,
 		Title:           "Llistat de productes",
-		FilePath:        filePath,
 		SubReports: []SubReport{
 			{
 				Style: Table,
@@ -63,7 +57,11 @@ func (p ProductsReport) Run() (string, error) {
 		},
 	}
 
-	err = reportDefinition.Generate()
+	filePath := path.Join(
+		viper.GetString("dirs.reports"),
+		viper.GetString("files.ProductsReport"),
+	)
+	err = report.SaveToFile(filePath)
 	if err != nil {
 		return "", err
 	}

@@ -45,19 +45,9 @@ func (m MonthReport) Run() (string, error) {
 		return "", err
 	}
 
-	wd, err := m.configService.GetWorkingDirectory()
-	if err != nil {
-		return "", err
-	}
-	filePath := path.Join(
-		wd,
-		m.configService.GetString("files.invoicesReport"),
-	)
-
-	reportDefinition := ReportDefinition{
+	report := Report{
 		PageOrientation: consts.Landscape,
 		Title:           fmt.Sprintf("Factures %s", m.langService.MonthName(month)),
-		FilePath:        filePath,
 		SubReports: []SubReport{
 			{
 				Style: Table,
@@ -85,7 +75,15 @@ func (m MonthReport) Run() (string, error) {
 		},
 	}
 
-	err = reportDefinition.Generate()
+	wd, err := m.configService.GetWorkingDirectory()
+	if err != nil {
+		return "", err
+	}
+	filePath := path.Join(
+		wd,
+		m.configService.GetString("files.invoicesReport"),
+	)
+	err = report.SaveToFile(filePath)
 	if err != nil {
 		return "", err
 	}
