@@ -31,24 +31,39 @@ func (p ProductsReport) Run() (string, error) {
 		return "", err
 	}
 
-	contents := p.buildContents(products)
+	filePath := path.Join(
+		viper.GetString("dirs.reports"),
+		viper.GetString("files.ProductsReport"),
+	)
 
-	filePath := path.Join(viper.GetString("dirs.reports"), viper.GetString("files.ProductsReport"))
-	reportInfo := ReportInfo{
-		Orientation: consts.Portrait,
-		Align:       consts.Left,
-		Title:       "Llistat de productes",
-		FilePath:    filePath,
-		Columns: []Column{
-			{"Codi", 2},
-			{"Nom", 4},
-			{"Preu", 2},
-			{"IVA", 2},
-			{"És ajuda?", 2},
+	reportDefinition := ReportDefinition{
+		PageOrientation: consts.Portrait,
+		Title:           "Llistat de productes",
+		FilePath:        filePath,
+		SubReports: []SubReport{
+			{
+				Style: Table,
+				Align: consts.Left,
+				Captions: []string{
+					"Codi",
+					"Nom",
+					"Preu",
+					"IVA",
+					"És ajuda?",
+				},
+				Widths: []uint{
+					2,
+					4,
+					2,
+					2,
+					2,
+				},
+				Data: p.buildContents(products),
+			},
 		},
-		Contents: contents,
 	}
-	err = Report(reportInfo)
+
+	err = reportDefinition.Generate()
 	if err != nil {
 		return "", err
 	}
