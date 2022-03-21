@@ -8,8 +8,8 @@ import (
 	edit2 "github.com/pjover/sam/internal/domain/services/edit"
 )
 
-func editServiceDI(cfgService ports.ConfigService, cmdManager cli.CmdManager, osService ports.OsService) {
-	externalEditor := mongo_express.NewExternalEditor(cfgService, osService)
+func editServiceDI(configService ports.ConfigService, cmdManager cli.CmdManager, osService ports.OsService) {
+	externalEditor := mongo_express.NewExternalEditor(configService, osService)
 	editService := edit2.NewEditService(externalEditor)
 	cmdManager.AddCommand(edit.NewEditCustomerCmd(editService))
 	cmdManager.AddCommand(edit.NewEditInvoiceCmd(editService))

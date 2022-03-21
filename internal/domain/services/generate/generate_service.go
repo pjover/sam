@@ -21,7 +21,7 @@ func NewGenerateService(configService ports.ConfigService, langService lang.Lang
 }
 
 func (g generateService) CustomerReport() (string, error) {
-	generator := reports.NewCustomerReport(g.dbService)
+	generator := reports.NewCustomerReport(g.configService, g.dbService)
 	return generator.Run()
 }
 
@@ -31,7 +31,7 @@ func (g generateService) MonthReport() (string, error) {
 }
 
 func (g generateService) ProductReport() (string, error) {
-	generator := reports.NewProductsReport(g.dbService)
+	generator := reports.NewProductsReport(g.configService, g.dbService)
 	return generator.Run()
 }
 

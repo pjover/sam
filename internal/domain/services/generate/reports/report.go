@@ -6,23 +6,30 @@ import (
 	"github.com/johnfercher/maroto/pkg/consts"
 	"github.com/johnfercher/maroto/pkg/pdf"
 	"github.com/johnfercher/maroto/pkg/props"
-	"github.com/spf13/viper"
+	"github.com/pjover/sam/internal/domain/ports"
 	"path"
 )
 
-type Style uint
+type ReportService interface {
+	SaveToFile(reportDefinition ReportDefinition, filePath string) error
+}
 
-const (
-	Table Style = iota
-	Card
-)
+type Report struct {
+	configService ports.ConfigService
+}
+
+func NewReportService(configService ports.ConfigService) ReportService {
+	return Report{
+		configService: configService,
+	}
+}
 
 type SubReport interface {
 	GetTitle() string
 	Render(maroto pdf.Maroto)
 }
 
-type Report struct {
+type ReportDefinition struct {
 	// PageOrientation is a representation of a page orientation (either Portrait or Landscape)
 	PageOrientation consts.Orientation
 	// Title is the report's main title
@@ -33,17 +40,17 @@ type Report struct {
 	SubReports []SubReport
 }
 
-func (r Report) SaveToFile(filePath string) error {
-	maroto := r.setup()
+func (r Report) SaveToFile(reportDefinition ReportDefinition, filePath string) error {
+	maroto := r.setup(reportDefinition)
 	r.header(maroto)
-	r.footer(maroto)
-	r.title(maroto)
-	r.subReports(maroto)
-	return r.saveToFile(maroto, filePath)
+	r.footer(reportDefinition.Footer, maroto)
+	r.title(reportDefinition.Title, maroto)
+	r.subReports(reportDefinition.SubReports, maroto)
+	return r.saveToFile(filePath, maroto)
 }
 
-func (r Report) setup() pdf.Maroto {
-	m := pdf.NewMaroto(r.PageOrientation, consts.A4)
+func (r Report) setup(reportDefinition ReportDefinition) pdf.Maroto {
+	m := pdf.NewMaroto(reportDefinition.PageOrientation, consts.A4)
 	m.SetPageMargins(15, 10, 15)
 	return m
 }
@@ -54,8 +61,8 @@ func (r Report) header(maroto pdf.Maroto) {
 			maroto.Col(6, func() {
 				_ = maroto.FileImage(
 					path.Join(
-						viper.GetString("dirs.config"),
-						viper.GetString("files.logo"),
+						r.configService.GetString("dirs.config"),
+						r.configService.GetString("files.logo"),
 					),
 					props.Rect{
 						Left:    2,
@@ -67,33 +74,33 @@ func (r Report) header(maroto pdf.Maroto) {
 			maroto.ColSpace(2)
 
 			maroto.Col(4, func() {
-				maroto.Text(viper.GetString("business.name"), props.Text{
+				maroto.Text(r.configService.GetString("business.name"), props.Text{
 					Style:       consts.BoldItalic,
 					Size:        8,
 					Align:       consts.Left,
 					Extrapolate: false,
 				})
-				maroto.Text(viper.GetString("business.addressLine1"), props.Text{
+				maroto.Text(r.configService.GetString("business.addressLine1"), props.Text{
 					Top:   3,
 					Size:  8,
 					Align: consts.Left,
 				})
-				maroto.Text(viper.GetString("business.addressLine2"), props.Text{
+				maroto.Text(r.configService.GetString("business.addressLine2"), props.Text{
 					Top:   6,
 					Size:  8,
 					Align: consts.Left,
 				})
-				maroto.Text(viper.GetString("business.addressLine3"), props.Text{
+				maroto.Text(r.configService.GetString("business.addressLine3"), props.Text{
 					Top:   9,
 					Size:  8,
 					Align: consts.Left,
 				})
-				maroto.Text(viper.GetString("business.addressLine4"), props.Text{
+				maroto.Text(r.configService.GetString("business.addressLine4"), props.Text{
 					Top:   12,
 					Size:  8,
 					Align: consts.Left,
 				})
-				maroto.Text(viper.GetString("business.taxIdLine"), props.Text{
+				maroto.Text(r.configService.GetString("business.taxIdLine"), props.Text{
 					Top:   15,
 					Style: consts.BoldItalic,
 					Size:  8,
@@ -104,15 +111,15 @@ func (r Report) header(maroto pdf.Maroto) {
 	})
 }
 
-func (r Report) footer(maroto pdf.Maroto) {
-	if r.Footer == "" {
+func (r Report) footer(footer string, maroto pdf.Maroto) {
+	if footer == "" {
 		return
 	}
 	maroto.RegisterFooter(func() {
 		maroto.Row(4, func() {
 			maroto.Col(12, func() {
 				maroto.Text(
-					r.Footer,
+					footer,
 					props.Text{
 						Top:   4,
 						Style: consts.Italic,
@@ -124,11 +131,11 @@ func (r Report) footer(maroto pdf.Maroto) {
 	})
 }
 
-func (r Report) title(maroto pdf.Maroto) {
+func (r Report) title(title string, maroto pdf.Maroto) {
 	maroto.Row(20, func() {
 		maroto.Col(12, func() {
 			maroto.Text(
-				r.Title,
+				title,
 				props.Text{
 					Top:   4,
 					Style: consts.Bold,
@@ -144,14 +151,14 @@ func (r Report) title(maroto pdf.Maroto) {
 	})
 }
 
-func (r Report) subReports(maroto pdf.Maroto) {
-	for _, subReport := range r.SubReports {
-		r.subTitle(maroto, subReport.GetTitle())
+func (r Report) subReports(subReports []SubReport, maroto pdf.Maroto) {
+	for _, subReport := range subReports {
+		r.subTitle(subReport.GetTitle(), maroto)
 		subReport.Render(maroto)
 	}
 }
 
-func (r Report) subTitle(maroto pdf.Maroto, subTitle string) {
+func (r Report) subTitle(subTitle string, maroto pdf.Maroto) {
 	if subTitle == "" {
 		return
 	}
@@ -175,7 +182,7 @@ func (r Report) subTitle(maroto pdf.Maroto, subTitle string) {
 	})
 }
 
-func (r Report) saveToFile(maroto pdf.Maroto, filePath string) error {
+func (r Report) saveToFile(filePath string, maroto pdf.Maroto) error {
 	err := maroto.OutputFileAndClose(filePath)
 	if err != nil {
 		return fmt.Errorf("error while saving report to file '%s': %s", filePath, err)

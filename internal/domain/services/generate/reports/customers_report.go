@@ -10,16 +10,17 @@ import (
 	"time"
 
 	"github.com/johnfercher/maroto/pkg/consts"
-	"github.com/spf13/viper"
 )
 
 type CustomerReport struct {
-	dbService ports.DbService
+	configService ports.ConfigService
+	dbService     ports.DbService
 }
 
-func NewCustomerReport(dbService ports.DbService) CustomerReport {
+func NewCustomerReport(configService ports.ConfigService, dbService ports.DbService) CustomerReport {
 	return CustomerReport{
-		dbService: dbService,
+		configService: configService,
+		dbService:     dbService,
 	}
 }
 
@@ -32,7 +33,7 @@ func (c CustomerReport) Run() (string, error) {
 		return "", err
 	}
 
-	report := Report{
+	reportDefinition := ReportDefinition{
 		PageOrientation: consts.Landscape,
 		Title:           "Llistat de clients",
 		Footer:          time.Now().Format("2006-01-02"),
@@ -63,10 +64,12 @@ func (c CustomerReport) Run() (string, error) {
 	}
 
 	filePath := path.Join(
-		viper.GetString("dirs.reports"),
-		viper.GetString("files.customersReport"),
+		c.configService.GetString("dirs.reports"),
+		c.configService.GetString("files.customersReport"),
 	)
-	err = report.SaveToFile(filePath)
+
+	reportService := NewReportService(c.configService)
+	err = reportService.SaveToFile(reportDefinition, filePath)
 	if err != nil {
 		return "", err
 	}

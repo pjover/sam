@@ -6,7 +6,6 @@ import (
 	"github.com/johnfercher/maroto/pkg/consts"
 	"github.com/pjover/sam/internal/domain/model"
 	"github.com/pjover/sam/internal/domain/ports"
-	"github.com/spf13/viper"
 	"path"
 	"sort"
 	"strconv"
@@ -14,12 +13,14 @@ import (
 )
 
 type ProductsReport struct {
-	dbService ports.DbService
+	configService ports.ConfigService
+	dbService     ports.DbService
 }
 
-func NewProductsReport(dbService ports.DbService) ProductsReport {
+func NewProductsReport(configService ports.ConfigService, dbService ports.DbService) ProductsReport {
 	return ProductsReport{
-		dbService: dbService,
+		configService: configService,
+		dbService:     dbService,
 	}
 }
 
@@ -32,7 +33,7 @@ func (p ProductsReport) Run() (string, error) {
 		return "", err
 	}
 
-	report := Report{
+	reportDefinition := ReportDefinition{
 		PageOrientation: consts.Portrait,
 		Title:           "Llistat de productes",
 		Footer:          time.Now().Format("2006-01-02"),
@@ -59,10 +60,12 @@ func (p ProductsReport) Run() (string, error) {
 	}
 
 	filePath := path.Join(
-		viper.GetString("dirs.reports"),
-		viper.GetString("files.ProductsReport"),
+		p.configService.GetString("dirs.reports"),
+		p.configService.GetString("files.ProductsReport"),
 	)
-	err = report.SaveToFile(filePath)
+
+	reportService := NewReportService(p.configService)
+	err = reportService.SaveToFile(reportDefinition, filePath)
 	if err != nil {
 		return "", err
 	}

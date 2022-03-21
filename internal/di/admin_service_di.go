@@ -8,7 +8,7 @@ import (
 	"github.com/pjover/sam/internal/domain/services/lang"
 )
 
-func adminServiceDI(cfgService ports.ConfigService, cmdManager cli.CmdManager, osService ports.OsService, langService lang.LangService) {
-	adminService := admin2.NewAdminService(cfgService, osService, langService)
+func adminServiceDI(configService ports.ConfigService, cmdManager cli.CmdManager, osService ports.OsService, langService lang.LangService) {
+	adminService := admin2.NewAdminService(configService, osService, langService)
 	cmdManager.AddCommand(admin.NewBackupCmd(adminService))
 }

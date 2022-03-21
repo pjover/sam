@@ -104,7 +104,7 @@ func (i InvoiceReport) run(invoice model.Invoice, customer model.Customer, produ
 	var buffer bytes.Buffer
 	buffer.WriteString(fmt.Sprintf("Generant l'informe de la factura %s ...\n", invoice.Id))
 
-	report := Report{
+	reportDefinition := ReportDefinition{
 		PageOrientation: consts.Portrait,
 		Title:           "Factura",
 		Footer:          i.footer(invoice),
@@ -187,7 +187,9 @@ func (i InvoiceReport) run(invoice model.Invoice, customer model.Customer, produ
 		dirPath,
 		fmt.Sprintf("%s (%d).pdf", invoice.Id, invoice.CustomerId),
 	)
-	err = report.SaveToFile(filePath)
+
+	reportService := NewReportService(i.configService)
+	err = reportService.SaveToFile(reportDefinition, filePath)
 	if err != nil {
 		return "", err
 	}

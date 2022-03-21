@@ -13,11 +13,11 @@ type CmdManager interface {
 }
 
 type cmdManager struct {
-	cfgService ports.ConfigService
-	rootCmd    *cobra.Command
+	configService ports.ConfigService
+	rootCmd       *cobra.Command
 }
 
-func NewCmdManager(cfgService ports.ConfigService) CmdManager {
+func NewCmdManager(configService ports.ConfigService) CmdManager {
 	// RootCmd represents the base command when called without any subcommands
 	rootCmd := &cobra.Command{
 		Use:   "sam",
@@ -35,8 +35,8 @@ El cicle normal es:
 `,
 		Version: domain.Version,
 	}
-	cobra.OnInitialize(cfgService.Init)
-	return cmdManager{cfgService, rootCmd}
+	cobra.OnInitialize(configService.Init)
+	return cmdManager{configService, rootCmd}
 }
 
 func (c cmdManager) GetRootCmd() *cobra.Command {

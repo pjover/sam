@@ -2,33 +2,30 @@ package bbd
 
 import (
 	"fmt"
-	"github.com/pjover/sam/internal/adapters/cfg"
 	"github.com/pjover/sam/internal/adapters/hobbit"
 	"github.com/pjover/sam/internal/domain/ports"
 	"github.com/pjover/sam/internal/generate"
 	"io/fs"
 	"path/filepath"
-
-	"github.com/spf13/viper"
 )
 
 type BddGeneratorImpl struct {
-	postManager   hobbit.HttpPostManager
 	configService ports.ConfigService
+	postManager   hobbit.HttpPostManager
 }
 
-func NewBddGenerator() generate.Generator {
+func NewBddGenerator(configService ports.ConfigService) generate.Generator {
 	return BddGeneratorImpl{
-		hobbit.NewHttpPostManager(),
-		cfg.NewConfigService(),
+		configService: configService,
+		postManager:   hobbit.NewHttpPostManager(),
 	}
 }
 
 func (b BddGeneratorImpl) Generate() (string, error) {
 	fmt.Println("Generant el fitxer de rebuts ...")
 	url := fmt.Sprintf("%s/generate/bdd?yearMonth=%s",
-		viper.GetString("urls.hobbit"),
-		viper.GetString("yearMonth"),
+		b.configService.GetString("urls.hobbit"),
+		b.configService.GetString("yearMonth"),
 	)
 
 	dir, err := b.configService.GetWorkingDirectory()

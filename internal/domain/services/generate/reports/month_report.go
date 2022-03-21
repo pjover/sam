@@ -45,7 +45,7 @@ func (m MonthReport) Run() (string, error) {
 		return "", err
 	}
 
-	report := Report{
+	reportDefinition := ReportDefinition{
 		PageOrientation: consts.Landscape,
 		Title:           fmt.Sprintf("Factures %s", m.langService.MonthName(month)),
 		Footer:          time.Now().Format("2006-01-02"),
@@ -83,7 +83,9 @@ func (m MonthReport) Run() (string, error) {
 		wd,
 		m.configService.GetString("files.invoicesReport"),
 	)
-	err = report.SaveToFile(filePath)
+
+	reportService := NewReportService(m.configService)
+	err = reportService.SaveToFile(reportDefinition, filePath)
 	if err != nil {
 		return "", err
 	}

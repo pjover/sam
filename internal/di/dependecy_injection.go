@@ -25,5 +25,5 @@ func MainDI(configService ports.ConfigService, cmdManager cli.CmdManager) {
 	billingServiceDI(configService, dbService, osService, cmdManager)
 
 	// TODO move to DI and remove method AddTmpCommand
-	cmdManager.AddTmpCommand(generate.NewGenerateBddCmd(bbd.NewBddGenerator()))
+	cmdManager.AddTmpCommand(generate.NewGenerateBddCmd(bbd.NewBddGenerator(configService)))
 }
