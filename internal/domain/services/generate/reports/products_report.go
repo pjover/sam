@@ -72,7 +72,7 @@ func (p ProductsReport) Run() (string, error) {
 }
 
 func (p ProductsReport) buildContents(products []model.Product) [][]string {
-	var contents [][]string
+	var data [][]string
 	for _, product := range products {
 		var line = []string{
 			product.Id,
@@ -81,12 +81,12 @@ func (p ProductsReport) buildContents(products []model.Product) [][]string {
 			strconv.FormatFloat(product.TaxPercentage, 'f', 2, 64),
 			p.formatIsSubsidy(product.IsSubsidy),
 		}
-		contents = append(contents, line)
+		data = append(data, line)
 	}
-	sort.SliceStable(contents, func(i, j int) bool {
-		return contents[i][0] < contents[j][0]
+	sort.SliceStable(data, func(i, j int) bool {
+		return data[i][0] < data[j][0]
 	})
-	return contents
+	return data
 }
 
 func (p ProductsReport) formatIsSubsidy(subsidy bool) string {

@@ -7,7 +7,7 @@ import (
 )
 
 func (c Customer) String() string {
-	return fmt.Sprintf("%d  %-25s  %-55s  %s", c.Id, c.FirstAdultName(), c.ChildrenNames(", "), c.InvoiceHolder.PaymentInfoFmt())
+	return fmt.Sprintf("%d  %-25s  %-55s  %s", c.Id, c.FirstAdultName(), c.ChildrenNamesWithId(", "), c.InvoiceHolder.PaymentInfoFmt())
 }
 
 func (c Customer) FirstAdult() Adult {
@@ -29,10 +29,18 @@ func (c Customer) FirstAdultNameWithId() string {
 	return fmt.Sprintf("%s %s (%d)", adult.Name, adult.Surname, c.Id)
 }
 
-func (c Customer) ChildrenNames(joinWith string) string {
+func (c Customer) ChildrenNamesWithId(joinWith string) string {
 	var names []string
 	for _, child := range c.Children {
 		names = append(names, child.NameWithId())
+	}
+	return strings.Join(names, joinWith)
+}
+
+func (c Customer) ChildrenNames(joinWith string) string {
+	var names []string
+	for _, child := range c.Children {
+		names = append(names, child.Name)
 	}
 	return strings.Join(names, joinWith)
 }

@@ -37,5 +37,5 @@ func (g generateService) ProductReport() (string, error) {
 
 func (g generateService) SingleInvoice(invoiceId string) (string, error) {
 	generator := reports.NewInvoiceReport(g.configService, g.dbService)
-	return generator.Run(invoiceId)
+	return generator.SingleInvoice(invoiceId)
 }
