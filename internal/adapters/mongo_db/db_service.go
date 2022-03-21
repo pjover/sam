@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/pjover/sam/internal/adapters/mongo_db/dbo"
 	"github.com/pjover/sam/internal/domain/model"
+	"github.com/pjover/sam/internal/domain/model/payment_type"
 	"github.com/pjover/sam/internal/domain/ports"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -177,12 +178,30 @@ func (d dbService) FindInvoicesByCustomerAndYearMonth(customerId int, yearMonth 
 		{"$and",
 			bson.A{
 				bson.D{{"customerId", customerId}},
-				bson.D{{"year", yearMonth}},
+				bson.D{{"yearMonth", yearMonth}},
 			}},
 	}
 	findOptions := options.Find()
 	findOptions.SetSort(bson.D{{"_id", 1}})
 	if err := d.findMany("invoice", filter, findOptions, &results, "factures per client, any i mes"); err != nil {
+		return nil, err
+	}
+	return dbo.ConvertInvoicesToModel(results), nil
+}
+
+func (d dbService) FindInvoicesByYearMonthAndPaymentTypeAndSentToBank(yearMonth string, paymentType payment_type.PaymentType, sentToBank bool) ([]model.Invoice, error) {
+	var results []dbo.Invoice
+	filter := bson.D{
+		{"$and",
+			bson.A{
+				bson.D{{"yearMonth", yearMonth}},
+				bson.D{{"paymentType", dbo.PaymentTypes[paymentType]}},
+				bson.D{{"sentToBank", sentToBank}},
+			}},
+	}
+	findOptions := options.Find()
+	findOptions.SetSort(bson.D{{"_id", 1}})
+	if err := d.findMany("invoice", filter, findOptions, &results, "factures per any i mes, tipus de pagament i enviades al bank"); err != nil {
 		return nil, err
 	}
 	return dbo.ConvertInvoicesToModel(results), nil
