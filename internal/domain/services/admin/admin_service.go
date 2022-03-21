@@ -38,7 +38,7 @@ func (a adminService) Backup() (string, error) {
 	}
 
 	var strSlice = []string{"consumption", "customer", "invoice", "product", "sequence"}
-	var files = []string{}
+	var files []string
 	for _, value := range strSlice {
 		fileName := fmt.Sprintf("%s.json", value)
 		filePath := path.Join(tmpDirPath, fileName)

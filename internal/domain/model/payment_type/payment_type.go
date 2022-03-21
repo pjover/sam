@@ -20,6 +20,6 @@ var values = []string{
 	"Rectificació",
 }
 
-func (s PaymentType) String() string {
-	return values[s]
+func (p PaymentType) String() string {
+	return values[p]
 }

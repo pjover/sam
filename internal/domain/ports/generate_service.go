@@ -6,4 +6,5 @@ type GenerateService interface {
 	ProductReport() (string, error)
 	SingleInvoice(id string) (string, error)
 	MonthInvoices() (string, error)
+	BddFile() (string, error)
 }

@@ -2,15 +2,22 @@ package generate
 
 import (
 	"fmt"
-	"github.com/pjover/sam/internal/generate"
+	"github.com/pjover/sam/internal/adapters/cli"
+	"github.com/pjover/sam/internal/domain/ports"
 	"github.com/spf13/cobra"
 )
 
-func NewGenerateBddCmd(generator generate.Generator) *cobra.Command {
-	return newGenerateBddCmd(generator)
+type generateBddFileCmd struct {
+	generateService ports.GenerateService
 }
 
-func newGenerateBddCmd(generator generate.Generator) *cobra.Command {
+func NewGenerateBddFileCmd(generateService ports.GenerateService) cli.Cmd {
+	return generateBddFileCmd{
+		generateService: generateService,
+	}
+}
+
+func (e generateBddFileCmd) Cmd() *cobra.Command {
 	return &cobra.Command{
 		Use:         "generaRebuts",
 		Short:       "Genera el fitxer de rebuts",
@@ -24,13 +31,13 @@ func newGenerateBddCmd(generator generate.Generator) *cobra.Command {
 			"generarRebuts",
 			"generarrebuts",
 			"generar-rebuts",
-			"gbdd",
-			"generateBdd",
-			"generatebdd",
-			"generate-bdd",
+			"gbddf",
+			"generateBddFile",
+			"generatebddfile",
+			"generate-bdd-file",
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
-			msg, err := generator.Generate()
+			msg, err := e.generateService.BddFile()
 			fmt.Println(msg)
 			return err
 		},

@@ -7,6 +7,7 @@ import (
 	"github.com/pjover/sam/internal/domain/model"
 	"github.com/pjover/sam/internal/domain/model/payment_type"
 	"github.com/pjover/sam/internal/domain/ports"
+	"github.com/pjover/sam/internal/domain/services/common"
 	"path"
 	"sort"
 	"strconv"
@@ -37,7 +38,8 @@ func (i InvoiceReport) SingleInvoice(id string) (string, error) {
 		return "", fmt.Errorf("no s'ha pogut trobar el client %d de la factura %s: %s", invoice.CustomerId, id, err)
 	}
 
-	products, err := i.loadProducts()
+	bulkLoader := common.NewBulkLoader(i.configService, i.dbService)
+	products, err := bulkLoader.LoadProducts()
 	if err != nil {
 		return "", err
 	}
@@ -46,18 +48,9 @@ func (i InvoiceReport) SingleInvoice(id string) (string, error) {
 }
 
 func (i InvoiceReport) MonthInvoices() (string, error) {
-	yearMonth := i.configService.GetString("yearMonth")
-	invoices, err := i.dbService.FindInvoicesByYearMonth(yearMonth)
-	if err != nil {
-		return "", fmt.Errorf("no s'ha pogut carregar les factures des de la base de dades: %s", err)
-	}
 
-	products, err := i.loadProducts()
-	if err != nil {
-		return "", err
-	}
-
-	customers, err := i.loadCustomers()
+	bulkLoader := common.NewBulkLoader(i.configService, i.dbService)
+	invoices, customers, products, err := bulkLoader.LoadMonthInvoicesCustomersAndProducts()
 	if err != nil {
 		return "", err
 	}
@@ -70,33 +63,7 @@ func (i InvoiceReport) MonthInvoices() (string, error) {
 		}
 	}
 
-	return fmt.Sprintf("Generades %d factures del mes %s", len(invoices), yearMonth), nil
-}
-
-func (i InvoiceReport) loadProducts() (map[string]model.Product, error) {
-	products, err := i.dbService.FindAllProducts()
-	if err != nil {
-		return nil, fmt.Errorf("no s'ha pogut carregar els productes des de la base de dades: %s", err)
-	}
-
-	var customersMap = make(map[string]model.Product)
-	for _, product := range products {
-		customersMap[product.Id] = product
-	}
-	return customersMap, nil
-}
-
-func (i InvoiceReport) loadCustomers() (map[int]model.Customer, error) {
-	customers, err := i.dbService.FindActiveCustomers()
-	if err != nil {
-		return nil, fmt.Errorf("no s'ha pogut carregar els consumidors des de la base de dades: %s", err)
-	}
-
-	var customersMap = make(map[int]model.Customer)
-	for _, customer := range customers {
-		customersMap[customer.Id] = customer
-	}
-	return customersMap, nil
+	return fmt.Sprintf("Generades %d factures", len(invoices)), nil
 }
 
 func (i InvoiceReport) run(invoice model.Invoice, customer model.Customer, products map[string]model.Product) (string, error) {

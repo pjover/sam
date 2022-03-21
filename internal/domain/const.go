@@ -1,7 +1,5 @@
 package domain
 
-const Version = "0.16.1"
-
 const YearMonthLayout = "2006-01"
 const YearMonthDayLayout = "2006-01-02"
 
@@ -15,3 +13,5 @@ const (
 	//ColorCyan   = string("\033[36m")
 	//ColorWhite  = string("\033[37m")
 )
+
+const Version = "0.16.1"
