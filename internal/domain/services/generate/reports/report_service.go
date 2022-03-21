@@ -14,12 +14,12 @@ type ReportService interface {
 	SaveToFile(reportDefinition ReportDefinition, filePath string) error
 }
 
-type Report struct {
+type reportService struct {
 	configService ports.ConfigService
 }
 
 func NewReportService(configService ports.ConfigService) ReportService {
-	return Report{
+	return reportService{
 		configService: configService,
 	}
 }
@@ -40,7 +40,7 @@ type ReportDefinition struct {
 	SubReports []SubReport
 }
 
-func (r Report) SaveToFile(reportDefinition ReportDefinition, filePath string) error {
+func (r reportService) SaveToFile(reportDefinition ReportDefinition, filePath string) error {
 	maroto := r.setup(reportDefinition)
 	r.header(maroto)
 	r.footer(reportDefinition.Footer, maroto)
@@ -49,13 +49,13 @@ func (r Report) SaveToFile(reportDefinition ReportDefinition, filePath string) e
 	return r.saveToFile(filePath, maroto)
 }
 
-func (r Report) setup(reportDefinition ReportDefinition) pdf.Maroto {
+func (r reportService) setup(reportDefinition ReportDefinition) pdf.Maroto {
 	m := pdf.NewMaroto(reportDefinition.PageOrientation, consts.A4)
 	m.SetPageMargins(15, 10, 15)
 	return m
 }
 
-func (r Report) header(maroto pdf.Maroto) {
+func (r reportService) header(maroto pdf.Maroto) {
 	maroto.RegisterHeader(func() {
 		maroto.Row(20, func() {
 			maroto.Col(6, func() {
@@ -111,7 +111,7 @@ func (r Report) header(maroto pdf.Maroto) {
 	})
 }
 
-func (r Report) footer(footer string, maroto pdf.Maroto) {
+func (r reportService) footer(footer string, maroto pdf.Maroto) {
 	if footer == "" {
 		return
 	}
@@ -131,7 +131,7 @@ func (r Report) footer(footer string, maroto pdf.Maroto) {
 	})
 }
 
-func (r Report) title(title string, maroto pdf.Maroto) {
+func (r reportService) title(title string, maroto pdf.Maroto) {
 	maroto.Row(20, func() {
 		maroto.Col(12, func() {
 			maroto.Text(
@@ -151,14 +151,14 @@ func (r Report) title(title string, maroto pdf.Maroto) {
 	})
 }
 
-func (r Report) subReports(subReports []SubReport, maroto pdf.Maroto) {
+func (r reportService) subReports(subReports []SubReport, maroto pdf.Maroto) {
 	for _, subReport := range subReports {
 		r.subTitle(subReport.GetTitle(), maroto)
 		subReport.Render(maroto)
 	}
 }
 
-func (r Report) subTitle(subTitle string, maroto pdf.Maroto) {
+func (r reportService) subTitle(subTitle string, maroto pdf.Maroto) {
 	if subTitle == "" {
 		return
 	}
@@ -182,7 +182,7 @@ func (r Report) subTitle(subTitle string, maroto pdf.Maroto) {
 	})
 }
 
-func (r Report) saveToFile(filePath string, maroto pdf.Maroto) error {
+func (r reportService) saveToFile(filePath string, maroto pdf.Maroto) error {
 	err := maroto.OutputFileAndClose(filePath)
 	if err != nil {
 		return fmt.Errorf("error while saving report to file '%s': %s", filePath, err)
