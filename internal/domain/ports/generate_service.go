@@ -5,4 +5,5 @@ type GenerateService interface {
 	MonthReport() (string, error)
 	ProductReport() (string, error)
 	SingleInvoice(id string) (string, error)
+	MonthInvoices() (string, error)
 }

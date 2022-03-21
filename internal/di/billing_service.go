@@ -12,4 +12,5 @@ func billingServiceDI(cfgService ports.ConfigService, dbService ports.DbService,
 	cmdManager.AddCommand(billingCli.NewInsertConsumptionsCmd(billingService))
 	cmdManager.AddCommand(billingCli.NewBillConsumptionsCmd(billingService))
 	cmdManager.AddCommand(billingCli.NewRectifyConsumptionsCmd(billingService))
+	cmdManager.AddCommand(billingCli.NewRectifyConsumptionsCmd(billingService))
 }

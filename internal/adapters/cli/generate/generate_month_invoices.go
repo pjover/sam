@@ -2,20 +2,22 @@ package generate
 
 import (
 	"fmt"
-
-	"github.com/pjover/sam/internal/generate/invoices"
+	"github.com/pjover/sam/internal/adapters/cli"
+	"github.com/pjover/sam/internal/domain/ports"
 	"github.com/spf13/cobra"
 )
 
-var onlyNew bool
-
-func NewGenerateMonthInvoicesCmd(generator invoices.MonthInvoicesGenerator) *cobra.Command {
-	command := newGenerateMonthInvoicesCmd(generator)
-	command.Flags().BoolVarP(&onlyNew, "nomes_noves", "n", true, "Genera les factures noves, que no s'han generat abans")
-	return command
+type generateMonthInvoices struct {
+	generateService ports.GenerateService
 }
 
-func newGenerateMonthInvoicesCmd(generator invoices.MonthInvoicesGenerator) *cobra.Command {
+func NewGenerateMonthInvoices(generateService ports.GenerateService) cli.Cmd {
+	return generateMonthInvoices{
+		generateService: generateService,
+	}
+}
+
+func (g generateMonthInvoices) Cmd() *cobra.Command {
 	return &cobra.Command{
 		Use:         "generaFactures",
 		Short:       "Genera els PDFs de les factures del mes",
@@ -35,7 +37,7 @@ func newGenerateMonthInvoicesCmd(generator invoices.MonthInvoicesGenerator) *cob
 			"generate-month-invoices",
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
-			msg, err := generator.Generate(onlyNew)
+			msg, err := g.generateService.MonthInvoices()
 			if err != nil {
 				return err
 			}

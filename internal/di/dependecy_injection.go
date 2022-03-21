@@ -8,7 +8,6 @@ import (
 	"github.com/pjover/sam/internal/domain/ports"
 	"github.com/pjover/sam/internal/domain/services/lang"
 	"github.com/pjover/sam/internal/generate/bbd"
-	"github.com/pjover/sam/internal/generate/invoices"
 )
 
 func MainDI(configService ports.ConfigService, cmdManager cli.CmdManager) {
@@ -27,5 +26,4 @@ func MainDI(configService ports.ConfigService, cmdManager cli.CmdManager) {
 
 	// TODO move to DI and remove method AddTmpCommand
 	cmdManager.AddTmpCommand(generate.NewGenerateBddCmd(bbd.NewBddGenerator()))
-	cmdManager.AddTmpCommand(generate.NewGenerateMonthInvoicesCmd(invoices.NewMonthInvoicesGenerator()))
 }

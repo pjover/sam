@@ -39,23 +39,64 @@ func (i InvoiceReport) SingleInvoice(id string) (string, error) {
 
 	products, err := i.loadProducts()
 	if err != nil {
-		return "", fmt.Errorf("no s'ha pogut carregar els productes des de la base de dades: %s", err)
+		return "", err
 	}
 
 	return i.run(invoice, customer, products)
 }
 
+func (i InvoiceReport) MonthInvoices() (string, error) {
+	yearMonth := i.configService.GetString("yearMonth")
+	invoices, err := i.dbService.FindInvoicesByYearMonth(yearMonth)
+	if err != nil {
+		return "", fmt.Errorf("no s'ha pogut carregar les factures des de la base de dades: %s", err)
+	}
+
+	products, err := i.loadProducts()
+	if err != nil {
+		return "", err
+	}
+
+	customers, err := i.loadCustomers()
+	if err != nil {
+		return "", err
+	}
+
+	for _, invoice := range invoices {
+		customer := customers[invoice.CustomerId]
+		_, err = i.run(invoice, customer, products)
+		if err != nil {
+			return "", err
+		}
+	}
+
+	return fmt.Sprintf("Generades %d factures del mes %s", len(invoices), yearMonth), nil
+}
+
 func (i InvoiceReport) loadProducts() (map[string]model.Product, error) {
 	products, err := i.dbService.FindAllProducts()
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("no s'ha pogut carregar els productes des de la base de dades: %s", err)
 	}
 
-	var productMap = make(map[string]model.Product)
+	var customersMap = make(map[string]model.Product)
 	for _, product := range products {
-		productMap[product.Id] = product
+		customersMap[product.Id] = product
 	}
-	return productMap, nil
+	return customersMap, nil
+}
+
+func (i InvoiceReport) loadCustomers() (map[int]model.Customer, error) {
+	customers, err := i.dbService.FindActiveCustomers()
+	if err != nil {
+		return nil, fmt.Errorf("no s'ha pogut carregar els consumidors des de la base de dades: %s", err)
+	}
+
+	var customersMap = make(map[int]model.Customer)
+	for _, customer := range customers {
+		customersMap[customer.Id] = customer
+	}
+	return customersMap, nil
 }
 
 func (i InvoiceReport) run(invoice model.Invoice, customer model.Customer, products map[string]model.Product) (string, error) {
@@ -80,8 +121,8 @@ func (i InvoiceReport) run(invoice model.Invoice, customer model.Customer, produ
 					"Infants",
 				},
 				Widths: []uint{
-					2,
-					6,
+					1,
+					15,
 				},
 				Data: i.headerData(invoice, customer),
 			},
@@ -201,17 +242,16 @@ func (i InvoiceReport) linesData(invoice model.Invoice, products map[string]mode
 }
 
 func (i InvoiceReport) summaryData(invoice model.Invoice) [][]string {
-	var price, vat, sum float64
+	var price, vat float64
 	for _, line := range invoice.Lines {
 		price += line.Units * line.ProductPrice
 		vat += price * line.TaxPercentage
-		sum += price + vat
 	}
 
 	var data = [][]string{
 		{fmt.Sprintf("%.2f", price)},
 		{fmt.Sprintf("%.2f", vat)},
-		{fmt.Sprintf("%.2f", sum)},
+		{fmt.Sprintf("%.2f", price+vat)},
 	}
 	return data
 }

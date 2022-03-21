@@ -14,4 +14,5 @@ func generateServiceDI(configService ports.ConfigService, langService lang.LangS
 	cmdManager.AddCommand(generateCli.NewGenerateMonthReportCmd(generateService))
 	cmdManager.AddCommand(generateCli.NewGenerateProductReportCmd(generateService))
 	cmdManager.AddCommand(generateCli.NewGenerateSingleInvoice(generateService))
+	cmdManager.AddCommand(generateCli.NewGenerateMonthInvoices(generateService))
 }
