@@ -10,6 +10,7 @@ import (
 	"path"
 	"sort"
 	"strconv"
+	"time"
 )
 
 type ProductsReport struct {
@@ -34,9 +35,9 @@ func (p ProductsReport) Run() (string, error) {
 	report := Report{
 		PageOrientation: consts.Portrait,
 		Title:           "Llistat de productes",
+		Footer:          time.Now().Format("2006-01-02"),
 		SubReports: []SubReport{
-			{
-				Style: Table,
+			TableSubReport{
 				Align: consts.Left,
 				Captions: []string{
 					"Codi",
@@ -46,11 +47,11 @@ func (p ProductsReport) Run() (string, error) {
 					"És ajuda?",
 				},
 				Widths: []uint{
+					1,
+					7,
 					2,
-					4,
-					2,
-					2,
-					2,
+					1,
+					1,
 				},
 				Data: p.buildContents(products),
 			},

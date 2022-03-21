@@ -17,7 +17,7 @@ func NewGenerateCustomerReportCmd(generateService ports.GenerateService) cli.Cmd
 	}
 }
 
-func (e generateCustomerReportCmd) Cmd() *cobra.Command {
+func (g generateCustomerReportCmd) Cmd() *cobra.Command {
 	return &cobra.Command{
 		Use:         "generaInformeClients",
 		Short:       "Genera l'informe dels clients",
@@ -37,7 +37,7 @@ func (e generateCustomerReportCmd) Cmd() *cobra.Command {
 			"generate-customers-report",
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
-			msg, err := e.generateService.CustomerReport()
+			msg, err := g.generateService.CustomerReport()
 			if err != nil {
 				return err
 			}

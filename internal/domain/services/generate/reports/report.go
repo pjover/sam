@@ -8,7 +8,6 @@ import (
 	"github.com/johnfercher/maroto/pkg/props"
 	"github.com/spf13/viper"
 	"path"
-	"time"
 )
 
 type Style uint
@@ -18,17 +17,9 @@ const (
 	Card
 )
 
-type SubReport struct {
-	// Style is the report style (Table or Card)
-	Style Style
-	// Alignment is the alignment of the text (header and content) inside the columns
-	Align consts.Align
-	// Captions is a list of captions for every table's colum or card file
-	Captions []string
-	// Widths is a list of columns' widths
-	Widths []uint
-	// Data is a list of lists containing every cell text
-	Data [][]string
+type SubReport interface {
+	GetTitle() string
+	Render(maroto pdf.Maroto)
 }
 
 type Report struct {
@@ -36,6 +27,8 @@ type Report struct {
 	PageOrientation consts.Orientation
 	// Title is the report's main title
 	Title string
+	// Footer is a text inserted after every report, if empty does not create ant footer
+	Footer string
 	// SubReports is a list of SubReports to include inside the main report, in order and one below the other
 	SubReports []SubReport
 }
@@ -45,7 +38,7 @@ func (r Report) SaveToFile(filePath string) error {
 	r.header(maroto)
 	r.footer(maroto)
 	r.title(maroto)
-	r.body(maroto)
+	r.subReports(maroto)
 	return r.saveToFile(maroto, filePath)
 }
 
@@ -112,10 +105,14 @@ func (r Report) header(maroto pdf.Maroto) {
 }
 
 func (r Report) footer(maroto pdf.Maroto) {
+	if r.Footer == "" {
+		return
+	}
 	maroto.RegisterFooter(func() {
 		maroto.Row(4, func() {
 			maroto.Col(12, func() {
-				maroto.Text(time.Now().Format("2006-01-02"),
+				maroto.Text(
+					r.Footer,
 					props.Text{
 						Top:   4,
 						Style: consts.Italic,
@@ -141,51 +138,41 @@ func (r Report) title(maroto pdf.Maroto) {
 						Green: 51,
 						Blue:  51,
 					},
-					Size: 24,
+					Size: 18,
 				})
 		})
 	})
 }
 
-func (r Report) body(maroto pdf.Maroto) {
+func (r Report) subReports(maroto pdf.Maroto) {
 	for _, subReport := range r.SubReports {
-		r.subReport(maroto, subReport)
+		r.subTitle(maroto, subReport.GetTitle())
+		subReport.Render(maroto)
 	}
 }
 
-func (r Report) subReport(maroto pdf.Maroto, subReport SubReport) {
-	switch subReport.Style {
-	case Table:
-		r.table(maroto, subReport)
-	case Card:
-		r.card(maroto, subReport)
+func (r Report) subTitle(maroto pdf.Maroto, subTitle string) {
+	if subTitle == "" {
+		return
 	}
-}
 
-func (r Report) table(maroto pdf.Maroto, subReport SubReport) {
-
-	maroto.TableList(subReport.Captions, subReport.Data, props.TableList{
-		HeaderProp: props.TableListContent{
-			Size:      9,
-			GridSizes: subReport.Widths,
-		},
-		ContentProp: props.TableListContent{
-			Size:      8,
-			GridSizes: subReport.Widths,
-		},
-		Align: subReport.Align,
-		AlternatedBackground: &color.Color{
-			Red:   200,
-			Green: 200,
-			Blue:  200,
-		},
-		HeaderContentSpace: 1,
-		Line:               false,
+	maroto.Row(20, func() {
+		maroto.Col(12, func() {
+			maroto.Text(
+				subTitle,
+				props.Text{
+					Top:   8,
+					Style: consts.Bold,
+					Align: consts.Left,
+					Color: color.Color{
+						Red:   0,
+						Green: 51,
+						Blue:  51,
+					},
+					Size: 14,
+				})
+		})
 	})
-}
-
-func (r Report) card(maroto pdf.Maroto, report SubReport) {
-
 }
 
 func (r Report) saveToFile(maroto pdf.Maroto, filePath string) error {

@@ -34,3 +34,8 @@ func (g generateService) ProductReport() (string, error) {
 	generator := reports.NewProductsReport(g.dbService)
 	return generator.Run()
 }
+
+func (g generateService) SingleInvoice(invoiceId string) (string, error) {
+	generator := reports.NewInvoiceReport(g.configService, g.dbService)
+	return generator.Run(invoiceId)
+}

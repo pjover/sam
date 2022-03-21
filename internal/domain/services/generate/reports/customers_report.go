@@ -7,6 +7,7 @@ import (
 	"github.com/pjover/sam/internal/domain/ports"
 	"path"
 	"sort"
+	"time"
 
 	"github.com/johnfercher/maroto/pkg/consts"
 	"github.com/spf13/viper"
@@ -34,9 +35,9 @@ func (c CustomerReport) Run() (string, error) {
 	report := Report{
 		PageOrientation: consts.Landscape,
 		Title:           "Llistat de clients",
+		Footer:          time.Now().Format("2006-01-02"),
 		SubReports: []SubReport{
-			{
-				Style: Table,
+			TableSubReport{
 				Align: consts.Left,
 				Captions: []string{
 					"Infant",

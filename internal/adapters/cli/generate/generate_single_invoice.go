@@ -3,17 +3,22 @@ package generate
 import (
 	"fmt"
 	"github.com/pjover/sam/internal/adapters/cli"
-	"strings"
-
-	"github.com/pjover/sam/internal/generate/invoices"
+	"github.com/pjover/sam/internal/domain/ports"
 	"github.com/spf13/cobra"
+	"strings"
 )
 
-func NewGenerateSingleInvoiceCmd(generator invoices.SingleInvoiceGenerator) *cobra.Command {
-	return newGenerateSingleInvoiceCmd(generator)
+type generateSingleInvoice struct {
+	generateService ports.GenerateService
 }
 
-func newGenerateSingleInvoiceCmd(generator invoices.SingleInvoiceGenerator) *cobra.Command {
+func NewGenerateSingleInvoice(generateService ports.GenerateService) cli.Cmd {
+	return generateSingleInvoice{
+		generateService: generateService,
+	}
+}
+
+func (g generateSingleInvoice) Cmd() *cobra.Command {
 	return &cobra.Command{
 		Use:         "generaFactura",
 		Short:       "Genera el PDF d'una factura",
@@ -34,8 +39,8 @@ func newGenerateSingleInvoiceCmd(generator invoices.SingleInvoiceGenerator) *cob
 		},
 		Args: cli.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			invoiceId := strings.ToUpper(args[0])
-			msg, err := generator.Generate(invoiceId)
+			id := strings.ToUpper(args[0])
+			msg, err := g.generateService.SingleInvoice(id)
 			if err != nil {
 				return err
 			}

@@ -28,5 +28,4 @@ func MainDI(configService ports.ConfigService, cmdManager cli.CmdManager) {
 	// TODO move to DI and remove method AddTmpCommand
 	cmdManager.AddTmpCommand(generate.NewGenerateBddCmd(bbd.NewBddGenerator()))
 	cmdManager.AddTmpCommand(generate.NewGenerateMonthInvoicesCmd(invoices.NewMonthInvoicesGenerator()))
-	cmdManager.AddTmpCommand(generate.NewGenerateSingleInvoiceCmd(invoices.NewSingleInvoiceGenerator()))
 }

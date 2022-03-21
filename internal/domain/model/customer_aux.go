@@ -98,3 +98,7 @@ func (a Adult) MobilePhoneFmt() string {
 func (a Adult) NameSurnameFmt() string {
 	return fmt.Sprintf("%s %s", a.Name, a.Surname)
 }
+
+func (a Address) CompleteAddress() string {
+	return fmt.Sprintf("%s, %s %s, %s", a.Street, a.ZipCode, a.City, a.State)
+}
