@@ -66,6 +66,7 @@ func generateServiceDI(cmdManager cli.CmdManager, configService ports.ConfigServ
 	cmdManager.AddCommand(generateCli.NewGenerateSingleInvoice(generateService))
 	cmdManager.AddCommand(generateCli.NewGenerateMonthInvoices(generateService))
 	cmdManager.AddCommand(generateCli.NewGenerateBddFileCmd(generateService))
+	cmdManager.AddCommand(generateCli.NewGenerateCustomersCardsReportsCmd(generateService))
 }
 
 func listServiceDI(cmdManager cli.CmdManager, dbService ports.DbService, osService ports.OsService) {

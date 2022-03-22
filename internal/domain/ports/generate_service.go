@@ -7,4 +7,5 @@ type GenerateService interface {
 	SingleInvoice(id string) (string, error)
 	MonthInvoices() (string, error)
 	BddFile() (string, error)
+	CustomersCards() (string, error)
 }
