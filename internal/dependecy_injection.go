@@ -33,7 +33,7 @@ func MainDI(cmdManager cli.CmdManager, configService ports.ConfigService) {
 	editServiceDI(cmdManager, configService, osService)
 	displayServiceDI(cmdManager, dbService)
 	generateServiceDI(cmdManager, configService, dbService, osService, langService)
-	listServiceDI(cmdManager, dbService, osService)
+	listServiceDI(cmdManager, configService, dbService)
 	searchServiceDI(cmdManager, dbService)
 	billingServiceDI(cmdManager, configService, dbService, osService)
 }
@@ -69,10 +69,10 @@ func generateServiceDI(cmdManager cli.CmdManager, configService ports.ConfigServ
 	cmdManager.AddCommand(generateCli.NewGenerateCustomersCardsReportsCmd(generateService))
 }
 
-func listServiceDI(cmdManager cli.CmdManager, dbService ports.DbService, osService ports.OsService) {
+func listServiceDI(cmdManager cli.CmdManager, configService ports.ConfigService, dbService ports.DbService) {
 	listService := list.NewListService(dbService)
 	cmdManager.AddCommand(listCli.NewListProductsCmd(listService))
-	cmdManager.AddCommand(listCli.NewListInvoicesCmd(listService, osService))
+	cmdManager.AddCommand(listCli.NewListInvoicesCmd(configService, listService))
 	cmdManager.AddCommand(listCli.NewListCustomersCmd(listService))
 	cmdManager.AddCommand(listCli.NewListChildrenCmd(listService))
 	cmdManager.AddCommand(listCli.NewListMailsCmd(listService))
