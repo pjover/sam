@@ -7,17 +7,17 @@ import (
 	"github.com/spf13/cobra"
 )
 
-type generateCustomersCardsReportsCmd struct {
+type generateCustomerCardsReportsCmd struct {
 	generateService ports.GenerateService
 }
 
-func NewGenerateCustomersCardsReportsCmd(generateService ports.GenerateService) cli.Cmd {
-	return generateCustomersCardsReportsCmd{
+func NewGenerateCustomerCardsReportsCmd(generateService ports.GenerateService) cli.Cmd {
+	return generateCustomerCardsReportsCmd{
 		generateService: generateService,
 	}
 }
 
-func (g generateCustomersCardsReportsCmd) Cmd() *cobra.Command {
+func (g generateCustomerCardsReportsCmd) Cmd() *cobra.Command {
 	return &cobra.Command{
 		Use:         "generaFitxesClients",
 		Short:       "Genera les fitxes dels clients",
@@ -32,9 +32,9 @@ func (g generateCustomersCardsReportsCmd) Cmd() *cobra.Command {
 			"generarfitxesclients",
 			"generar-fitxes-clients",
 			"gccards",
-			"generateCustomersCards",
-			"generatecustomerscards",
-			"generate-customers-cards",
+			"generateCustomerCards",
+			"generatecustomercards",
+			"generate-customer-cards",
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			msg, err := g.generateService.CustomersCards()
