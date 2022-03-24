@@ -3,6 +3,7 @@ package ports
 import (
 	"github.com/pjover/sam/internal/domain/model"
 	"github.com/pjover/sam/internal/domain/model/payment_type"
+	"time"
 )
 
 type DbService interface {
@@ -10,7 +11,7 @@ type DbService interface {
 	FindActiveChildren() ([]model.Child, error)
 	FindActiveCustomers() ([]model.Customer, error)
 	FindAllActiveConsumptions() ([]model.Consumption, error)
-	FindAllCustomers() ([]model.Customer, error)
+	FindChangedCustomers(changedSince time.Time) ([]model.Customer, error)
 	FindAllProducts() ([]model.Product, error)
 	FindAllSequences() ([]model.Sequence, error)
 	FindChild(id int) (model.Child, error)

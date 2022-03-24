@@ -218,9 +218,9 @@ func (d dbService) FindActiveCustomers() ([]model.Customer, error) {
 	return dbo.ConvertCustomersToModel(results), nil
 }
 
-func (d dbService) FindAllCustomers() ([]model.Customer, error) {
+func (d dbService) FindChangedCustomers(changedSince time.Time) ([]model.Customer, error) {
 	var results []dbo.Customer
-	filter := bson.D{}
+	filter := bson.D{{"changedOn", bson.D{{"$gt", changedSince}}}}
 	findOptions := options.Find()
 	findOptions.SetSort(bson.D{{"_id", 1}})
 	if err := d.findMany("customer", filter, findOptions, &results, "tots els clients"); err != nil {

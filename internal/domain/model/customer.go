@@ -60,4 +60,5 @@ type Customer struct {
 	InvoiceHolder InvoiceHolder
 	Note          interface{}
 	Language      string
+	ChangedOn     time.Time
 }

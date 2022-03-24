@@ -12,6 +12,7 @@ type Customer struct {
 	InvoiceHolder InvoiceHolder `bson:"invoiceHolder"`
 	Note          string        `bson:"note"`
 	Language      string        `bson:"language"`
+	ChangedOn     time.Time     `bson:"changedOn"`
 }
 
 type Child struct {
