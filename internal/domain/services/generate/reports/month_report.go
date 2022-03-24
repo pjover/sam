@@ -17,15 +17,17 @@ import (
 
 type MonthReport struct {
 	configService ports.ConfigService
-	langService   lang.LangService
 	dbService     ports.DbService
+	osService     ports.OsService
+	langService   lang.LangService
 }
 
-func NewMonthReport(configService ports.ConfigService, langService lang.LangService, dbService ports.DbService) MonthReport {
+func NewMonthReport(configService ports.ConfigService, dbService ports.DbService, osService ports.OsService, langService lang.LangService) MonthReport {
 	return MonthReport{
 		configService: configService,
 		langService:   langService,
 		dbService:     dbService,
+		osService:     osService,
 	}
 }
 
@@ -48,7 +50,7 @@ func (m MonthReport) Run() (string, error) {
 	reportDefinition := ReportDefinition{
 		PageOrientation: consts.Landscape,
 		Title:           fmt.Sprintf("Factures %s", m.langService.MonthName(month)),
-		Footer:          time.Now().Format("2006-01-02"),
+		Footer:          m.osService.Now().Format("2006-01-02"),
 		SubReports: []SubReport{
 			TableSubReport{
 				Align: consts.Left,

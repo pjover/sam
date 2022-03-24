@@ -9,9 +9,9 @@ import (
 
 type generateService struct {
 	configService ports.ConfigService
-	langService   lang.LangService
 	dbService     ports.DbService
 	osService     ports.OsService
+	langService   lang.LangService
 }
 
 func NewGenerateService(configService ports.ConfigService, dbService ports.DbService, osService ports.OsService, langService lang.LangService) ports.GenerateService {
@@ -24,17 +24,17 @@ func NewGenerateService(configService ports.ConfigService, dbService ports.DbSer
 }
 
 func (g generateService) CustomerReport() (string, error) {
-	generator := reports.NewCustomerReport(g.configService, g.dbService)
+	generator := reports.NewCustomerReport(g.configService, g.dbService, g.osService)
 	return generator.Run()
 }
 
 func (g generateService) MonthReport() (string, error) {
-	generator := reports.NewMonthReport(g.configService, g.langService, g.dbService)
+	generator := reports.NewMonthReport(g.configService, g.dbService, g.osService, g.langService)
 	return generator.Run()
 }
 
 func (g generateService) ProductReport() (string, error) {
-	generator := reports.NewProductsReport(g.configService, g.dbService)
+	generator := reports.NewProductsReport(g.configService, g.dbService, g.osService)
 	return generator.Run()
 }
 

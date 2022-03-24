@@ -9,18 +9,19 @@ import (
 	"path"
 	"sort"
 	"strconv"
-	"time"
 )
 
 type ProductsReport struct {
 	configService ports.ConfigService
 	dbService     ports.DbService
+	osService     ports.OsService
 }
 
-func NewProductsReport(configService ports.ConfigService, dbService ports.DbService) ProductsReport {
+func NewProductsReport(configService ports.ConfigService, dbService ports.DbService, osService ports.OsService) ProductsReport {
 	return ProductsReport{
 		configService: configService,
 		dbService:     dbService,
+		osService:     osService,
 	}
 }
 
@@ -36,7 +37,7 @@ func (p ProductsReport) Run() (string, error) {
 	reportDefinition := ReportDefinition{
 		PageOrientation: consts.Portrait,
 		Title:           "Llistat de productes",
-		Footer:          time.Now().Format("2006-01-02"),
+		Footer:          p.osService.Now().Format("2006-01-02"),
 		SubReports: []SubReport{
 			TableSubReport{
 				Align: consts.Left,

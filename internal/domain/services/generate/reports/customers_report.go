@@ -3,24 +3,24 @@ package reports
 import (
 	"bytes"
 	"fmt"
+	"github.com/johnfercher/maroto/pkg/consts"
 	"github.com/pjover/sam/internal/domain/model"
 	"github.com/pjover/sam/internal/domain/ports"
 	"path"
 	"sort"
-	"time"
-
-	"github.com/johnfercher/maroto/pkg/consts"
 )
 
 type CustomerReport struct {
 	configService ports.ConfigService
 	dbService     ports.DbService
+	osService     ports.OsService
 }
 
-func NewCustomerReport(configService ports.ConfigService, dbService ports.DbService) CustomerReport {
+func NewCustomerReport(configService ports.ConfigService, dbService ports.DbService, osService ports.OsService) CustomerReport {
 	return CustomerReport{
 		configService: configService,
 		dbService:     dbService,
+		osService:     osService,
 	}
 }
 
@@ -36,7 +36,7 @@ func (c CustomerReport) Run() (string, error) {
 	reportDefinition := ReportDefinition{
 		PageOrientation: consts.Landscape,
 		Title:           "Llistat de clients",
-		Footer:          time.Now().Format("2006-01-02"),
+		Footer:          c.osService.Now().Format("2006-01-02"),
 		SubReports: []SubReport{
 			TableSubReport{
 				Align: consts.Left,
