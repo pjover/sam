@@ -10,6 +10,7 @@ type DbService interface {
 	FindActiveChildren() ([]model.Child, error)
 	FindActiveCustomers() ([]model.Customer, error)
 	FindAllActiveConsumptions() ([]model.Consumption, error)
+	FindAllCustomers() ([]model.Customer, error)
 	FindAllProducts() ([]model.Product, error)
 	FindAllSequences() ([]model.Sequence, error)
 	FindChild(id int) (model.Child, error)

@@ -106,6 +106,29 @@ func (_m *DbService) FindAllActiveConsumptions() ([]model.Consumption, error) {
 	return r0, r1
 }
 
+// FindAllCustomers provides a mock function with given fields:
+func (_m *DbService) FindAllCustomers() ([]model.Customer, error) {
+	ret := _m.Called()
+
+	var r0 []model.Customer
+	if rf, ok := ret.Get(0).(func() []model.Customer); ok {
+		r0 = rf()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]model.Customer)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func() error); ok {
+		r1 = rf()
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // FindAllProducts provides a mock function with given fields:
 func (_m *DbService) FindAllProducts() ([]model.Product, error) {
 	ret := _m.Called()

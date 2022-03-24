@@ -218,6 +218,17 @@ func (d dbService) FindActiveCustomers() ([]model.Customer, error) {
 	return dbo.ConvertCustomersToModel(results), nil
 }
 
+func (d dbService) FindAllCustomers() ([]model.Customer, error) {
+	var results []dbo.Customer
+	filter := bson.D{}
+	findOptions := options.Find()
+	findOptions.SetSort(bson.D{{"_id", 1}})
+	if err := d.findMany("customer", filter, findOptions, &results, "tots els clients"); err != nil {
+		return nil, err
+	}
+	return dbo.ConvertCustomersToModel(results), nil
+}
+
 func (d dbService) SearchCustomers(searchText string) ([]model.Customer, error) {
 	var results []dbo.Customer
 	filter := bson.M{"$text": bson.M{"$search": searchText}}

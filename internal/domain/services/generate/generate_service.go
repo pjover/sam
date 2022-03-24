@@ -54,6 +54,6 @@ func (g generateService) BddFile() (string, error) {
 }
 
 func (g generateService) CustomersCards() (string, error) {
-	generator := reports.NewCustomersCardsReports(g.configService, g.dbService, g.osService)
+	generator := reports.NewCustomerCardsReports(g.configService, g.dbService, g.osService)
 	return generator.Run()
 }
