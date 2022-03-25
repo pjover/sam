@@ -117,6 +117,20 @@ func (c configService) GetInvoicesDirectory() (string, error) {
 	return c.createDir(dirPath)
 }
 
+func (c configService) GetReportsDirectory() (string, error) {
+	return c.createDir(viper.GetString("dirs.reports"))
+}
+
+func (c configService) GetCustomersCardsDirectory() (string, error) {
+	reportsDir, err := c.GetReportsDirectory()
+	if err != nil {
+		return "", err
+	}
+
+	dirPath := path.Join(reportsDir, viper.GetString("reports.customersCardsFolderName"))
+	return c.createDir(dirPath)
+}
+
 func (c configService) createDir(dirPath string) (string, error) {
 	err := os.MkdirAll(dirPath, 0755)
 	if err != nil {

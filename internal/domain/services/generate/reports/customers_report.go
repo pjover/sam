@@ -63,8 +63,13 @@ func (c CustomerReport) Run() (string, error) {
 		},
 	}
 
+	reportsDir, err := c.configService.GetReportsDirectory()
+	if err != nil {
+		return "", err
+	}
+
 	filePath := path.Join(
-		c.configService.GetString("dirs.reports"),
+		reportsDir,
 		c.configService.GetString("files.customersReport"),
 	)
 

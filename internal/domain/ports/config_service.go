@@ -10,4 +10,6 @@ type ConfigService interface {
 	SetTime(key string, value time.Time) error
 	GetWorkingDirectory() (string, error)
 	GetInvoicesDirectory() (string, error)
+	GetReportsDirectory() (string, error)
+	GetCustomersCardsDirectory() (string, error)
 }
