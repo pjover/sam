@@ -58,7 +58,7 @@ type Customer struct {
 	Children      []Child
 	Adults        []Adult
 	InvoiceHolder InvoiceHolder
-	Note          interface{}
+	Note          string
 	Language      string
 	ChangedOn     time.Time
 }

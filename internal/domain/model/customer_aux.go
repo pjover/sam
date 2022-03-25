@@ -46,6 +46,10 @@ func (c Customer) ChildrenNames(joinWith string) string {
 	return strings.Join(names, joinWith)
 }
 
+func (c Customer) ChildrenNamesWithSurname(joinWith string) string {
+	return fmt.Sprintf("%s %s", c.ChildrenNames(joinWith), c.Children[0].Surname)
+}
+
 func (c Child) String() string {
 	return fmt.Sprintf("%d  %-30s  %s  %s", c.Id, c.NameAndSurname(), c.Group, c.BirthDate.Format(domain.YearMonthDayLayout))
 }
@@ -104,10 +108,13 @@ func (a Adult) MobilePhoneFmt() string {
 	)
 }
 
-func (a Adult) NameSurnameFmt() string {
+func (a Adult) NameAndSurname() string {
 	return fmt.Sprintf("%s %s", a.Name, a.Surname)
 }
 
 func (a Address) CompleteAddress() string {
+	if a.Street == "" {
+		return ""
+	}
 	return fmt.Sprintf("%s, %s %s, %s", a.Street, a.ZipCode, a.City, a.State)
 }
