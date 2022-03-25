@@ -45,12 +45,12 @@ func (b bddService) Run() (string, error) {
 		return "", err
 	}
 
-	filePath, err := b.getFilePath()
+	dirPath, filename, err := b.getFilePath()
 	if err != nil {
 		return "", err
 	}
 
-	err = b.saveToFile(content, filePath)
+	filePath, err := b.saveToFile(dirPath, filename, content)
 	if err != nil {
 		return "", err
 	}
@@ -71,19 +71,19 @@ func (b bddService) generateContent(invoices []model.Invoice, customers map[int]
 	return "", nil
 }
 
-func (b bddService) getFilePath() (filePath string, err error) {
-	dir, err := b.configService.GetWorkingDirectory()
+func (b bddService) getFilePath() (dirPath string, filename string, err error) {
+	dirPath, err = b.configService.GetWorkingDirectory()
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
 
-	currentFilenames, err := b.osService.ListFiles(dir, ".qx1")
+	currentFilenames, err := b.osService.ListFiles(dirPath, ".qx1")
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
 
-	filename := b.getNextBddFilename(currentFilenames)
-	return filename, nil
+	filename = b.getNextBddFilename(currentFilenames)
+	return dirPath, filename, nil
 }
 
 func (b bddService) getNextBddFilename(currentFilenames []string) string {
@@ -109,7 +109,6 @@ func (b bddService) buildBddFilename(sequence int) string {
 	return fmt.Sprintf("bdd-%d.qx1", sequence)
 }
 
-func (b bddService) saveToFile(content string, filePath string) error {
-	//TODO implement me
-	panic("implement me")
+func (b bddService) saveToFile(dirPath string, filename string, content string) (filePath string, err error) {
+	return b.osService.WriteFile(dirPath, filename, []byte(content))
 }

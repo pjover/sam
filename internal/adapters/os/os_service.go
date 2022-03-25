@@ -3,6 +3,7 @@ package os
 import (
 	"archive/zip"
 	"errors"
+	"fmt"
 	"github.com/pjover/sam/internal/domain/ports"
 	"io"
 	"io/fs"
@@ -161,4 +162,13 @@ func (o osService) ListFiles(dir string, ext string) (filenames []string, err er
 		return nil, err
 	}
 	return filenames, nil
+}
+
+func (o osService) WriteFile(dirPath string, filename string, content []byte) (filePath string, err error) {
+	err = o.CreateDirectory(dirPath)
+	if err != nil {
+		return "", fmt.Errorf("no s'ha pogut crear el directori %s: %s", dirPath, err)
+	}
+	filePath = path.Join(dirPath, filename)
+	return filePath, os.WriteFile(filePath, content, 0660)
 }
