@@ -3,6 +3,7 @@ package model
 import (
 	"fmt"
 	"github.com/pjover/sam/internal/domain"
+	"github.com/pjover/sam/internal/domain/model/adult_role"
 	"github.com/pjover/sam/internal/domain/model/payment_type"
 	"strings"
 )
@@ -13,7 +14,7 @@ func (c Customer) String() string {
 
 func (c Customer) FirstAdult() Adult {
 	for _, adult := range c.Adults {
-		if adult.Role == "MOTHER" {
+		if adult.Role == adult_role.Mother {
 			return adult
 		}
 	}

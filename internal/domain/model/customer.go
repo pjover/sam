@@ -1,6 +1,7 @@
 package model
 
 import (
+	"github.com/pjover/sam/internal/domain/model/adult_role"
 	"github.com/pjover/sam/internal/domain/model/payment_type"
 	"time"
 )
@@ -22,7 +23,7 @@ type Adult struct {
 	Surname          string
 	SecondSurname    string
 	TaxID            string
-	Role             string
+	Role             adult_role.AdultRole
 	Address          Address
 	Email            string
 	MobilePhone      string

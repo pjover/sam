@@ -208,7 +208,7 @@ func (c CustomerCardsReports) adultSubReport(adult model.Adult) SubReport {
 			{adult.TaxID},
 			{adult.BirthDate.Format(domain.YearMonthDayLayout)},
 			{adult.Nationality},
-			{adult.Role},
+			{adult.Role.String()},
 			{adult.Email},
 			{adult.Address.CompleteAddress()},
 			{adult.MobilePhone},
