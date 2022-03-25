@@ -2,6 +2,7 @@ package model
 
 import (
 	"fmt"
+	"github.com/pjover/sam/internal/domain"
 	"github.com/pjover/sam/internal/domain/model/payment_type"
 	"strings"
 )
@@ -46,7 +47,7 @@ func (c Customer) ChildrenNames(joinWith string) string {
 }
 
 func (c Child) String() string {
-	return fmt.Sprintf("%d  %-30s  %s  %s", c.Id, c.NameAndSurname(), c.Group, c.BirthDate.Format("2006-01-02"))
+	return fmt.Sprintf("%d  %-30s  %s  %s", c.Id, c.NameAndSurname(), c.Group, c.BirthDate.Format(domain.YearMonthDayLayout))
 }
 
 func (c Child) NameAndSurname() string {

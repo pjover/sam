@@ -50,7 +50,7 @@ func (m MonthReport) Run() (string, error) {
 	reportDefinition := ReportDefinition{
 		PageOrientation: consts.Landscape,
 		Title:           fmt.Sprintf("Factures %s", m.langService.MonthName(month)),
-		Footer:          m.osService.Now().Format("2006-01-02"),
+		Footer:          m.osService.Now().Format(domain.YearMonthDayLayout),
 		SubReports: []SubReport{
 			TableSubReport{
 				Align: consts.Left,

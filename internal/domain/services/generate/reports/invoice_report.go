@@ -161,7 +161,7 @@ func (i InvoiceReport) run(invoice model.Invoice, customer model.Customer, produ
 		return "", err
 	}
 
-	buffer.WriteString(fmt.Sprintf("Generat l'informe de productes a '%s'\n", filePath))
+	buffer.WriteString(fmt.Sprintf("Generat la factura a '%s'\n", filePath))
 	return buffer.String(), nil
 
 }

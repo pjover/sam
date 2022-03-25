@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"github.com/johnfercher/maroto/pkg/consts"
+	"github.com/pjover/sam/internal/domain"
 	"github.com/pjover/sam/internal/domain/model"
 	"github.com/pjover/sam/internal/domain/ports"
 	"path"
@@ -37,7 +38,7 @@ func (p ProductsReport) Run() (string, error) {
 	reportDefinition := ReportDefinition{
 		PageOrientation: consts.Portrait,
 		Title:           "Llistat de productes",
-		Footer:          p.osService.Now().Format("2006-01-02"),
+		Footer:          p.osService.Now().Format(domain.YearMonthDayLayout),
 		SubReports: []SubReport{
 			TableSubReport{
 				Align: consts.Left,

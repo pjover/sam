@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"github.com/johnfercher/maroto/pkg/consts"
+	"github.com/pjover/sam/internal/domain"
 	"github.com/pjover/sam/internal/domain/model"
 	"github.com/pjover/sam/internal/domain/ports"
 	"path"
@@ -36,7 +37,7 @@ func (c CustomerReport) Run() (string, error) {
 	reportDefinition := ReportDefinition{
 		PageOrientation: consts.Landscape,
 		Title:           "Llistat de clients",
-		Footer:          c.osService.Now().Format("2006-01-02"),
+		Footer:          c.osService.Now().Format(domain.YearMonthDayLayout),
 		SubReports: []SubReport{
 			TableSubReport{
 				Align: consts.Left,
