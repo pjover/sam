@@ -166,8 +166,8 @@ func Test_BillConsumptions_without_rectification(t *testing.T) {
 		},
 	}
 
-	mockedCfgService := new(mocks.ConfigService)
-	mockedCfgService.On("GetString", "yearMonth").Return(yearMonth)
+	mockedConfigService := new(mocks.ConfigService)
+	mockedConfigService.On("GetString", "yearMonth").Return(yearMonth)
 
 	mockedDbService := new(mocks.DbService)
 	mockedDbService.On("FindAllActiveConsumptions").Return(noRectificationConsumptions, nil)
@@ -185,9 +185,9 @@ func Test_BillConsumptions_without_rectification(t *testing.T) {
 	mockedOsService.On("Now").Return(today)
 
 	sut := billingService{
-		cfgService: mockedCfgService,
-		osService:  mockedOsService,
-		dbService:  mockedDbService,
+		configService: mockedConfigService,
+		osService:     mockedOsService,
+		dbService:     mockedDbService,
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -215,8 +215,8 @@ func Test_BillConsumptions_with_rectification(t *testing.T) {
 		},
 	}
 
-	mockedCfgService := new(mocks.ConfigService)
-	mockedCfgService.On("GetString", "yearMonth").Return(yearMonth)
+	mockedConfigService := new(mocks.ConfigService)
+	mockedConfigService.On("GetString", "yearMonth").Return(yearMonth)
 
 	mockedDbService := new(mocks.DbService)
 	mockedDbService.On("FindAllActiveConsumptions").Return(append(noRectificationConsumptions, rectificationConsumptions...), nil)
@@ -234,9 +234,9 @@ func Test_BillConsumptions_with_rectification(t *testing.T) {
 	mockedOsService.On("Now").Return(today)
 
 	sut := billingService{
-		cfgService: mockedCfgService,
-		osService:  mockedOsService,
-		dbService:  mockedDbService,
+		configService: mockedConfigService,
+		osService:     mockedOsService,
+		dbService:     mockedDbService,
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

@@ -10,14 +10,14 @@ import (
 )
 
 type listInvoicesCmd struct {
-	listService ports.ListService
-	osService   ports.OsService
+	configService ports.ConfigService
+	listService   ports.ListService
 }
 
-func NewListInvoicesCmd(listService ports.ListService, osService ports.OsService) cli.Cmd {
+func NewListInvoicesCmd(configService ports.ConfigService, listService ports.ListService) cli.Cmd {
 	return listInvoicesCmd{
-		listService: listService,
-		osService:   osService,
+		configService: configService,
+		listService:   listService,
 	}
 }
 
@@ -57,8 +57,8 @@ func (l listInvoicesCmd) parseListInvoicesArgs(args []string) error {
 	var err error
 	switch len(args) {
 	case 0:
-		yearMonth := l.osService.Now()
-		msg, err = l.listService.ListYearMonthInvoices(yearMonth.Format(domain.YearMonthLayout))
+		yearMonth := l.configService.GetString("yearMonth")
+		msg, err = l.listService.ListYearMonthInvoices(yearMonth)
 	case 1:
 		customerId, err := cli.ParseInteger(args[0], "de client")
 		if err == nil {

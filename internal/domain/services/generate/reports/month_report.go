@@ -17,15 +17,17 @@ import (
 
 type MonthReport struct {
 	configService ports.ConfigService
-	langService   lang.LangService
 	dbService     ports.DbService
+	osService     ports.OsService
+	langService   lang.LangService
 }
 
-func NewMonthReport(configService ports.ConfigService, langService lang.LangService, dbService ports.DbService) MonthReport {
+func NewMonthReport(configService ports.ConfigService, dbService ports.DbService, osService ports.OsService, langService lang.LangService) MonthReport {
 	return MonthReport{
 		configService: configService,
 		langService:   langService,
 		dbService:     dbService,
+		osService:     osService,
 	}
 }
 
@@ -40,36 +42,54 @@ func (m MonthReport) Run() (string, error) {
 	}
 	buffer.WriteString(fmt.Sprintf("Recuperades %d factures del mes %s\n", len(invoices), yearMonth))
 
-	contents, err := m.buildContents(invoices)
+	data, err := m.buildData(invoices)
 	if err != nil {
 		return "", err
+	}
+
+	reportDefinition := ReportDefinition{
+		PageOrientation: consts.Landscape,
+		Title:           fmt.Sprintf("Factures %s", m.langService.MonthName(month)),
+		Footer:          m.osService.Now().Format(domain.YearMonthDayLayout),
+		SubReports: []SubReport{
+			TableSubReport{
+				Align: consts.Left,
+				Captions: []string{
+					"Factura",
+					"Data",
+					"Client",
+					"Infants",
+					"Concepte",
+					"Import",
+					"Pagament",
+				},
+				Widths: []uint{
+					1,
+					1,
+					2,
+					2,
+					4,
+					1,
+					1,
+				},
+				Data: data,
+			},
+		},
 	}
 
 	wd, err := m.configService.GetWorkingDirectory()
 	if err != nil {
 		return "", err
 	}
-	filePath := path.Join(wd, m.configService.GetString("files.invoicesReport"))
+	filePath := path.Join(
+		wd,
+		m.configService.GetString("files.invoicesReport"),
+	)
 
-	reportInfo := ReportInfo{
-		consts.Landscape,
-		consts.Left,
-		fmt.Sprintf("Factures %s", m.langService.MonthName(month)),
-		[]Column{
-			{"Factura", 1},
-			{"Data", 1},
-			{"Client", 2},
-			{"Infants", 2},
-			{"Concepte", 4},
-			{"Import", 1},
-			{"Pagament", 1},
-		},
-		contents,
-		filePath,
-	}
-	err = Report(reportInfo)
+	reportService := NewReportService(m.configService)
+	err = reportService.SaveToFile(reportDefinition, filePath)
 	if err != nil {
-		return "", fmt.Errorf("error generant l'informe: %s", err)
+		return "", err
 	}
 
 	buffer.WriteString(fmt.Sprintf("Generat l'informe de clients a '%s'", filePath))
@@ -87,8 +107,8 @@ func (m MonthReport) getInvoices(yearMonth string) ([]model.Invoice, error) {
 	return invoices, nil
 }
 
-func (m MonthReport) buildContents(invoices []model.Invoice) ([][]string, error) {
-	var contents [][]string
+func (m MonthReport) buildData(invoices []model.Invoice) ([][]string, error) {
+	var data [][]string
 	for _, invoice := range invoices {
 		customer, err := m.customer(invoice)
 		if err != nil {
@@ -99,17 +119,17 @@ func (m MonthReport) buildContents(invoices []model.Invoice) ([][]string, error)
 			invoice.Id,
 			invoice.DateFmt(),
 			customer.FirstAdultNameWithId(),
-			customer.ChildrenNames("\n"),
+			customer.ChildrenNamesWithId("\n"),
 			invoice.LinesFmt(", "),
 			fmt.Sprintf("%.2f", invoice.Amount()),
 			invoice.PaymentType.String(),
 		}
-		contents = append(contents, line)
+		data = append(data, line)
 	}
-	sort.SliceStable(contents, func(i, j int) bool {
-		return contents[i][0] < contents[j][0]
+	sort.SliceStable(data, func(i, j int) bool {
+		return data[i][0] < data[j][0]
 	})
-	return contents, nil
+	return data, nil
 }
 
 func (m MonthReport) getMonth() (string, time.Time) {

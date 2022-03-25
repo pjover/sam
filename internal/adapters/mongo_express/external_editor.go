@@ -7,14 +7,14 @@ import (
 )
 
 type externalEditor struct {
-	cfgService ports.ConfigService
-	osService  ports.OsService
+	configService ports.ConfigService
+	osService     ports.OsService
 }
 
-func NewExternalEditor(cfgService ports.ConfigService, osService ports.OsService) ports.ExternalEditor {
+func NewExternalEditor(configService ports.ConfigService, osService ports.OsService) ports.ExternalEditor {
 	return externalEditor{
-		cfgService: cfgService,
-		osService:  osService,
+		configService: configService,
+		osService:     osService,
 	}
 }
 
@@ -29,7 +29,7 @@ func (e externalEditor) Edit(entity ports.Entity, id string) (string, error) {
 }
 
 func (e externalEditor) getUrlPath(entity ports.Entity, id string) (string, error) {
-	baseUrl := e.cfgService.GetString("urls.mongoExpress")
+	baseUrl := e.configService.GetString("urls.mongoExpress")
 	switch entity {
 	case ports.Customer:
 		return fmt.Sprintf("%s/customer/%s", baseUrl, id), nil

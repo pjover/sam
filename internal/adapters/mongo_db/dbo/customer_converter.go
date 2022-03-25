@@ -2,6 +2,7 @@ package dbo
 
 import (
 	"github.com/pjover/sam/internal/domain/model"
+	"github.com/pjover/sam/internal/domain/model/adult_role"
 	"github.com/pjover/sam/internal/domain/model/payment_type"
 	"strings"
 )
@@ -54,7 +55,7 @@ func adult(adult Adult) model.Adult {
 		Surname:          adult.Surname,
 		SecondSurname:    adult.SecondSurname,
 		TaxID:            adult.TaxID,
-		Role:             adult.Role,
+		Role:             newAdultRole(adult.Role),
 		Address:          address(adult.Address),
 		Email:            adult.Email,
 		MobilePhone:      adult.MobilePhone,
@@ -65,6 +66,22 @@ func adult(adult Adult) model.Adult {
 		BirthDate:        adult.BirthDate,
 		Nationality:      adult.Nationality,
 	}
+}
+
+func newAdultRole(value string) adult_role.AdultRole {
+	var _values = []string{
+		"",
+		"MOTHER",
+		"FATHER",
+		"TUTOR",
+	}
+	value = strings.ToLower(value)
+	for i, val := range _values {
+		if strings.ToLower(val) == value {
+			return adult_role.AdultRole(i)
+		}
+	}
+	return adult_role.Invalid
 }
 
 func address(address Address) model.Address {

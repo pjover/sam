@@ -93,7 +93,7 @@ func ConvertInvoiceToDbo(invoice model.Invoice) Invoice {
 		YearMonth:   invoice.YearMonth,
 		ChildrenIds: invoice.ChildrenIds,
 		Lines:       lines,
-		PaymentType: paymentTypes[invoice.PaymentType],
+		PaymentType: PaymentTypes[invoice.PaymentType],
 		Note:        invoice.Note,
 		Emailed:     invoice.Emailed,
 		Printed:     invoice.Printed,
@@ -101,7 +101,7 @@ func ConvertInvoiceToDbo(invoice model.Invoice) Invoice {
 	}
 }
 
-var paymentTypes = []string{
+var PaymentTypes = []string{
 	"",
 	"BANK_DIRECT_DEBIT",
 	"BANK_TRANSFER",

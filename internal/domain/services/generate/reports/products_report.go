@@ -4,21 +4,25 @@ import (
 	"bytes"
 	"fmt"
 	"github.com/johnfercher/maroto/pkg/consts"
+	"github.com/pjover/sam/internal/domain"
 	"github.com/pjover/sam/internal/domain/model"
 	"github.com/pjover/sam/internal/domain/ports"
-	"github.com/spf13/viper"
 	"path"
 	"sort"
 	"strconv"
 )
 
 type ProductsReport struct {
-	dbService ports.DbService
+	configService ports.ConfigService
+	dbService     ports.DbService
+	osService     ports.OsService
 }
 
-func NewProductsReport(dbService ports.DbService) ProductsReport {
+func NewProductsReport(configService ports.ConfigService, dbService ports.DbService, osService ports.OsService) ProductsReport {
 	return ProductsReport{
-		dbService: dbService,
+		configService: configService,
+		dbService:     dbService,
+		osService:     osService,
 	}
 }
 
@@ -31,24 +35,44 @@ func (p ProductsReport) Run() (string, error) {
 		return "", err
 	}
 
-	contents := p.buildContents(products)
-
-	filePath := path.Join(viper.GetString("dirs.reports"), viper.GetString("files.ProductsReport"))
-	reportInfo := ReportInfo{
-		consts.Portrait,
-		consts.Left,
-		"Llistat de productes",
-		[]Column{
-			{"Codi", 2},
-			{"Nom", 4},
-			{"Preu", 2},
-			{"IVA", 2},
-			{"És ajuda?", 2},
+	reportDefinition := ReportDefinition{
+		PageOrientation: consts.Portrait,
+		Title:           "Llistat de productes",
+		Footer:          p.osService.Now().Format(domain.YearMonthDayLayout),
+		SubReports: []SubReport{
+			TableSubReport{
+				Align: consts.Left,
+				Captions: []string{
+					"Codi",
+					"Nom",
+					"Preu",
+					"IVA",
+					"És ajuda?",
+				},
+				Widths: []uint{
+					1,
+					7,
+					2,
+					1,
+					1,
+				},
+				Data: p.buildContents(products),
+			},
 		},
-		contents,
-		filePath,
 	}
-	err = Report(reportInfo)
+
+	reportsDir, err := p.configService.GetReportsDirectory()
+	if err != nil {
+		return "", err
+	}
+
+	filePath := path.Join(
+		reportsDir,
+		p.configService.GetString("files.ProductsReport"),
+	)
+
+	reportService := NewReportService(p.configService)
+	err = reportService.SaveToFile(reportDefinition, filePath)
 	if err != nil {
 		return "", err
 	}
@@ -58,7 +82,7 @@ func (p ProductsReport) Run() (string, error) {
 }
 
 func (p ProductsReport) buildContents(products []model.Product) [][]string {
-	var contents [][]string
+	var data [][]string
 	for _, product := range products {
 		var line = []string{
 			product.Id,
@@ -67,12 +91,12 @@ func (p ProductsReport) buildContents(products []model.Product) [][]string {
 			strconv.FormatFloat(product.TaxPercentage, 'f', 2, 64),
 			p.formatIsSubsidy(product.IsSubsidy),
 		}
-		contents = append(contents, line)
+		data = append(data, line)
 	}
-	sort.SliceStable(contents, func(i, j int) bool {
-		return contents[i][0] < contents[j][0]
+	sort.SliceStable(data, func(i, j int) bool {
+		return data[i][0] < data[j][0]
 	})
-	return contents
+	return data
 }
 
 func (p ProductsReport) formatIsSubsidy(subsidy bool) string {

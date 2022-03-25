@@ -1,12 +1,12 @@
-package bbd
+package bdd
 
 import (
 	"testing"
 )
 
-func Test_getNextFilename(t *testing.T) {
+func Test_bddService_getNextBddFilename(t *testing.T) {
 	type args struct {
-		filenames []string
+		currentFilenames []string
 	}
 	tests := []struct {
 		name string
@@ -39,9 +39,11 @@ func Test_getNextFilename(t *testing.T) {
 			"bdd-6.qx1",
 		},
 	}
+
+	sut := bddService{}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := getNextBddFilename(tt.args.filenames); got != tt.want {
+			if got := sut.getNextBddFilename(tt.args.currentFilenames); got != tt.want {
 				t.Errorf("getNextBddFilename() = %v, want %v", got, tt.want)
 			}
 		})

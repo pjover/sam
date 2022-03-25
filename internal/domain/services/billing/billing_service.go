@@ -7,7 +7,6 @@ import (
 	"github.com/pjover/sam/internal/domain/model/sequence_type"
 	"github.com/pjover/sam/internal/domain/ports"
 	"github.com/pjover/sam/internal/domain/services/common"
-	"github.com/spf13/viper"
 	"log"
 	"sort"
 	"strconv"
@@ -21,16 +20,16 @@ type BillingService interface {
 }
 
 type billingService struct {
-	cfgService ports.ConfigService
-	dbService  ports.DbService
-	osService  ports.OsService
+	configService ports.ConfigService
+	dbService     ports.DbService
+	osService     ports.OsService
 }
 
-func NewBillingService(cfgService ports.ConfigService, dbService ports.DbService, osService ports.OsService) BillingService {
+func NewBillingService(configService ports.ConfigService, dbService ports.DbService, osService ports.OsService) BillingService {
 	return billingService{
-		cfgService: cfgService,
-		dbService:  dbService,
-		osService:  osService,
+		configService: configService,
+		dbService:     dbService,
+		osService:     osService,
 	}
 }
 
@@ -79,7 +78,7 @@ func (b billingService) insertConsumptions(childId int, consumptions map[string]
 }
 
 func (b billingService) completeConsumptions(consumptions map[string]float64, childId int, note string, isRectification bool) []model.Consumption {
-	yearMonth := viper.GetString("yearMonth")
+	yearMonth := b.configService.GetString("yearMonth")
 	var first = true
 	var completeConsumptions []model.Consumption
 	for id, units := range consumptions {
@@ -187,7 +186,7 @@ func (b billingService) splitConsumptions(consumptions []model.Consumption) (con
 }
 
 func (b billingService) consumptionsToInvoice(customer model.Customer, consumptions []model.Consumption) (model.Invoice, error) {
-	yearMonth := b.cfgService.GetString("yearMonth")
+	yearMonth := b.configService.GetString("yearMonth")
 	today := b.osService.Now()
 
 	lines, childrenIds, err := b.childrenLines(consumptions)

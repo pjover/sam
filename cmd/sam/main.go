@@ -17,14 +17,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 package main
 
 import (
+	cfg2 "github.com/pjover/sam/internal"
 	"github.com/pjover/sam/internal/adapters/cfg"
 	"github.com/pjover/sam/internal/adapters/cli"
-	"github.com/pjover/sam/internal/di"
 )
 
 func main() {
 	configService := cfg.NewConfigService()
 	cmdManager := cli.NewCmdManager(configService)
-	di.MainDI(configService, cmdManager)
+	cfg2.MainDI(cmdManager, configService)
 	cmdManager.Execute()
 }

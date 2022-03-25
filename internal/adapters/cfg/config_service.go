@@ -7,6 +7,7 @@ import (
 	"log"
 	"os"
 	"path"
+	"time"
 )
 
 type configService struct {
@@ -23,6 +24,15 @@ func (c configService) GetString(key string) string {
 }
 
 func (c configService) SetString(key string, value string) error {
+	viper.Set(key, value)
+	return viper.WriteConfig()
+}
+
+func (c configService) GetTime(key string) time.Time {
+	return viper.GetTime(key)
+}
+
+func (c configService) SetTime(key string, value time.Time) error {
 	viper.Set(key, value)
 	return viper.WriteConfig()
 }
@@ -68,15 +78,14 @@ func (c configService) loadDefaultConfig(home string) {
 	appDirectory := path.Join(home, "Sam")
 	viper.SetDefault("dirs.home", appDirectory)
 	viper.SetDefault("dirs.reports", "$HOME")
-	viper.SetDefault("dirs.invoicesName", "invoices")
 	viper.SetDefault("dirs.backup", "$HOME/.sam")
 
 	viper.SetDefault("urls.hobbit", "http://localhost:8080")
 	viper.SetDefault("urls.mongoExpress", "http://localhost:8081/db/hobbit_prod")
 
-	viper.SetDefault("files.customersReport", "Customers.pdf")
-	viper.SetDefault("files.productsReport", "Products.pdf")
-	viper.SetDefault("files.invoicesReport", "Factures.pdf")
+	viper.SetDefault("files.customersReport", "Llistat de clients.pdf")
+	viper.SetDefault("files.productsReport", "Llistat de productes.pdf")
+	viper.SetDefault("files.invoicesReport", "Llistat de factures.pdf")
 	viper.SetDefault("files.logo", "logo.png")
 
 	viper.SetDefault("business.name", "BusinessName")
@@ -88,6 +97,10 @@ func (c configService) loadDefaultConfig(home string) {
 
 	viper.SetDefault("db.server", "mongodb://localhost:27017")
 	viper.SetDefault("db.name", "hobbit")
+
+	viper.SetDefault("reports.invoicesFolderName", "factures")
+	viper.SetDefault("reports.customersCardsFolderName", "clients")
+	viper.SetDefault("reports.lastCustomersCardsUpdated", time.Date(2020, 1, 1, 0, 0, 0, 0, time.Local))
 }
 
 func (c configService) GetWorkingDirectory() (string, error) {
@@ -100,7 +113,21 @@ func (c configService) GetInvoicesDirectory() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	dirPath := path.Join(wd, viper.GetString("dirs.invoicesName"))
+	dirPath := path.Join(wd, viper.GetString("reports.invoicesFolderName"))
+	return c.createDir(dirPath)
+}
+
+func (c configService) GetReportsDirectory() (string, error) {
+	return c.createDir(viper.GetString("dirs.reports"))
+}
+
+func (c configService) GetCustomersCardsDirectory() (string, error) {
+	reportsDir, err := c.GetReportsDirectory()
+	if err != nil {
+		return "", err
+	}
+
+	dirPath := path.Join(reportsDir, viper.GetString("reports.customersCardsFolderName"))
 	return c.createDir(dirPath)
 }
 

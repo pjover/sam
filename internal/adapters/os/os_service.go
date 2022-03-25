@@ -5,9 +5,11 @@ import (
 	"errors"
 	"github.com/pjover/sam/internal/domain/ports"
 	"io"
+	"io/fs"
 	"os"
 	"os/exec"
 	"path"
+	"path/filepath"
 	"runtime"
 	"time"
 )
@@ -140,4 +142,23 @@ func (o osService) addFileToZip(zipWriter *zip.Writer, filePath string) error {
 
 func (o osService) Now() time.Time {
 	return time.Now()
+}
+
+func (o osService) ListFiles(dir string, ext string) (filenames []string, err error) {
+	err = filepath.WalkDir(dir, func(path string, info fs.DirEntry, err error) error {
+		if err != nil {
+			return err
+		}
+		if info.IsDir() {
+			return nil
+		}
+		if filepath.Ext(info.Name()) == ext {
+			filenames = append(filenames, info.Name())
+		}
+		return nil
+	})
+	if err != nil {
+		return nil, err
+	}
+	return filenames, nil
 }

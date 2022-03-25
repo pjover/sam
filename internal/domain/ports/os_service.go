@@ -10,4 +10,5 @@ type OsService interface {
 	GetTempDirectory() (string, error)
 	CreateZipFile(zipFilePath string, files []string) error
 	Now() time.Time
+	ListFiles(dir string, ext string) (filenames []string, err error)
 }

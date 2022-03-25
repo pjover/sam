@@ -2,17 +2,19 @@ package model
 
 import (
 	"fmt"
+	"github.com/pjover/sam/internal/domain"
+	"github.com/pjover/sam/internal/domain/model/adult_role"
 	"github.com/pjover/sam/internal/domain/model/payment_type"
 	"strings"
 )
 
 func (c Customer) String() string {
-	return fmt.Sprintf("%d  %-25s  %-55s  %s", c.Id, c.FirstAdultName(), c.ChildrenNames(", "), c.InvoiceHolder.PaymentInfoFmt())
+	return fmt.Sprintf("%d  %-25s  %-55s  %s", c.Id, c.FirstAdultName(), c.ChildrenNamesWithId(", "), c.InvoiceHolder.PaymentInfoFmt())
 }
 
 func (c Customer) FirstAdult() Adult {
 	for _, adult := range c.Adults {
-		if adult.Role == "MOTHER" {
+		if adult.Role == adult_role.Mother {
 			return adult
 		}
 	}
@@ -29,7 +31,7 @@ func (c Customer) FirstAdultNameWithId() string {
 	return fmt.Sprintf("%s %s (%d)", adult.Name, adult.Surname, c.Id)
 }
 
-func (c Customer) ChildrenNames(joinWith string) string {
+func (c Customer) ChildrenNamesWithId(joinWith string) string {
 	var names []string
 	for _, child := range c.Children {
 		names = append(names, child.NameWithId())
@@ -37,8 +39,20 @@ func (c Customer) ChildrenNames(joinWith string) string {
 	return strings.Join(names, joinWith)
 }
 
+func (c Customer) ChildrenNames(joinWith string) string {
+	var names []string
+	for _, child := range c.Children {
+		names = append(names, child.Name)
+	}
+	return strings.Join(names, joinWith)
+}
+
+func (c Customer) ChildrenNamesWithSurname(joinWith string) string {
+	return fmt.Sprintf("%s %s", c.ChildrenNames(joinWith), c.Children[0].Surname)
+}
+
 func (c Child) String() string {
-	return fmt.Sprintf("%d  %-30s  %s  %s", c.Id, c.NameAndSurname(), c.Group, c.BirthDate.Format("2006-01-02"))
+	return fmt.Sprintf("%d  %-30s  %s  %s", c.Id, c.NameAndSurname(), c.Group, c.BirthDate.Format(domain.YearMonthDayLayout))
 }
 
 func (c Child) NameAndSurname() string {
@@ -95,6 +109,13 @@ func (a Adult) MobilePhoneFmt() string {
 	)
 }
 
-func (a Adult) NameSurnameFmt() string {
+func (a Adult) NameAndSurname() string {
 	return fmt.Sprintf("%s %s", a.Name, a.Surname)
+}
+
+func (a Address) CompleteAddress() string {
+	if a.Street == "" {
+		return ""
+	}
+	return fmt.Sprintf("%s, %s %s, %s", a.Street, a.ZipCode, a.City, a.State)
 }

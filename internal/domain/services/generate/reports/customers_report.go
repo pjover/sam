@@ -3,22 +3,25 @@ package reports
 import (
 	"bytes"
 	"fmt"
+	"github.com/johnfercher/maroto/pkg/consts"
+	"github.com/pjover/sam/internal/domain"
 	"github.com/pjover/sam/internal/domain/model"
 	"github.com/pjover/sam/internal/domain/ports"
 	"path"
 	"sort"
-
-	"github.com/johnfercher/maroto/pkg/consts"
-	"github.com/spf13/viper"
 )
 
 type CustomerReport struct {
-	dbService ports.DbService
+	configService ports.ConfigService
+	dbService     ports.DbService
+	osService     ports.OsService
 }
 
-func NewCustomerReport(dbService ports.DbService) CustomerReport {
+func NewCustomerReport(configService ports.ConfigService, dbService ports.DbService, osService ports.OsService) CustomerReport {
 	return CustomerReport{
-		dbService: dbService,
+		configService: configService,
+		dbService:     dbService,
+		osService:     osService,
 	}
 }
 
@@ -31,29 +34,48 @@ func (c CustomerReport) Run() (string, error) {
 		return "", err
 	}
 
-	contents := c.buildContents(customers)
+	reportDefinition := ReportDefinition{
+		PageOrientation: consts.Landscape,
+		Title:           "Llistat de clients",
+		Footer:          c.osService.Now().Format(domain.YearMonthDayLayout),
+		SubReports: []SubReport{
+			TableSubReport{
+				Align: consts.Left,
+				Captions: []string{
+					"Infant",
+					"Grup",
+					"Naixement",
+					"Mare",
+					"Mòbil",
+					"Correu",
+					"Pagament",
+				},
+				Widths: []uint{
+					2,
+					1,
+					1,
+					2,
+					1,
+					2,
+					3,
+				},
+				Data: c.buildData(customers),
+			},
+		},
+	}
+
+	reportsDir, err := c.configService.GetReportsDirectory()
+	if err != nil {
+		return "", err
+	}
 
 	filePath := path.Join(
-		viper.GetString("dirs.reports"),
-		viper.GetString("files.customersReport"),
+		reportsDir,
+		c.configService.GetString("files.customersReport"),
 	)
-	reportInfo := ReportInfo{
-		consts.Landscape,
-		consts.Left,
-		"Llistat de clients",
-		[]Column{
-			{"Infant", 2},
-			{"Grup", 1},
-			{"Neixament", 1},
-			{"Mare", 2},
-			{"Mòbil", 1},
-			{"Correu", 2},
-			{"Pagament", 3},
-		},
-		contents,
-		filePath,
-	}
-	err = Report(reportInfo)
+
+	reportService := NewReportService(c.configService)
+	err = reportService.SaveToFile(reportDefinition, filePath)
 	if err != nil {
 		return "", err
 	}
@@ -82,7 +104,7 @@ func (c CustomerReport) buildContents(customers []model.Customer) [][]string {
 				child.NameWithId(),
 				child.Group,
 				child.BirthDate.Format("2006-02-01"),
-				adult.NameSurnameFmt(),
+				adult.NameAndSurname(),
 				adult.MobilePhoneFmt(),
 				adult.Email,
 				customer.InvoiceHolder.PaymentInfoFmt(),
@@ -94,4 +116,30 @@ func (c CustomerReport) buildContents(customers []model.Customer) [][]string {
 		return contents[i][0] < contents[j][0]
 	})
 	return contents
+}
+
+func (c CustomerReport) buildData(customers []model.Customer) [][]string {
+	var data [][]string
+	for _, customer := range customers {
+		adult := customer.FirstAdult()
+		for _, child := range customer.Children {
+			if !child.Active {
+				continue
+			}
+			var dataLine = []string{
+				child.NameWithId(),
+				child.Group,
+				child.BirthDate.Format("2006-02-01"),
+				adult.NameAndSurname(),
+				adult.MobilePhoneFmt(),
+				adult.Email,
+				customer.InvoiceHolder.PaymentInfoFmt(),
+			}
+			data = append(data, dataLine)
+		}
+	}
+	sort.SliceStable(data, func(i, j int) bool {
+		return data[i][0] < data[j][0]
+	})
+	return data
 }
