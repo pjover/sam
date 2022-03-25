@@ -100,7 +100,7 @@ func (c configService) loadDefaultConfig(home string) {
 
 	viper.SetDefault("reports.invoicesFolderName", "factures")
 	viper.SetDefault("reports.customersCardsFolderName", "clients")
-	viper.SetDefault("reports.lastCustomersCardsUpdated", time.Now())
+	viper.SetDefault("reports.lastCustomersCardsUpdated", time.Date(2020, 1, 1, 0, 0, 0, 0, time.Local))
 }
 
 func (c configService) GetWorkingDirectory() (string, error) {

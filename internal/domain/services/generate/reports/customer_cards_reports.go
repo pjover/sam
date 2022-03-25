@@ -22,14 +22,15 @@ func NewCustomerCardsReports(configService ports.ConfigService, dbService ports.
 func (c CustomerCardsReports) Run() (string, error) {
 
 	changedSince := c.configService.GetTime("reports.lastCustomersCardsUpdated")
-	customers, err := c.dbService.FindChangedCustomers(changedSince)
+	err := c.configService.SetTime("reports.lastCustomersCardsUpdated", c.osService.Now())
 	if err != nil {
-		return "", fmt.Errorf("no s'ha pogut carregar els consumidors des de la base de dades: %s", err)
+		return "", fmt.Errorf("no s'ha pogut actualitzar la configuració: %s", err)
 	}
 
-	err = c.configService.SetTime("reports.lastCustomersCardsUpdated", c.osService.Now())
+	customers, err := c.dbService.FindChangedCustomers(changedSince)
 	if err != nil {
-		return "", fmt.Errorf("s'han actualitzat les fitxes de clients però no s'ha pogut actualitzar la configuració: %s", err)
+		_ = c.configService.SetTime("reports.lastCustomersCardsUpdated", changedSince)
+		return "", fmt.Errorf("no s'ha pogut carregar els consumidors des de la base de dades: %s", err)
 	}
 
 	return fmt.Sprintf("Generades %d fitxes de clients", len(customers)), nil
