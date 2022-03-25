@@ -179,7 +179,7 @@ func (c CustomerCardsReports) adultsSubReports(adults []model.Adult) []SubReport
 
 func (c CustomerCardsReports) adultSubReport(adult model.Adult) SubReport {
 	return CardSubReport{
-		Title: adult.NameAndSurname(),
+		Title: adult.Role.String(),
 		Align: consts.Left,
 		Captions: []string{
 			"Nom",
