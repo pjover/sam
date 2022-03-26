@@ -154,3 +154,24 @@ func (_m *OsService) RunCommand(command string, args ...string) error {
 
 	return r0
 }
+
+// WriteFile provides a mock function with given fields: dirPath, filename, content
+func (_m *OsService) WriteFile(dirPath string, filename string, content []byte) (string, error) {
+	ret := _m.Called(dirPath, filename, content)
+
+	var r0 string
+	if rf, ok := ret.Get(0).(func(string, string, []byte) string); ok {
+		r0 = rf(dirPath, filename, content)
+	} else {
+		r0 = ret.Get(0).(string)
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(string, string, []byte) error); ok {
+		r1 = rf(dirPath, filename, content)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}

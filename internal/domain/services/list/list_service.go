@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"fmt"
 	"github.com/pjover/sam/internal/domain/model"
+	"github.com/pjover/sam/internal/domain/model/group_type"
+	"github.com/pjover/sam/internal/domain/model/language"
 	"github.com/pjover/sam/internal/domain/ports"
 )
 
@@ -115,7 +117,7 @@ func (l listService) ListMailsByLanguage() (string, error) {
 	caBuffer.WriteString("CA:\n")
 	esBuffer.WriteString("ES:\n")
 	for _, customer := range customers {
-		if customer.Language == "CA" {
+		if customer.Language == language.Catalan {
 			caBuffer.WriteString(customer.InvoiceHolder.Mail() + ", ")
 		} else {
 			esBuffer.WriteString(customer.InvoiceHolder.Mail() + ", ")
@@ -124,18 +126,18 @@ func (l listService) ListMailsByLanguage() (string, error) {
 	return caBuffer.String() + "\n" + esBuffer.String(), nil
 }
 
-func (l listService) ListGroupMails(group string) (string, error) {
+func (l listService) ListGroupMails(groupType group_type.GroupType) (string, error) {
 	customers, err := l.dbService.FindActiveCustomers()
 	if err != nil {
 		return "", err
 	}
 
 	var buffer bytes.Buffer
-	buffer.WriteString(group + ":\n")
+	buffer.WriteString(groupType.String() + ":\n")
 	for _, customer := range customers {
 		var in bool
 		for _, child := range customer.Children {
-			if child.Group == group {
+			if child.Group == groupType {
 				in = true
 				break
 			}

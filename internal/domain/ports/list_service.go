@@ -1,5 +1,7 @@
 package ports
 
+import "github.com/pjover/sam/internal/domain/model/group_type"
+
 type ListService interface {
 	ListCustomerInvoices(customerId int) (string, error)
 	ListCustomerYearMonthInvoices(customerId int, yearMonth string) (string, error)
@@ -9,7 +11,7 @@ type ListService interface {
 	ListChildren() (string, error)
 	ListMails() (string, error)
 	ListMailsByLanguage() (string, error)
-	ListGroupMails(group string) (string, error)
+	ListGroupMails(groupType group_type.GroupType) (string, error)
 	ListConsumptions() (string, error)
 	ListChildConsumptions(childId int) (string, error)
 }

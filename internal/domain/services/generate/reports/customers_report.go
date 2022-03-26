@@ -102,7 +102,7 @@ func (c CustomerReport) buildContents(customers []model.Customer) [][]string {
 			}
 			var line = []string{
 				child.NameWithId(),
-				child.Group,
+				child.Group.String(),
 				child.BirthDate.Format("2006-02-01"),
 				adult.NameAndSurname(),
 				adult.MobilePhoneFmt(),
@@ -128,7 +128,7 @@ func (c CustomerReport) buildData(customers []model.Customer) [][]string {
 			}
 			var dataLine = []string{
 				child.NameWithId(),
-				child.Group,
+				child.Group.String(),
 				child.BirthDate.Format("2006-02-01"),
 				adult.NameAndSurname(),
 				adult.MobilePhoneFmt(),

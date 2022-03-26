@@ -18,7 +18,7 @@ Install
 
 ```
 cd cmd/sam
-sam install
+go install
 ```
 
 Test

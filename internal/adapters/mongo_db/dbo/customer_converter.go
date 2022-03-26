@@ -3,6 +3,8 @@ package dbo
 import (
 	"github.com/pjover/sam/internal/domain/model"
 	"github.com/pjover/sam/internal/domain/model/adult_role"
+	"github.com/pjover/sam/internal/domain/model/group_type"
+	"github.com/pjover/sam/internal/domain/model/language"
 	"github.com/pjover/sam/internal/domain/model/payment_type"
 	"strings"
 )
@@ -15,7 +17,7 @@ func ConvertCustomerToModel(customer Customer) model.Customer {
 		Adults:        adults(customer.Adults),
 		InvoiceHolder: holder(customer.InvoiceHolder),
 		Note:          customer.Note,
-		Language:      customer.Language,
+		Language:      newLanguage(customer.Language),
 	}
 }
 
@@ -35,7 +37,7 @@ func child(child Child) model.Child {
 		SecondSurname: child.SecondSurname,
 		TaxID:         child.TaxID,
 		BirthDate:     child.BirthDate,
-		Group:         child.Group,
+		Group:         newGroupType(child.Group),
 		Note:          child.Note,
 		Active:        child.Active,
 	}
@@ -130,4 +132,36 @@ func newPaymentType(value string) payment_type.PaymentType {
 		}
 	}
 	return payment_type.Invalid
+}
+
+func newLanguage(value string) language.Language {
+	var _values = []string{
+		"",
+		"CA",
+		"EN",
+		"ES",
+	}
+	value = strings.ToLower(value)
+	for i, val := range _values {
+		if strings.ToLower(val) == value {
+			return language.Language(i)
+		}
+	}
+	return language.Invalid
+}
+
+func newGroupType(value string) group_type.GroupType {
+	var _values = []string{
+		"UNDEFINED",
+		"EI_1",
+		"EI_2",
+		"EI_3",
+	}
+	value = strings.ToLower(value)
+	for i, val := range _values {
+		if strings.ToLower(val) == value {
+			return group_type.GroupType(i)
+		}
+	}
+	return group_type.Undefined
 }

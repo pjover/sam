@@ -113,7 +113,7 @@ func (c CustomerCardsReports) headerSubReport(customer model.Customer) SubReport
 			15,
 		},
 		Data: [][]string{
-			{customer.Language},
+			{customer.Language.String()},
 			{customer.Note},
 			{c.boolToYesNo(customer.Active)},
 		},
@@ -162,7 +162,7 @@ func (c CustomerCardsReports) childSubReport(child model.Child) SubReport {
 			{child.SecondSurname},
 			{child.TaxID},
 			{child.BirthDate.Format(domain.YearMonthDayLayout)},
-			{child.Group},
+			{child.Group.String()},
 			{child.Note},
 			{c.boolToYesNo(child.Active)},
 		},

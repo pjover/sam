@@ -2,6 +2,8 @@ package model
 
 import (
 	"github.com/pjover/sam/internal/domain/model/adult_role"
+	"github.com/pjover/sam/internal/domain/model/group_type"
+	"github.com/pjover/sam/internal/domain/model/language"
 	"github.com/pjover/sam/internal/domain/model/payment_type"
 	"time"
 )
@@ -13,7 +15,7 @@ type Child struct {
 	SecondSurname string
 	TaxID         string
 	BirthDate     time.Time
-	Group         string
+	Group         group_type.GroupType
 	Note          string
 	Active        bool
 }
@@ -60,6 +62,6 @@ type Customer struct {
 	Adults        []Adult
 	InvoiceHolder InvoiceHolder
 	Note          string
-	Language      string
+	Language      language.Language
 	ChangedOn     time.Time
 }
