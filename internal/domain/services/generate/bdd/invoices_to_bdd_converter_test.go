@@ -45,3 +45,42 @@ func Test_invoicesToBddConverter_calculateControlCode(t *testing.T) {
 		})
 	}
 }
+
+func Test_invoicesToBddConverter_getSepaIndentifier(t *testing.T) {
+	type args struct {
+		taxID   string
+		country string
+		suffix  string
+	}
+	tests := []struct {
+		name string
+		args args
+		want string
+	}{
+		{
+			name: "Case 1",
+			args: args{
+				taxID:   "36361882D",
+				country: "ES",
+				suffix:  "000",
+			},
+			want: "ES4200036361882D",
+		},
+		{
+			name: "Case 2",
+			args: args{
+				taxID:   "37866397W",
+				country: "ES",
+				suffix:  "000",
+			},
+			want: "ES5500037866397W",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			sut := invoicesToBddConverter{}
+			got := sut.getSepaIndentifier(tt.args.taxID, tt.args.country, tt.args.suffix)
+			assert.Equal(t, tt.want, got)
+		})
+	}
+}
