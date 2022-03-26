@@ -10,7 +10,6 @@ import (
 )
 
 var lightTests = [][]string{
-	{"directory"},
 	{"displayCustomer", "263"},
 	{"displayInvoice", "f-3945"},
 	{"displayProduct", "age"},
@@ -35,11 +34,12 @@ var heavyTests = [][]string{
 	{"editInvoice", "f-3945"},
 	{"editProduct", "age"},
 	{"generateSingleInvoice", "f-3945"},
-	{"generateBdd"},
+	{"generateBddFile"},
 	{"generateCustomersReport"},
 	{"generateMonthInvoices"},
 	{"generateMonthReport"},
 	{"generateProductsReport"},
+	{"generateCustomerCards"},
 }
 
 var osService = os.NewOsService()

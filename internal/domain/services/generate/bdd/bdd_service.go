@@ -39,6 +39,9 @@ func (b bddService) Run() (string, error) {
 	if err != nil {
 		return "", err
 	}
+	if len(invoices) == 0 {
+		return "No hi han rebuts pendents de generar", nil
+	}
 
 	content := b.generateContent(invoices, customers, products)
 	if err != nil {

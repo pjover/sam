@@ -2,8 +2,8 @@
 <Document xmlns="urn:iso:std:iso:20022:tech:xsd:pain.008.001.02" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <CstmrDrctDbtInitn>
         <GrpHdr>
-            <MsgId>HOBB-20180707204338029-50</MsgId>
-            <CreDtTm>2018-07-07T20:43:38</CreDtTm>
+            <MsgId>HOBB-20180707204308000-24</MsgId>
+            <CreDtTm>2018-07-07T20:43:08</CreDtTm>
             <NbOfTxs>4</NbOfTxs>
             <CtrlSum>146.60</CtrlSum>
             <InitgPty>
@@ -18,7 +18,7 @@
             </InitgPty>
         </GrpHdr>
         <PmtInf>
-            <PmtInfId>HOBB-20180707204338029-50-1</PmtInfId>
+            <PmtInfId>HOBB-20180707204308000-24-1</PmtInfId>
             <PmtMtd>DD</PmtMtd>
             <NbOfTxs>4</NbOfTxs>
             <CtrlSum>146.60</CtrlSum>
@@ -31,7 +31,7 @@
                 </LclInstrm>
                 <SeqTp>OOFF</SeqTp>
             </PmtTpInf>
-            <ReqdColltnDt>2018-07-08</ReqdColltnDt>
+            <ReqdColltnDt>2018-07-07</ReqdColltnDt>
             <Cdtr>
                 <Nm>Centre d'Educació Infantil Hobbiton, S.L.</Nm>
                 <PstlAdr>
@@ -65,12 +65,12 @@
             </CdtrSchmeId>
             <DrctDbtTxInf>
                 <PmtId>
-                    <EndToEndId>HOBB-20180707204338029-50.F-100</EndToEndId>
+                    <EndToEndId>HOBB-20180707204308000-24.F-100</EndToEndId>
                 </PmtId>
                 <InstdAmt Ccy="EUR">36.65</InstdAmt>
                 <DrctDbtTx>
                     <MndtRltdInf>
-                        <MndtId>HOBB-20180707204338029-50.F-100</MndtId>
+                        <MndtId>HOBB-20180707204308000-24.F-100</MndtId>
                         <DtOfSgntr>2018-07-07</DtOfSgntr>
                     </MndtRltdInf>
                 </DrctDbtTx>
@@ -108,12 +108,12 @@
             </DrctDbtTxInf>
             <DrctDbtTxInf>
                 <PmtId>
-                    <EndToEndId>HOBB-20180707204338029-50.F-101</EndToEndId>
+                    <EndToEndId>HOBB-20180707204308000-24.F-101</EndToEndId>
                 </PmtId>
                 <InstdAmt Ccy="EUR">36.65</InstdAmt>
                 <DrctDbtTx>
                     <MndtRltdInf>
-                        <MndtId>HOBB-20180707204338029-50.F-101</MndtId>
+                        <MndtId>HOBB-20180707204308000-24.F-101</MndtId>
                         <DtOfSgntr>2018-07-07</DtOfSgntr>
                     </MndtRltdInf>
                 </DrctDbtTx>
@@ -151,12 +151,12 @@
             </DrctDbtTxInf>
             <DrctDbtTxInf>
                 <PmtId>
-                    <EndToEndId>HOBB-20180707204338029-50.F-102</EndToEndId>
+                    <EndToEndId>HOBB-20180707204308000-24.F-102</EndToEndId>
                 </PmtId>
                 <InstdAmt Ccy="EUR">36.65</InstdAmt>
                 <DrctDbtTx>
                     <MndtRltdInf>
-                        <MndtId>HOBB-20180707204338029-50.F-102</MndtId>
+                        <MndtId>HOBB-20180707204308000-24.F-102</MndtId>
                         <DtOfSgntr>2018-07-07</DtOfSgntr>
                     </MndtRltdInf>
                 </DrctDbtTx>
@@ -194,12 +194,12 @@
             </DrctDbtTxInf>
             <DrctDbtTxInf>
                 <PmtId>
-                    <EndToEndId>HOBB-20180707204338029-50.F-103</EndToEndId>
+                    <EndToEndId>HOBB-20180707204308000-24.F-103</EndToEndId>
                 </PmtId>
                 <InstdAmt Ccy="EUR">36.65</InstdAmt>
                 <DrctDbtTx>
                     <MndtRltdInf>
-                        <MndtId>HOBB-20180707204338029-50.F-103</MndtId>
+                        <MndtId>HOBB-20180707204308000-24.F-103</MndtId>
                         <DtOfSgntr>2018-07-07</DtOfSgntr>
                     </MndtRltdInf>
                 </DrctDbtTx>
