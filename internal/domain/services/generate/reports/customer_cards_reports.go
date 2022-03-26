@@ -113,7 +113,7 @@ func (c CustomerCardsReports) headerSubReport(customer model.Customer) SubReport
 			15,
 		},
 		Data: [][]string{
-			{customer.Language},
+			{customer.Language.String()},
 			{customer.Note},
 			{c.boolToYesNo(customer.Active)},
 		},

@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"github.com/pjover/sam/internal/domain/model"
+	"github.com/pjover/sam/internal/domain/model/language"
 	"github.com/pjover/sam/internal/domain/ports"
 )
 
@@ -115,7 +116,7 @@ func (l listService) ListMailsByLanguage() (string, error) {
 	caBuffer.WriteString("CA:\n")
 	esBuffer.WriteString("ES:\n")
 	for _, customer := range customers {
-		if customer.Language == "CA" {
+		if customer.Language == language.Catalan {
 			caBuffer.WriteString(customer.InvoiceHolder.Mail() + ", ")
 		} else {
 			esBuffer.WriteString(customer.InvoiceHolder.Mail() + ", ")

@@ -3,6 +3,7 @@ package test_data
 import (
 	"github.com/pjover/sam/internal/domain/model"
 	"github.com/pjover/sam/internal/domain/model/adult_role"
+	"github.com/pjover/sam/internal/domain/model/language"
 	"github.com/pjover/sam/internal/domain/model/payment_type"
 )
 
@@ -85,7 +86,7 @@ var Customer148 = model.Customer{
 	},
 	InvoiceHolder: InvoiceHolder148,
 	Note:          "Nota del client",
-	Language:      "CA",
+	Language:      language.Catalan,
 }
 
 var Customer149 = model.Customer{
@@ -101,5 +102,5 @@ var Customer149 = model.Customer{
 	},
 	InvoiceHolder: InvoiceHolder149,
 	Note:          "Nota del client",
-	Language:      "CA",
+	Language:      language.Catalan,
 }

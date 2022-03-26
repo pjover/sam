@@ -3,6 +3,7 @@ package dbo
 import (
 	"github.com/pjover/sam/internal/domain/model"
 	"github.com/pjover/sam/internal/domain/model/adult_role"
+	"github.com/pjover/sam/internal/domain/model/language"
 	"github.com/pjover/sam/internal/domain/model/payment_type"
 	"strings"
 )
@@ -15,7 +16,7 @@ func ConvertCustomerToModel(customer Customer) model.Customer {
 		Adults:        adults(customer.Adults),
 		InvoiceHolder: holder(customer.InvoiceHolder),
 		Note:          customer.Note,
-		Language:      customer.Language,
+		Language:      newLanguage(customer.Language),
 	}
 }
 
@@ -130,4 +131,20 @@ func newPaymentType(value string) payment_type.PaymentType {
 		}
 	}
 	return payment_type.Invalid
+}
+
+func newLanguage(value string) language.Language {
+	var _values = []string{
+		"",
+		"CA",
+		"EN",
+		"ES",
+	}
+	value = strings.ToLower(value)
+	for i, val := range _values {
+		if strings.ToLower(val) == value {
+			return language.Language(i)
+		}
+	}
+	return language.Invalid
 }
