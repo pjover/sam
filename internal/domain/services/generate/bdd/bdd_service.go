@@ -40,7 +40,7 @@ func (b bddService) Run() (string, error) {
 		return "", err
 	}
 
-	content, err := b.generateContent(invoices, customers, products)
+	content := b.generateContent(invoices, customers, products)
 	if err != nil {
 		return "", err
 	}
@@ -67,16 +67,12 @@ func (b bddService) loadInvoices() (invoices []model.Invoice, err error) {
 	return invoices, nil
 }
 
-func (b bddService) generateContent(invoices []model.Invoice, customers map[int]model.Customer, products map[string]model.Product) (content string, err error) {
+func (b bddService) generateContent(invoices []model.Invoice, customers map[int]model.Customer, products map[string]model.Product) string {
 	invoicesToBddConverter := NewInvoicesToBddConverter(b.configService, b.osService)
 	bdd := invoicesToBddConverter.Convert(invoices, customers, products)
 
 	bddBuilder := NewStringBddBuilder()
-	content, err = bddBuilder.Build(bdd)
-	if err != nil {
-		return "", err
-	}
-	return content, nil
+	return bddBuilder.Build(bdd)
 }
 
 func (b bddService) getFilePath() (dirPath string, filename string, err error) {

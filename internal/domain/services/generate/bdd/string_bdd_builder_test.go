@@ -16,10 +16,9 @@ func readTextFileIntoString(filePath string) string {
 
 func Test_stringBddBuilder_Build(t *testing.T) {
 	tests := []struct {
-		name        string
-		bdd         Bdd
-		wantContent string
-		wantErr     assert.ErrorAssertionFunc
+		name string
+		bdd  Bdd
+		want string
 	}{
 		{
 			name: "given a BDD should build the XML",
@@ -83,16 +82,14 @@ func Test_stringBddBuilder_Build(t *testing.T) {
 					},
 				},
 			},
-			wantContent: readTextFileIntoString("string_bdd_builder.q1x"),
-			wantErr:     nil,
+			want: readTextFileIntoString("string_bdd_builder.q1x"),
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			s := stringBddBuilder{}
-			gotContent, err := s.Build(tt.bdd)
-			assert.Equal(t, tt.wantContent, gotContent)
-			assert.Equal(t, tt.wantErr, err)
+			gotContent := s.Build(tt.bdd)
+			assert.Equal(t, tt.want, gotContent)
 		})
 	}
 }
