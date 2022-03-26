@@ -3,6 +3,7 @@ package dbo
 import (
 	"github.com/pjover/sam/internal/domain/model"
 	"github.com/pjover/sam/internal/domain/model/adult_role"
+	"github.com/pjover/sam/internal/domain/model/group_type"
 	"github.com/pjover/sam/internal/domain/model/language"
 	"github.com/pjover/sam/internal/domain/model/payment_type"
 	"strings"
@@ -36,7 +37,7 @@ func child(child Child) model.Child {
 		SecondSurname: child.SecondSurname,
 		TaxID:         child.TaxID,
 		BirthDate:     child.BirthDate,
-		Group:         child.Group,
+		Group:         newGroupType(child.Group),
 		Note:          child.Note,
 		Active:        child.Active,
 	}
@@ -147,4 +148,20 @@ func newLanguage(value string) language.Language {
 		}
 	}
 	return language.Invalid
+}
+
+func newGroupType(value string) group_type.GroupType {
+	var _values = []string{
+		"UNDEFINED",
+		"EI_1",
+		"EI_2",
+		"EI_3",
+	}
+	value = strings.ToLower(value)
+	for i, val := range _values {
+		if strings.ToLower(val) == value {
+			return group_type.GroupType(i)
+		}
+	}
+	return group_type.Undefined
 }

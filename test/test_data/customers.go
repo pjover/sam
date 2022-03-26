@@ -3,6 +3,7 @@ package test_data
 import (
 	"github.com/pjover/sam/internal/domain/model"
 	"github.com/pjover/sam/internal/domain/model/adult_role"
+	"github.com/pjover/sam/internal/domain/model/group_type"
 	"github.com/pjover/sam/internal/domain/model/language"
 	"github.com/pjover/sam/internal/domain/model/payment_type"
 )
@@ -13,7 +14,7 @@ var Child1850 = model.Child{
 	Surname:       "Llull",
 	SecondSurname: "Bibiloni",
 	BirthDate:     Date,
-	Group:         "EI_1",
+	Group:         group_type.EI_1,
 	Active:        true,
 }
 
@@ -24,7 +25,7 @@ var Child1851 = model.Child{
 	SecondSurname: "Bibiloni",
 	TaxID:         "60235657Z",
 	BirthDate:     Date,
-	Group:         "EI_1",
+	Group:         group_type.EI_1,
 	Active:        true,
 }
 
