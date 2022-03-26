@@ -13,7 +13,7 @@ func Test_extractDefaultName(t *testing.T) {
 	}{
 		{
 			"Extract filename",
-			args{`form-data; name="attachment"; filename="F-3945 (227).pdf"`},
+			args{`form-test_data; name="attachment"; filename="F-3945 (227).pdf"`},
 			"F-3945 (227).pdf",
 		},
 	}

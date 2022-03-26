@@ -136,7 +136,8 @@ func (i invoicesToBddConverter) getDetailRemittanceInformation(invoice model.Inv
 func (i invoicesToBddConverter) getShortNameInvoiceDescription(invoice model.Invoice, products map[string]model.Product) string {
 	var lines []string
 	for _, line := range invoice.Lines {
-		desc := fmt.Sprintf("%.1f x %s", line.Units, products[line.ProductId].ShortName)
+		units := strconv.FormatFloat(line.Units, 'f', -1, 64)
+		desc := fmt.Sprintf("%sx%s", units, products[line.ProductId].ShortName)
 		lines = append(lines, desc)
 	}
 	return strings.Join(lines, ", ")
