@@ -89,7 +89,7 @@ func Test_invoicesToBddConverter_getSepaIndentifier(t *testing.T) {
 	}
 }
 
-func Test_invoicesToBddConverter_Run(t *testing.T) {
+func Test_invoicesToBddConverter_Convert(t *testing.T) {
 	type args struct {
 		invoices  []model.Invoice
 		customers map[int]model.Customer
@@ -199,7 +199,7 @@ func Test_invoicesToBddConverter_Run(t *testing.T) {
 	sut := NewInvoicesToBddConverter(mockedConfigService, mockedOsService)
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := sut.Run(tt.args.invoices, tt.args.customers, tt.args.products)
+			got := sut.Convert(tt.args.invoices, tt.args.customers, tt.args.products)
 			assert.Equal(t, tt.want, got)
 		})
 	}

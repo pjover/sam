@@ -14,7 +14,7 @@ import (
 )
 
 type InvoicesToBddConverter interface {
-	Run(invoices []model.Invoice, customers map[int]model.Customer, products map[string]model.Product) Bdd
+	Convert(invoices []model.Invoice, customers map[int]model.Customer, products map[string]model.Product) Bdd
 }
 
 type invoicesToBddConverter struct {
@@ -29,7 +29,7 @@ func NewInvoicesToBddConverter(configService ports.ConfigService, osService port
 	}
 }
 
-func (i invoicesToBddConverter) Run(invoices []model.Invoice, customers map[int]model.Customer, products map[string]model.Product) Bdd {
+func (i invoicesToBddConverter) Convert(invoices []model.Invoice, customers map[int]model.Customer, products map[string]model.Product) Bdd {
 	now := i.osService.Now()
 	return Bdd{
 		messageIdentification:   i.getMessageIdentification(now),
