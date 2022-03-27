@@ -150,9 +150,9 @@ func (d dbService) FindAllProducts() ([]model.Product, error) {
 	return dbo.ConvertProductsToModel(results), nil
 }
 
-func (d dbService) FindInvoicesByYearMonth(yearMonth string) ([]model.Invoice, error) {
+func (d dbService) FindInvoicesByYearMonth(yearMonth model.YearMonth) ([]model.Invoice, error) {
 	var results []dbo.Invoice
-	filter := bson.D{{"yearMonth", yearMonth}}
+	filter := bson.D{{"yearMonth", yearMonth.String()}}
 	findOptions := options.Find()
 	findOptions.SetSort(bson.D{{"customerId", 1}})
 	if err := d.findMany("invoice", filter, findOptions, &results, "factures per any i mes"); err != nil {
@@ -172,13 +172,13 @@ func (d dbService) FindInvoicesByCustomer(customerId int) ([]model.Invoice, erro
 	return dbo.ConvertInvoicesToModel(results), nil
 }
 
-func (d dbService) FindInvoicesByCustomerAndYearMonth(customerId int, yearMonth string) ([]model.Invoice, error) {
+func (d dbService) FindInvoicesByCustomerAndYearMonth(customerId int, yearMonth model.YearMonth) ([]model.Invoice, error) {
 	var results []dbo.Invoice
 	filter := bson.D{
 		{"$and",
 			bson.A{
 				bson.D{{"customerId", customerId}},
-				bson.D{{"yearMonth", yearMonth}},
+				bson.D{{"yearMonth", yearMonth.String()}},
 			}},
 	}
 	findOptions := options.Find()
@@ -189,12 +189,12 @@ func (d dbService) FindInvoicesByCustomerAndYearMonth(customerId int, yearMonth 
 	return dbo.ConvertInvoicesToModel(results), nil
 }
 
-func (d dbService) FindInvoicesByYearMonthAndPaymentTypeAndSentToBank(yearMonth string, paymentType payment_type.PaymentType, sentToBank bool) ([]model.Invoice, error) {
+func (d dbService) FindInvoicesByYearMonthAndPaymentTypeAndSentToBank(yearMonth model.YearMonth, paymentType payment_type.PaymentType, sentToBank bool) ([]model.Invoice, error) {
 	var results []dbo.Invoice
 	filter := bson.D{
 		{"$and",
 			bson.A{
-				bson.D{{"yearMonth", yearMonth}},
+				bson.D{{"yearMonth", yearMonth.String()}},
 				bson.D{{"paymentType", dbo.PaymentTypes[paymentType]}},
 				bson.D{{"sentToBank", sentToBank}},
 			}},

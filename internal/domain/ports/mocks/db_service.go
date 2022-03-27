@@ -264,11 +264,11 @@ func (_m *DbService) FindInvoicesByCustomer(customerId int) ([]model.Invoice, er
 }
 
 // FindInvoicesByCustomerAndYearMonth provides a mock function with given fields: customerId, yearMonth
-func (_m *DbService) FindInvoicesByCustomerAndYearMonth(customerId int, yearMonth string) ([]model.Invoice, error) {
+func (_m *DbService) FindInvoicesByCustomerAndYearMonth(customerId int, yearMonth model.YearMonth) ([]model.Invoice, error) {
 	ret := _m.Called(customerId, yearMonth)
 
 	var r0 []model.Invoice
-	if rf, ok := ret.Get(0).(func(int, string) []model.Invoice); ok {
+	if rf, ok := ret.Get(0).(func(int, model.YearMonth) []model.Invoice); ok {
 		r0 = rf(customerId, yearMonth)
 	} else {
 		if ret.Get(0) != nil {
@@ -277,7 +277,7 @@ func (_m *DbService) FindInvoicesByCustomerAndYearMonth(customerId int, yearMont
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(int, string) error); ok {
+	if rf, ok := ret.Get(1).(func(int, model.YearMonth) error); ok {
 		r1 = rf(customerId, yearMonth)
 	} else {
 		r1 = ret.Error(1)
@@ -287,11 +287,11 @@ func (_m *DbService) FindInvoicesByCustomerAndYearMonth(customerId int, yearMont
 }
 
 // FindInvoicesByYearMonth provides a mock function with given fields: yearMonth
-func (_m *DbService) FindInvoicesByYearMonth(yearMonth string) ([]model.Invoice, error) {
+func (_m *DbService) FindInvoicesByYearMonth(yearMonth model.YearMonth) ([]model.Invoice, error) {
 	ret := _m.Called(yearMonth)
 
 	var r0 []model.Invoice
-	if rf, ok := ret.Get(0).(func(string) []model.Invoice); ok {
+	if rf, ok := ret.Get(0).(func(model.YearMonth) []model.Invoice); ok {
 		r0 = rf(yearMonth)
 	} else {
 		if ret.Get(0) != nil {
@@ -300,7 +300,7 @@ func (_m *DbService) FindInvoicesByYearMonth(yearMonth string) ([]model.Invoice,
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(string) error); ok {
+	if rf, ok := ret.Get(1).(func(model.YearMonth) error); ok {
 		r1 = rf(yearMonth)
 	} else {
 		r1 = ret.Error(1)
@@ -310,11 +310,11 @@ func (_m *DbService) FindInvoicesByYearMonth(yearMonth string) ([]model.Invoice,
 }
 
 // FindInvoicesByYearMonthAndPaymentTypeAndSentToBank provides a mock function with given fields: yearMonth, paymentType, sentToBank
-func (_m *DbService) FindInvoicesByYearMonthAndPaymentTypeAndSentToBank(yearMonth string, paymentType payment_type.PaymentType, sentToBank bool) ([]model.Invoice, error) {
+func (_m *DbService) FindInvoicesByYearMonthAndPaymentTypeAndSentToBank(yearMonth model.YearMonth, paymentType payment_type.PaymentType, sentToBank bool) ([]model.Invoice, error) {
 	ret := _m.Called(yearMonth, paymentType, sentToBank)
 
 	var r0 []model.Invoice
-	if rf, ok := ret.Get(0).(func(string, payment_type.PaymentType, bool) []model.Invoice); ok {
+	if rf, ok := ret.Get(0).(func(model.YearMonth, payment_type.PaymentType, bool) []model.Invoice); ok {
 		r0 = rf(yearMonth, paymentType, sentToBank)
 	} else {
 		if ret.Get(0) != nil {
@@ -323,7 +323,7 @@ func (_m *DbService) FindInvoicesByYearMonthAndPaymentTypeAndSentToBank(yearMont
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(string, payment_type.PaymentType, bool) error); ok {
+	if rf, ok := ret.Get(1).(func(model.YearMonth, payment_type.PaymentType, bool) error); ok {
 		r1 = rf(yearMonth, paymentType, sentToBank)
 	} else {
 		r1 = ret.Error(1)

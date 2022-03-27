@@ -3,6 +3,7 @@ package admin
 import (
 	"fmt"
 	"github.com/pjover/sam/internal/domain"
+	"github.com/pjover/sam/internal/domain/model"
 	"github.com/pjover/sam/internal/domain/ports"
 	"github.com/pjover/sam/internal/domain/services/lang"
 	"log"
@@ -84,7 +85,7 @@ func (a adminService) getZipFilePath() (string, error) {
 
 func (a adminService) CreateWorkingDirectory() (string, error) {
 	workingTime := a.getWorkingTime()
-	yearMonth := workingTime.Format("2006-01")
+	yearMonth := model.TimeToYearMonth(workingTime)
 	dirName := a.langService.WorkingDir(workingTime)
 
 	dirPath := path.Join(a.configService.GetString("dirs.home"), dirName)
@@ -137,8 +138,8 @@ func (a adminService) getWorkingTime() time.Time {
 	return time.Date(t.Year(), t.Month(), 1, 0, 0, 0, 0, time.Local)
 }
 
-func (a adminService) updateConfig(yearMonth string, dirName string) error {
-	if err := a.configService.SetString("yearMonth", yearMonth); err != nil {
+func (a adminService) updateConfig(yearMonth model.YearMonth, dirName string) error {
+	if err := a.configService.SetCurrentYearMonth(yearMonth); err != nil {
 		return err
 	}
 	if err := a.configService.SetString("dirs.current", dirName); err != nil {

@@ -28,7 +28,7 @@ func (l listService) ListCustomerInvoices(customerId int) (string, error) {
 	return listInvoices(titleMessage, invoices)
 }
 
-func (l listService) ListCustomerYearMonthInvoices(customerId int, yearMonth string) (string, error) {
+func (l listService) ListCustomerYearMonthInvoices(customerId int, yearMonth model.YearMonth) (string, error) {
 	invoices, err := l.dbService.FindInvoicesByCustomerAndYearMonth(customerId, yearMonth)
 	if err != nil {
 		return "", err
@@ -37,7 +37,7 @@ func (l listService) ListCustomerYearMonthInvoices(customerId int, yearMonth str
 	return listInvoices(titleMessage, invoices)
 }
 
-func (l listService) ListYearMonthInvoices(yearMonth string) (string, error) {
+func (l listService) ListYearMonthInvoices(yearMonth model.YearMonth) (string, error) {
 	invoices, err := l.dbService.FindInvoicesByYearMonth(yearMonth)
 	if err != nil {
 		return "", err

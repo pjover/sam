@@ -62,7 +62,7 @@ func (b bddService) Run() (string, error) {
 }
 
 func (b bddService) loadInvoices() (invoices []model.Invoice, err error) {
-	yearMonth := b.configService.GetString("yearMonth")
+	yearMonth := b.configService.GetCurrentYearMonth()
 	invoices, err = b.dbService.FindInvoicesByYearMonthAndPaymentTypeAndSentToBank(yearMonth, payment_type.BankDirectDebit, false)
 	if err != nil {
 		return nil, fmt.Errorf("no s'han pogut recuperar les factures de rebuts del mes %s pendents d'enviar al banc", yearMonth)

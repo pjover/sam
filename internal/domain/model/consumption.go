@@ -7,7 +7,7 @@ type Consumption struct {
 	ChildId         int
 	ProductId       string
 	Units           float64
-	YearMonth       string
+	YearMonth       YearMonth
 	Note            string
 	IsRectification bool
 	InvoiceId       string

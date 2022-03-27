@@ -5,6 +5,6 @@ import (
 )
 
 type LangService interface {
-	WorkingDir(month time.Time) string
-	MonthName(month time.Time) string
+	WorkingDir(workingTime time.Time) string
+	MonthName(month time.Month) string
 }

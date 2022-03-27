@@ -3,16 +3,13 @@ package reports
 import (
 	"bytes"
 	"fmt"
+	"github.com/johnfercher/maroto/pkg/consts"
 	"github.com/pjover/sam/internal/domain"
 	"github.com/pjover/sam/internal/domain/model"
 	"github.com/pjover/sam/internal/domain/ports"
 	"github.com/pjover/sam/internal/domain/services/lang"
-	"log"
 	"path"
 	"sort"
-	"time"
-
-	"github.com/johnfercher/maroto/pkg/consts"
 )
 
 type MonthReport struct {
@@ -32,7 +29,7 @@ func NewMonthReport(configService ports.ConfigService, dbService ports.DbService
 }
 
 func (m MonthReport) Run() (string, error) {
-	yearMonth, month := m.getMonth()
+	yearMonth := m.configService.GetCurrentYearMonth()
 	var buffer bytes.Buffer
 	buffer.WriteString(fmt.Sprintf("Generant l'informe de factures del mes %s ...\n", yearMonth))
 
@@ -49,7 +46,7 @@ func (m MonthReport) Run() (string, error) {
 
 	reportDefinition := ReportDefinition{
 		PageOrientation: consts.Landscape,
-		Title:           fmt.Sprintf("Factures %s", m.langService.MonthName(month)),
+		Title:           fmt.Sprintf("Factures %s", m.langService.MonthName(yearMonth.Month())),
 		Footer:          m.osService.Now().Format(domain.YearMonthDayLayout),
 		SubReports: []SubReport{
 			TableSubReport{
@@ -96,7 +93,7 @@ func (m MonthReport) Run() (string, error) {
 	return buffer.String(), nil
 }
 
-func (m MonthReport) getInvoices(yearMonth string) ([]model.Invoice, error) {
+func (m MonthReport) getInvoices(yearMonth model.YearMonth) ([]model.Invoice, error) {
 	invoices, err := m.dbService.FindInvoicesByYearMonth(yearMonth)
 	if err != nil {
 		return nil, fmt.Errorf("error recuperant les factures del mes %s: %s", yearMonth, err)
@@ -130,15 +127,6 @@ func (m MonthReport) buildData(invoices []model.Invoice) ([][]string, error) {
 		return data[i][0] < data[j][0]
 	})
 	return data, nil
-}
-
-func (m MonthReport) getMonth() (string, time.Time) {
-	yearMonth := m.configService.GetString("yearMonth")
-	month, err := time.Parse(domain.YearMonthLayout, yearMonth)
-	if err != nil {
-		log.Fatal(fmt.Errorf("format incorrecte a la variable de configuració yearMonth '%s': %s", yearMonth, err))
-	}
-	return yearMonth, month
 }
 
 func (m MonthReport) customer(invoice model.Invoice) (model.Customer, error) {

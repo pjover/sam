@@ -9,7 +9,7 @@ type Invoice struct {
 	Id          string
 	CustomerId  int
 	Date        time.Time
-	YearMonth   string
+	YearMonth   YearMonth
 	ChildrenIds []int
 	Lines       []Line
 	PaymentType payment_type.PaymentType
