@@ -23,7 +23,7 @@ func NewAdminService(configService ports.ConfigService, osService ports.OsServic
 		osService:     osService,
 		langService:   langService,
 	}
-	_, err := service.CreateWorkingDirectory()
+	_, err := service.CreateDirectories()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -83,22 +83,18 @@ func (a adminService) getZipFilePath() (string, error) {
 	return backupFilePath, nil
 }
 
-func (a adminService) CreateWorkingDirectory() (string, error) {
+func (a adminService) CreateDirectories() (string, error) {
+
 	workingTime := a.getWorkingTime()
 	yearMonth := model.TimeToYearMonth(workingTime)
 	dirName := a.langService.WorkingDir(workingTime)
+	workingDirPath := path.Join(a.configService.GetHomeDirectory(), dirName)
 
-	dirPath := path.Join(a.configService.GetString("dirs.home"), dirName)
-	exists, err := a.osService.ItemExists(dirPath)
-	if err != nil {
+	if err := a.createWorkingDir(workingDirPath); err != nil {
 		return "", err
 	}
-	if exists {
-		_ = a.updateConfig(yearMonth, dirName)
-		return a.getInfoText(dirPath), nil
-	}
 
-	if err := a.osService.CreateDirectory(dirPath); err != nil {
+	if err := a.populateWorkingDir(workingDirPath); err != nil {
 		return "", err
 	}
 
@@ -106,11 +102,20 @@ func (a adminService) CreateWorkingDirectory() (string, error) {
 		return "", err
 	}
 
-	if err := a.osService.OpenUrlInBrowser(dirPath); err != nil {
+	if err := a.createReportsDir(); err != nil {
 		return "", err
 	}
 
-	return fmt.Sprint("Creat el directori ", dirPath), nil
+	if err := a.osService.OpenUrlInBrowser(workingDirPath); err != nil {
+		return "", err
+	}
+
+	return a.getInfoText(workingDirPath), nil
+}
+
+func (a adminService) getWorkingTime() time.Time {
+	var t = a.osService.Now()
+	return time.Date(t.Year(), t.Month(), 1, 0, 0, 0, 0, time.Local)
 }
 
 func (a adminService) getInfoText(dirPath string) string {
@@ -133,9 +138,35 @@ func (a adminService) numberOfDaysUntilEndOfMonth() int {
 	return int(endOfMonth.Sub(now).Hours() / 24)
 }
 
-func (a adminService) getWorkingTime() time.Time {
-	var t = a.osService.Now()
-	return time.Date(t.Year(), t.Month(), 1, 0, 0, 0, 0, time.Local)
+func (a adminService) createWorkingDir(workingDirPath string) error {
+	return a.osService.CreateDirectory(workingDirPath)
+}
+
+func (a adminService) populateWorkingDir(workingDirPath string) error {
+
+	if err := a.osService.CreateDirectory(a.configService.GetInvoicesDirectory()); err != nil {
+		return err
+	}
+	if err := a.copyDefaultEntitiesFiles(workingDirPath); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (a adminService) copyDefaultEntitiesFiles(workingDirPath string) error {
+	cfgDir := a.configService.GetConfigDirectory()
+	files := []string{
+		"default_product.json",
+	}
+	for _, file := range files {
+		sourceFilePath := path.Join(cfgDir, file)
+		destinationFilePath := path.Join(workingDirPath, file)
+		err := a.osService.CopyFile(sourceFilePath, destinationFilePath)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 func (a adminService) updateConfig(yearMonth model.YearMonth, dirName string) error {
@@ -146,4 +177,8 @@ func (a adminService) updateConfig(yearMonth model.YearMonth, dirName string) er
 		return err
 	}
 	return nil
+}
+
+func (a adminService) createReportsDir() error {
+	return a.osService.CreateDirectory(a.configService.GetReportsDirectory())
 }

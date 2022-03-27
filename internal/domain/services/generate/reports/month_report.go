@@ -74,10 +74,7 @@ func (m MonthReport) Run() (string, error) {
 		},
 	}
 
-	wd, err := m.configService.GetWorkingDirectory()
-	if err != nil {
-		return "", err
-	}
+	wd := m.configService.GetWorkingDirectory()
 	filePath := path.Join(
 		wd,
 		m.configService.GetString("files.invoicesReport"),

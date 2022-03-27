@@ -13,6 +13,20 @@ type OsService struct {
 	mock.Mock
 }
 
+// CopyFile provides a mock function with given fields: sourceFilePath, destinationFilePath
+func (_m *OsService) CopyFile(sourceFilePath string, destinationFilePath string) error {
+	ret := _m.Called(sourceFilePath, destinationFilePath)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(string, string) error); ok {
+		r0 = rf(sourceFilePath, destinationFilePath)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
 // CreateDirectory provides a mock function with given fields: dirPath
 func (_m *OsService) CreateDirectory(dirPath string) error {
 	ret := _m.Called(dirPath)
@@ -132,6 +146,29 @@ func (_m *OsService) OpenUrlInBrowser(url string) error {
 	}
 
 	return r0
+}
+
+// ReadFile provides a mock function with given fields: filePath
+func (_m *OsService) ReadFile(filePath string) ([]byte, error) {
+	ret := _m.Called(filePath)
+
+	var r0 []byte
+	if rf, ok := ret.Get(0).(func(string) []byte); ok {
+		r0 = rf(filePath)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]byte)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(string) error); ok {
+		r1 = rf(filePath)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
 }
 
 // RunCommand provides a mock function with given fields: command, args

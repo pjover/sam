@@ -79,11 +79,7 @@ func (b bddService) generateContent(invoices []model.Invoice, customers map[int]
 }
 
 func (b bddService) getFilePath() (dirPath string, filename string, err error) {
-	dirPath, err = b.configService.GetWorkingDirectory()
-	if err != nil {
-		return "", "", err
-	}
-
+	dirPath = b.configService.GetWorkingDirectory()
 	currentFilenames, err := b.osService.ListFiles(dirPath, ".qx1")
 	if err != nil {
 		return "", "", err

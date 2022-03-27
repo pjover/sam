@@ -146,17 +146,14 @@ func (i InvoiceReport) run(invoice model.Invoice, customer model.Customer, produ
 		},
 	}
 
-	dirPath, err := i.configService.GetInvoicesDirectory()
-	if err != nil {
-		return "", err
-	}
+	dirPath := i.configService.GetInvoicesDirectory()
 	filePath := path.Join(
 		dirPath,
 		fmt.Sprintf("%s (%d).pdf", invoice.Id, invoice.CustomerId),
 	)
 
 	reportService := NewReportService(i.configService)
-	err = reportService.SaveToFile(reportDefinition, filePath)
+	err := reportService.SaveToFile(reportDefinition, filePath)
 	if err != nil {
 		return "", err
 	}

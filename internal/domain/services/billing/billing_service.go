@@ -13,19 +13,13 @@ import (
 	"strings"
 )
 
-type BillingService interface {
-	InsertConsumptions(id int, consumptions map[string]float64, note string) (string, error)
-	BillConsumptions() (string, error)
-	RectifyConsumptions(id int, consumptions map[string]float64, note string) (string, error)
-}
-
 type billingService struct {
 	configService ports.ConfigService
 	dbService     ports.DbService
 	osService     ports.OsService
 }
 
-func NewBillingService(configService ports.ConfigService, dbService ports.DbService, osService ports.OsService) BillingService {
+func NewBillingService(configService ports.ConfigService, dbService ports.DbService, osService ports.OsService) ports.BillingService {
 	return billingService{
 		configService: configService,
 		dbService:     dbService,

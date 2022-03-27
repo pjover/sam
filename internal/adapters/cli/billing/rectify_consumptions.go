@@ -3,17 +3,17 @@ package billing
 import (
 	"fmt"
 	"github.com/pjover/sam/internal/adapters/cli"
-	"github.com/pjover/sam/internal/domain/services/billing"
+	"github.com/pjover/sam/internal/domain/ports"
 	"github.com/spf13/cobra"
 )
 
 var rconNote string
 
 type rectifyConsumptionsCmd struct {
-	service billing.BillingService
+	service ports.BillingService
 }
 
-func NewRectifyConsumptionsCmd(service billing.BillingService) cli.Cmd {
+func NewRectifyConsumptionsCmd(service ports.BillingService) cli.Cmd {
 	return rectifyConsumptionsCmd{
 		service: service,
 	}

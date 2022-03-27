@@ -64,10 +64,7 @@ func (c CustomerReport) Run() (string, error) {
 		},
 	}
 
-	reportsDir, err := c.configService.GetReportsDirectory()
-	if err != nil {
-		return "", err
-	}
+	reportsDir := c.configService.GetReportsDirectory()
 
 	filePath := path.Join(
 		reportsDir,

@@ -40,10 +40,7 @@ func (c CustomerCardsReports) Run() (string, error) {
 		return c.revertLastCustomersCardsUpdated(changedSince, fmt.Errorf("no s'ha pogut carregar els consumidors des de la base de dades: %s", err))
 	}
 
-	reportsDir, err := c.configService.GetCustomersCardsDirectory()
-	if err != nil {
-		return "", err
-	}
+	reportsDir := c.configService.GetCustomersCardsDirectory()
 
 	var buffer bytes.Buffer
 	buffer.WriteString(fmt.Sprintf("Generant les fitxes del clients que han canviat des de %s ...\n", changedSince.Format(domain.YearMonthDayLayout)))
