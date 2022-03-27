@@ -24,7 +24,6 @@ type DbService interface {
 	FindProduct(id string) (model.Product, error)
 	InsertConsumptions(consumptions []model.Consumption) error
 	InsertInvoices(invoices []model.Invoice) error
-	SearchCustomers(searchText string) ([]model.Customer, error)
 	UpdateConsumptions(consumptions []model.Consumption) error
 	UpdateSequences(sequences []model.Sequence) error
 }

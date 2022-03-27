@@ -8,7 +8,6 @@ import (
 	"github.com/pjover/sam/internal/adapters/cli/edit"
 	generateCli "github.com/pjover/sam/internal/adapters/cli/generate"
 	listCli "github.com/pjover/sam/internal/adapters/cli/list"
-	searchCmd "github.com/pjover/sam/internal/adapters/cli/search"
 	"github.com/pjover/sam/internal/adapters/mongo_db"
 	"github.com/pjover/sam/internal/adapters/mongo_express"
 	"github.com/pjover/sam/internal/adapters/os"
@@ -20,7 +19,6 @@ import (
 	"github.com/pjover/sam/internal/domain/services/generate"
 	"github.com/pjover/sam/internal/domain/services/lang"
 	"github.com/pjover/sam/internal/domain/services/list"
-	"github.com/pjover/sam/internal/domain/services/search"
 )
 
 func MainDI(cmdManager cli.CmdManager, configService ports.ConfigService) {
@@ -34,7 +32,6 @@ func MainDI(cmdManager cli.CmdManager, configService ports.ConfigService) {
 	displayServiceDI(cmdManager, dbService)
 	generateServiceDI(cmdManager, configService, dbService, osService, langService)
 	listServiceDI(cmdManager, configService, dbService)
-	searchServiceDI(cmdManager, dbService)
 	billingServiceDI(cmdManager, configService, dbService, osService)
 }
 
@@ -77,11 +74,6 @@ func listServiceDI(cmdManager cli.CmdManager, configService ports.ConfigService,
 	cmdManager.AddCommand(listCli.NewListChildrenCmd(listService))
 	cmdManager.AddCommand(listCli.NewListMailsCmd(listService))
 	cmdManager.AddCommand(listCli.NewListConsumptionsCmd(listService))
-}
-
-func searchServiceDI(cmdManager cli.CmdManager, dbService ports.DbService) {
-	searchService := search.NewSearchService(dbService)
-	cmdManager.AddCommand(searchCmd.NewSearchCustomerCmd(searchService))
 }
 
 func billingServiceDI(cmdManager cli.CmdManager, configService ports.ConfigService, dbService ports.DbService, osService ports.OsService) {

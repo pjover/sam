@@ -10,7 +10,6 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"log"
 	"time"
 )
 
@@ -27,44 +26,7 @@ func NewDbService(configService ports.ConfigService) ports.DbService {
 	uri := configService.GetString("db.server")
 	database := configService.GetString("db.name")
 	d := dbService{configService, ctx, uri, database}
-	d.createIndexes()
 	return d
-}
-
-func (d dbService) createIndexes() {
-
-	client, err := d.open()
-	defer d.close(client)
-	if err != nil {
-		log.Println("Could not connect to database", err)
-		return
-	}
-	collection := client.Database(d.database).Collection("customer")
-	indexes, err := collection.Indexes().List(context.TODO())
-	if err != nil {
-		log.Println("Could not read customer text indexes:", err)
-		return
-	}
-	if indexes.RemainingBatchLength() > 0 {
-		return
-	}
-
-	log.Println("Creating MongoDB text indexes ...")
-	opt := options.Index()
-	opt.SetWeights(bson.M{
-		"adults.name":    10,
-		"adults.surname": 7,
-		"children.name":  1007,
-	})
-	index := mongo.IndexModel{Keys: bson.M{
-		"adults.name":    "text",
-		"adults.surname": "text",
-		"children.name":  "text",
-	}, Options: opt}
-
-	if _, err := collection.Indexes().CreateOne(context.TODO(), index); err != nil {
-		log.Println("Could not create customer text index:", err)
-	}
 }
 
 func (d dbService) FindCustomer(id int) (model.Customer, error) {
@@ -224,17 +186,6 @@ func (d dbService) FindChangedCustomers(changedSince time.Time) ([]model.Custome
 	findOptions := options.Find()
 	findOptions.SetSort(bson.D{{"_id", 1}})
 	if err := d.findMany("customer", filter, findOptions, &results, "tots els clients"); err != nil {
-		return nil, err
-	}
-	return dbo.ConvertCustomersToModel(results), nil
-}
-
-func (d dbService) SearchCustomers(searchText string) ([]model.Customer, error) {
-	var results []dbo.Customer
-	filter := bson.M{"$text": bson.M{"$search": searchText}}
-	findOptions := options.Find()
-	findOptions.SetSort(bson.M{"score": bson.M{"$meta": "textScore"}})
-	if err := d.findMany("customer", filter, findOptions, &results, "clients actius"); err != nil {
 		return nil, err
 	}
 	return dbo.ConvertCustomersToModel(results), nil

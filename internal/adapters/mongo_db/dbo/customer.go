@@ -25,7 +25,6 @@ type Child struct {
 	Group         string    `bson:"group"`
 	Note          string    `bson:"note"`
 	Active        bool      `bson:"active"`
-	Score         float32   `bson:"score"`
 }
 
 type Adult struct {
@@ -43,7 +42,6 @@ type Adult struct {
 	WorkPhone        string    `bson:"workPhone"`
 	BirthDate        time.Time `bson:"birthDate"`
 	Nationality      string    `bson:"nationality"`
-	Score            float32   `bson:"score"`
 }
 
 type Address struct {
