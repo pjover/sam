@@ -4,7 +4,6 @@ import (
 	"github.com/pjover/sam/internal/domain/model"
 	"github.com/pjover/sam/internal/domain/model/adult_role"
 	"github.com/pjover/sam/internal/domain/model/group_type"
-	"github.com/pjover/sam/internal/domain/model/language"
 	"github.com/pjover/sam/internal/domain/model/payment_type"
 	"strings"
 )
@@ -134,7 +133,7 @@ func newPaymentType(value string) payment_type.PaymentType {
 	return payment_type.Invalid
 }
 
-func newLanguage(value string) language.Language {
+func newLanguage(value string) model.Language {
 	var _values = []string{
 		"",
 		"CA",
@@ -144,10 +143,10 @@ func newLanguage(value string) language.Language {
 	value = strings.ToLower(value)
 	for i, val := range _values {
 		if strings.ToLower(val) == value {
-			return language.Language(i)
+			return model.Language(i)
 		}
 	}
-	return language.Invalid
+	return model.Invalid
 }
 
 func newGroupType(value string) group_type.GroupType {

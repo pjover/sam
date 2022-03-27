@@ -27,7 +27,7 @@ func NewBulkLoader(configService ports.ConfigService, dbService ports.DbService)
 }
 
 func (b bulkLoader) LoadMonthInvoices() (invoices []model.Invoice, err error) {
-	yearMonth := b.configService.GetString("yearMonth")
+	yearMonth := b.configService.GetCurrentYearMonth()
 	invoices, err = b.dbService.FindInvoicesByYearMonth(yearMonth)
 	if err != nil {
 		return nil, fmt.Errorf("no s'ha pogut carregar les factures des de la base de dades: %s", err)

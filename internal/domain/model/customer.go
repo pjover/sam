@@ -3,7 +3,6 @@ package model
 import (
 	"github.com/pjover/sam/internal/domain/model/adult_role"
 	"github.com/pjover/sam/internal/domain/model/group_type"
-	"github.com/pjover/sam/internal/domain/model/language"
 	"github.com/pjover/sam/internal/domain/model/payment_type"
 	"time"
 )
@@ -62,6 +61,6 @@ type Customer struct {
 	Adults        []Adult
 	InvoiceHolder InvoiceHolder
 	Note          string
-	Language      language.Language
+	Language      Language
 	ChangedOn     time.Time
 }

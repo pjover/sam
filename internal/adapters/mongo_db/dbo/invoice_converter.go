@@ -3,6 +3,7 @@ package dbo
 import (
 	"github.com/pjover/sam/internal/domain/model"
 	"github.com/pjover/sam/internal/domain/model/payment_type"
+	"log"
 	"strings"
 )
 
@@ -11,7 +12,7 @@ func ConvertInvoiceToModel(invoice Invoice) model.Invoice {
 		Id:          invoice.Id,
 		CustomerId:  invoice.CustomerID,
 		Date:        invoice.Date,
-		YearMonth:   invoice.YearMonth,
+		YearMonth:   convertInvoiceYearMonth(invoice.YearMonth, invoice.Id),
 		ChildrenIds: invoice.ChildrenIds,
 		Lines:       lines(invoice.Lines),
 		PaymentType: convertToPaymentType(invoice.PaymentType),
@@ -20,6 +21,14 @@ func ConvertInvoiceToModel(invoice Invoice) model.Invoice {
 		Printed:     invoice.Printed,
 		SentToBank:  invoice.SentToBank,
 	}
+}
+
+func convertInvoiceYearMonth(yearMonth string, invoiceId string) model.YearMonth {
+	ym, err := model.StringToYearMonth(yearMonth)
+	if err != nil {
+		log.Fatalf("la dada yearMonth '%s' de la factura %s és incorrecte", yearMonth, invoiceId)
+	}
+	return ym
 }
 
 func lines(lines []Line) []model.Line {
@@ -90,7 +99,7 @@ func ConvertInvoiceToDbo(invoice model.Invoice) Invoice {
 		Id:          invoice.Id,
 		CustomerID:  invoice.CustomerId,
 		Date:        invoice.Date,
-		YearMonth:   invoice.YearMonth,
+		YearMonth:   invoice.YearMonth.String(),
 		ChildrenIds: invoice.ChildrenIds,
 		Lines:       lines,
 		PaymentType: PaymentTypes[invoice.PaymentType],

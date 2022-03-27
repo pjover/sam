@@ -2,6 +2,7 @@ package cfg
 
 import (
 	"fmt"
+	"github.com/pjover/sam/internal/domain/model"
 	"github.com/pjover/sam/internal/domain/ports"
 	"github.com/spf13/viper"
 	"log"
@@ -106,6 +107,17 @@ func (c configService) loadDefaultConfig(home string) {
 func (c configService) GetWorkingDirectory() (string, error) {
 	dirPath := path.Join(viper.GetString("dirs.home"), viper.GetString("dirs.current"))
 	return c.createDir(dirPath)
+}
+
+func (c configService) GetCurrentYearMonth() model.YearMonth {
+	yearMonth, err := model.StringToYearMonth(viper.GetString("yearMonth"))
+	if err != nil {
+		log.Fatalf("no s'ha trobat el actual mes al valor 'yearMonth' de la configuració")
+	}
+	return yearMonth
+}
+func (c configService) SetCurrentYearMonth(yearMonth model.YearMonth) error {
+	return c.SetString("yearMonth", yearMonth.String())
 }
 
 func (c configService) GetInvoicesDirectory() (string, error) {

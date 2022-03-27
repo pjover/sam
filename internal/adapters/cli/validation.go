@@ -2,11 +2,9 @@ package cli
 
 import (
 	"fmt"
-	"github.com/pjover/sam/internal/domain"
 	"github.com/spf13/cobra"
 	"strconv"
 	"strings"
-	"time"
 )
 
 // RangeArgs returns an error if the number of args is not within the expected range.
@@ -53,14 +51,6 @@ func ParseFloat(value string) (float64, error) {
 		return 0, fmt.Errorf("el número introduit és invàlid: %s", value)
 	}
 	return float, nil
-}
-
-func ParseYearMonth(yearMonth string) (time.Time, error) {
-	ym, err := time.Parse(domain.YearMonthLayout, yearMonth)
-	if err != nil {
-		return time.Time{}, fmt.Errorf("error al introduïr el mes: %s", err.Error())
-	}
-	return ym, nil
 }
 
 func ParseProductId(id string) (string, error) {

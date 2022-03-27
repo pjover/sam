@@ -18,13 +18,12 @@ type DbService interface {
 	FindCustomer(id int) (model.Customer, error)
 	FindInvoice(id string) (model.Invoice, error)
 	FindInvoicesByCustomer(customerId int) ([]model.Invoice, error)
-	FindInvoicesByCustomerAndYearMonth(customerId int, yearMonth string) ([]model.Invoice, error)
-	FindInvoicesByYearMonth(yearMonth string) ([]model.Invoice, error)
-	FindInvoicesByYearMonthAndPaymentTypeAndSentToBank(yearMonth string, paymentType payment_type.PaymentType, sentToBank bool) ([]model.Invoice, error)
+	FindInvoicesByCustomerAndYearMonth(customerId int, yearMonth model.YearMonth) ([]model.Invoice, error)
+	FindInvoicesByYearMonth(yearMonth model.YearMonth) ([]model.Invoice, error)
+	FindInvoicesByYearMonthAndPaymentTypeAndSentToBank(yearMonth model.YearMonth, paymentType payment_type.PaymentType, sentToBank bool) ([]model.Invoice, error)
 	FindProduct(id string) (model.Product, error)
 	InsertConsumptions(consumptions []model.Consumption) error
 	InsertInvoices(invoices []model.Invoice) error
-	SearchCustomers(searchText string) ([]model.Customer, error)
 	UpdateConsumptions(consumptions []model.Consumption) error
 	UpdateSequences(sequences []model.Sequence) error
 }

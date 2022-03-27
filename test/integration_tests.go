@@ -20,7 +20,6 @@ var lightTests = [][]string{
 	{"listInvoices"},
 	{"listMails"},
 	{"listProducts"},
-	{"searchCustomer", "maria"},
 	{"insertConsumptions", "2630", "1", "QME", "2", "MME", "1", "AGE"},
 	{"insertConsumptions", "2640", "1", "QME", "1", "MME"},
 	{"insertConsumptions", "2460", "1", "QME", "1", "MME"},

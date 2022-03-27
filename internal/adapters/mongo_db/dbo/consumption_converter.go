@@ -1,19 +1,9 @@
 package dbo
 
-import "github.com/pjover/sam/internal/domain/model"
-
-func ConvertConsumptionToModel(consumption Consumption) model.Consumption {
-	return model.Consumption{
-		Id:              consumption.Id,
-		ChildId:         consumption.ChildId,
-		ProductId:       consumption.ProductID,
-		Units:           Decimal128ToFloat64(consumption.Units),
-		YearMonth:       consumption.YearMonth,
-		Note:            consumption.Note,
-		IsRectification: consumption.IsRectification,
-		InvoiceId:       consumption.InvoiceId,
-	}
-}
+import (
+	"github.com/pjover/sam/internal/domain/model"
+	"log"
+)
 
 func ConvertConsumptionsToModel(consumptions []Consumption) []model.Consumption {
 	var out []model.Consumption
@@ -21,6 +11,27 @@ func ConvertConsumptionsToModel(consumptions []Consumption) []model.Consumption 
 		out = append(out, ConvertConsumptionToModel(consumption))
 	}
 	return out
+}
+
+func ConvertConsumptionToModel(consumption Consumption) model.Consumption {
+	return model.Consumption{
+		Id:              consumption.Id,
+		ChildId:         consumption.ChildId,
+		ProductId:       consumption.ProductID,
+		Units:           Decimal128ToFloat64(consumption.Units),
+		YearMonth:       convertConsumptionYearMonth(consumption.YearMonth, consumption.Id),
+		Note:            consumption.Note,
+		IsRectification: consumption.IsRectification,
+		InvoiceId:       consumption.InvoiceId,
+	}
+}
+
+func convertConsumptionYearMonth(yearMonth string, consumptionId string) model.YearMonth {
+	ym, err := model.StringToYearMonth(yearMonth)
+	if err != nil {
+		log.Fatalf("la dada yearMonth '%s' del consumption %s és incorrecte", yearMonth, consumptionId)
+	}
+	return ym
 }
 
 func ConvertConsumptionsToDbo(consumptions []model.Consumption) []interface{} {
@@ -37,7 +48,7 @@ func ConvertConsumptionToDbo(consumption model.Consumption) Consumption {
 		ChildId:         consumption.ChildId,
 		ProductID:       consumption.ProductId,
 		Units:           Float64ToDecimal128(consumption.Units),
-		YearMonth:       consumption.YearMonth,
+		YearMonth:       consumption.YearMonth.String(),
 		Note:            consumption.Note,
 		IsRectification: consumption.IsRectification,
 		InvoiceId:       consumption.InvoiceId,

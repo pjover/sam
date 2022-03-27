@@ -78,7 +78,7 @@ func (b billingService) insertConsumptions(childId int, consumptions map[string]
 }
 
 func (b billingService) completeConsumptions(consumptions map[string]float64, childId int, note string, isRectification bool) []model.Consumption {
-	yearMonth := b.configService.GetString("yearMonth")
+	yearMonth := b.configService.GetCurrentYearMonth()
 	var first = true
 	var completeConsumptions []model.Consumption
 	for id, units := range consumptions {
@@ -186,7 +186,7 @@ func (b billingService) splitConsumptions(consumptions []model.Consumption) (con
 }
 
 func (b billingService) consumptionsToInvoice(customer model.Customer, consumptions []model.Consumption) (model.Invoice, error) {
-	yearMonth := b.configService.GetString("yearMonth")
+	yearMonth := b.configService.GetCurrentYearMonth()
 	today := b.osService.Now()
 
 	lines, childrenIds, err := b.childrenLines(consumptions)

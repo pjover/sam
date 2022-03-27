@@ -11,7 +11,7 @@ import (
 	"time"
 )
 
-const yearMonth = "2022-02"
+var yearMonth, _ = model.StringToYearMonth("2022-02")
 
 var today = time.Date(2022, 2, 16, 20, 33, 59, 0, time.Local)
 
@@ -167,7 +167,7 @@ func Test_BillConsumptions_without_rectification(t *testing.T) {
 	}
 
 	mockedConfigService := new(mocks.ConfigService)
-	mockedConfigService.On("GetString", "yearMonth").Return(yearMonth)
+	mockedConfigService.On("GetCurrentYearMonth").Return(yearMonth)
 
 	mockedDbService := new(mocks.DbService)
 	mockedDbService.On("FindAllActiveConsumptions").Return(noRectificationConsumptions, nil)
@@ -216,7 +216,7 @@ func Test_BillConsumptions_with_rectification(t *testing.T) {
 	}
 
 	mockedConfigService := new(mocks.ConfigService)
-	mockedConfigService.On("GetString", "yearMonth").Return(yearMonth)
+	mockedConfigService.On("GetCurrentYearMonth").Return(yearMonth)
 
 	mockedDbService := new(mocks.DbService)
 	mockedDbService.On("FindAllActiveConsumptions").Return(append(noRectificationConsumptions, rectificationConsumptions...), nil)

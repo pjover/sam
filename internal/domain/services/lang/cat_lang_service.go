@@ -14,10 +14,10 @@ func NewCatLangService() LangService {
 
 var layout = "060100-Factures del mes January"
 
-func (c catLangService) WorkingDir(month time.Time) string {
-	dirName := month.Format(layout)
-	englishMonth := month.Month().String()
-	catalanMonth := c.MonthName(month)
+func (c catLangService) WorkingDir(workingTime time.Time) string {
+	dirName := workingTime.Format(layout)
+	englishMonth := workingTime.Month().String()
+	catalanMonth := c.MonthName(workingTime.Month())
 	return strings.ReplaceAll(dirName, englishMonth, catalanMonth)
 }
 
@@ -36,6 +36,6 @@ var m = map[string]string{
 	"December":  "de Desembre",
 }
 
-func (c catLangService) MonthName(month time.Time) string {
-	return m[month.Month().String()]
+func (c catLangService) MonthName(month time.Month) string {
+	return m[month.String()]
 }
