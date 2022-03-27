@@ -35,6 +35,7 @@ func MainDI(cmdManager cli.CmdManager, configService ports.ConfigService) {
 	generateServiceDI(cmdManager, configService, dbService, osService, langService)
 	listServiceDI(cmdManager, configService, dbService)
 	billingServiceDI(cmdManager, configService, dbService, osService)
+	createServiceDI(cmdManager, configService, dbService, osService)
 }
 
 func adminServiceDI(cmdManager cli.CmdManager, configService ports.ConfigService, osService ports.OsService, langService lang.LangService) {
