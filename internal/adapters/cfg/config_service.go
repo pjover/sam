@@ -104,6 +104,9 @@ func (c configService) loadDefaultConfig(home string) {
 	viper.SetDefault("reports.invoicesFolderName", "factures")
 	viper.SetDefault("reports.customersCardsFolderName", "clients")
 	viper.SetDefault("reports.lastCustomersCardsUpdated", time.Date(2020, 1, 1, 0, 0, 0, 0, time.Local))
+
+	viper.SetDefault("entities.newProductFileName", "new_product.json")
+	viper.SetDefault("entities.newCustomerFileName", "new_customer.json")
 }
 
 func (c configService) GetCurrentYearMonth() model.YearMonth {

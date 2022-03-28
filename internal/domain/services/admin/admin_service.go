@@ -161,7 +161,8 @@ func (a adminService) createWorkingDir(workingDirPath string) error {
 func (a adminService) copyDefaultEntitiesFiles(workingDirPath string) error {
 	cfgDir := a.configService.GetConfigDirectory()
 	files := []string{
-		"default_product.json",
+		a.configService.GetString("entities.newProductFileName"),
+		a.configService.GetString("entities.newCustomerFileName"),
 	}
 	for _, file := range files {
 		sourceFilePath := path.Join(cfgDir, file)
