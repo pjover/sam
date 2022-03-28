@@ -1,8 +1,10 @@
 package create
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/pjover/sam/internal/adapters/cli"
+	"github.com/pjover/sam/internal/domain/model"
 	"github.com/pjover/sam/internal/domain/ports"
 	"github.com/spf13/cobra"
 	"path"
@@ -22,7 +24,7 @@ func NewCreateProductCmd(createService ports.CreateService, configService ports.
 	}
 }
 
-func (e createProductCmd) Cmd() *cobra.Command {
+func (c createProductCmd) Cmd() *cobra.Command {
 	return &cobra.Command{
 		Use:         "createProducte fitxerJsonDelProducte",
 		Short:       "Crea un producte nou",
@@ -41,18 +43,32 @@ func (e createProductCmd) Cmd() *cobra.Command {
 		},
 		Args: cli.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			workingDir := e.configService.GetWorkingDirectory()
-			filePath := path.Join(workingDir, args[0])
-
-			content, err := e.osService.ReadFile(filePath)
+			product, err := c.loadProduct(args[0])
 			if err != nil {
 				return err
 			}
-			msg, err := e.createService.CreateProduct(content)
+
+			msg, err := c.createService.CreateProduct(product)
 			if msg != "" {
 				fmt.Println(msg)
 			}
 			return err
 		},
 	}
+}
+
+func (c createProductCmd) loadProduct(filename string) (product model.Product, err error) {
+	workingDir := c.configService.GetWorkingDirectory()
+	filePath := path.Join(workingDir, filename)
+
+	content, err := c.osService.ReadFile(filePath)
+	if err != nil {
+		return model.Product{}, err
+	}
+
+	err = json.Unmarshal(content, &product)
+	if err != nil {
+		return model.Product{}, fmt.Errorf("error llegint el JSON del nou producte: %s", err)
+	}
+	return product, nil
 }
