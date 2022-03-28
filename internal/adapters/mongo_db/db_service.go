@@ -276,15 +276,6 @@ func (d dbService) InsertInvoices(invoices []model.Invoice) error {
 	return nil
 }
 
-func (d dbService) InsertProduct(product model.Product) error {
-	document := dbo.ConvertProductToDbo(product)
-	err := d.insertOne('product', document, 'producte')
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
 func (d dbService) insertMany(collection string, documents []interface{}, name string) error {
 	client, err := d.open()
 	defer d.close(client)
@@ -294,6 +285,30 @@ func (d dbService) insertMany(collection string, documents []interface{}, name s
 
 	coll := client.Database(d.database).Collection(collection)
 	_, err = coll.InsertMany(context.TODO(), documents)
+	if err != nil {
+		return fmt.Errorf("insertant %s a la base de dades: %s", name, err)
+	}
+	return nil
+}
+
+func (d dbService) InsertProduct(product model.Product) error {
+	document := dbo.ConvertProductToDbo(product)
+	err := d.insertOne("product", document, "producte")
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (d dbService) insertOne(collection string, document interface{}, name string) error {
+	client, err := d.open()
+	defer d.close(client)
+	if err != nil {
+		return fmt.Errorf("connectant a la base de dades: %s", err)
+	}
+
+	coll := client.Database(d.database).Collection(collection)
+	_, err = coll.InsertOne(context.TODO(), document)
 	if err != nil {
 		return fmt.Errorf("insertant %s a la base de dades: %s", name, err)
 	}

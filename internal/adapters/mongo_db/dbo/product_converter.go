@@ -20,3 +20,14 @@ func ConvertProductsToModel(products []Product) []model.Product {
 	}
 	return out
 }
+
+func ConvertProductToDbo(product model.Product) Product {
+	return Product{
+		Id:            product.Id,
+		Name:          product.Name,
+		ShortName:     product.ShortName,
+		Price:         Float64ToDecimal128(product.Price),
+		TaxPercentage: Float64ToDecimal128(product.TaxPercentage),
+		IsSubsidy:     product.IsSubsidy,
+	}
+}
