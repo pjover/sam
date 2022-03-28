@@ -291,6 +291,15 @@ func (d dbService) insertMany(collection string, documents []interface{}, name s
 	return nil
 }
 
+func (d dbService) InsertCustomer(customer model.Customer) error {
+	document := dbo.ConvertCustomerToDbo(customer)
+	err := d.insertOne("customer", document, "client")
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func (d dbService) InsertProduct(product model.Product) error {
 	document := dbo.ConvertProductToDbo(product)
 	err := d.insertOne("product", document, "producte")

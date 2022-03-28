@@ -69,15 +69,16 @@ func adult(adult Adult) model.Adult {
 	}
 }
 
+var adultRoleValues = []string{
+	"",
+	"MOTHER",
+	"FATHER",
+	"TUTOR",
+}
+
 func newAdultRole(value string) adult_role.AdultRole {
-	var _values = []string{
-		"",
-		"MOTHER",
-		"FATHER",
-		"TUTOR",
-	}
 	value = strings.ToLower(value)
-	for i, val := range _values {
+	for i, val := range adultRoleValues {
 		if strings.ToLower(val) == value {
 			return adult_role.AdultRole(i)
 		}
@@ -115,17 +116,18 @@ func ConvertCustomersToModel(customers []Customer) []model.Customer {
 	return out
 }
 
+var paymentTypeValues = []string{
+	"",
+	"BANK_DIRECT_DEBIT",
+	"BANK_TRANSFER",
+	"VOUCHER",
+	"CASH",
+	"RECTIFICATION",
+}
+
 func newPaymentType(value string) payment_type.PaymentType {
-	var _values = []string{
-		"",
-		"BANK_DIRECT_DEBIT",
-		"BANK_TRANSFER",
-		"VOUCHER",
-		"CASH",
-		"RECTIFICATION",
-	}
 	value = strings.ToLower(value)
-	for i, val := range _values {
+	for i, val := range paymentTypeValues {
 		if strings.ToLower(val) == value {
 			return payment_type.PaymentType(i)
 		}
@@ -133,15 +135,17 @@ func newPaymentType(value string) payment_type.PaymentType {
 	return payment_type.Invalid
 }
 
+var languagesValues = []string{
+	"",
+	"CA",
+	"EN",
+	"ES",
+}
+
 func newLanguage(value string) model.Language {
-	var _values = []string{
-		"",
-		"CA",
-		"EN",
-		"ES",
-	}
+
 	value = strings.ToLower(value)
-	for i, val := range _values {
+	for i, val := range languagesValues {
 		if strings.ToLower(val) == value {
 			return model.Language(i)
 		}
@@ -149,18 +153,104 @@ func newLanguage(value string) model.Language {
 	return model.Invalid
 }
 
+var groupValues = []string{
+	"UNDEFINED",
+	"EI_1",
+	"EI_2",
+	"EI_3",
+}
+
 func newGroupType(value string) group_type.GroupType {
-	var _values = []string{
-		"UNDEFINED",
-		"EI_1",
-		"EI_2",
-		"EI_3",
-	}
+
 	value = strings.ToLower(value)
-	for i, val := range _values {
+	for i, val := range groupValues {
 		if strings.ToLower(val) == value {
 			return group_type.GroupType(i)
 		}
 	}
 	return group_type.Undefined
+}
+
+func ConvertCustomerToDbo(customer model.Customer) Customer {
+	return Customer{
+		Id:            customer.Id,
+		Active:        customer.Active,
+		Children:      convertChildrenToDbo(customer.Children),
+		Adults:        convertAdultsToDbo(customer.Adults),
+		InvoiceHolder: convertInvoiceHolderToDbo(customer.InvoiceHolder),
+		Note:          customer.Note,
+		Language:      languagesValues[customer.Language],
+		ChangedOn:     customer.ChangedOn,
+	}
+}
+
+func convertChildrenToDbo(children []model.Child) []Child {
+	var _children []Child
+	for _, child := range children {
+		_children = append(_children, convertChildToDbo(child))
+	}
+	return _children
+}
+
+func convertChildToDbo(child model.Child) Child {
+	return Child{
+		Id:            child.Id,
+		Name:          child.Name,
+		Surname:       child.Surname,
+		SecondSurname: child.SecondSurname,
+		TaxID:         child.TaxID,
+		BirthDate:     child.BirthDate,
+		Group:         groupValues[child.Group],
+		Note:          child.Note,
+		Active:        child.Active,
+	}
+}
+
+func convertAdultsToDbo(adults []model.Adult) []Adult {
+	var _adults []Adult
+	for _, adult := range adults {
+		_adults = append(_adults, convertAdultToDbo(adult))
+	}
+	return _adults
+}
+
+func convertAdultToDbo(adult model.Adult) Adult {
+	return Adult{
+		Name:             adult.Name,
+		Surname:          adult.Surname,
+		SecondSurname:    adult.SecondSurname,
+		TaxID:            adult.TaxID,
+		Role:             adultRoleValues[adult.Role],
+		Address:          convertAddressToDbo(adult.Address),
+		Email:            adult.Email,
+		MobilePhone:      adult.MobilePhone,
+		HomePhone:        adult.HomePhone,
+		GrandMotherPhone: adult.GrandMotherPhone,
+		GrandParentPhone: adult.GrandParentPhone,
+		WorkPhone:        adult.WorkPhone,
+		BirthDate:        adult.BirthDate,
+		Nationality:      adult.Nationality,
+	}
+}
+
+func convertInvoiceHolderToDbo(invoiceHolder model.InvoiceHolder) InvoiceHolder {
+	return InvoiceHolder{
+		Name:        invoiceHolder.Name,
+		TaxID:       invoiceHolder.TaxID,
+		Address:     convertAddressToDbo(invoiceHolder.Address),
+		Email:       invoiceHolder.Email,
+		SendEmail:   invoiceHolder.SendEmail,
+		PaymentType: paymentTypeValues[invoiceHolder.PaymentType],
+		BankAccount: invoiceHolder.BankAccount,
+		IsBusiness:  invoiceHolder.IsBusiness,
+	}
+}
+
+func convertAddressToDbo(address model.Address) Address {
+	return Address{
+		Street:  address.Street,
+		ZipCode: address.ZipCode,
+		City:    address.City,
+		State:   address.State,
+	}
 }
