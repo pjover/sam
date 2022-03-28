@@ -276,6 +276,15 @@ func (d dbService) InsertInvoices(invoices []model.Invoice) error {
 	return nil
 }
 
+func (d dbService) InsertProduct(product model.Product) error {
+	document := dbo.ConvertProductToDbo(product)
+	err := d.insertOne('product', document, 'producte')
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func (d dbService) insertMany(collection string, documents []interface{}, name string) error {
 	client, err := d.open()
 	defer d.close(client)
