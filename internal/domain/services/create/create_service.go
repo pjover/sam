@@ -1,6 +1,11 @@
 package create
 
-import "github.com/pjover/sam/internal/domain/ports"
+import (
+	"encoding/json"
+	"fmt"
+	"github.com/pjover/sam/internal/domain/model"
+	"github.com/pjover/sam/internal/domain/ports"
+)
 
 type createService struct {
 	dbService ports.DbService
@@ -18,6 +23,17 @@ func (c createService) CreateCustomer(customerJson []byte) (string, error) {
 }
 
 func (c createService) CreateProduct(productJson []byte) (string, error) {
-	//TODO implement me
-	panic("implement me")
+
+	var newProduct model.Product
+	err := json.Unmarshal(productJson, &newProduct)
+	if err != nil {
+		return "", fmt.Errorf("error llegint el JSON del nou producte: %s", err)
+	}
+
+	storedProduct, err := c.dbService.FindProduct(newProduct.Id)
+	if err == nil {
+		return "", fmt.Errorf("el producte amb codi '%s' ja existeix: %s", newProduct.Id, storedProduct.String())
+	}
+
+	return fmt.Sprintf("Creat el producte %s", newProduct.String()), nil
 }

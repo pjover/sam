@@ -94,10 +94,6 @@ func (a adminService) CreateDirectories() (string, error) {
 		return "", err
 	}
 
-	if err := a.populateWorkingDir(workingDirPath); err != nil {
-		return "", err
-	}
-
 	if err := a.updateConfig(yearMonth, dirName); err != nil {
 		return "", err
 	}
@@ -139,10 +135,19 @@ func (a adminService) numberOfDaysUntilEndOfMonth() int {
 }
 
 func (a adminService) createWorkingDir(workingDirPath string) error {
-	return a.osService.CreateDirectory(workingDirPath)
-}
 
-func (a adminService) populateWorkingDir(workingDirPath string) error {
+	exists, err := a.osService.ItemExists(workingDirPath)
+	if err != nil {
+		return err
+	}
+	if exists {
+		return nil
+	}
+
+	err = a.osService.CreateDirectory(workingDirPath)
+	if err != nil {
+		return err
+	}
 
 	if err := a.osService.CreateDirectory(a.configService.GetInvoicesDirectory()); err != nil {
 		return err

@@ -41,8 +41,8 @@ func (e createProductCmd) Cmd() *cobra.Command {
 		},
 		Args: cli.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			homeDir := e.configService.GetWorkingDirectory()
-			filePath := path.Join(homeDir, args[0])
+			workingDir := e.configService.GetWorkingDirectory()
+			filePath := path.Join(workingDir, args[0])
 
 			content, err := e.osService.ReadFile(filePath)
 			if err != nil {
