@@ -12,9 +12,9 @@ func TestNewLanguage(t *testing.T) {
 		want  Language
 	}{
 		{
-			name:  "Invalid",
+			name:  "Undefined",
 			value: "anything",
-			want:  Invalid,
+			want:  Undefined,
 		},
 		{
 			name:  "Catalan",
@@ -35,6 +35,41 @@ func TestNewLanguage(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got := NewLanguage(tt.value)
+			assert.Equal(t, tt.want, got)
+		})
+	}
+}
+
+func TestLanguage_Format(t *testing.T) {
+	tests := []struct {
+		name string
+		lang Language
+		want string
+	}{
+		{
+			"Undefined",
+			Undefined,
+			"Indefinit",
+		},
+		{
+			"Catalan",
+			Catalan,
+			"Català",
+		},
+		{
+			"English",
+			English,
+			"Anglès",
+		},
+		{
+			"Spanish",
+			Spanish,
+			"Espanyol",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := tt.lang.Format()
 			assert.Equal(t, tt.want, got)
 		})
 	}

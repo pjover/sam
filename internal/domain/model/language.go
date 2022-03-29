@@ -5,22 +5,11 @@ import "strings"
 type Language uint
 
 const (
-	Invalid Language = iota
+	Undefined Language = iota
 	Catalan
 	English
 	Spanish
 )
-
-var formatValues = []string{
-	"Indefinit",
-	"Català",
-	"Anglès",
-	"Espanyol",
-}
-
-func (p Language) Format() string {
-	return formatValues[p]
-}
 
 var stringValues = []string{
 	"",
@@ -29,8 +18,8 @@ var stringValues = []string{
 	"ES",
 }
 
-func (p Language) String() string {
-	return stringValues[p]
+func (l Language) String() string {
+	return stringValues[l]
 }
 
 func NewLanguage(value string) Language {
@@ -41,5 +30,16 @@ func NewLanguage(value string) Language {
 			return Language(i)
 		}
 	}
-	return Invalid
+	return Undefined
+}
+
+var formatValues = []string{
+	"Indefinit",
+	"Català",
+	"Anglès",
+	"Espanyol",
+}
+
+func (l Language) Format() string {
+	return formatValues[l]
 }

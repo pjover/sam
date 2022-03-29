@@ -75,7 +75,7 @@ func CustomerToModel(customer Customer) model.Customer {
 		Adults:        adultsToModel(customer.Adults),
 		InvoiceHolder: holderToModel(customer.InvoiceHolder),
 		Note:          customer.Note,
-		Language:      languageToModel(customer.Language),
+		Language:      model.NewLanguage(customer.Language),
 	}
 }
 
@@ -202,22 +202,4 @@ func groupTypeToModel(value string) group_type.GroupType {
 		}
 	}
 	return group_type.Undefined
-}
-
-var languagesValues = []string{
-	"",
-	"CA",
-	"EN",
-	"ES",
-}
-
-func languageToModel(value string) model.Language {
-
-	value = strings.ToLower(value)
-	for i, val := range languagesValues {
-		if strings.ToLower(val) == value {
-			return model.Language(i)
-		}
-	}
-	return model.Invalid
 }
