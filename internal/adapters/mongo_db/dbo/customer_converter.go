@@ -16,7 +16,7 @@ func ConvertCustomerToModel(customer Customer) model.Customer {
 		Adults:        adults(customer.Adults),
 		InvoiceHolder: holder(customer.InvoiceHolder),
 		Note:          customer.Note,
-		Language:      newLanguage(customer.Language),
+		Language:      model.NewLanguage(customer.Language),
 	}
 }
 
@@ -135,24 +135,6 @@ func newPaymentType(value string) payment_type.PaymentType {
 	return payment_type.Invalid
 }
 
-var languagesValues = []string{
-	"",
-	"CA",
-	"EN",
-	"ES",
-}
-
-func newLanguage(value string) model.Language {
-
-	value = strings.ToLower(value)
-	for i, val := range languagesValues {
-		if strings.ToLower(val) == value {
-			return model.Language(i)
-		}
-	}
-	return model.Invalid
-}
-
 var groupValues = []string{
 	"UNDEFINED",
 	"EI_1",
@@ -179,7 +161,7 @@ func ConvertCustomerToDbo(customer model.Customer) Customer {
 		Adults:        convertAdultsToDbo(customer.Adults),
 		InvoiceHolder: convertInvoiceHolderToDbo(customer.InvoiceHolder),
 		Note:          customer.Note,
-		Language:      languagesValues[customer.Language],
+		Language:      customer.Language.String(),
 		ChangedOn:     customer.ChangedOn,
 	}
 }

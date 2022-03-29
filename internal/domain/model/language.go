@@ -1,5 +1,7 @@
 package model
 
+import "strings"
+
 type Language uint
 
 const (
@@ -9,13 +11,35 @@ const (
 	Spanish
 )
 
-var values = []string{
+var formatValues = []string{
 	"Indefinit",
 	"Català",
-	"Espanyol",
 	"Anglès",
+	"Espanyol",
+}
+
+func (p Language) Format() string {
+	return formatValues[p]
+}
+
+var stringValues = []string{
+	"",
+	"CA",
+	"EN",
+	"ES",
 }
 
 func (p Language) String() string {
-	return values[p]
+	return stringValues[p]
+}
+
+func NewLanguage(value string) Language {
+
+	value = strings.ToLower(value)
+	for i, val := range stringValues {
+		if strings.ToLower(val) == value {
+			return Language(i)
+		}
+	}
+	return Invalid
 }
