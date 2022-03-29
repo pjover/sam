@@ -1,4 +1,4 @@
-package dbo
+package dto
 
 import (
 	"github.com/pjover/sam/internal/domain/model"
@@ -24,7 +24,7 @@ func TestCustomerToModel(t *testing.T) {
 						Name:          "Laura",
 						Surname:       "Llull",
 						SecondSurname: "Bibiloni",
-						BirthDate:     test_data.Date,
+						BirthDate:     "2019-05-25",
 						Group:         "EI_1",
 						Active:        true,
 					},
@@ -34,7 +34,7 @@ func TestCustomerToModel(t *testing.T) {
 						Surname:       "Llull",
 						SecondSurname: "Bibiloni",
 						TaxID:         "60235657Z",
-						BirthDate:     test_data.Date,
+						BirthDate:     "2019-05-25",
 						Group:         "EI_1",
 						Active:        true,
 					},

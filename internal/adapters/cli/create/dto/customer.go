@@ -1,10 +1,12 @@
-package dbo
+package dto
 
 import (
+	"github.com/pjover/sam/internal/domain"
 	"github.com/pjover/sam/internal/domain/model"
 	"github.com/pjover/sam/internal/domain/model/adult_role"
 	"github.com/pjover/sam/internal/domain/model/group_type"
 	"github.com/pjover/sam/internal/domain/model/payment_type"
+	"log"
 	"time"
 )
 
@@ -16,7 +18,7 @@ type Customer struct {
 	InvoiceHolder InvoiceHolder
 	Note          string
 	Language      string
-	ChangedOn     time.Time
+	ChangedOn     time.Time // TODO Not used
 }
 
 type Child struct {
@@ -25,7 +27,7 @@ type Child struct {
 	Surname       string
 	SecondSurname string
 	TaxID         string
-	BirthDate     time.Time
+	BirthDate     string
 	Group         string
 	Note          string
 	Active        bool
@@ -44,7 +46,7 @@ type Adult struct {
 	GrandMotherPhone string
 	GrandParentPhone string
 	WorkPhone        string
-	BirthDate        time.Time
+	BirthDate        string
 	Nationality      string
 }
 
@@ -93,11 +95,22 @@ func childToModel(child Child) model.Child {
 		Surname:       child.Surname,
 		SecondSurname: child.SecondSurname,
 		TaxID:         child.TaxID,
-		BirthDate:     child.BirthDate,
+		BirthDate:     stringToTime(child.BirthDate),
 		Group:         group_type.NewGroupType(child.Group),
 		Note:          child.Note,
 		Active:        child.Active,
 	}
+}
+
+func stringToTime(date string) time.Time {
+	if date == "" {
+		return time.Time{}
+	}
+	tm, err := time.Parse(domain.YearMonthDayLayout, date)
+	if err != nil {
+		log.Fatalf("error de format en la data '%s', ha de tenir el format 2022-03-29", date)
+	}
+	return tm
 }
 
 func adultsToModel(adults []Adult) []model.Adult {
@@ -122,7 +135,7 @@ func adultToModel(adult Adult) model.Adult {
 		GrandMotherPhone: adult.GrandMotherPhone,
 		GrandParentPhone: adult.GrandParentPhone,
 		WorkPhone:        adult.WorkPhone,
-		BirthDate:        adult.BirthDate,
+		BirthDate:        stringToTime(adult.BirthDate),
 		Nationality:      adult.Nationality,
 	}
 }

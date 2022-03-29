@@ -17,6 +17,7 @@ func NewCreateService(dbService ports.DbService) ports.CreateService {
 }
 
 func (c createService) CreateCustomer(customer model.Customer) (string, error) {
+	fmt.Printf("Crean el client %s\n", customer.String()) // TODO Remove
 	//TODO implement me
 	panic("implement me")
 }

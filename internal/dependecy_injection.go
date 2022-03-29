@@ -90,4 +90,5 @@ func billingServiceDI(cmdManager cli.CmdManager, configService ports.ConfigServi
 func createServiceDI(cmdManager cli.CmdManager, configService ports.ConfigService, dbService ports.DbService, osService ports.OsService) {
 	createService := create.NewCreateService(dbService)
 	cmdManager.AddCommand(createCli.NewCreateProductCmd(createService, configService, osService))
+	cmdManager.AddCommand(createCli.NewCreateCustomerCmd(createService, configService, osService))
 }
