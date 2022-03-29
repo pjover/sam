@@ -5,7 +5,6 @@ import (
 	"github.com/pjover/sam/internal/domain/model/adult_role"
 	"github.com/pjover/sam/internal/domain/model/group_type"
 	"github.com/pjover/sam/internal/domain/model/payment_type"
-	"strings"
 	"time"
 )
 
@@ -115,7 +114,7 @@ func adultToModel(adult Adult) model.Adult {
 		Surname:          adult.Surname,
 		SecondSurname:    adult.SecondSurname,
 		TaxID:            adult.TaxID,
-		Role:             roleToModel(adult.Role),
+		Role:             adult_role.NewAdultRole(adult.Role),
 		Address:          addressToModel(adult.Address),
 		Email:            adult.Email,
 		MobilePhone:      adult.MobilePhone,
@@ -126,23 +125,6 @@ func adultToModel(adult Adult) model.Adult {
 		BirthDate:        adult.BirthDate,
 		Nationality:      adult.Nationality,
 	}
-}
-
-var adultRoleValues = []string{
-	"",
-	"MOTHER",
-	"FATHER",
-	"TUTOR",
-}
-
-func roleToModel(value string) adult_role.AdultRole {
-	value = strings.ToLower(value)
-	for i, val := range adultRoleValues {
-		if strings.ToLower(val) == value {
-			return adult_role.AdultRole(i)
-		}
-	}
-	return adult_role.Invalid
 }
 
 func addressToModel(address Address) model.Address {
@@ -161,27 +143,8 @@ func holderToModel(holder InvoiceHolder) model.InvoiceHolder {
 		Address:     addressToModel(holder.Address),
 		Email:       holder.Email,
 		SendEmail:   holder.SendEmail,
-		PaymentType: paymentTypeToModel(holder.PaymentType),
+		PaymentType: payment_type.NewPaymentType(holder.PaymentType),
 		BankAccount: holder.BankAccount,
 		IsBusiness:  holder.IsBusiness,
 	}
-}
-
-var paymentTypeValues = []string{
-	"",
-	"BANK_DIRECT_DEBIT",
-	"BANK_TRANSFER",
-	"VOUCHER",
-	"CASH",
-	"RECTIFICATION",
-}
-
-func paymentTypeToModel(value string) payment_type.PaymentType {
-	value = strings.ToLower(value)
-	for i, val := range paymentTypeValues {
-		if strings.ToLower(val) == value {
-			return payment_type.PaymentType(i)
-		}
-	}
-	return payment_type.Invalid
 }
