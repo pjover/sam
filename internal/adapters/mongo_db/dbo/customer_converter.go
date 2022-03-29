@@ -5,7 +5,6 @@ import (
 	"github.com/pjover/sam/internal/domain/model/adult_role"
 	"github.com/pjover/sam/internal/domain/model/group_type"
 	"github.com/pjover/sam/internal/domain/model/payment_type"
-	"strings"
 )
 
 func ConvertCustomerToModel(customer Customer) model.Customer {
@@ -56,7 +55,7 @@ func adult(adult Adult) model.Adult {
 		Surname:          adult.Surname,
 		SecondSurname:    adult.SecondSurname,
 		TaxID:            adult.TaxID,
-		Role:             newAdultRole(adult.Role),
+		Role:             adult_role.NewAdultRole(adult.Role),
 		Address:          address(adult.Address),
 		Email:            adult.Email,
 		MobilePhone:      adult.MobilePhone,
@@ -67,23 +66,6 @@ func adult(adult Adult) model.Adult {
 		BirthDate:        adult.BirthDate,
 		Nationality:      adult.Nationality,
 	}
-}
-
-var adultRoleValues = []string{
-	"",
-	"MOTHER",
-	"FATHER",
-	"TUTOR",
-}
-
-func newAdultRole(value string) adult_role.AdultRole {
-	value = strings.ToLower(value)
-	for i, val := range adultRoleValues {
-		if strings.ToLower(val) == value {
-			return adult_role.AdultRole(i)
-		}
-	}
-	return adult_role.Invalid
 }
 
 func address(address Address) model.Address {
@@ -165,7 +147,7 @@ func convertAdultToDbo(adult model.Adult) Adult {
 		Surname:          adult.Surname,
 		SecondSurname:    adult.SecondSurname,
 		TaxID:            adult.TaxID,
-		Role:             adultRoleValues[adult.Role],
+		Role:             adult.Role.String(),
 		Address:          convertAddressToDbo(adult.Address),
 		Email:            adult.Email,
 		MobilePhone:      adult.MobilePhone,

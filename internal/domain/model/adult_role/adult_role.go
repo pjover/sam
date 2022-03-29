@@ -1,5 +1,7 @@
 package adult_role
 
+import "strings"
+
 type AdultRole uint
 
 const (
@@ -9,13 +11,34 @@ const (
 	Tutor
 )
 
-var values = []string{
+var stringValues = []string{
+	"",
+	"MOTHER",
+	"FATHER",
+	"TUTOR",
+}
+
+func (p AdultRole) String() string {
+	return formatValues[p]
+}
+
+func NewAdultRole(value string) AdultRole {
+	value = strings.ToLower(value)
+	for i, val := range stringValues {
+		if strings.ToLower(val) == value {
+			return AdultRole(i)
+		}
+	}
+	return Invalid
+}
+
+var formatValues = []string{
 	"Indefinit",
 	"Mare",
 	"Pare",
 	"Tutor",
 }
 
-func (p AdultRole) String() string {
-	return values[p]
+func (p AdultRole) Format() string {
+	return formatValues[p]
 }
