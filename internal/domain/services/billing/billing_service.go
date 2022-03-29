@@ -340,7 +340,7 @@ func (b billingService) groupInvoices(groupBy func(invoice model.Invoice) string
 }
 
 func (b billingService) groupInvoicesByPaymentType(invoice model.Invoice) string {
-	return invoice.PaymentType.String()
+	return invoice.PaymentType.Format()
 }
 
 func (b billingService) groupInvoicesByCustomer(invoice model.Invoice) string {

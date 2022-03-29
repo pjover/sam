@@ -246,5 +246,5 @@ func (i InvoiceReport) getPaymentType(invoice model.Invoice, customer model.Cust
 	if paymentType == payment_type.Invalid {
 		paymentType = customer.InvoiceHolder.PaymentType
 	}
-	return fmt.Sprintf("- Tipus de pagament: %s", paymentType.String())
+	return fmt.Sprintf("- Tipus de pagament: %s", paymentType.Format())
 }

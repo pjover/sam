@@ -116,7 +116,7 @@ func (m MonthReport) buildData(invoices []model.Invoice) ([][]string, error) {
 			customer.ChildrenNamesWithId("\n"),
 			invoice.LinesFmt(", "),
 			fmt.Sprintf("%.2f", invoice.Amount()),
-			invoice.PaymentType.String(),
+			invoice.PaymentType.Format(),
 		}
 		data = append(data, line)
 	}

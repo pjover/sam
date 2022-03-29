@@ -367,6 +367,20 @@ func (_m *DbService) InsertConsumptions(consumptions []model.Consumption) error 
 	return r0
 }
 
+// InsertCustomer provides a mock function with given fields: customer
+func (_m *DbService) InsertCustomer(customer model.Customer) error {
+	ret := _m.Called(customer)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(model.Customer) error); ok {
+		r0 = rf(customer)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
 // InsertInvoices provides a mock function with given fields: invoices
 func (_m *DbService) InsertInvoices(invoices []model.Invoice) error {
 	ret := _m.Called(invoices)
@@ -381,27 +395,18 @@ func (_m *DbService) InsertInvoices(invoices []model.Invoice) error {
 	return r0
 }
 
-// SearchCustomers provides a mock function with given fields: searchText
-func (_m *DbService) SearchCustomers(searchText string) ([]model.Customer, error) {
-	ret := _m.Called(searchText)
+// InsertProduct provides a mock function with given fields: product
+func (_m *DbService) InsertProduct(product model.Product) error {
+	ret := _m.Called(product)
 
-	var r0 []model.Customer
-	if rf, ok := ret.Get(0).(func(string) []model.Customer); ok {
-		r0 = rf(searchText)
+	var r0 error
+	if rf, ok := ret.Get(0).(func(model.Product) error); ok {
+		r0 = rf(product)
 	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]model.Customer)
-		}
+		r0 = ret.Error(0)
 	}
 
-	var r1 error
-	if rf, ok := ret.Get(1).(func(string) error); ok {
-		r1 = rf(searchText)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
+	return r0
 }
 
 // UpdateConsumptions provides a mock function with given fields: consumptions

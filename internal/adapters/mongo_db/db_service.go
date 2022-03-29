@@ -157,7 +157,7 @@ func (d dbService) FindInvoicesByYearMonthAndPaymentTypeAndSentToBank(yearMonth 
 		{"$and",
 			bson.A{
 				bson.D{{"yearMonth", yearMonth.String()}},
-				bson.D{{"paymentType", dbo.PaymentTypes[paymentType]}},
+				bson.D{{"paymentType", paymentType.String()}},
 				bson.D{{"sentToBank", sentToBank}},
 			}},
 	}

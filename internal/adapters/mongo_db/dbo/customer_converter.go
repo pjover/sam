@@ -102,7 +102,7 @@ func holder(holder InvoiceHolder) model.InvoiceHolder {
 		Address:     address(holder.Address),
 		Email:       holder.Email,
 		SendEmail:   holder.SendEmail,
-		PaymentType: newPaymentType(holder.PaymentType),
+		PaymentType: payment_type.NewPaymentType(holder.PaymentType),
 		BankAccount: holder.BankAccount,
 		IsBusiness:  holder.IsBusiness,
 	}
@@ -114,25 +114,6 @@ func ConvertCustomersToModel(customers []Customer) []model.Customer {
 		out = append(out, ConvertCustomerToModel(customer))
 	}
 	return out
-}
-
-var paymentTypeValues = []string{
-	"",
-	"BANK_DIRECT_DEBIT",
-	"BANK_TRANSFER",
-	"VOUCHER",
-	"CASH",
-	"RECTIFICATION",
-}
-
-func newPaymentType(value string) payment_type.PaymentType {
-	value = strings.ToLower(value)
-	for i, val := range paymentTypeValues {
-		if strings.ToLower(val) == value {
-			return payment_type.PaymentType(i)
-		}
-	}
-	return payment_type.Invalid
 }
 
 func ConvertCustomerToDbo(customer model.Customer) Customer {
@@ -204,7 +185,7 @@ func convertInvoiceHolderToDbo(invoiceHolder model.InvoiceHolder) InvoiceHolder 
 		Address:     convertAddressToDbo(invoiceHolder.Address),
 		Email:       invoiceHolder.Email,
 		SendEmail:   invoiceHolder.SendEmail,
-		PaymentType: paymentTypeValues[invoiceHolder.PaymentType],
+		PaymentType: invoiceHolder.PaymentType.String(),
 		BankAccount: invoiceHolder.BankAccount,
 		IsBusiness:  invoiceHolder.IsBusiness,
 	}

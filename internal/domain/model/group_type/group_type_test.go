@@ -47,24 +47,24 @@ func TestGroupType_Format(t *testing.T) {
 		want string
 	}{
 		{
-			"Undefined",
-			Undefined,
-			"Indefinit",
+			name: "Undefined",
+			g:    Undefined,
+			want: "Indefinit",
 		},
 		{
-			"EI_1",
-			EI_1,
-			"EI 1 (0-1)",
+			name: "EI_1",
+			g:    EI_1,
+			want: "EI 1 (0-1)",
 		},
 		{
-			"EI_2",
-			EI_2,
-			"EI 2 (1-2)",
+			name: "EI_2",
+			g:    EI_2,
+			want: "EI 2 (1-2)",
 		},
 		{
-			"EI_3",
-			EI_3,
-			"EI 3 (2-3)",
+			name: "EI_3",
+			g:    EI_3,
+			want: "EI 3 (2-3)",
 		},
 	}
 	for _, tt := range tests {
