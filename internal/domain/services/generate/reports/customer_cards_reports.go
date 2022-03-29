@@ -159,7 +159,7 @@ func (c CustomerCardsReports) childSubReport(child model.Child) SubReport {
 			{child.SecondSurname},
 			{child.TaxID},
 			{child.BirthDate.Format(domain.YearMonthDayLayout)},
-			{child.Group.String()},
+			{child.Group.Format()},
 			{child.Note},
 			{c.boolToYesNo(child.Active)},
 		},

@@ -95,7 +95,7 @@ func childToModel(child Child) model.Child {
 		SecondSurname: child.SecondSurname,
 		TaxID:         child.TaxID,
 		BirthDate:     child.BirthDate,
-		Group:         groupTypeToModel(child.Group),
+		Group:         group_type.NewGroupType(child.Group),
 		Note:          child.Note,
 		Active:        child.Active,
 	}
@@ -184,22 +184,4 @@ func paymentTypeToModel(value string) payment_type.PaymentType {
 		}
 	}
 	return payment_type.Invalid
-}
-
-var groupValues = []string{
-	"UNDEFINED",
-	"EI_1",
-	"EI_2",
-	"EI_3",
-}
-
-func groupTypeToModel(value string) group_type.GroupType {
-
-	value = strings.ToLower(value)
-	for i, val := range groupValues {
-		if strings.ToLower(val) == value {
-			return group_type.GroupType(i)
-		}
-	}
-	return group_type.Undefined
 }

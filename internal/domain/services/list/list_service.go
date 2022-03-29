@@ -132,7 +132,7 @@ func (l listService) ListGroupMails(groupType group_type.GroupType) (string, err
 	}
 
 	var buffer bytes.Buffer
-	buffer.WriteString(groupType.String() + ":\n")
+	buffer.WriteString(groupType.Format() + ":\n")
 	for _, customer := range customers {
 		var in bool
 		for _, child := range customer.Children {
