@@ -5,7 +5,6 @@ import (
 	"github.com/pjover/sam/internal/domain/model/adult_role"
 	"github.com/pjover/sam/internal/domain/model/group_type"
 	"github.com/pjover/sam/internal/domain/model/payment_type"
-	"strings"
 )
 
 func ConvertCustomerToModel(customer Customer) model.Customer {
@@ -16,7 +15,7 @@ func ConvertCustomerToModel(customer Customer) model.Customer {
 		Adults:        adults(customer.Adults),
 		InvoiceHolder: holder(customer.InvoiceHolder),
 		Note:          customer.Note,
-		Language:      newLanguage(customer.Language),
+		Language:      model.NewLanguage(customer.Language),
 	}
 }
 
@@ -36,7 +35,7 @@ func child(child Child) model.Child {
 		SecondSurname: child.SecondSurname,
 		TaxID:         child.TaxID,
 		BirthDate:     child.BirthDate,
-		Group:         newGroupType(child.Group),
+		Group:         group_type.NewGroupType(child.Group),
 		Note:          child.Note,
 		Active:        child.Active,
 	}
@@ -56,7 +55,7 @@ func adult(adult Adult) model.Adult {
 		Surname:          adult.Surname,
 		SecondSurname:    adult.SecondSurname,
 		TaxID:            adult.TaxID,
-		Role:             newAdultRole(adult.Role),
+		Role:             adult_role.NewAdultRole(adult.Role),
 		Address:          address(adult.Address),
 		Email:            adult.Email,
 		MobilePhone:      adult.MobilePhone,
@@ -67,22 +66,6 @@ func adult(adult Adult) model.Adult {
 		BirthDate:        adult.BirthDate,
 		Nationality:      adult.Nationality,
 	}
-}
-
-func newAdultRole(value string) adult_role.AdultRole {
-	var _values = []string{
-		"",
-		"MOTHER",
-		"FATHER",
-		"TUTOR",
-	}
-	value = strings.ToLower(value)
-	for i, val := range _values {
-		if strings.ToLower(val) == value {
-			return adult_role.AdultRole(i)
-		}
-	}
-	return adult_role.Invalid
 }
 
 func address(address Address) model.Address {
@@ -101,7 +84,7 @@ func holder(holder InvoiceHolder) model.InvoiceHolder {
 		Address:     address(holder.Address),
 		Email:       holder.Email,
 		SendEmail:   holder.SendEmail,
-		PaymentType: newPaymentType(holder.PaymentType),
+		PaymentType: payment_type.NewPaymentType(holder.PaymentType),
 		BankAccount: holder.BankAccount,
 		IsBusiness:  holder.IsBusiness,
 	}
@@ -115,52 +98,86 @@ func ConvertCustomersToModel(customers []Customer) []model.Customer {
 	return out
 }
 
-func newPaymentType(value string) payment_type.PaymentType {
-	var _values = []string{
-		"",
-		"BANK_DIRECT_DEBIT",
-		"BANK_TRANSFER",
-		"VOUCHER",
-		"CASH",
-		"RECTIFICATION",
+func ConvertCustomerToDbo(customer model.Customer) Customer {
+	return Customer{
+		Id:            customer.Id,
+		Active:        customer.Active,
+		Children:      convertChildrenToDbo(customer.Children),
+		Adults:        convertAdultsToDbo(customer.Adults),
+		InvoiceHolder: convertInvoiceHolderToDbo(customer.InvoiceHolder),
+		Note:          customer.Note,
+		Language:      customer.Language.String(),
+		ChangedOn:     customer.ChangedOn,
 	}
-	value = strings.ToLower(value)
-	for i, val := range _values {
-		if strings.ToLower(val) == value {
-			return payment_type.PaymentType(i)
-		}
-	}
-	return payment_type.Invalid
 }
 
-func newLanguage(value string) model.Language {
-	var _values = []string{
-		"",
-		"CA",
-		"EN",
-		"ES",
+func convertChildrenToDbo(children []model.Child) []Child {
+	var _children []Child
+	for _, child := range children {
+		_children = append(_children, convertChildToDbo(child))
 	}
-	value = strings.ToLower(value)
-	for i, val := range _values {
-		if strings.ToLower(val) == value {
-			return model.Language(i)
-		}
-	}
-	return model.Invalid
+	return _children
 }
 
-func newGroupType(value string) group_type.GroupType {
-	var _values = []string{
-		"UNDEFINED",
-		"EI_1",
-		"EI_2",
-		"EI_3",
+func convertChildToDbo(child model.Child) Child {
+	return Child{
+		Id:            child.Id,
+		Name:          child.Name,
+		Surname:       child.Surname,
+		SecondSurname: child.SecondSurname,
+		TaxID:         child.TaxID,
+		BirthDate:     child.BirthDate,
+		Group:         child.Group.String(),
+		Note:          child.Note,
+		Active:        child.Active,
 	}
-	value = strings.ToLower(value)
-	for i, val := range _values {
-		if strings.ToLower(val) == value {
-			return group_type.GroupType(i)
-		}
+}
+
+func convertAdultsToDbo(adults []model.Adult) []Adult {
+	var _adults []Adult
+	for _, adult := range adults {
+		_adults = append(_adults, convertAdultToDbo(adult))
 	}
-	return group_type.Undefined
+	return _adults
+}
+
+func convertAdultToDbo(adult model.Adult) Adult {
+	return Adult{
+		Name:             adult.Name,
+		Surname:          adult.Surname,
+		SecondSurname:    adult.SecondSurname,
+		TaxID:            adult.TaxID,
+		Role:             adult.Role.String(),
+		Address:          convertAddressToDbo(adult.Address),
+		Email:            adult.Email,
+		MobilePhone:      adult.MobilePhone,
+		HomePhone:        adult.HomePhone,
+		GrandMotherPhone: adult.GrandMotherPhone,
+		GrandParentPhone: adult.GrandParentPhone,
+		WorkPhone:        adult.WorkPhone,
+		BirthDate:        adult.BirthDate,
+		Nationality:      adult.Nationality,
+	}
+}
+
+func convertInvoiceHolderToDbo(invoiceHolder model.InvoiceHolder) InvoiceHolder {
+	return InvoiceHolder{
+		Name:        invoiceHolder.Name,
+		TaxID:       invoiceHolder.TaxID,
+		Address:     convertAddressToDbo(invoiceHolder.Address),
+		Email:       invoiceHolder.Email,
+		SendEmail:   invoiceHolder.SendEmail,
+		PaymentType: invoiceHolder.PaymentType.String(),
+		BankAccount: invoiceHolder.BankAccount,
+		IsBusiness:  invoiceHolder.IsBusiness,
+	}
+}
+
+func convertAddressToDbo(address model.Address) Address {
+	return Address{
+		Street:  address.Street,
+		ZipCode: address.ZipCode,
+		City:    address.City,
+		State:   address.State,
+	}
 }

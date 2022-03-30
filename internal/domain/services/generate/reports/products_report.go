@@ -61,11 +61,7 @@ func (p ProductsReport) Run() (string, error) {
 		},
 	}
 
-	reportsDir, err := p.configService.GetReportsDirectory()
-	if err != nil {
-		return "", err
-	}
-
+	reportsDir := p.configService.GetReportsDirectory()
 	filePath := path.Join(
 		reportsDir,
 		p.configService.GetString("files.ProductsReport"),

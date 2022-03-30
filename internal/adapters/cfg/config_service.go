@@ -1,7 +1,6 @@
 package cfg
 
 import (
-	"fmt"
 	"github.com/pjover/sam/internal/domain/model"
 	"github.com/pjover/sam/internal/domain/ports"
 	"github.com/spf13/viper"
@@ -25,6 +24,10 @@ func (c configService) GetString(key string) string {
 }
 
 func (c configService) SetString(key string, value string) error {
+	return c.set(key, value)
+}
+
+func (c configService) set(key string, value interface{}) error {
 	viper.Set(key, value)
 	return viper.WriteConfig()
 }
@@ -34,8 +37,7 @@ func (c configService) GetTime(key string) time.Time {
 }
 
 func (c configService) SetTime(key string, value time.Time) error {
-	viper.Set(key, value)
-	return viper.WriteConfig()
+	return c.set(key, value)
 }
 
 func (c configService) Init() {
@@ -102,51 +104,42 @@ func (c configService) loadDefaultConfig(home string) {
 	viper.SetDefault("reports.invoicesFolderName", "factures")
 	viper.SetDefault("reports.customersCardsFolderName", "clients")
 	viper.SetDefault("reports.lastCustomersCardsUpdated", time.Date(2020, 1, 1, 0, 0, 0, 0, time.Local))
-}
 
-func (c configService) GetWorkingDirectory() (string, error) {
-	dirPath := path.Join(viper.GetString("dirs.home"), viper.GetString("dirs.current"))
-	return c.createDir(dirPath)
+	viper.SetDefault("entities.newProductFileName", "new_product.json")
+	viper.SetDefault("entities.newCustomerFileName", "new_customer.json")
 }
 
 func (c configService) GetCurrentYearMonth() model.YearMonth {
-	yearMonth, err := model.StringToYearMonth(viper.GetString("yearMonth"))
+	yearMonth, err := model.StringToYearMonth(c.GetString("yearMonth"))
 	if err != nil {
 		log.Fatalf("no s'ha trobat el actual mes al valor 'yearMonth' de la configuració")
 	}
 	return yearMonth
 }
+
 func (c configService) SetCurrentYearMonth(yearMonth model.YearMonth) error {
 	return c.SetString("yearMonth", yearMonth.String())
 }
 
-func (c configService) GetInvoicesDirectory() (string, error) {
-	wd, err := c.GetWorkingDirectory()
-	if err != nil {
-		return "", err
-	}
-	dirPath := path.Join(wd, viper.GetString("reports.invoicesFolderName"))
-	return c.createDir(dirPath)
+func (c configService) GetConfigDirectory() string {
+	return c.GetString("dirs.config")
 }
 
-func (c configService) GetReportsDirectory() (string, error) {
-	return c.createDir(viper.GetString("dirs.reports"))
+func (c configService) GetHomeDirectory() string {
+	return c.GetString("dirs.home")
+}
+func (c configService) GetWorkingDirectory() string {
+	return path.Join(c.GetString("dirs.home"), c.GetString("dirs.current"))
 }
 
-func (c configService) GetCustomersCardsDirectory() (string, error) {
-	reportsDir, err := c.GetReportsDirectory()
-	if err != nil {
-		return "", err
-	}
-
-	dirPath := path.Join(reportsDir, viper.GetString("reports.customersCardsFolderName"))
-	return c.createDir(dirPath)
+func (c configService) GetInvoicesDirectory() string {
+	return path.Join(c.GetWorkingDirectory(), c.GetString("reports.invoicesFolderName"))
 }
 
-func (c configService) createDir(dirPath string) (string, error) {
-	err := os.MkdirAll(dirPath, 0755)
-	if err != nil {
-		return "", fmt.Errorf("error creant el directori %s: %s", dirPath, err)
-	}
-	return dirPath, nil
+func (c configService) GetReportsDirectory() string {
+	return c.GetString("dirs.reports")
+}
+
+func (c configService) GetCustomersCardsDirectory() string {
+	return path.Join(c.GetReportsDirectory(), c.GetString("reports.customersCardsFolderName"))
 }

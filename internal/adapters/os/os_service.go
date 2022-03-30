@@ -7,6 +7,8 @@ import (
 	"github.com/pjover/sam/internal/domain/ports"
 	"io"
 	"io/fs"
+	"io/ioutil"
+	"log"
 	"os"
 	"os/exec"
 	"path"
@@ -46,6 +48,30 @@ func (o osService) CreateDirectory(dirPath string) error {
 		return err
 	}
 	return nil
+}
+
+func (o osService) CopyFile(sourceFilePath string, destinationFilePath string) error {
+	sourceFileStat, err := os.Stat(sourceFilePath)
+	if err != nil {
+		return fmt.Errorf("cannot find source file '%s': %s", sourceFilePath, err)
+	}
+	if !sourceFileStat.Mode().IsRegular() {
+		return fmt.Errorf("source file '%s' is not a regular file", sourceFilePath)
+	}
+	source, err := os.Open(sourceFilePath)
+	if err != nil {
+		return fmt.Errorf("cannot open source file '%s': %s", sourceFilePath, err)
+	}
+	defer source.Close()
+
+	destination, err := os.Create(destinationFilePath)
+	if err != nil {
+		return fmt.Errorf("cannot create destination file '%s': %s", destinationFilePath, err)
+	}
+
+	defer destination.Close()
+	_, err = io.Copy(destination, source)
+	return err
 }
 
 func (o osService) ItemExists(itemPath string) (bool, error) {
@@ -162,6 +188,24 @@ func (o osService) ListFiles(dir string, ext string) (filenames []string, err er
 		return nil, err
 	}
 	return filenames, nil
+}
+
+func (o osService) ReadFile(filePath string) (content []byte, err error) {
+	file, err := os.Open(filePath)
+	if err != nil {
+		return nil, fmt.Errorf("no s'ha pogut llegir el fitxer '%s': %s", filePath, err)
+	}
+	defer func() {
+		if err = file.Close(); err != nil {
+			log.Fatal(err)
+		}
+	}()
+
+	content, err = ioutil.ReadAll(file)
+	if err != nil {
+		return nil, fmt.Errorf("error llegint el contingut del fitxer '%s': %s", filePath, err)
+	}
+	return content, nil
 }
 
 func (o osService) WriteFile(dirPath string, filename string, content []byte) (filePath string, err error) {

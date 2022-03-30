@@ -14,6 +14,20 @@ type ConfigService struct {
 	mock.Mock
 }
 
+// GetConfigDirectory provides a mock function with given fields:
+func (_m *ConfigService) GetConfigDirectory() string {
+	ret := _m.Called()
+
+	var r0 string
+	if rf, ok := ret.Get(0).(func() string); ok {
+		r0 = rf()
+	} else {
+		r0 = ret.Get(0).(string)
+	}
+
+	return r0
+}
+
 // GetCurrentYearMonth provides a mock function with given fields:
 func (_m *ConfigService) GetCurrentYearMonth() model.YearMonth {
 	ret := _m.Called()
@@ -29,7 +43,7 @@ func (_m *ConfigService) GetCurrentYearMonth() model.YearMonth {
 }
 
 // GetCustomersCardsDirectory provides a mock function with given fields:
-func (_m *ConfigService) GetCustomersCardsDirectory() (string, error) {
+func (_m *ConfigService) GetCustomersCardsDirectory() string {
 	ret := _m.Called()
 
 	var r0 string
@@ -39,18 +53,25 @@ func (_m *ConfigService) GetCustomersCardsDirectory() (string, error) {
 		r0 = ret.Get(0).(string)
 	}
 
-	var r1 error
-	if rf, ok := ret.Get(1).(func() error); ok {
-		r1 = rf()
+	return r0
+}
+
+// GetHomeDirectory provides a mock function with given fields:
+func (_m *ConfigService) GetHomeDirectory() string {
+	ret := _m.Called()
+
+	var r0 string
+	if rf, ok := ret.Get(0).(func() string); ok {
+		r0 = rf()
 	} else {
-		r1 = ret.Error(1)
+		r0 = ret.Get(0).(string)
 	}
 
-	return r0, r1
+	return r0
 }
 
 // GetInvoicesDirectory provides a mock function with given fields:
-func (_m *ConfigService) GetInvoicesDirectory() (string, error) {
+func (_m *ConfigService) GetInvoicesDirectory() string {
 	ret := _m.Called()
 
 	var r0 string
@@ -60,18 +81,11 @@ func (_m *ConfigService) GetInvoicesDirectory() (string, error) {
 		r0 = ret.Get(0).(string)
 	}
 
-	var r1 error
-	if rf, ok := ret.Get(1).(func() error); ok {
-		r1 = rf()
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
+	return r0
 }
 
 // GetReportsDirectory provides a mock function with given fields:
-func (_m *ConfigService) GetReportsDirectory() (string, error) {
+func (_m *ConfigService) GetReportsDirectory() string {
 	ret := _m.Called()
 
 	var r0 string
@@ -81,14 +95,7 @@ func (_m *ConfigService) GetReportsDirectory() (string, error) {
 		r0 = ret.Get(0).(string)
 	}
 
-	var r1 error
-	if rf, ok := ret.Get(1).(func() error); ok {
-		r1 = rf()
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
+	return r0
 }
 
 // GetString provides a mock function with given fields: key
@@ -120,7 +127,7 @@ func (_m *ConfigService) GetTime(key string) time.Time {
 }
 
 // GetWorkingDirectory provides a mock function with given fields:
-func (_m *ConfigService) GetWorkingDirectory() (string, error) {
+func (_m *ConfigService) GetWorkingDirectory() string {
 	ret := _m.Called()
 
 	var r0 string
@@ -130,14 +137,7 @@ func (_m *ConfigService) GetWorkingDirectory() (string, error) {
 		r0 = ret.Get(0).(string)
 	}
 
-	var r1 error
-	if rf, ok := ret.Get(1).(func() error); ok {
-		r1 = rf()
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
+	return r0
 }
 
 // Init provides a mock function with given fields:

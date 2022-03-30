@@ -11,10 +11,12 @@ type ConfigService interface {
 	SetString(key string, value string) error
 	GetTime(key string) time.Time
 	SetTime(key string, value time.Time) error
-	GetWorkingDirectory() (string, error)
 	GetCurrentYearMonth() model.YearMonth
 	SetCurrentYearMonth(yearMonth model.YearMonth) error
-	GetInvoicesDirectory() (string, error)
-	GetReportsDirectory() (string, error)
-	GetCustomersCardsDirectory() (string, error)
+	GetConfigDirectory() string
+	GetHomeDirectory() string
+	GetWorkingDirectory() string
+	GetInvoicesDirectory() string
+	GetReportsDirectory() string
+	GetCustomersCardsDirectory() string
 }

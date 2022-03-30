@@ -13,19 +13,13 @@ import (
 	"strings"
 )
 
-type BillingService interface {
-	InsertConsumptions(id int, consumptions map[string]float64, note string) (string, error)
-	BillConsumptions() (string, error)
-	RectifyConsumptions(id int, consumptions map[string]float64, note string) (string, error)
-}
-
 type billingService struct {
 	configService ports.ConfigService
 	dbService     ports.DbService
 	osService     ports.OsService
 }
 
-func NewBillingService(configService ports.ConfigService, dbService ports.DbService, osService ports.OsService) BillingService {
+func NewBillingService(configService ports.ConfigService, dbService ports.DbService, osService ports.OsService) ports.BillingService {
 	return billingService{
 		configService: configService,
 		dbService:     dbService,
@@ -296,14 +290,14 @@ func (b billingService) addSequencesToInvoices(invoices []model.Invoice, custome
 		customerIdStr := strconv.Itoa(invoice.CustomerId)
 		customer := customers[customerIdStr]
 		sequenceType := b.getSequenceType(invoice, customer)
-		sequence := sequencesMap[sequenceType.String()]
+		sequence := sequencesMap[sequenceType.Format()]
 		newSequence := model.Sequence{
 			Id:      sequenceType,
 			Counter: sequence.Counter + 1,
 		}
 		invoice.Id = fmt.Sprintf("%s-%d", newSequence.Id.Prefix(), newSequence.Counter)
 		outInvoices = append(outInvoices, invoice)
-		sequencesMap[sequenceType.String()] = newSequence
+		sequencesMap[sequenceType.Format()] = newSequence
 	}
 
 	var outSequences []model.Sequence
@@ -329,7 +323,7 @@ func (b billingService) getSequences() (sequences map[string]model.Sequence, err
 
 	sequences = make(map[string]model.Sequence)
 	for _, sequence := range allSequences {
-		sequences[sequence.Id.String()] = sequence
+		sequences[sequence.Id.Format()] = sequence
 	}
 	return sequences, nil
 }
@@ -346,7 +340,7 @@ func (b billingService) groupInvoices(groupBy func(invoice model.Invoice) string
 }
 
 func (b billingService) groupInvoicesByPaymentType(invoice model.Invoice) string {
-	return invoice.PaymentType.String()
+	return invoice.PaymentType.Format()
 }
 
 func (b billingService) groupInvoicesByCustomer(invoice model.Invoice) string {

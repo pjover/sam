@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"github.com/Masterminds/goutils"
+	"github.com/pjover/sam/internal/domain"
 	"github.com/pjover/sam/internal/domain/model"
 	"github.com/pjover/sam/internal/domain/ports"
 	"log"
@@ -72,7 +73,7 @@ func (i invoicesToBddConverter) getControlSum(invoices []model.Invoice) string {
 }
 
 func (i invoicesToBddConverter) getRequestedCollectionDate(now time.Time) string {
-	return now.Format("2006-01-02")
+	return now.Format(domain.YearMonthDayLayout)
 }
 
 func (i invoicesToBddConverter) getDetails(now time.Time, invoices []model.Invoice, customers map[int]model.Customer, products map[string]model.Product) []BddDetail {
@@ -107,7 +108,7 @@ func (i invoicesToBddConverter) getDetailInstructedAmount(invoice model.Invoice)
 }
 
 func (i invoicesToBddConverter) getDetailDateOfSignature(now time.Time) string {
-	return now.Format("2006-01-02")
+	return now.Format(domain.YearMonthDayLayout)
 }
 
 func (i invoicesToBddConverter) getDetailName(customer model.Customer) string {

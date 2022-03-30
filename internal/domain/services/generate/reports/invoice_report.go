@@ -146,17 +146,14 @@ func (i InvoiceReport) run(invoice model.Invoice, customer model.Customer, produ
 		},
 	}
 
-	dirPath, err := i.configService.GetInvoicesDirectory()
-	if err != nil {
-		return "", err
-	}
+	dirPath := i.configService.GetInvoicesDirectory()
 	filePath := path.Join(
 		dirPath,
 		fmt.Sprintf("%s (%d).pdf", invoice.Id, invoice.CustomerId),
 	)
 
 	reportService := NewReportService(i.configService)
-	err = reportService.SaveToFile(reportDefinition, filePath)
+	err := reportService.SaveToFile(reportDefinition, filePath)
 	if err != nil {
 		return "", err
 	}
@@ -249,5 +246,5 @@ func (i InvoiceReport) getPaymentType(invoice model.Invoice, customer model.Cust
 	if paymentType == payment_type.Invalid {
 		paymentType = customer.InvoiceHolder.PaymentType
 	}
-	return fmt.Sprintf("- Tipus de pagament: %s", paymentType.String())
+	return fmt.Sprintf("- Tipus de pagament: %s", paymentType.Format())
 }

@@ -61,7 +61,7 @@ func (r reportService) header(maroto pdf.Maroto) {
 			maroto.Col(6, func() {
 				_ = maroto.FileImage(
 					path.Join(
-						r.configService.GetString("dirs.config"),
+						r.configService.GetConfigDirectory(),
 						r.configService.GetString("files.logo"),
 					),
 					props.Rect{

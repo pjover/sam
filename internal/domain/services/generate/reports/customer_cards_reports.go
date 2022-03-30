@@ -40,10 +40,7 @@ func (c CustomerCardsReports) Run() (string, error) {
 		return c.revertLastCustomersCardsUpdated(changedSince, fmt.Errorf("no s'ha pogut carregar els consumidors des de la base de dades: %s", err))
 	}
 
-	reportsDir, err := c.configService.GetCustomersCardsDirectory()
-	if err != nil {
-		return "", err
-	}
+	reportsDir := c.configService.GetCustomersCardsDirectory()
 
 	var buffer bytes.Buffer
 	buffer.WriteString(fmt.Sprintf("Generant les fitxes del clients que han canviat des de %s ...\n", changedSince.Format(domain.YearMonthDayLayout)))
@@ -113,7 +110,7 @@ func (c CustomerCardsReports) headerSubReport(customer model.Customer) SubReport
 			15,
 		},
 		Data: [][]string{
-			{customer.Language.String()},
+			{customer.Language.Format()},
 			{customer.Note},
 			{c.boolToYesNo(customer.Active)},
 		},
@@ -162,7 +159,7 @@ func (c CustomerCardsReports) childSubReport(child model.Child) SubReport {
 			{child.SecondSurname},
 			{child.TaxID},
 			{child.BirthDate.Format(domain.YearMonthDayLayout)},
-			{child.Group.String()},
+			{child.Group.Format()},
 			{child.Note},
 			{c.boolToYesNo(child.Active)},
 		},
@@ -179,7 +176,7 @@ func (c CustomerCardsReports) adultsSubReports(adults []model.Adult) []SubReport
 
 func (c CustomerCardsReports) adultSubReport(adult model.Adult) SubReport {
 	return CardSubReport{
-		Title: adult.Role.String(),
+		Title: adult.Role.Format(),
 		Align: consts.Left,
 		Captions: []string{
 			"Nom",
@@ -208,7 +205,7 @@ func (c CustomerCardsReports) adultSubReport(adult model.Adult) SubReport {
 			{adult.TaxID},
 			{adult.BirthDate.Format(domain.YearMonthDayLayout)},
 			{adult.Nationality},
-			{adult.Role.String()},
+			{adult.Role.Format()},
 			{adult.Email},
 			{adult.Address.CompleteAddress()},
 			{adult.MobilePhone},
@@ -243,7 +240,7 @@ func (c CustomerCardsReports) holderSubReport(holder model.InvoiceHolder) SubRep
 			{holder.TaxID},
 			{holder.Email},
 			{holder.Address.CompleteAddress()},
-			{holder.PaymentType.String()},
+			{holder.PaymentType.Format()},
 			{holder.BankAccount},
 			{c.boolToYesNo(holder.SendEmail)},
 			{c.boolToYesNo(holder.IsBusiness)},

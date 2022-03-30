@@ -74,10 +74,7 @@ func (m MonthReport) Run() (string, error) {
 		},
 	}
 
-	wd, err := m.configService.GetWorkingDirectory()
-	if err != nil {
-		return "", err
-	}
+	wd := m.configService.GetWorkingDirectory()
 	filePath := path.Join(
 		wd,
 		m.configService.GetString("files.invoicesReport"),
@@ -119,7 +116,7 @@ func (m MonthReport) buildData(invoices []model.Invoice) ([][]string, error) {
 			customer.ChildrenNamesWithId("\n"),
 			invoice.LinesFmt(", "),
 			fmt.Sprintf("%.2f", invoice.Amount()),
-			invoice.PaymentType.String(),
+			invoice.PaymentType.Format(),
 		}
 		data = append(data, line)
 	}

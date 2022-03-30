@@ -3,17 +3,17 @@ package billing
 import (
 	"fmt"
 	"github.com/pjover/sam/internal/adapters/cli"
-	"github.com/pjover/sam/internal/domain/services/billing"
+	"github.com/pjover/sam/internal/domain/ports"
 	"github.com/spf13/cobra"
 )
 
 var iconNote string
 
 type insertConsumptionsCmd struct {
-	service billing.BillingService
+	service ports.BillingService
 }
 
-func NewInsertConsumptionsCmd(service billing.BillingService) cli.Cmd {
+func NewInsertConsumptionsCmd(service ports.BillingService) cli.Cmd {
 	return insertConsumptionsCmd{
 		service: service,
 	}

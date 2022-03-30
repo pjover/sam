@@ -37,6 +37,8 @@ var heavyTests = [][]string{
 	{"generateCustomersReport"},
 	{"generateMonthInvoices"},
 	{"generateMonthReport"},
+	{"createProduct", "nou_producte.json"},
+	{"createCustomer", "nou_client.json"},
 	{"generateProductsReport"},
 	{"generateCustomerCards"},
 }

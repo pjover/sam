@@ -64,10 +64,7 @@ func (c CustomerReport) Run() (string, error) {
 		},
 	}
 
-	reportsDir, err := c.configService.GetReportsDirectory()
-	if err != nil {
-		return "", err
-	}
+	reportsDir := c.configService.GetReportsDirectory()
 
 	filePath := path.Join(
 		reportsDir,
@@ -102,7 +99,7 @@ func (c CustomerReport) buildContents(customers []model.Customer) [][]string {
 			}
 			var line = []string{
 				child.NameWithId(),
-				child.Group.String(),
+				child.Group.Format(),
 				child.BirthDate.Format("2006-02-01"),
 				adult.NameAndSurname(),
 				adult.MobilePhoneFmt(),
@@ -128,7 +125,7 @@ func (c CustomerReport) buildData(customers []model.Customer) [][]string {
 			}
 			var dataLine = []string{
 				child.NameWithId(),
-				child.Group.String(),
+				child.Group.Format(),
 				child.BirthDate.Format("2006-02-01"),
 				adult.NameAndSurname(),
 				adult.MobilePhoneFmt(),

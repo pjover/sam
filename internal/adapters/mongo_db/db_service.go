@@ -6,6 +6,7 @@ import (
 	"github.com/pjover/sam/internal/adapters/mongo_db/dbo"
 	"github.com/pjover/sam/internal/domain/model"
 	"github.com/pjover/sam/internal/domain/model/payment_type"
+	"github.com/pjover/sam/internal/domain/model/sequence_type"
 	"github.com/pjover/sam/internal/domain/ports"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -71,6 +72,14 @@ func (d dbService) FindProduct(id string) (model.Product, error) {
 		return model.Product{}, err
 	}
 	return dbo.ConvertProductToModel(result), nil
+}
+
+func (d dbService) FindSequence(sequenceType sequence_type.SequenceType) (model.Sequence, error) {
+	var result dbo.Sequence
+	if err := d.findOne("sequence", sequenceType.String(), &result, "la sequència"); err != nil {
+		return model.Sequence{}, err
+	}
+	return dbo.ConvertSequenceToModel(result), nil
 }
 
 func (d dbService) findOne(collection string, id interface{}, result interface{}, name string) error {
@@ -157,7 +166,7 @@ func (d dbService) FindInvoicesByYearMonthAndPaymentTypeAndSentToBank(yearMonth 
 		{"$and",
 			bson.A{
 				bson.D{{"yearMonth", yearMonth.String()}},
-				bson.D{{"paymentType", dbo.PaymentTypes[paymentType]}},
+				bson.D{{"paymentType", paymentType.String()}},
 				bson.D{{"sentToBank", sentToBank}},
 			}},
 	}
@@ -287,6 +296,66 @@ func (d dbService) insertMany(collection string, documents []interface{}, name s
 	_, err = coll.InsertMany(context.TODO(), documents)
 	if err != nil {
 		return fmt.Errorf("insertant %s a la base de dades: %s", name, err)
+	}
+	return nil
+}
+
+func (d dbService) InsertCustomer(customer model.Customer) error {
+	document := dbo.ConvertCustomerToDbo(customer)
+	err := d.insertOne("customer", document, "client")
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (d dbService) InsertProduct(product model.Product) error {
+	document := dbo.ConvertProductToDbo(product)
+	err := d.insertOne("product", document, "producte")
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (d dbService) insertOne(collection string, document interface{}, name string) error {
+	client, err := d.open()
+	defer d.close(client)
+	if err != nil {
+		return fmt.Errorf("connectant a la base de dades: %s", err)
+	}
+
+	coll := client.Database(d.database).Collection(collection)
+	_, err = coll.InsertOne(context.TODO(), document)
+	if err != nil {
+		return fmt.Errorf("insertant %s a la base de dades: %s", name, err)
+	}
+	return nil
+}
+
+func (d dbService) UpdateSequence(sequence model.Sequence) error {
+	document := dbo.ConvertSequenceToDbo(sequence)
+	return d.updateOne("sequence", document, "seqüència")
+}
+
+func (d dbService) updateOne(collection string, document interface{}, name string) error {
+	client, err := d.open()
+	defer d.close(client)
+	if err != nil {
+		return fmt.Errorf("connectant a la base de dades: %s", err)
+	}
+
+	coll := client.Database(d.database).Collection(collection)
+
+	doc := document.(dbo.Dbo)
+	_, err = coll.ReplaceOne(
+		context.TODO(),
+		bson.M{"_id": doc.GetId()},
+		document,
+	)
+
+	if err != nil {
+		return fmt.Errorf("actualitzant %s a la base de dades: %s", name, err)
 	}
 	return nil
 }

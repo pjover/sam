@@ -1,21 +1,45 @@
 package model
 
+import "strings"
+
 type Language uint
 
 const (
-	Invalid Language = iota
+	Undefined Language = iota
 	Catalan
 	English
 	Spanish
 )
 
-var values = []string{
-	"Indefinit",
-	"Català",
-	"Espanyol",
-	"Anglès",
+var stringValues = []string{
+	"",
+	"CA",
+	"EN",
+	"ES",
 }
 
-func (p Language) String() string {
-	return values[p]
+func (l Language) String() string {
+	return stringValues[l]
+}
+
+func NewLanguage(value string) Language {
+
+	value = strings.ToLower(value)
+	for i, val := range stringValues {
+		if strings.ToLower(val) == value {
+			return Language(i)
+		}
+	}
+	return Undefined
+}
+
+var formatValues = []string{
+	"Indefinit",
+	"Català",
+	"Anglès",
+	"Espanyol",
+}
+
+func (l Language) Format() string {
+	return formatValues[l]
 }

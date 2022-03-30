@@ -1,5 +1,7 @@
 package sequence_type
 
+import "strings"
+
 type SequenceType uint
 
 const (
@@ -10,14 +12,51 @@ const (
 	Customer                          // Customers
 )
 
-var values = []string{
+var stringValues = []string{
+	"",
+	"STANDARD_INVOICE",
+	"SPECIAL_INVOICE",
+	"RECTIFICATION_INVOICE",
+	"CUSTOMER",
+}
+
+func (p SequenceType) String() string {
+	return stringValues[p]
+}
+
+func NewSequenceType(value string) SequenceType {
+	value = strings.ToLower(value)
+	for i, val := range stringValues {
+		if strings.ToLower(val) == value {
+			return SequenceType(i)
+		}
+	}
+	return Invalid
+}
+
+var formatValues = []string{
 	"Indefinit",
 	"Factura (rebut)",
 	"Factura (no rebut)",
 	"Rectificació",
-	"Cliente",
+	"Client",
 }
 
-func (s SequenceType) String() string {
-	return values[s]
+func (s SequenceType) Format() string {
+	return formatValues[s]
+}
+
+func (s SequenceType) Prefix() string {
+	switch s {
+	case StandardInvoice:
+		return "F"
+	case SpecialInvoice:
+		return "X"
+	case RectificationInvoice:
+		return "R"
+	case Customer:
+		return "C"
+	default:
+		return ""
+	}
 }

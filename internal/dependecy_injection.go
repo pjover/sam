@@ -2,20 +2,22 @@ package internal
 
 import (
 	"github.com/pjover/sam/internal/adapters/cli"
-	"github.com/pjover/sam/internal/adapters/cli/admin"
+	adminCli "github.com/pjover/sam/internal/adapters/cli/admin"
 	billingCli "github.com/pjover/sam/internal/adapters/cli/billing"
-	"github.com/pjover/sam/internal/adapters/cli/display"
-	"github.com/pjover/sam/internal/adapters/cli/edit"
+	createCli "github.com/pjover/sam/internal/adapters/cli/create"
+	displayCli "github.com/pjover/sam/internal/adapters/cli/display"
+	editCli "github.com/pjover/sam/internal/adapters/cli/edit"
 	generateCli "github.com/pjover/sam/internal/adapters/cli/generate"
 	listCli "github.com/pjover/sam/internal/adapters/cli/list"
 	"github.com/pjover/sam/internal/adapters/mongo_db"
 	"github.com/pjover/sam/internal/adapters/mongo_express"
 	"github.com/pjover/sam/internal/adapters/os"
 	"github.com/pjover/sam/internal/domain/ports"
-	admin2 "github.com/pjover/sam/internal/domain/services/admin"
+	"github.com/pjover/sam/internal/domain/services/admin"
 	"github.com/pjover/sam/internal/domain/services/billing"
-	display2 "github.com/pjover/sam/internal/domain/services/display"
-	edit2 "github.com/pjover/sam/internal/domain/services/edit"
+	"github.com/pjover/sam/internal/domain/services/create"
+	"github.com/pjover/sam/internal/domain/services/display"
+	"github.com/pjover/sam/internal/domain/services/edit"
 	"github.com/pjover/sam/internal/domain/services/generate"
 	"github.com/pjover/sam/internal/domain/services/lang"
 	"github.com/pjover/sam/internal/domain/services/list"
@@ -33,26 +35,27 @@ func MainDI(cmdManager cli.CmdManager, configService ports.ConfigService) {
 	generateServiceDI(cmdManager, configService, dbService, osService, langService)
 	listServiceDI(cmdManager, configService, dbService)
 	billingServiceDI(cmdManager, configService, dbService, osService)
+	createServiceDI(cmdManager, configService, dbService, osService)
 }
 
 func adminServiceDI(cmdManager cli.CmdManager, configService ports.ConfigService, osService ports.OsService, langService lang.LangService) {
-	adminService := admin2.NewAdminService(configService, osService, langService)
-	cmdManager.AddCommand(admin.NewBackupCmd(adminService))
+	adminService := admin.NewAdminService(configService, osService, langService)
+	cmdManager.AddCommand(adminCli.NewBackupCmd(adminService))
 }
 
 func editServiceDI(cmdManager cli.CmdManager, configService ports.ConfigService, osService ports.OsService) {
 	externalEditor := mongo_express.NewExternalEditor(configService, osService)
-	editService := edit2.NewEditService(externalEditor)
-	cmdManager.AddCommand(edit.NewEditCustomerCmd(editService))
-	cmdManager.AddCommand(edit.NewEditInvoiceCmd(editService))
-	cmdManager.AddCommand(edit.NewEditProductCmd(editService))
+	editService := edit.NewEditService(externalEditor)
+	cmdManager.AddCommand(editCli.NewEditCustomerCmd(editService))
+	cmdManager.AddCommand(editCli.NewEditInvoiceCmd(editService))
+	cmdManager.AddCommand(editCli.NewEditProductCmd(editService))
 }
 
 func displayServiceDI(cmdManager cli.CmdManager, dbService ports.DbService) {
-	displayService := display2.NewDisplayService(dbService)
-	cmdManager.AddCommand(display.NewDisplayCustomerCmd(displayService))
-	cmdManager.AddCommand(display.NewDisplayInvoiceCmd(displayService))
-	cmdManager.AddCommand(display.NewDisplayProductCmd(displayService))
+	displayService := display.NewDisplayService(dbService)
+	cmdManager.AddCommand(displayCli.NewDisplayCustomerCmd(displayService))
+	cmdManager.AddCommand(displayCli.NewDisplayInvoiceCmd(displayService))
+	cmdManager.AddCommand(displayCli.NewDisplayProductCmd(displayService))
 }
 
 func generateServiceDI(cmdManager cli.CmdManager, configService ports.ConfigService, dbService ports.DbService, osService ports.OsService, langService lang.LangService) {
@@ -82,4 +85,10 @@ func billingServiceDI(cmdManager cli.CmdManager, configService ports.ConfigServi
 	cmdManager.AddCommand(billingCli.NewBillConsumptionsCmd(billingService))
 	cmdManager.AddCommand(billingCli.NewRectifyConsumptionsCmd(billingService))
 	cmdManager.AddCommand(billingCli.NewRectifyConsumptionsCmd(billingService))
+}
+
+func createServiceDI(cmdManager cli.CmdManager, configService ports.ConfigService, dbService ports.DbService, osService ports.OsService) {
+	createService := create.NewCreateService(dbService, osService)
+	cmdManager.AddCommand(createCli.NewCreateProductCmd(createService, configService, osService))
+	cmdManager.AddCommand(createCli.NewCreateCustomerCmd(createService, configService, osService))
 }

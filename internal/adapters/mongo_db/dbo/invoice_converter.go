@@ -4,7 +4,6 @@ import (
 	"github.com/pjover/sam/internal/domain/model"
 	"github.com/pjover/sam/internal/domain/model/payment_type"
 	"log"
-	"strings"
 )
 
 func ConvertInvoiceToModel(invoice Invoice) model.Invoice {
@@ -15,7 +14,7 @@ func ConvertInvoiceToModel(invoice Invoice) model.Invoice {
 		YearMonth:   convertInvoiceYearMonth(invoice.YearMonth, invoice.Id),
 		ChildrenIds: invoice.ChildrenIds,
 		Lines:       lines(invoice.Lines),
-		PaymentType: convertToPaymentType(invoice.PaymentType),
+		PaymentType: payment_type.NewPaymentType(invoice.PaymentType),
 		Note:        invoice.Note,
 		Emailed:     invoice.Emailed,
 		Printed:     invoice.Printed,
@@ -57,24 +56,6 @@ func ConvertInvoicesToModel(invoices []Invoice) []model.Invoice {
 	return out
 }
 
-var values = []string{
-	"BANK_DIRECT_DEBIT",
-	"BANK_TRANSFER",
-	"VOUCHER",
-	"CASH",
-	"RECTIFICATION",
-}
-
-func convertToPaymentType(value string) payment_type.PaymentType {
-	value = strings.ToLower(value)
-	for i, val := range values {
-		if strings.ToLower(val) == value {
-			return payment_type.PaymentType(i)
-		}
-	}
-	return payment_type.Invalid
-}
-
 func ConvertInvoicesToDbo(invoices []model.Invoice) []interface{} {
 	var out []interface{}
 	for _, invoice := range invoices {
@@ -102,19 +83,10 @@ func ConvertInvoiceToDbo(invoice model.Invoice) Invoice {
 		YearMonth:   invoice.YearMonth.String(),
 		ChildrenIds: invoice.ChildrenIds,
 		Lines:       lines,
-		PaymentType: PaymentTypes[invoice.PaymentType],
+		PaymentType: invoice.PaymentType.String(),
 		Note:        invoice.Note,
 		Emailed:     invoice.Emailed,
 		Printed:     invoice.Printed,
 		SentToBank:  invoice.SentToBank,
 	}
-}
-
-var PaymentTypes = []string{
-	"",
-	"BANK_DIRECT_DEBIT",
-	"BANK_TRANSFER",
-	"VOUCHER",
-	"CASH",
-	"RECTIFICATION",
 }
