@@ -8,6 +8,8 @@ import (
 
 	payment_type "github.com/pjover/sam/internal/domain/model/payment_type"
 
+	sequence_type "github.com/pjover/sam/internal/domain/model/sequence_type"
+
 	time "time"
 )
 
@@ -353,6 +355,27 @@ func (_m *DbService) FindProduct(id string) (model.Product, error) {
 	return r0, r1
 }
 
+// FindSequence provides a mock function with given fields: sequenceType
+func (_m *DbService) FindSequence(sequenceType sequence_type.SequenceType) (model.Sequence, error) {
+	ret := _m.Called(sequenceType)
+
+	var r0 model.Sequence
+	if rf, ok := ret.Get(0).(func(sequence_type.SequenceType) model.Sequence); ok {
+		r0 = rf(sequenceType)
+	} else {
+		r0 = ret.Get(0).(model.Sequence)
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(sequence_type.SequenceType) error); ok {
+		r1 = rf(sequenceType)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // InsertConsumptions provides a mock function with given fields: consumptions
 func (_m *DbService) InsertConsumptions(consumptions []model.Consumption) error {
 	ret := _m.Called(consumptions)
@@ -416,6 +439,20 @@ func (_m *DbService) UpdateConsumptions(consumptions []model.Consumption) error 
 	var r0 error
 	if rf, ok := ret.Get(0).(func([]model.Consumption) error); ok {
 		r0 = rf(consumptions)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// UpdateSequence provides a mock function with given fields: sequences
+func (_m *DbService) UpdateSequence(sequences model.Sequence) error {
+	ret := _m.Called(sequences)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(model.Sequence) error); ok {
+		r0 = rf(sequences)
 	} else {
 		r0 = ret.Error(0)
 	}

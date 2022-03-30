@@ -21,7 +21,7 @@ var stringValues = []string{
 }
 
 func (p SequenceType) String() string {
-	return formatValues[p]
+	return stringValues[p]
 }
 
 func NewSequenceType(value string) SequenceType {
