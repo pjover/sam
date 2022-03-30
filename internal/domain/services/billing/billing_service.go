@@ -290,14 +290,14 @@ func (b billingService) addSequencesToInvoices(invoices []model.Invoice, custome
 		customerIdStr := strconv.Itoa(invoice.CustomerId)
 		customer := customers[customerIdStr]
 		sequenceType := b.getSequenceType(invoice, customer)
-		sequence := sequencesMap[sequenceType.String()]
+		sequence := sequencesMap[sequenceType.Format()]
 		newSequence := model.Sequence{
 			Id:      sequenceType,
 			Counter: sequence.Counter + 1,
 		}
 		invoice.Id = fmt.Sprintf("%s-%d", newSequence.Id.Prefix(), newSequence.Counter)
 		outInvoices = append(outInvoices, invoice)
-		sequencesMap[sequenceType.String()] = newSequence
+		sequencesMap[sequenceType.Format()] = newSequence
 	}
 
 	var outSequences []model.Sequence
@@ -323,7 +323,7 @@ func (b billingService) getSequences() (sequences map[string]model.Sequence, err
 
 	sequences = make(map[string]model.Sequence)
 	for _, sequence := range allSequences {
-		sequences[sequence.Id.String()] = sequence
+		sequences[sequence.Id.Format()] = sequence
 	}
 	return sequences, nil
 }
