@@ -1,5 +1,7 @@
 package model
 
+import "strings"
+
 type IBAN struct {
 	// countryCode using ISO 3166-1 alpha-2 – two letters
 	countryCode string
@@ -20,6 +22,7 @@ type IBAN struct {
 
 func extractCountryCode(code string) (string, error) {
 	cc := code[0:2]
+	cc = strings.ToUpper(cc)
 	return cc, nil
 }
 

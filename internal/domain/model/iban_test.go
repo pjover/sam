@@ -17,6 +17,11 @@ func Test_extractCountryCode(t *testing.T) {
 			code: "ES2830668859978258529057",
 			want: "ES",
 		},
+		{
+			name: "Upper case",
+			code: "es2830668859978258529057",
+			want: "ES",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
