@@ -1,14 +1,12 @@
 package bdd
 
 import (
-	"bytes"
 	"fmt"
 	"github.com/Masterminds/goutils"
 	"github.com/pjover/sam/internal/domain"
 	"github.com/pjover/sam/internal/domain/model"
 	"github.com/pjover/sam/internal/domain/ports"
-	"log"
-	"math/big"
+	"github.com/pjover/sam/internal/domain/services/common"
 	"strconv"
 	"strings"
 	"time"
@@ -52,8 +50,8 @@ func (i invoicesToBddConverter) Convert(invoices []model.Invoice, customers map[
 func (i invoicesToBddConverter) getMessageIdentification(now time.Time) string {
 	bddPrefix := i.configService.GetString("bdd.prefix")
 	datetime := now.Format("20060102150405000")
-	suffix := i.calculateControlCode(bddPrefix, datetime)
-	return fmt.Sprintf("%s-%s-%s", bddPrefix, datetime, suffix)
+	checkDigits := common.NewMod9710(bddPrefix, datetime).CheckDigits()
+	return fmt.Sprintf("%s-%s-%s", bddPrefix, datetime, checkDigits)
 }
 
 func (i invoicesToBddConverter) getCreationDateTime(now time.Time) string {
@@ -151,56 +149,8 @@ func (i invoicesToBddConverter) getDetailIsBusiness(customer model.Customer) boo
 func (i invoicesToBddConverter) getSepaIndentifier(taxID string, country string, suffix string) string {
 	return fmt.Sprintf("%s%s%03s%09s",
 		strings.ToUpper(country),
-		i.calculateControlCode(taxID, country),
+		common.NewMod9710(taxID, country).CheckDigits(),
 		suffix,
 		taxID,
 	)
-}
-
-func (i invoicesToBddConverter) calculateControlCode(params ...string) string {
-	preparedParams := i.prepareParams(params...)
-	assignedWeightsToLetters := i.assignWeightsToLetters(preparedParams)
-	return i.apply9710Model(assignedWeightsToLetters)
-}
-
-func (i invoicesToBddConverter) prepareParams(params ...string) string {
-	rawCode := strings.Join(params, "")
-	return i.prepareParam(rawCode)
-}
-
-func (i invoicesToBddConverter) prepareParam(rawCode string) string {
-	var param string
-	if rawCode != "" {
-		param = strings.ReplaceAll(rawCode, " ", "")
-		param = strings.ReplaceAll(param, "-", "")
-	}
-	return fmt.Sprintf("%s00", param)
-}
-
-func (i invoicesToBddConverter) assignWeightsToLetters(code string) string {
-	var buffer bytes.Buffer
-	for _, letter := range []rune(code) {
-		weight := i.assignWeightToLetter(letter)
-		buffer.WriteString(strconv.Itoa(weight))
-	}
-	return buffer.String()
-}
-
-func (i invoicesToBddConverter) assignWeightToLetter(letter rune) int {
-	intValue := int(letter)
-	if letter >= 'A' {
-		return intValue - 'A' + 10
-	} else {
-		return intValue - '0'
-	}
-}
-
-// apply9710Model applies the 97-10 model according to ISO-7604 (http://is.gd/9HE1zs)
-func (i invoicesToBddConverter) apply9710Model(input string) string {
-	in, ok := new(big.Int).SetString(input, 10)
-	if !ok {
-		log.Fatalf("cannot convert %s to big integer", input)
-	}
-	mod97 := new(big.Int).Mod(in, big.NewInt(97)).Int64()
-	return fmt.Sprintf("%02d", 98-mod97)
 }
