@@ -107,3 +107,36 @@ func Test_extractBban(t *testing.T) {
 		})
 	}
 }
+
+func Test_prepareCode(t *testing.T) {
+	type args struct {
+		code string
+	}
+	tests := []struct {
+		name string
+		code string
+		want string
+	}{
+		{
+			name: "Without separators",
+			code: "GB98MIDL07009312345678",
+			want: "GB98MIDL07009312345678",
+		},
+		{
+			name: "With space separators",
+			code: "GB98 MIDL 0700 9312 3456 78",
+			want: "GB98MIDL07009312345678",
+		},
+		{
+			name: "Without hypens separators",
+			code: "GB98-MIDL-0700-9312-3456-78",
+			want: "GB98MIDL07009312345678",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := prepareCode(tt.code)
+			assert.Equal(t, tt.want, got)
+		})
+	}
+}

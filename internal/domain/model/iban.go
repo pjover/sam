@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/biter777/countries"
 	"strconv"
+	"strings"
 )
 
 type IBAN struct {
@@ -17,16 +18,18 @@ type IBAN struct {
 
 //func NewBankAccount(code string) (IBAN, error) {
 //	var preparedCode string
-//	if code != "" {
-//		preparedCode = strings.ReplaceAll(code, " ", "")
-//		preparedCode = strings.ReplaceAll(preparedCode, "-", "")
-//	}
+
 //	return BankAccount(preparedCode)
 //}
 
-//func prepareCode(code string) string {
-//
-//}
+func prepareCode(code string) string {
+	var preparedCode string
+	if code != "" {
+		preparedCode = strings.ReplaceAll(code, " ", "")
+		preparedCode = strings.ReplaceAll(preparedCode, "-", "")
+	}
+	return preparedCode
+}
 
 func extractCountryCode(code string) (countries.CountryCode, error) {
 	cc := code[0:2]
