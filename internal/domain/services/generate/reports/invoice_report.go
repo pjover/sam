@@ -7,7 +7,7 @@ import (
 	"github.com/pjover/sam/internal/domain/model"
 	"github.com/pjover/sam/internal/domain/model/payment_type"
 	"github.com/pjover/sam/internal/domain/ports"
-	"github.com/pjover/sam/internal/domain/services/common"
+	"github.com/pjover/sam/internal/domain/services/loader"
 	"path"
 	"sort"
 	"strconv"
@@ -38,7 +38,7 @@ func (i InvoiceReport) SingleInvoice(id string) (string, error) {
 		return "", fmt.Errorf("no s'ha pogut trobar el client %d de la factura %s: %s", invoice.CustomerId, id, err)
 	}
 
-	bulkLoader := common.NewBulkLoader(i.configService, i.dbService)
+	bulkLoader := loader.NewBulkLoader(i.configService, i.dbService)
 	products, err := bulkLoader.LoadProducts()
 	if err != nil {
 		return "", err
@@ -49,7 +49,7 @@ func (i InvoiceReport) SingleInvoice(id string) (string, error) {
 
 func (i InvoiceReport) MonthInvoices() (string, error) {
 
-	bulkLoader := common.NewBulkLoader(i.configService, i.dbService)
+	bulkLoader := loader.NewBulkLoader(i.configService, i.dbService)
 	invoices, customers, products, err := bulkLoader.LoadMonthInvoicesCustomersAndProducts()
 	if err != nil {
 		return "", err

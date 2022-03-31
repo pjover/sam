@@ -5,7 +5,7 @@ import (
 	"github.com/pjover/sam/internal/domain/model"
 	"github.com/pjover/sam/internal/domain/model/payment_type"
 	"github.com/pjover/sam/internal/domain/ports"
-	"github.com/pjover/sam/internal/domain/services/common"
+	"github.com/pjover/sam/internal/domain/services/loader"
 )
 
 type BddService interface {
@@ -29,7 +29,7 @@ func NewBddService(configService ports.ConfigService, dbService ports.DbService,
 func (b bddService) Run() (string, error) {
 	fmt.Println("Generant el fitxer de rebuts ...")
 
-	bulkLoader := common.NewBulkLoader(b.configService, b.dbService)
+	bulkLoader := loader.NewBulkLoader(b.configService, b.dbService)
 	customers, products, err := bulkLoader.LoadCustomersAndProducts()
 	if err != nil {
 		return "", err
