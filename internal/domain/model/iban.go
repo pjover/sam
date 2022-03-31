@@ -35,6 +35,14 @@ func extractCountryCode(code string) (countries.CountryCode, error) {
 	return countryCode, nil
 }
 
+func extractCheckDigits(code string) (string, error) {
+	cd := code[2:4]
+	if isNumber(cd) {
+		return cd, nil
+	}
+	return "", fmt.Errorf("'%s' is an invalid two numbers IBAN check digits", cd)
+}
+
 func isNumber(text string) bool {
 	reader := strings.NewReader(text)
 	text = ""
@@ -52,10 +60,3 @@ func isNumber(text string) bool {
 	}
 	return true
 }
-
-//func isValid(code string) bool {
-//	if b == "" {
-//		return false
-//	}
-//	var controlCode
-//}
