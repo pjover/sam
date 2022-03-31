@@ -33,7 +33,7 @@ func Test_extractCountryCode(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := extractCountryCode(tt.code)
+			got, err := extractIbanCountryCode(tt.code)
 			assert.Equal(t, tt.want, got)
 			assert.Equal(t, tt.wantErr, err)
 		})
@@ -61,7 +61,7 @@ func Test_extractCheckDigits(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := extractCheckDigits(tt.code)
+			got, err := extractIbanCheckDigits(tt.code)
 			assert.Equal(t, tt.want, got)
 			assert.Equal(t, tt.wantErr, err)
 		})
@@ -126,7 +126,7 @@ func Test_prepareCode(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := prepareCode(tt.code)
+			got := prepareIbanCode(tt.code)
 			assert.Equal(t, tt.want, got)
 		})
 	}
@@ -160,6 +160,16 @@ func TestNewBankAccount(t *testing.T) {
 			wantErr: nil,
 		},
 		{
+			name: "With separators",
+			code: "GB98 MIDL 0700 9312 3456 78",
+			want: IBAN{
+				countryCode: countries.GBR,
+				checkDigits: "98",
+				bban:        "MIDL07009312345678",
+			},
+			wantErr: nil,
+		},
+		{
 			name:    "With wrong countryCode",
 			code:    "xy98MIDL07009312345678",
 			want:    IBAN{},
@@ -170,6 +180,12 @@ func TestNewBankAccount(t *testing.T) {
 			code:    "GBx9MIDL07009312345678",
 			want:    IBAN{},
 			wantErr: errors.New("'x9' is an invalid two numbers IBAN check digits"),
+		},
+		{
+			name:    "With wrong checksum",
+			code:    "GB99 MIDL 0700 9312 3456 78",
+			want:    IBAN{},
+			wantErr: errors.New("'99' is an invalid two numbers IBAN check digits, does not match with '98' checksum"),
 		},
 		{
 			name:    "With wrong BBAN",

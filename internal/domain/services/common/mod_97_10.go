@@ -20,7 +20,7 @@ func NewMod9710(codes ...string) Mod9710 {
 	}
 }
 
-func (i Mod9710) CheckDigits() string {
+func (i Mod9710) Checksum() string {
 	preparedParams := i.prepareCodes()
 	assignedWeightsToLetters := i.assignWeightsToLetters(preparedParams)
 	return i.apply9710Model(assignedWeightsToLetters)

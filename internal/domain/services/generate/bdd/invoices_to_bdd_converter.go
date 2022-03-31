@@ -50,7 +50,7 @@ func (i invoicesToBddConverter) Convert(invoices []model.Invoice, customers map[
 func (i invoicesToBddConverter) getMessageIdentification(now time.Time) string {
 	bddPrefix := i.configService.GetString("bdd.prefix")
 	datetime := now.Format("20060102150405000")
-	checkDigits := common.NewMod9710(bddPrefix, datetime).CheckDigits()
+	checkDigits := common.NewMod9710(bddPrefix, datetime).Checksum()
 	return fmt.Sprintf("%s-%s-%s", bddPrefix, datetime, checkDigits)
 }
 
@@ -149,7 +149,7 @@ func (i invoicesToBddConverter) getDetailIsBusiness(customer model.Customer) boo
 func (i invoicesToBddConverter) getSepaIndentifier(taxID string, country string, suffix string) string {
 	return fmt.Sprintf("%s%s%03s%09s",
 		strings.ToUpper(country),
-		common.NewMod9710(taxID, country).CheckDigits(),
+		common.NewMod9710(taxID, country).Checksum(),
 		suffix,
 		taxID,
 	)

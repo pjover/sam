@@ -3,6 +3,7 @@ package model
 import (
 	"fmt"
 	"github.com/biter777/countries"
+	"github.com/pjover/sam/internal/domain/services/common"
 	"strconv"
 	"strings"
 )
@@ -17,19 +18,24 @@ type IBAN struct {
 }
 
 func NewBankAccount(code string) (IBAN, error) {
-	preparedCode := prepareCode(code)
+	preparedCode := prepareIbanCode(code)
 
-	countryCode, err := extractCountryCode(preparedCode)
+	countryCode, err := extractIbanCountryCode(preparedCode)
 	if err != nil {
 		return IBAN{}, err
 	}
 
-	checkDigits, err := extractCheckDigits(preparedCode)
+	checkDigits, err := extractIbanCheckDigits(preparedCode)
 	if err != nil {
 		return IBAN{}, err
 	}
 
 	bban, err := extractBban(preparedCode)
+	if err != nil {
+		return IBAN{}, err
+	}
+
+	err = validateCheckDigits(countryCode, checkDigits, bban)
 	if err != nil {
 		return IBAN{}, err
 	}
@@ -41,7 +47,16 @@ func NewBankAccount(code string) (IBAN, error) {
 	}, nil
 }
 
-func prepareCode(code string) string {
+func validateCheckDigits(countryCode countries.CountryCode, checkDigits string, bban string) error {
+	mod9710 := common.NewMod9710(bban, countryCode.Alpha2())
+	checksum := mod9710.Checksum()
+	if checkDigits != checksum {
+		return fmt.Errorf("'%s' is an invalid two numbers IBAN check digits, does not match with '%s' checksum", checkDigits, checksum)
+	}
+	return nil
+}
+
+func prepareIbanCode(code string) string {
 	preparedCode := strings.ToUpper(code)
 	if code != "" {
 		preparedCode = strings.ReplaceAll(code, " ", "")
@@ -50,7 +65,7 @@ func prepareCode(code string) string {
 	return preparedCode
 }
 
-func extractCountryCode(code string) (countries.CountryCode, error) {
+func extractIbanCountryCode(code string) (countries.CountryCode, error) {
 	cc := code[0:2]
 	countryCode := countries.ByName(cc)
 	if !countryCode.IsValid() {
@@ -59,7 +74,7 @@ func extractCountryCode(code string) (countries.CountryCode, error) {
 	return countryCode, nil
 }
 
-func extractCheckDigits(code string) (string, error) {
+func extractIbanCheckDigits(code string) (string, error) {
 	checkDigits := code[2:4]
 
 	_, err := strconv.Atoi(checkDigits)
