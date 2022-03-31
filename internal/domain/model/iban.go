@@ -1,10 +1,13 @@
 package model
 
-import "strings"
+import (
+	"fmt"
+	"github.com/biter777/countries"
+)
 
 type IBAN struct {
 	// countryCode using ISO 3166-1 alpha-2 – two letters
-	countryCode string
+	countryCode countries.CountryCode
 	//checkDigits for validation, two digits
 	checkDigits string
 	//BBAN Basic Bank Account Number, up to 30 alphanumeric characters that are country-specific
@@ -20,10 +23,13 @@ type IBAN struct {
 //	return BankAccount(preparedCode)
 //}
 
-func extractCountryCode(code string) (string, error) {
+func extractCountryCode(code string) (countries.CountryCode, error) {
 	cc := code[0:2]
-	cc = strings.ToUpper(cc)
-	return cc, nil
+	countryCode := countries.ByName(cc)
+	if !countryCode.IsValid() {
+		return countries.Unknown, fmt.Errorf("'%s' is an invalid ISO 3166-1 alpha-2 country", cc)
+	}
+	return countryCode, nil
 }
 
 //func (b BankAccount) IsValid() bool {

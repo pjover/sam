@@ -1,6 +1,8 @@
 package model
 
 import (
+	"fmt"
+	"github.com/biter777/countries"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -9,18 +11,24 @@ func Test_extractCountryCode(t *testing.T) {
 	tests := []struct {
 		name    string
 		code    string
-		want    string
+		want    countries.CountryCode
 		wantErr error
 	}{
 		{
 			name: "All strings",
 			code: "ES2830668859978258529057",
-			want: "ES",
+			want: countries.ES,
 		},
 		{
 			name: "Upper case",
 			code: "es2830668859978258529057",
-			want: "ES",
+			want: countries.ES,
+		},
+		{
+			name:    "Valid ISO 3166-1 alpha-2 country",
+			code:    "xy2830668859978258529057",
+			want:    countries.Unknown,
+			wantErr: fmt.Errorf("'xy' is an invalid ISO 3166-1 alpha-2 country"),
 		},
 	}
 	for _, tt := range tests {
