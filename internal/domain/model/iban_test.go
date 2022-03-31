@@ -41,9 +41,6 @@ func Test_extractCountryCode(t *testing.T) {
 }
 
 func Test_extractCheckDigits(t *testing.T) {
-	type args struct {
-		code string
-	}
 	tests := []struct {
 		name    string
 		code    string
@@ -72,9 +69,6 @@ func Test_extractCheckDigits(t *testing.T) {
 }
 
 func Test_extractBban(t *testing.T) {
-	type args struct {
-		code string
-	}
 	tests := []struct {
 		name    string
 		code    string
@@ -109,9 +103,6 @@ func Test_extractBban(t *testing.T) {
 }
 
 func Test_prepareCode(t *testing.T) {
-	type args struct {
-		code string
-	}
 	tests := []struct {
 		name string
 		code string
@@ -137,6 +128,61 @@ func Test_prepareCode(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			got := prepareCode(tt.code)
 			assert.Equal(t, tt.want, got)
+		})
+	}
+}
+
+func TestNewBankAccount(t *testing.T) {
+	tests := []struct {
+		name    string
+		code    string
+		want    IBAN
+		wantErr error
+	}{
+		{
+			name: "All digits",
+			code: "ES2830668859978258529057",
+			want: IBAN{
+				countryCode: countries.ESP,
+				checkDigits: "28",
+				bban:        "30668859978258529057",
+			},
+			wantErr: nil,
+		},
+		{
+			name: "With letters",
+			code: "GB98MIDL07009312345678",
+			want: IBAN{
+				countryCode: countries.GBR,
+				checkDigits: "98",
+				bban:        "MIDL07009312345678",
+			},
+			wantErr: nil,
+		},
+		{
+			name:    "With wrong countryCode",
+			code:    "xy98MIDL07009312345678",
+			want:    IBAN{},
+			wantErr: errors.New("'xy' is an invalid ISO 3166-1 alpha-2 country"),
+		},
+		{
+			name:    "With wrong checkDigits",
+			code:    "GBx9MIDL07009312345678",
+			want:    IBAN{},
+			wantErr: errors.New("'x9' is an invalid two numbers IBAN check digits"),
+		},
+		{
+			name:    "With wrong BBAN",
+			code:    "GB98MIDÖL07009312345678",
+			want:    IBAN{},
+			wantErr: errors.New("'MIDÖL07009312345678' is an invalid IBAN Basic Bank Account Number"),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := NewBankAccount(tt.code)
+			assert.Equal(t, tt.want, got)
+			assert.Equal(t, tt.wantErr, err)
 		})
 	}
 }

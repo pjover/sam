@@ -16,14 +16,33 @@ type IBAN struct {
 	bban string
 }
 
-//func NewBankAccount(code string) (IBAN, error) {
-//	var preparedCode string
+func NewBankAccount(code string) (IBAN, error) {
+	preparedCode := prepareCode(code)
 
-//	return BankAccount(preparedCode)
-//}
+	countryCode, err := extractCountryCode(preparedCode)
+	if err != nil {
+		return IBAN{}, err
+	}
+
+	checkDigits, err := extractCheckDigits(preparedCode)
+	if err != nil {
+		return IBAN{}, err
+	}
+
+	bban, err := extractBban(preparedCode)
+	if err != nil {
+		return IBAN{}, err
+	}
+
+	return IBAN{
+		countryCode: countryCode,
+		checkDigits: checkDigits,
+		bban:        bban,
+	}, nil
+}
 
 func prepareCode(code string) string {
-	var preparedCode string
+	preparedCode := strings.ToUpper(code)
 	if code != "" {
 		preparedCode = strings.ReplaceAll(code, " ", "")
 		preparedCode = strings.ReplaceAll(preparedCode, "-", "")
@@ -60,8 +79,6 @@ func extractBban(code string) (string, error) {
 
 func isValidBban(text string) bool {
 	for _, r := range []rune(text) {
-		s := string(r)
-		fmt.Sprint(s)
 		if r >= '0' && r <= '9' {
 			continue
 		}
