@@ -1,58 +1,12 @@
 package model
 
 import (
+	"fmt"
 	"github.com/pjover/sam/internal/domain/model/adult_role"
-	"github.com/pjover/sam/internal/domain/model/group_type"
-	"github.com/pjover/sam/internal/domain/model/payment_type"
+	"github.com/pjover/sam/internal/domain/model/language"
+	"strings"
 	"time"
 )
-
-type Child struct {
-	Id            int
-	Name          string
-	Surname       string
-	SecondSurname string
-	TaxID         string
-	BirthDate     time.Time
-	Group         group_type.GroupType
-	Note          string
-	Active        bool
-}
-
-type Adult struct {
-	Name             string
-	Surname          string
-	SecondSurname    string
-	TaxID            string
-	Role             adult_role.AdultRole
-	Address          Address
-	Email            string
-	MobilePhone      string
-	HomePhone        string
-	GrandMotherPhone string
-	GrandParentPhone string
-	WorkPhone        string
-	BirthDate        time.Time
-	Nationality      string
-}
-
-type Address struct {
-	Street  string
-	ZipCode string
-	City    string
-	State   string
-}
-
-type InvoiceHolder struct {
-	Name        string
-	TaxID       string
-	Address     Address
-	Email       string
-	SendEmail   bool
-	PaymentType payment_type.PaymentType
-	BankAccount string
-	IsBusiness  bool
-}
 
 type Customer struct {
 	Id            int
@@ -61,6 +15,49 @@ type Customer struct {
 	Adults        []Adult
 	InvoiceHolder InvoiceHolder
 	Note          string
-	Language      Language
+	Language      language.Language
 	ChangedOn     time.Time
+}
+
+func (c Customer) String() string {
+	return fmt.Sprintf("%d  %-25s  %-55s  %s", c.Id, c.FirstAdultName(), c.ChildrenNamesWithId(", "), c.InvoiceHolder.PaymentInfoFmt())
+}
+
+func (c Customer) FirstAdult() Adult {
+	for _, adult := range c.Adults {
+		if adult.Role == adult_role.Mother {
+			return adult
+		}
+	}
+	return c.Adults[0]
+}
+
+func (c Customer) FirstAdultName() string {
+	adult := c.FirstAdult()
+	return fmt.Sprintf("%s %s", adult.Name, adult.Surname)
+}
+
+func (c Customer) FirstAdultNameWithId() string {
+	adult := c.FirstAdult()
+	return fmt.Sprintf("%s %s (%d)", adult.Name, adult.Surname, c.Id)
+}
+
+func (c Customer) ChildrenNamesWithId(joinWith string) string {
+	var names []string
+	for _, child := range c.Children {
+		names = append(names, child.NameWithId())
+	}
+	return strings.Join(names, joinWith)
+}
+
+func (c Customer) ChildrenNames(joinWith string) string {
+	var names []string
+	for _, child := range c.Children {
+		names = append(names, child.Name)
+	}
+	return strings.Join(names, joinWith)
+}
+
+func (c Customer) ChildrenNamesWithSurname(joinWith string) string {
+	return fmt.Sprintf("%s %s", c.ChildrenNames(joinWith), c.Children[0].Surname)
 }

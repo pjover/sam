@@ -30,16 +30,16 @@ func convertInvoiceYearMonth(yearMonth string, invoiceId string) model.YearMonth
 	return ym
 }
 
-func lines(lines []Line) []model.Line {
-	var out []model.Line
+func lines(lines []Line) []model.InvoiceLine {
+	var out []model.InvoiceLine
 	for _, l := range lines {
 		out = append(out, line(l))
 	}
 	return out
 }
 
-func line(line Line) model.Line {
-	return model.Line{
+func line(line Line) model.InvoiceLine {
+	return model.InvoiceLine{
 		ProductId:     line.ProductID,
 		Units:         Decimal128ToFloat64(line.Units),
 		ProductPrice:  Decimal128ToFloat64(line.ProductPrice),

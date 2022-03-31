@@ -1,4 +1,4 @@
-package model
+package language
 
 import "strings"
 

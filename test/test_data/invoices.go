@@ -5,7 +5,7 @@ import (
 	"github.com/pjover/sam/internal/domain/model/payment_type"
 )
 
-var lines = []model.Line{
+var lines = []model.InvoiceLine{
 	{
 		ProductId:     "TST",
 		Units:         1,

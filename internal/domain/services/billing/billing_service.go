@@ -199,7 +199,7 @@ func (b billingService) consumptionsToInvoice(customer model.Customer, consumpti
 	}, nil
 }
 
-func (b billingService) childrenLines(consumptions []model.Consumption) (lines []model.Line, childrenIds []int, err error) {
+func (b billingService) childrenLines(consumptions []model.Consumption) (lines []model.InvoiceLine, childrenIds []int, err error) {
 	groupedByChild := b.groupConsumptions(b.groupConsumptionsByChild, consumptions)
 	for childId, cons := range groupedByChild {
 		cid, _ := strconv.Atoi(childId)
@@ -213,7 +213,7 @@ func (b billingService) childrenLines(consumptions []model.Consumption) (lines [
 	return lines, childrenIds, nil
 }
 
-func (b billingService) productLines(consumptions []model.Consumption) (lines []model.Line, err error) {
+func (b billingService) productLines(consumptions []model.Consumption) (lines []model.InvoiceLine, err error) {
 	groupedByProduct := b.groupConsumptions(b.groupConsumptionsByProduct, consumptions)
 	for productId, cons := range groupedByProduct {
 		product, err := b.dbService.FindProduct(productId)
@@ -229,7 +229,7 @@ func (b billingService) productLines(consumptions []model.Consumption) (lines []
 			continue
 		}
 
-		line := model.Line{
+		line := model.InvoiceLine{
 			ProductId:     productId,
 			Units:         units,
 			ProductPrice:  product.Price,
