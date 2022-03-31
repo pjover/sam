@@ -40,39 +40,6 @@ func Test_extractCountryCode(t *testing.T) {
 	}
 }
 
-func Test_isNumber(t *testing.T) {
-	type args struct {
-		text string
-	}
-	tests := []struct {
-		name string
-		text string
-		want bool
-	}{
-		{
-			name: "All numbers",
-			text: "2830668859978258529057",
-			want: true,
-		},
-		{
-			name: "With letter numbers",
-			text: "283066885997825852d9057",
-			want: false,
-		},
-		{
-			name: "With letters numbers",
-			text: "2830668859978s5852d9057",
-			want: false,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got := isNumber(tt.text)
-			assert.Equal(t, tt.want, got)
-		})
-	}
-}
-
 func Test_extractCheckDigits(t *testing.T) {
 	type args struct {
 		code string
@@ -90,9 +57,9 @@ func Test_extractCheckDigits(t *testing.T) {
 		},
 		{
 			name:    "Not two digits",
-			code:    "ESc830668859978258529057",
+			code:    "ESC830668859978258529057",
 			want:    "",
-			wantErr: errors.New("'c8' is an invalid two numbers IBAN check digits"),
+			wantErr: errors.New("'C8' is an invalid two numbers IBAN check digits"),
 		},
 	}
 	for _, tt := range tests {
@@ -120,10 +87,16 @@ func Test_extractBban(t *testing.T) {
 			want: "30668859978258529057",
 		},
 		{
-			name:    "Not digits",
-			code:    "ES2830668859978258529057x",
+			name: "Valid code",
+			code: "GB98MIDL07009312345678",
+			want: "MIDL07009312345678",
+		},
+
+		{
+			name:    "Invalid code",
+			code:    "GB98MIDÇ07009312345678",
 			want:    "",
-			wantErr: errors.New("'30668859978258529057x' is an invalid IBAN Basic Bank Account Number"),
+			wantErr: errors.New("'MIDÇ07009312345678' is an invalid IBAN Basic Bank Account Number"),
 		},
 	}
 	for _, tt := range tests {

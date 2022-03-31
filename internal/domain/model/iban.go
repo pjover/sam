@@ -3,10 +3,7 @@ package model
 import (
 	"fmt"
 	"github.com/biter777/countries"
-	"io"
 	"strconv"
-	"strings"
-	"unicode"
 )
 
 type IBAN struct {
@@ -50,46 +47,25 @@ func extractCheckDigits(code string) (string, error) {
 	return checkDigits, nil
 }
 
-func isNumber(text string) bool {
-	reader := strings.NewReader(text)
-	text = ""
-
-	var r rune
-	var err error
-	for {
-		r, _, err = reader.ReadRune()
-		if err == io.EOF {
-			break
-		}
-		if unicode.IsLetter(r) {
-			return false
-		}
-	}
-	return true
-}
-
 func extractBban(code string) (string, error) {
 	bban := code[4:]
-	if isNumber(bban) {
+	if isValidBban(bban) {
 		return bban, nil
 	}
 	return "", fmt.Errorf("'%s' is an invalid IBAN Basic Bank Account Number", bban)
 }
 
-//func isValidCode(text string) bool {
-//	reader := strings.NewReader(text)
-//	text = ""
-//
-//	var r rune
-//	var err error
-//	for {
-//		r, _, err = reader.ReadRune()
-//		if err == io.EOF {
-//			break
-//		}
-//		if unicode.IsLetter(r) {
-//			return false
-//		}
-//	}
-//	return true
-//}
+func isValidBban(text string) bool {
+	for _, r := range []rune(text) {
+		s := string(r)
+		fmt.Sprint(s)
+		if r >= '0' && r <= '9' {
+			continue
+		}
+		if r >= 'A' && r <= 'Z' {
+			continue
+		}
+		return false
+	}
+	return true
+}
