@@ -103,3 +103,34 @@ func Test_extractCheckDigits(t *testing.T) {
 		})
 	}
 }
+
+func Test_extractBban(t *testing.T) {
+	type args struct {
+		code string
+	}
+	tests := []struct {
+		name    string
+		code    string
+		want    string
+		wantErr error
+	}{
+		{
+			name: "All digits",
+			code: "ES2830668859978258529057",
+			want: "30668859978258529057",
+		},
+		{
+			name:    "Not digits",
+			code:    "ES2830668859978258529057x",
+			want:    "",
+			wantErr: errors.New("'30668859978258529057x' is an invalid IBAN Basic Bank Account Number"),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := extractBban(tt.code)
+			assert.Equal(t, tt.want, got)
+			assert.Equal(t, tt.wantErr, err)
+		})
+	}
+}
