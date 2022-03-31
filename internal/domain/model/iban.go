@@ -3,6 +3,9 @@ package model
 import (
 	"fmt"
 	"github.com/biter777/countries"
+	"io"
+	"strings"
+	"unicode"
 )
 
 type IBAN struct {
@@ -32,7 +35,25 @@ func extractCountryCode(code string) (countries.CountryCode, error) {
 	return countryCode, nil
 }
 
-//func (b BankAccount) IsValid() bool {
+func isNumber(text string) bool {
+	reader := strings.NewReader(text)
+	text = ""
+
+	var r rune
+	var err error
+	for {
+		r, _, err = reader.ReadRune()
+		if err == io.EOF {
+			break
+		}
+		if unicode.IsLetter(r) {
+			return false
+		}
+	}
+	return true
+}
+
+//func isValid(code string) bool {
 //	if b == "" {
 //		return false
 //	}

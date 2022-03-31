@@ -39,3 +39,36 @@ func Test_extractCountryCode(t *testing.T) {
 		})
 	}
 }
+
+func Test_isNumber(t *testing.T) {
+	type args struct {
+		text string
+	}
+	tests := []struct {
+		name string
+		text string
+		want bool
+	}{
+		{
+			name: "All numbers",
+			text: "2830668859978258529057",
+			want: true,
+		},
+		{
+			name: "With letter numbers",
+			text: "283066885997825852d9057",
+			want: false,
+		},
+		{
+			name: "With letters numbers",
+			text: "2830668859978s5852d9057",
+			want: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := isNumber(tt.text)
+			assert.Equal(t, tt.want, got)
+		})
+	}
+}
