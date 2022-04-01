@@ -95,7 +95,7 @@ func childToModel(child Child) model.Child {
 		Name:          child.Name,
 		Surname:       child.Surname,
 		SecondSurname: child.SecondSurname,
-		TaxID:         child.TaxID,
+		TaxID:         model.NewTaxIdOrFatal(child.TaxID),
 		BirthDate:     stringToTime(child.BirthDate),
 		Group:         group_type.NewGroupType(child.Group),
 		Note:          child.Note,
@@ -127,7 +127,7 @@ func adultToModel(adult Adult) model.Adult {
 		Name:             adult.Name,
 		Surname:          adult.Surname,
 		SecondSurname:    adult.SecondSurname,
-		TaxID:            adult.TaxID,
+		TaxID:            model.NewTaxIdOrFatal(adult.TaxID),
 		Role:             adult_role.NewAdultRole(adult.Role),
 		Address:          addressToModel(adult.Address),
 		Email:            adult.Email,
@@ -151,18 +151,14 @@ func addressToModel(address Address) model.Address {
 }
 
 func holderToModel(holder InvoiceHolder) model.InvoiceHolder {
-	iban, err := model.NewIban(holder.Iban)
-	if err != nil {
-		log.Fatal(err)
-	}
 	return model.InvoiceHolder{
 		Name:        holder.Name,
-		TaxID:       holder.TaxID,
+		TaxID:       model.NewTaxIdOrFatal(holder.TaxID),
 		Address:     addressToModel(holder.Address),
 		Email:       holder.Email,
 		SendEmail:   holder.SendEmail,
 		PaymentType: payment_type.NewPaymentType(holder.PaymentType),
-		Iban:        iban,
+		Iban:        model.NewIbanOrFatal(holder.Iban),
 		IsBusiness:  holder.IsBusiness,
 	}
 }

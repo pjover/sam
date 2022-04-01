@@ -23,7 +23,7 @@ var Child1851 = model.Child{
 	Name:          "Aina",
 	Surname:       "Llull",
 	SecondSurname: "Bibiloni",
-	TaxID:         "60235657Z",
+	TaxID:         model.NewTaxIdOrFatal("60235657Z"),
 	BirthDate:     Date,
 	Group:         group_type.EI_1,
 	Active:        true,
@@ -33,7 +33,7 @@ var AdultMare = model.Adult{
 	Name:          "Nom de la mare",
 	Surname:       "1er llinatge_mare",
 	SecondSurname: "2on llinatge_mare",
-	TaxID:         "36361882D",
+	TaxID:         model.NewTaxIdOrFatal("36361882D"),
 	Role:          adult_role.Mother,
 }
 
@@ -41,14 +41,13 @@ var AdultPare = model.Adult{
 	Name:          "Nom de la pare",
 	Surname:       "1er llinatge_pare",
 	SecondSurname: "2on llinatge_pare",
-	TaxID:         "71032204Q",
+	TaxID:         model.NewTaxIdOrFatal("71032204Q"),
 	Role:          adult_role.Father,
 }
 
-var iban148, _ = model.NewIban("ES2830668859978258529057")
 var InvoiceHolder148 = model.InvoiceHolder{
 	Name:  "Nom de la mare 1er llinatge_mare 2on llinatge_mare",
-	TaxID: "36361882D",
+	TaxID: model.NewTaxIdOrFatal("36361882D"),
 	Address: model.Address{
 		Street:  "Address first line",
 		ZipCode: "07007",
@@ -57,13 +56,12 @@ var InvoiceHolder148 = model.InvoiceHolder{
 	},
 	Email:       "email@gmail.com",
 	PaymentType: payment_type.BankDirectDebit,
-	Iban:        iban148,
+	Iban:        model.NewIbanOrFatal("ES2830668859978258529057"),
 }
 
-var iban149, _ = model.NewIban("ES2830668859978258529057")
 var InvoiceHolder149 = model.InvoiceHolder{
 	Name:  "Nom empresa",
-	TaxID: "37866397W",
+	TaxID: model.NewTaxIdOrFatal("37866397W"),
 	Address: model.Address{
 		Street:  "Address first line",
 		ZipCode: "07007",
@@ -72,7 +70,7 @@ var InvoiceHolder149 = model.InvoiceHolder{
 	},
 	Email:       "email@gmail.com",
 	PaymentType: payment_type.BankTransfer,
-	Iban:        iban149,
+	Iban:        model.NewIbanOrFatal("ES2830668859978258529057"),
 	IsBusiness:  true,
 }
 

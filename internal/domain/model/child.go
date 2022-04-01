@@ -12,7 +12,7 @@ type Child struct {
 	Name          string
 	Surname       string
 	SecondSurname string
-	TaxID         string
+	TaxID         TaxId
 	BirthDate     time.Time
 	Group         group_type.GroupType
 	Note          string

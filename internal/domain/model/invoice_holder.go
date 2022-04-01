@@ -7,7 +7,7 @@ import (
 
 type InvoiceHolder struct {
 	Name        string
-	TaxID       string
+	TaxID       TaxId
 	Address     Address
 	Email       string
 	SendEmail   bool

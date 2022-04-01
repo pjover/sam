@@ -14,6 +14,7 @@ require (
 require (
 	github.com/biter777/countries v1.3.4 // indirect
 	github.com/boombuler/barcode v1.0.0 // indirect
+	github.com/criptalia/spanish_dni_validator v0.0.0-20200218150649-fa79887bad41 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/fsnotify/fsnotify v1.5.1 // indirect
 	github.com/go-stack/stack v1.8.0 // indirect

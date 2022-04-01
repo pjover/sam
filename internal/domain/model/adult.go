@@ -10,7 +10,7 @@ type Adult struct {
 	Name             string
 	Surname          string
 	SecondSurname    string
-	TaxID            string
+	TaxID            TaxId
 	Role             adult_role.AdultRole
 	Address          Address
 	Email            string

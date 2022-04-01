@@ -115,7 +115,7 @@ func (i invoicesToBddConverter) getDetailName(customer model.Customer) string {
 
 func (i invoicesToBddConverter) getDetailIdentification(customer model.Customer) string {
 	country := i.configService.GetString("bdd.country")
-	return i.getSepaIndentifier(customer.InvoiceHolder.TaxID, country, "000")
+	return i.getSepaIndentifier(customer.InvoiceHolder.TaxID.String(), country, "000")
 }
 
 func (i invoicesToBddConverter) getDetailCustomerBankAccount(customer model.Customer) string {

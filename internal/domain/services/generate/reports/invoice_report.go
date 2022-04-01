@@ -177,7 +177,7 @@ func (i InvoiceReport) headerData(invoice model.Invoice, customer model.Customer
 	var data = [][]string{
 		{invoice.Id},
 		{invoice.DateFmt()},
-		{customer.InvoiceHolder.TaxID},
+		{customer.InvoiceHolder.TaxID.String()},
 		{customer.InvoiceHolder.Name},
 		{customer.InvoiceHolder.Address.CompleteAddress()},
 		{customer.ChildrenNames(",")},

@@ -6,7 +6,6 @@ import (
 	"github.com/pjover/sam/internal/domain/model/group_type"
 	"github.com/pjover/sam/internal/domain/model/language"
 	"github.com/pjover/sam/internal/domain/model/payment_type"
-	"log"
 )
 
 func ConvertCustomerToModel(customer Customer) model.Customer {
@@ -35,7 +34,7 @@ func child(child Child) model.Child {
 		Name:          child.Name,
 		Surname:       child.Surname,
 		SecondSurname: child.SecondSurname,
-		TaxID:         child.TaxID,
+		TaxID:         model.NewTaxIdOrFatal(child.TaxID),
 		BirthDate:     child.BirthDate,
 		Group:         group_type.NewGroupType(child.Group),
 		Note:          child.Note,
@@ -56,7 +55,7 @@ func adult(adult Adult) model.Adult {
 		Name:             adult.Name,
 		Surname:          adult.Surname,
 		SecondSurname:    adult.SecondSurname,
-		TaxID:            adult.TaxID,
+		TaxID:            model.NewTaxIdOrFatal(adult.TaxID),
 		Role:             adult_role.NewAdultRole(adult.Role),
 		Address:          address(adult.Address),
 		Email:            adult.Email,
@@ -80,18 +79,14 @@ func address(address Address) model.Address {
 }
 
 func holderToModel(holder InvoiceHolder) model.InvoiceHolder {
-	iban, err := model.NewIban(holder.Iban)
-	if err != nil {
-		log.Fatal(err)
-	}
 	return model.InvoiceHolder{
 		Name:        holder.Name,
-		TaxID:       holder.TaxID,
+		TaxID:       model.NewTaxIdOrFatal(holder.TaxID),
 		Address:     address(holder.Address),
 		Email:       holder.Email,
 		SendEmail:   holder.SendEmail,
 		PaymentType: payment_type.NewPaymentType(holder.PaymentType),
-		Iban:        iban,
+		Iban:        model.NewIbanOrFatal(holder.Iban),
 		IsBusiness:  holder.IsBusiness,
 	}
 }
@@ -131,7 +126,7 @@ func childToDbo(child model.Child) Child {
 		Name:          child.Name,
 		Surname:       child.Surname,
 		SecondSurname: child.SecondSurname,
-		TaxID:         child.TaxID,
+		TaxID:         child.TaxID.String(),
 		BirthDate:     child.BirthDate,
 		Group:         child.Group.String(),
 		Note:          child.Note,
@@ -152,7 +147,7 @@ func adultToDbo(adult model.Adult) Adult {
 		Name:             adult.Name,
 		Surname:          adult.Surname,
 		SecondSurname:    adult.SecondSurname,
-		TaxID:            adult.TaxID,
+		TaxID:            adult.TaxID.String(),
 		Role:             adult.Role.String(),
 		Address:          addressToDbo(adult.Address),
 		Email:            adult.Email,
@@ -169,7 +164,7 @@ func adultToDbo(adult model.Adult) Adult {
 func invoiceHolderToDbo(invoiceHolder model.InvoiceHolder) InvoiceHolder {
 	return InvoiceHolder{
 		Name:        invoiceHolder.Name,
-		TaxID:       invoiceHolder.TaxID,
+		TaxID:       invoiceHolder.TaxID.String(),
 		Address:     addressToDbo(invoiceHolder.Address),
 		Email:       invoiceHolder.Email,
 		SendEmail:   invoiceHolder.SendEmail,

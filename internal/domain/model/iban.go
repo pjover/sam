@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/biter777/countries"
 	"github.com/pjover/sam/internal/domain/services/common"
+	"log"
 	"strconv"
 	"strings"
 )
@@ -65,6 +66,14 @@ func NewIban(code string) (IBAN, error) {
 		checkDigits: checkDigits,
 		bban:        bban,
 	}, nil
+}
+
+func NewIbanOrFatal(code string) IBAN {
+	iban, err := NewIban(code)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return iban
 }
 
 func validateCheckDigits(countryCode countries.CountryCode, checkDigits string, bban string) error {
