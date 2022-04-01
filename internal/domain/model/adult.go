@@ -20,7 +20,7 @@ type Adult struct {
 	GrandParentPhone string
 	WorkPhone        string
 	BirthDate        time.Time
-	Nationality      string
+	Nationality      Nationality
 }
 
 func (a Adult) MobilePhoneFmt() string {

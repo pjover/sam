@@ -65,7 +65,7 @@ func adult(adult Adult) model.Adult {
 		GrandParentPhone: adult.GrandParentPhone,
 		WorkPhone:        adult.WorkPhone,
 		BirthDate:        adult.BirthDate,
-		Nationality:      adult.Nationality,
+		Nationality:      model.NewNationalityOrFatal(adult.Nationality),
 	}
 }
 
@@ -157,7 +157,7 @@ func adultToDbo(adult model.Adult) Adult {
 		GrandParentPhone: adult.GrandParentPhone,
 		WorkPhone:        adult.WorkPhone,
 		BirthDate:        adult.BirthDate,
-		Nationality:      adult.Nationality,
+		Nationality:      adult.Nationality.String(),
 	}
 }
 

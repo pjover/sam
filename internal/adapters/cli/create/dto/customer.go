@@ -137,7 +137,7 @@ func adultToModel(adult Adult) model.Adult {
 		GrandParentPhone: adult.GrandParentPhone,
 		WorkPhone:        adult.WorkPhone,
 		BirthDate:        stringToTime(adult.BirthDate),
-		Nationality:      adult.Nationality,
+		Nationality:      model.NewNationalityOrFatal(adult.Nationality),
 	}
 }
 
