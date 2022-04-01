@@ -119,7 +119,7 @@ func (i invoicesToBddConverter) getDetailIdentification(customer model.Customer)
 }
 
 func (i invoicesToBddConverter) getDetailCustomerBankAccount(customer model.Customer) string {
-	return customer.InvoiceHolder.BankAccount
+	return customer.InvoiceHolder.Iban.String()
 }
 
 func (i invoicesToBddConverter) getDetailRemittanceInformation(invoice model.Invoice, products map[string]model.Product) string {

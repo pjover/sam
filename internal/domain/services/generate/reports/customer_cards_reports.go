@@ -241,7 +241,7 @@ func (c CustomerCardsReports) holderSubReport(holder model.InvoiceHolder) SubRep
 			{holder.Email},
 			{holder.Address.CompleteAddress()},
 			{holder.PaymentType.Format()},
-			{holder.BankAccount},
+			{holder.Iban.Format()},
 			{c.boolToYesNo(holder.SendEmail)},
 			{c.boolToYesNo(holder.IsBusiness)},
 		},

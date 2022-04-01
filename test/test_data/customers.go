@@ -45,6 +45,7 @@ var AdultPare = model.Adult{
 	Role:          adult_role.Father,
 }
 
+var iban148, _ = model.NewIban("ES2830668859978258529057")
 var InvoiceHolder148 = model.InvoiceHolder{
 	Name:  "Nom de la mare 1er llinatge_mare 2on llinatge_mare",
 	TaxID: "36361882D",
@@ -56,9 +57,10 @@ var InvoiceHolder148 = model.InvoiceHolder{
 	},
 	Email:       "email@gmail.com",
 	PaymentType: payment_type.BankDirectDebit,
-	BankAccount: "ES2830668859978258529057",
+	Iban:        iban148,
 }
 
+var iban149, _ = model.NewIban("ES2830668859978258529057")
 var InvoiceHolder149 = model.InvoiceHolder{
 	Name:  "Nom empresa",
 	TaxID: "37866397W",
@@ -70,7 +72,7 @@ var InvoiceHolder149 = model.InvoiceHolder{
 	},
 	Email:       "email@gmail.com",
 	PaymentType: payment_type.BankTransfer,
-	BankAccount: "ES2830668859978258529057",
+	Iban:        iban149,
 	IsBusiness:  true,
 }
 

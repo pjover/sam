@@ -186,7 +186,7 @@ func (d dbService) FindActiveCustomers() ([]model.Customer, error) {
 	if err := d.findMany("customer", filter, findOptions, &results, "clients actius"); err != nil {
 		return nil, err
 	}
-	return dbo.ConvertCustomersToModel(results), nil
+	return dbo.CustomerToModel(results), nil
 }
 
 func (d dbService) FindChangedCustomers(changedSince time.Time) ([]model.Customer, error) {
@@ -197,7 +197,7 @@ func (d dbService) FindChangedCustomers(changedSince time.Time) ([]model.Custome
 	if err := d.findMany("customer", filter, findOptions, &results, "tots els clients"); err != nil {
 		return nil, err
 	}
-	return dbo.ConvertCustomersToModel(results), nil
+	return dbo.CustomerToModel(results), nil
 }
 
 func (d dbService) FindActiveChildren() ([]model.Child, error) {

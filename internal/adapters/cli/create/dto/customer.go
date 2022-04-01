@@ -65,7 +65,7 @@ type InvoiceHolder struct {
 	Email       string
 	SendEmail   bool
 	PaymentType string
-	BankAccount string
+	Iban        string
 	IsBusiness  bool
 }
 
@@ -151,6 +151,10 @@ func addressToModel(address Address) model.Address {
 }
 
 func holderToModel(holder InvoiceHolder) model.InvoiceHolder {
+	iban, err := model.NewIban(holder.Iban)
+	if err != nil {
+		log.Fatal(err)
+	}
 	return model.InvoiceHolder{
 		Name:        holder.Name,
 		TaxID:       holder.TaxID,
@@ -158,7 +162,7 @@ func holderToModel(holder InvoiceHolder) model.InvoiceHolder {
 		Email:       holder.Email,
 		SendEmail:   holder.SendEmail,
 		PaymentType: payment_type.NewPaymentType(holder.PaymentType),
-		BankAccount: holder.BankAccount,
+		Iban:        iban,
 		IsBusiness:  holder.IsBusiness,
 	}
 }

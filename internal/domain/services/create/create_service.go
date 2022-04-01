@@ -55,7 +55,7 @@ func (c createService) CreateCustomer(customer model.Customer) (string, error) {
 }
 
 func (c createService) validateCustomer(customer model.Customer) error {
-	return nil // TODO Validate mandatory fields, TaxIds & BankAccount
+	return nil // TODO Validate mandatory fields, TaxIds & Iban
 }
 
 func (c createService) getNextCustomerSequence() (model.Sequence, error) {

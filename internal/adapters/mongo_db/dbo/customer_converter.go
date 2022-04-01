@@ -6,6 +6,7 @@ import (
 	"github.com/pjover/sam/internal/domain/model/group_type"
 	"github.com/pjover/sam/internal/domain/model/language"
 	"github.com/pjover/sam/internal/domain/model/payment_type"
+	"log"
 )
 
 func ConvertCustomerToModel(customer Customer) model.Customer {
@@ -14,7 +15,7 @@ func ConvertCustomerToModel(customer Customer) model.Customer {
 		Active:        customer.Active,
 		Children:      children(customer.Children),
 		Adults:        adults(customer.Adults),
-		InvoiceHolder: holder(customer.InvoiceHolder),
+		InvoiceHolder: holderToModel(customer.InvoiceHolder),
 		Note:          customer.Note,
 		Language:      language.NewLanguage(customer.Language),
 	}
@@ -78,7 +79,11 @@ func address(address Address) model.Address {
 	}
 }
 
-func holder(holder InvoiceHolder) model.InvoiceHolder {
+func holderToModel(holder InvoiceHolder) model.InvoiceHolder {
+	iban, err := model.NewIban(holder.Iban)
+	if err != nil {
+		log.Fatal(err)
+	}
 	return model.InvoiceHolder{
 		Name:        holder.Name,
 		TaxID:       holder.TaxID,
@@ -86,12 +91,12 @@ func holder(holder InvoiceHolder) model.InvoiceHolder {
 		Email:       holder.Email,
 		SendEmail:   holder.SendEmail,
 		PaymentType: payment_type.NewPaymentType(holder.PaymentType),
-		BankAccount: holder.BankAccount,
+		Iban:        iban,
 		IsBusiness:  holder.IsBusiness,
 	}
 }
 
-func ConvertCustomersToModel(customers []Customer) []model.Customer {
+func CustomerToModel(customers []Customer) []model.Customer {
 	var out []model.Customer
 	for _, customer := range customers {
 		out = append(out, ConvertCustomerToModel(customer))
@@ -103,24 +108,24 @@ func ConvertCustomerToDbo(customer model.Customer) Customer {
 	return Customer{
 		Id:            customer.Id,
 		Active:        customer.Active,
-		Children:      convertChildrenToDbo(customer.Children),
-		Adults:        convertAdultsToDbo(customer.Adults),
-		InvoiceHolder: convertInvoiceHolderToDbo(customer.InvoiceHolder),
+		Children:      childrenToDbo(customer.Children),
+		Adults:        adultsToDbo(customer.Adults),
+		InvoiceHolder: invoiceHolderToDbo(customer.InvoiceHolder),
 		Note:          customer.Note,
 		Language:      customer.Language.String(),
 		ChangedOn:     customer.ChangedOn,
 	}
 }
 
-func convertChildrenToDbo(children []model.Child) []Child {
+func childrenToDbo(children []model.Child) []Child {
 	var _children []Child
 	for _, child := range children {
-		_children = append(_children, convertChildToDbo(child))
+		_children = append(_children, childToDbo(child))
 	}
 	return _children
 }
 
-func convertChildToDbo(child model.Child) Child {
+func childToDbo(child model.Child) Child {
 	return Child{
 		Id:            child.Id,
 		Name:          child.Name,
@@ -134,22 +139,22 @@ func convertChildToDbo(child model.Child) Child {
 	}
 }
 
-func convertAdultsToDbo(adults []model.Adult) []Adult {
+func adultsToDbo(adults []model.Adult) []Adult {
 	var _adults []Adult
 	for _, adult := range adults {
-		_adults = append(_adults, convertAdultToDbo(adult))
+		_adults = append(_adults, adultToDbo(adult))
 	}
 	return _adults
 }
 
-func convertAdultToDbo(adult model.Adult) Adult {
+func adultToDbo(adult model.Adult) Adult {
 	return Adult{
 		Name:             adult.Name,
 		Surname:          adult.Surname,
 		SecondSurname:    adult.SecondSurname,
 		TaxID:            adult.TaxID,
 		Role:             adult.Role.String(),
-		Address:          convertAddressToDbo(adult.Address),
+		Address:          addressToDbo(adult.Address),
 		Email:            adult.Email,
 		MobilePhone:      adult.MobilePhone,
 		HomePhone:        adult.HomePhone,
@@ -161,20 +166,20 @@ func convertAdultToDbo(adult model.Adult) Adult {
 	}
 }
 
-func convertInvoiceHolderToDbo(invoiceHolder model.InvoiceHolder) InvoiceHolder {
+func invoiceHolderToDbo(invoiceHolder model.InvoiceHolder) InvoiceHolder {
 	return InvoiceHolder{
 		Name:        invoiceHolder.Name,
 		TaxID:       invoiceHolder.TaxID,
-		Address:     convertAddressToDbo(invoiceHolder.Address),
+		Address:     addressToDbo(invoiceHolder.Address),
 		Email:       invoiceHolder.Email,
 		SendEmail:   invoiceHolder.SendEmail,
 		PaymentType: invoiceHolder.PaymentType.String(),
-		BankAccount: invoiceHolder.BankAccount,
+		Iban:        invoiceHolder.Iban.String(),
 		IsBusiness:  invoiceHolder.IsBusiness,
 	}
 }
 
-func convertAddressToDbo(address model.Address) Address {
+func addressToDbo(address model.Address) Address {
 	return Address{
 		Street:  address.Street,
 		ZipCode: address.ZipCode,

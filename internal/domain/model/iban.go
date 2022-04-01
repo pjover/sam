@@ -17,7 +17,27 @@ type IBAN struct {
 	bban string
 }
 
-func NewBankAccount(code string) (IBAN, error) {
+func (i IBAN) String() string {
+	return fmt.Sprintf("%s%s%s", i.countryCode.Alpha2(), i.checkDigits, i.bban)
+}
+
+func (i IBAN) Format() string {
+	str := i.String()
+	if len(str) != 24 {
+		return str
+	}
+	return fmt.Sprintf(
+		"%s %s %s %s %s %s",
+		str[0:4],
+		str[4:8],
+		str[8:12],
+		str[12:16],
+		str[16:20],
+		str[20:24],
+	)
+}
+
+func NewIban(code string) (IBAN, error) {
 	preparedCode := prepareIbanCode(code)
 
 	countryCode, err := extractIbanCountryCode(preparedCode)

@@ -196,7 +196,7 @@ func TestNewBankAccount(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := NewBankAccount(tt.code)
+			got, err := NewIban(tt.code)
 			assert.Equal(t, tt.want, got)
 			assert.Equal(t, tt.wantErr, err)
 		})

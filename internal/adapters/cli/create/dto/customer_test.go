@@ -66,7 +66,7 @@ func TestCustomerToModel(t *testing.T) {
 					},
 					Email:       "email@gmail.com",
 					PaymentType: "BANK_DIRECT_DEBIT",
-					BankAccount: "ES2830668859978258529057",
+					Iban:        "ES2830668859978258529057",
 				},
 				Note:     "Nota del client",
 				Language: "CA",
