@@ -56,11 +56,7 @@ func (p PaymentType) SequenceType() sequence_type.SequenceType {
 	switch p {
 	case BankDirectDebit:
 		return sequence_type.StandardInvoice
-	case BankTransfer:
-		return sequence_type.SpecialInvoice
-	case Voucher:
-		return sequence_type.SpecialInvoice
-	case Cash:
+	case BankTransfer, Voucher, Cash:
 		return sequence_type.SpecialInvoice
 	case Rectification:
 		return sequence_type.RectificationInvoice
