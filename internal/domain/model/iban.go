@@ -10,6 +10,8 @@ import (
 )
 
 type IBAN struct {
+	// valid
+	valid bool
 	// countryCode using ISO 3166-1 alpha-2 – two letters
 	countryCode countries.CountryCode
 	//checkDigits for validation, two digits
@@ -19,10 +21,17 @@ type IBAN struct {
 }
 
 func (i IBAN) String() string {
-	return fmt.Sprintf("%s%s%s", i.countryCode.Alpha2(), i.checkDigits, i.bban)
+	if i.valid {
+		return fmt.Sprintf("%s%s%s", i.countryCode.Alpha2(), i.checkDigits, i.bban)
+	} else {
+		return ""
+	}
 }
 
 func (i IBAN) Format() string {
+	if !i.valid {
+		return ""
+	}
 	str := i.String()
 	if len(str) != 24 {
 		return str
@@ -39,29 +48,33 @@ func (i IBAN) Format() string {
 }
 
 func NewIban(code string) (IBAN, error) {
+	if code == "" {
+		return IBAN{valid: false}, nil
+	}
 	preparedCode := prepareIbanCode(code)
 
 	countryCode, err := extractIbanCountryCode(preparedCode)
 	if err != nil {
-		return IBAN{}, err
+		return IBAN{valid: false}, err
 	}
 
 	checkDigits, err := extractIbanCheckDigits(preparedCode)
 	if err != nil {
-		return IBAN{}, err
+		return IBAN{valid: false}, err
 	}
 
 	bban, err := extractBban(preparedCode)
 	if err != nil {
-		return IBAN{}, err
+		return IBAN{valid: false}, err
 	}
 
 	err = validateCheckDigits(countryCode, checkDigits, bban)
 	if err != nil {
-		return IBAN{}, err
+		return IBAN{valid: false}, err
 	}
 
 	return IBAN{
+		valid:       true,
 		countryCode: countryCode,
 		checkDigits: checkDigits,
 		bban:        bban,
