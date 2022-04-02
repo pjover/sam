@@ -1,6 +1,7 @@
 package model
 
 import (
+	"errors"
 	"github.com/biter777/countries"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -22,8 +23,8 @@ func TestNewNationality(t *testing.T) {
 		{
 			name:       "empty",
 			alpha2Code: "",
-			want:       Nationality{countries.Unknown},
-			wantErr:    nil,
+			want:       Nationality{},
+			wantErr:    errors.New("la nacionalitat '' no és vàlida"),
 		},
 	}
 	for _, tt := range tests {

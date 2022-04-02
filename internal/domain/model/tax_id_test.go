@@ -15,7 +15,7 @@ func TestNewTaxId(t *testing.T) {
 		{
 			name:    "empty TaxiId",
 			id:      "",
-			wantErr: nil,
+			wantErr: errors.New("el DNI/NIE/CIF '' no és vàlid"),
 		},
 		{
 			name:    "correct CIF 1",

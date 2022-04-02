@@ -2,32 +2,33 @@ package model
 
 import (
 	"fmt"
-	taxId "github.com/criptalia/spanish_dni_validator"
-	"log"
+	validator "github.com/criptalia/spanish_dni_validator"
 )
 
 type TaxId struct {
 	id string
 }
 
-func NewTaxId(id string) (TaxId, error) {
-	if id == "" {
-		return TaxId{id: id}, nil
-	}
-	if taxId.IsValid(id) {
-		return TaxId{id: id}, nil
-	}
-	return TaxId{}, fmt.Errorf("el DNI/NIE/CIF '%s' no és vàlid", id)
-}
-
-func NewTaxIdOrFatal(id string) TaxId {
-	taxId, err := NewTaxId(id)
-	if err != nil {
-		log.Fatal(err)
-	}
-	return taxId
-}
+var emptyTaxId = TaxId{}
 
 func (t TaxId) String() string {
+	if t == emptyTaxId {
+		return ""
+	}
 	return t.id
+}
+
+func NewTaxId(taxId string) (TaxId, error) {
+	if validator.IsValid(taxId) {
+		return TaxId{id: taxId}, nil
+	}
+	return emptyTaxId, fmt.Errorf("el DNI/NIE/CIF '%s' no és vàlid", taxId)
+}
+
+func NewTaxIdOrEmpty(taxId string) TaxId {
+	newTaxId, err := NewTaxId(taxId)
+	if err != nil {
+		return emptyTaxId
+	}
+	return newTaxId
 }

@@ -1,17 +1,15 @@
 package model
 
 import (
+	"errors"
 	"fmt"
 	"github.com/biter777/countries"
 	"github.com/pjover/sam/internal/domain/services/common"
-	"log"
 	"strconv"
 	"strings"
 )
 
 type IBAN struct {
-	// valid
-	valid bool
 	// countryCode using ISO 3166-1 alpha-2 – two letters
 	countryCode countries.CountryCode
 	//checkDigits for validation, two digits
@@ -20,16 +18,17 @@ type IBAN struct {
 	bban string
 }
 
+var emptyIban = IBAN{}
+
 func (i IBAN) String() string {
-	if i.valid {
-		return fmt.Sprintf("%s%s%s", i.countryCode.Alpha2(), i.checkDigits, i.bban)
-	} else {
+	if i == emptyIban {
 		return ""
 	}
+	return fmt.Sprintf("%s%s%s", i.countryCode.Alpha2(), i.checkDigits, i.bban)
 }
 
 func (i IBAN) Format() string {
-	if !i.valid {
+	if i == emptyIban {
 		return ""
 	}
 	str := i.String()
@@ -47,46 +46,41 @@ func (i IBAN) Format() string {
 	)
 }
 
-func NewIban(code string) (IBAN, error) {
-	if code == "" {
-		return IBAN{valid: false}, nil
+func NewIban(iban string) (IBAN, error) {
+	if iban == "" {
+		return emptyIban, errors.New("invalid IBAN, és buit")
 	}
-	preparedCode := prepareIbanCode(code)
+	preparedCode := prepareIbanCode(iban)
 
 	countryCode, err := extractIbanCountryCode(preparedCode)
 	if err != nil {
-		return IBAN{valid: false}, err
+		return invalidIban(iban, err)
 	}
 
 	checkDigits, err := extractIbanCheckDigits(preparedCode)
 	if err != nil {
-		return IBAN{valid: false}, err
+		return invalidIban(iban, err)
 	}
 
 	bban, err := extractBban(preparedCode)
 	if err != nil {
-		return IBAN{valid: false}, err
+		return invalidIban(iban, err)
 	}
 
 	err = validateCheckDigits(countryCode, checkDigits, bban)
 	if err != nil {
-		return IBAN{valid: false}, err
+		return invalidIban(iban, err)
 	}
 
 	return IBAN{
-		valid:       true,
 		countryCode: countryCode,
 		checkDigits: checkDigits,
 		bban:        bban,
 	}, nil
 }
 
-func NewIbanOrFatal(code string) IBAN {
-	iban, err := NewIban(code)
-	if err != nil {
-		log.Fatal(err)
-	}
-	return iban
+func invalidIban(iban string, err error) (IBAN, error) {
+	return emptyIban, fmt.Errorf("invalid IBAN '%s': %s", iban, err)
 }
 
 func validateCheckDigits(countryCode countries.CountryCode, checkDigits string, bban string) error {
@@ -145,4 +139,12 @@ func isValidBban(text string) bool {
 		return false
 	}
 	return true
+}
+
+func NewIbanOrEmpty(iban string) IBAN {
+	newIban, err := NewIban(iban)
+	if err != nil {
+		return emptyIban
+	}
+	return newIban
 }

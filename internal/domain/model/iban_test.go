@@ -173,25 +173,25 @@ func TestNewBankAccount(t *testing.T) {
 			name:    "With wrong countryCode",
 			code:    "xy98MIDL07009312345678",
 			want:    IBAN{},
-			wantErr: errors.New("'xy' is an invalid ISO 3166-1 alpha-2 country"),
+			wantErr: errors.New("invalid IBAN 'xy98MIDL07009312345678': 'xy' is an invalid ISO 3166-1 alpha-2 country"),
 		},
 		{
 			name:    "With wrong checkDigits",
 			code:    "GBx9MIDL07009312345678",
 			want:    IBAN{},
-			wantErr: errors.New("'x9' is an invalid two numbers IBAN check digits"),
+			wantErr: errors.New("invalid IBAN 'GBx9MIDL07009312345678': 'x9' is an invalid two numbers IBAN check digits"),
 		},
 		{
 			name:    "With wrong checksum",
 			code:    "GB99 MIDL 0700 9312 3456 78",
 			want:    IBAN{},
-			wantErr: errors.New("'99' is an invalid two numbers IBAN check digits, does not match with '98' checksum"),
+			wantErr: errors.New("invalid IBAN 'GB99 MIDL 0700 9312 3456 78': '99' is an invalid two numbers IBAN check digits, does not match with '98' checksum"),
 		},
 		{
 			name:    "With wrong BBAN",
 			code:    "GB98MIDÖL07009312345678",
 			want:    IBAN{},
-			wantErr: errors.New("'MIDÖL07009312345678' is an invalid IBAN Basic Bank Account Number"),
+			wantErr: errors.New("invalid IBAN 'GB98MIDÖL07009312345678': 'MIDÖL07009312345678' is an invalid IBAN Basic Bank Account Number"),
 		},
 	}
 	for _, tt := range tests {
