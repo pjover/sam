@@ -20,9 +20,9 @@ func NewCreateService(dbService ports.DbService, osService ports.OsService) port
 }
 
 func (c createService) CreateProduct(product model.Product) (string, error) {
-	storedProduct, err := c.dbService.FindProduct(product.Id)
+	storedProduct, err := c.dbService.FindProduct(product.Id())
 	if err == nil {
-		return "", fmt.Errorf("el producte amb codi '%s' ja existeix: %s", product.Id, storedProduct.String())
+		return "", fmt.Errorf("el producte amb codi '%s' ja existeix: %s", product.Id(), storedProduct.String())
 	}
 
 	err = c.dbService.InsertProduct(product)
@@ -55,7 +55,7 @@ func (c createService) CreateCustomer(customer model.Customer) (string, error) {
 }
 
 func (c createService) validateCustomer(customer model.Customer) error {
-	return nil // TODO Validate mandatory fields, TaxIds & Iban
+	return nil // TODO validate mandatory fields, TaxIds & Iban
 }
 
 func (c createService) getNextCustomerSequence() (model.Sequence, error) {

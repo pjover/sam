@@ -192,7 +192,7 @@ func (i InvoiceReport) linesData(invoice model.Invoice, products map[string]mode
 		vat := price * line.TaxPercentage
 		var row = []string{
 			fmt.Sprintf("%.2f", line.Units),
-			products[line.ProductId].Name,
+			products[line.ProductId].Name(),
 			fmt.Sprintf("%.2f", line.ProductPrice),
 			fmt.Sprintf("%.2f", price),
 			fmt.Sprintf("%.2f", line.TaxPercentage),

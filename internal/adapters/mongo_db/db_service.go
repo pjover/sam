@@ -71,7 +71,7 @@ func (d dbService) FindProduct(id string) (model.Product, error) {
 	if err := d.findOne("product", id, &result, "el producte"); err != nil {
 		return model.Product{}, err
 	}
-	return dbo.ConvertProductToModel(result), nil
+	return dbo.ConvertProductToModel(result)
 }
 
 func (d dbService) FindSequence(sequenceType sequence_type.SequenceType) (model.Sequence, error) {
@@ -118,7 +118,7 @@ func (d dbService) FindAllProducts() ([]model.Product, error) {
 	if err := d.findMany("product", filter, findOptions, &results, "tots els productes"); err != nil {
 		return nil, err
 	}
-	return dbo.ConvertProductsToModel(results), nil
+	return dbo.ConvertProductsToModel(results)
 }
 
 func (d dbService) FindInvoicesByYearMonth(yearMonth model.YearMonth) ([]model.Invoice, error) {

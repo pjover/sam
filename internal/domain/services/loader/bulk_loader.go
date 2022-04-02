@@ -43,7 +43,7 @@ func (b bulkLoader) LoadProducts() (products map[string]model.Product, err error
 
 	products = make(map[string]model.Product)
 	for _, product := range productsList {
-		products[product.Id] = product
+		products[product.Id()] = product
 	}
 	return products, nil
 }

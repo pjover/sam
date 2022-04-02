@@ -20,8 +20,8 @@ var stringValues = []string{
 	"CUSTOMER",
 }
 
-func (p SequenceType) String() string {
-	return stringValues[p]
+func (s SequenceType) String() string {
+	return stringValues[s]
 }
 
 func NewSequenceType(value string) SequenceType {

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/pjover/sam/internal/adapters/cli"
+	"github.com/pjover/sam/internal/adapters/cli/create/dto"
 	"github.com/pjover/sam/internal/domain/model"
 	"github.com/pjover/sam/internal/domain/ports"
 	"github.com/spf13/cobra"
@@ -66,9 +67,10 @@ func (c createProductCmd) loadProduct(filename string) (product model.Product, e
 		return model.Product{}, err
 	}
 
-	err = json.Unmarshal(content, &product)
+	var dtoProduct dto.Product
+	err = json.Unmarshal(content, &dtoProduct)
 	if err != nil {
 		return model.Product{}, fmt.Errorf("error llegint el JSON del nou producte: %s", err)
 	}
-	return product, nil
+	return dto.ProductToModel(dtoProduct)
 }

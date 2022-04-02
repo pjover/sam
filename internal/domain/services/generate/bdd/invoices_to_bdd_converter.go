@@ -136,7 +136,7 @@ func (i invoicesToBddConverter) getShortNameInvoiceDescription(invoice model.Inv
 	var lines []string
 	for _, line := range invoice.Lines {
 		units := strconv.FormatFloat(line.Units, 'f', -1, 64)
-		desc := fmt.Sprintf("%sx%s", units, products[line.ProductId].ShortName)
+		desc := fmt.Sprintf("%sx%s", units, products[line.ProductId].ShortName())
 		lines = append(lines, desc)
 	}
 	return strings.Join(lines, ", ")

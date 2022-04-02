@@ -232,8 +232,8 @@ func (b billingService) productLines(consumptions []model.Consumption) (lines []
 		line := model.InvoiceLine{
 			ProductId:     productId,
 			Units:         units,
-			ProductPrice:  product.Price,
-			TaxPercentage: product.TaxPercentage,
+			ProductPrice:  product.Price(),
+			TaxPercentage: product.TaxPercentage(),
 			ChildId:       cons[0].ChildId,
 		}
 		lines = append(lines, line)
