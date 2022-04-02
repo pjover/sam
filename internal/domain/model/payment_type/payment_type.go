@@ -26,7 +26,7 @@ var stringValues = []string{
 }
 
 func (p PaymentType) String() string {
-	return formatValues[p]
+	return stringValues[p]
 }
 
 func NewPaymentType(value string) PaymentType {

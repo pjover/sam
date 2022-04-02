@@ -399,7 +399,7 @@ func (b billingService) formatInvoicesGroupedByPaymentType(invoices []model.Invo
 			subtotal += invoice.Amount()
 		}
 		total += subtotal
-		buffer.WriteString(fmt.Sprintf("Total %d %s: %.02f €\n", len(invoices), paymentType, subtotal))
+		buffer.WriteString(fmt.Sprintf("Total %d %s: %.02f €\n", len(groupedInvoices), paymentType, subtotal))
 	}
 	buffer.WriteString(fmt.Sprintf("TOTAL: %.02f €\n", total))
 	return buffer.String(), nil
