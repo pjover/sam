@@ -22,14 +22,14 @@ func (c Consumption) String() string {
 	return fmt.Sprintf("%d  %s  %4.1f  %s  %-5v  %s  %s", c.ChildId, c.YearMonth, c.Units, c.ProductId, c.IsRectification, c.InvoiceId, c.Note)
 }
 
-func ConsumptionListToString(consumptions []Consumption, child Child, products []Product) string {
+func ConsumptionListToString(consumptions []Consumption, child Child, products map[string]Product) string {
 	var total float64
 	var buffer bytes.Buffer
 	for _, c := range consumptions {
 		if c.ChildId != child.Id {
 			continue
 		}
-		product := GetProduct(c.ProductId, products)
+		product := products[c.ProductId]
 		price := c.Units * product.Price()
 		total += price
 		buffer.WriteString(fmt.Sprintf("  [%s]  %4.1f x %s : % 7.2f\n",

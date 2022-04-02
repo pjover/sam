@@ -7,15 +7,18 @@ import (
 	"github.com/pjover/sam/internal/domain/model/group_type"
 	"github.com/pjover/sam/internal/domain/model/language"
 	"github.com/pjover/sam/internal/domain/ports"
+	"github.com/pjover/sam/internal/domain/services/loader"
 )
 
 type listService struct {
-	dbService ports.DbService
+	configService ports.ConfigService
+	dbService     ports.DbService
 }
 
-func NewListService(dbService ports.DbService) ports.ListService {
+func NewListService(configService ports.ConfigService, dbService ports.DbService) ports.ListService {
 	return listService{
-		dbService: dbService,
+		configService: configService,
+		dbService:     dbService,
 	}
 }
 
@@ -159,7 +162,9 @@ func (l listService) ListConsumptions() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	products, err := l.dbService.FindAllProducts()
+
+	bulkLoader := loader.NewBulkLoader(l.configService, l.dbService)
+	products, err := bulkLoader.LoadProducts()
 	if err != nil {
 		return "", err
 	}
@@ -189,7 +194,9 @@ func (l listService) ListChildConsumptions(childId int) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	products, err := l.dbService.FindAllProducts()
+
+	bulkLoader := loader.NewBulkLoader(l.configService, l.dbService)
+	products, err := bulkLoader.LoadProducts()
 	if err != nil {
 		return "", err
 	}

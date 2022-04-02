@@ -7,6 +7,7 @@ import (
 	"github.com/pjover/sam/internal/domain/model/sequence_type"
 	"github.com/pjover/sam/internal/domain/ports"
 	"github.com/pjover/sam/internal/domain/services/common"
+	"github.com/pjover/sam/internal/domain/services/loader"
 	"log"
 	"sort"
 	"strconv"
@@ -51,7 +52,16 @@ func (b billingService) insertConsumptions(childId int, consumptions map[string]
 		return "", fmt.Errorf("el client %s no està activat, edita'l per activar-lo abans d'insertar consums", customer.FirstAdultNameWithId())
 	}
 
-	completeConsumptions := b.completeConsumptions(consumptions, childId, note, isRectification)
+	bulkLoader := loader.NewBulkLoader(b.configService, b.dbService)
+	products, err := bulkLoader.LoadProducts()
+	if err != nil {
+		return "", err
+	}
+
+	completeConsumptions, err := b.completeConsumptions(consumptions, childId, note, isRectification, products)
+	if err != nil {
+		return "", err
+	}
 
 	err = b.dbService.InsertConsumptions(completeConsumptions)
 	if err != nil {
@@ -61,21 +71,19 @@ func (b billingService) insertConsumptions(childId int, consumptions map[string]
 		return "", err
 	}
 
-	products, err := b.dbService.FindAllProducts()
-	if err != nil {
-		return "", err
-	}
-
 	buffer.WriteString(model.ConsumptionListToString(completeConsumptions, child, products))
 
 	return buffer.String(), nil
 }
 
-func (b billingService) completeConsumptions(consumptions map[string]float64, childId int, note string, isRectification bool) []model.Consumption {
+func (b billingService) completeConsumptions(consumptions map[string]float64, childId int, note string, isRectification bool, products map[string]model.Product) ([]model.Consumption, error) {
 	yearMonth := b.configService.GetCurrentYearMonth()
 	var first = true
 	var completeConsumptions []model.Consumption
 	for id, units := range consumptions {
+		if err := b.checkIfProductExists(id, products); err != nil {
+			return nil, err
+		}
 		c := model.Consumption{
 			Id:              common.RandString(model.ConsumptionIdLength),
 			ChildId:         childId,
@@ -92,7 +100,15 @@ func (b billingService) completeConsumptions(consumptions map[string]float64, ch
 		completeConsumptions = append(completeConsumptions, c)
 	}
 
-	return completeConsumptions
+	return completeConsumptions, nil
+}
+
+func (b billingService) checkIfProductExists(productId string, products map[string]model.Product) error {
+	_, exists := products[productId]
+	if !exists {
+		return fmt.Errorf("el producte amb codi '%s' no existeix a la base de dades", productId)
+	}
+	return nil
 }
 
 func (b billingService) RectifyConsumptions(childId int, consumptions map[string]float64, note string) (string, error) {
