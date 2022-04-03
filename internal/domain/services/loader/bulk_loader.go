@@ -3,11 +3,13 @@ package loader
 import (
 	"fmt"
 	"github.com/pjover/sam/internal/domain/model"
+	"github.com/pjover/sam/internal/domain/model/payment_type"
 	"github.com/pjover/sam/internal/domain/ports"
 )
 
 type BulkLoader interface {
 	LoadMonthInvoices() (invoices []model.Invoice, err error)
+	LoadMonthInvoicesByPaymentType() (invoices map[payment_type.PaymentType][]model.Invoice, err error)
 	LoadProducts() (products map[string]model.Product, err error)
 	LoadCustomers() (customers map[int]model.Customer, err error)
 	LoadCustomersAndProducts() (customers map[int]model.Customer, products map[string]model.Product, err error)
@@ -31,6 +33,19 @@ func (b bulkLoader) LoadMonthInvoices() (invoices []model.Invoice, err error) {
 	invoices, err = b.dbService.FindInvoicesByYearMonth(yearMonth)
 	if err != nil {
 		return nil, fmt.Errorf("no s'ha pogut carregar les factures des de la base de dades: %s", err)
+	}
+	return invoices, nil
+}
+
+func (b bulkLoader) LoadMonthInvoicesByPaymentType() (invoices map[payment_type.PaymentType][]model.Invoice, err error) {
+	monthInvoices, err := b.LoadMonthInvoices()
+	if err != nil {
+		return nil, err
+	}
+
+	invoices = make(map[payment_type.PaymentType][]model.Invoice)
+	for _, invoice := range monthInvoices {
+		invoices[invoice.PaymentType] = append(invoices[invoice.PaymentType], invoice)
 	}
 	return invoices, nil
 }
