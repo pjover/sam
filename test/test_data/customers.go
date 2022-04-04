@@ -48,12 +48,12 @@ var AdultPare = model.Adult{
 var InvoiceHolder148 = model.InvoiceHolder{
 	Name:  "Nom de la mare 1er llinatge_mare 2on llinatge_mare",
 	TaxID: model.NewTaxIdOrEmpty("36361882D"),
-	Address: model.Address{
-		Street:  "Address first line",
-		ZipCode: "07007",
-		City:    "Palma",
-		State:   "Illes Balears",
-	},
+	Address: model.NewAddress(
+		"Address first line",
+		"07007",
+		"Palma",
+		"Illes Balears",
+	),
 	Email:       "email@gmail.com",
 	PaymentType: payment_type.BankDirectDebit,
 	Iban:        model.NewIbanOrEmpty("ES2830668859978258529057"),
@@ -62,12 +62,12 @@ var InvoiceHolder148 = model.InvoiceHolder{
 var InvoiceHolder149 = model.InvoiceHolder{
 	Name:  "Nom empresa",
 	TaxID: model.NewTaxIdOrEmpty("37866397W"),
-	Address: model.Address{
-		Street:  "Address first line",
-		ZipCode: "07007",
-		City:    "Palma",
-		State:   "Illes Balears",
-	},
+	Address: model.NewAddress(
+		"Address first line",
+		"07007",
+		"Palma",
+		"Illes Balears",
+	),
 	Email:       "email@gmail.com",
 	PaymentType: payment_type.BankTransfer,
 	Iban:        model.NewIbanOrEmpty("ES2830668859978258529057"),

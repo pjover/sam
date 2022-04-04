@@ -142,12 +142,12 @@ func adultToModel(adult Adult) model.Adult {
 }
 
 func addressToModel(address Address) model.Address {
-	return model.Address{
-		Street:  address.Street,
-		ZipCode: address.ZipCode,
-		City:    address.City,
-		State:   address.State,
-	}
+	return model.NewAddress(
+		address.Street,
+		address.ZipCode,
+		address.City,
+		address.State,
+	)
 }
 
 func holderToModel(holder InvoiceHolder) model.InvoiceHolder {

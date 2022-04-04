@@ -81,12 +81,3 @@ func NewProduct(id string, name string, shortName string, price float64, taxPerc
 	}
 	return product, product.validate()
 }
-
-func GetProduct(productID string, products []Product) Product {
-	for _, product := range products {
-		if product.Id() == productID {
-			return product
-		}
-	}
-	return Product{}
-}
