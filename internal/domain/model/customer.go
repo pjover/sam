@@ -25,7 +25,7 @@ func (c Customer) String() string {
 
 func (c Customer) FirstAdult() Adult {
 	for _, adult := range c.Adults {
-		if adult.Role == adult_role.Mother {
+		if adult.Role() == adult_role.Mother {
 			return adult
 		}
 	}
@@ -34,12 +34,12 @@ func (c Customer) FirstAdult() Adult {
 
 func (c Customer) FirstAdultName() string {
 	adult := c.FirstAdult()
-	return fmt.Sprintf("%s %s", adult.Name, adult.Surname)
+	return fmt.Sprintf("%s %s", adult.Name(), adult.Surname())
 }
 
 func (c Customer) FirstAdultNameWithId() string {
 	adult := c.FirstAdult()
-	return fmt.Sprintf("%s %s (%d)", adult.Name, adult.Surname, c.Id)
+	return fmt.Sprintf("%s %s (%d)", adult.Name(), adult.Surname(), c.Id)
 }
 
 func (c Customer) ChildrenNamesWithId(joinWith string) string {

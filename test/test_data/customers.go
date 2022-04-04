@@ -13,7 +13,7 @@ var Child1850 = model.Child{
 	Name:          "Laura",
 	Surname:       "Llull",
 	SecondSurname: "Bibiloni",
-	BirthDate:     Date,
+	BirthDate:     TestDate,
 	Group:         group_type.EI_1,
 	Active:        true,
 }
@@ -24,37 +24,65 @@ var Child1851 = model.Child{
 	Surname:       "Llull",
 	SecondSurname: "Bibiloni",
 	TaxID:         model.NewTaxIdOrEmpty("60235657Z"),
-	BirthDate:     Date,
+	BirthDate:     TestDate,
 	Group:         group_type.EI_1,
 	Active:        true,
 }
 
-var AdultMare = model.Adult{
-	Name:          "Nom de la mare",
-	Surname:       "1er llinatge_mare",
-	SecondSurname: "2on llinatge_mare",
-	TaxID:         model.NewTaxIdOrEmpty("36361882D"),
-	Role:          adult_role.Mother,
-}
-
-var AdultPare = model.Adult{
-	Name:          "Nom de la pare",
-	Surname:       "1er llinatge_pare",
-	SecondSurname: "2on llinatge_pare",
-	TaxID:         model.NewTaxIdOrEmpty("71032204Q"),
-	Role:          adult_role.Father,
-}
-
-var InvoiceHolder148 = model.InvoiceHolder{
-	Name:  "Nom de la mare 1er llinatge_mare 2on llinatge_mare",
-	TaxID: model.NewTaxIdOrEmpty("36361882D"),
-	Address: model.NewAddress(
-		"Address first line",
+var AdultMother = model.NewAdult(
+	"Cara",
+	"Santamaria",
+	"Novella",
+	model.NewTaxIdOrEmpty("36361882D"),
+	adult_role.Mother,
+	model.NewAddress(
+		"Carrer Ucraïna 2022, 1st",
 		"07007",
 		"Palma",
 		"Illes Balears",
 	),
-	Email:       "email@gmail.com",
+	"cara@sgu.org",
+	"654321098",
+	"987654321",
+	"685698789",
+	"658785478",
+	"987525444",
+	TestDate,
+	model.NewNationalityOrEmpty("US"),
+)
+
+var AdultFather = model.NewAdult(
+	"Bob",
+	"Novella",
+	"Sagan",
+	model.NewTaxIdOrEmpty("71032204Q"),
+	adult_role.Father,
+	model.NewAddress(
+		"Carrer Ucraïna 2022, 1st",
+		"07007",
+		"Palma",
+		"Illes Balears",
+	),
+	"bob@sgu.org",
+	"654321097",
+	"987654322",
+	"685698788",
+	"658785477",
+	"987525446",
+	TestDate,
+	model.NewNationalityOrEmpty("UK"),
+)
+
+var InvoiceHolder148 = model.InvoiceHolder{
+	Name:  "Cara Santamaria Novella",
+	TaxID: model.NewTaxIdOrEmpty("36361882D"),
+	Address: model.NewAddress(
+		"Carrer Ucraïna 2022, 1st",
+		"07007",
+		"Palma",
+		"Illes Balears",
+	),
+	Email:       "cara@sgu.org",
 	PaymentType: payment_type.BankDirectDebit,
 	Iban:        model.NewIbanOrEmpty("ES2830668859978258529057"),
 }
@@ -82,8 +110,8 @@ var Customer148 = model.Customer{
 		Child1851,
 	},
 	Adults: []model.Adult{
-		AdultMare,
-		AdultPare,
+		AdultMother,
+		AdultFather,
 	},
 	InvoiceHolder: InvoiceHolder148,
 	Note:          "Nota del client",
@@ -98,8 +126,8 @@ var Customer149 = model.Customer{
 		Child1851,
 	},
 	Adults: []model.Adult{
-		AdultMare,
-		AdultPare,
+		AdultMother,
+		AdultFather,
 	},
 	InvoiceHolder: InvoiceHolder149,
 	Note:          "Nota del client",

@@ -123,22 +123,22 @@ func adultsToModel(adults []Adult) []model.Adult {
 }
 
 func adultToModel(adult Adult) model.Adult {
-	return model.Adult{
-		Name:             adult.Name,
-		Surname:          adult.Surname,
-		SecondSurname:    adult.SecondSurname,
-		TaxID:            model.NewTaxIdOrEmpty(adult.TaxID),
-		Role:             adult_role.NewAdultRole(adult.Role),
-		Address:          addressToModel(adult.Address),
-		Email:            adult.Email,
-		MobilePhone:      adult.MobilePhone,
-		HomePhone:        adult.HomePhone,
-		GrandMotherPhone: adult.GrandMotherPhone,
-		GrandParentPhone: adult.GrandParentPhone,
-		WorkPhone:        adult.WorkPhone,
-		BirthDate:        stringToTime(adult.BirthDate),
-		Nationality:      model.NewNationalityOrEmpty(adult.Nationality),
-	}
+	return model.NewAdult(
+		adult.Name,
+		adult.Surname,
+		adult.SecondSurname,
+		model.NewTaxIdOrEmpty(adult.TaxID),
+		adult_role.NewAdultRole(adult.Role),
+		addressToModel(adult.Address),
+		adult.Email,
+		adult.MobilePhone,
+		adult.HomePhone,
+		adult.GrandMotherPhone,
+		adult.GrandParentPhone,
+		adult.WorkPhone,
+		stringToTime(adult.BirthDate),
+		model.NewNationalityOrEmpty(adult.Nationality),
+	)
 }
 
 func addressToModel(address Address) model.Address {

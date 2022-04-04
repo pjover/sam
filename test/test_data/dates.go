@@ -4,4 +4,4 @@ import (
 	"time"
 )
 
-var Date = time.Date(2019, 5, 25, 0, 0, 0, 0, time.UTC)
+var TestDate = time.Date(2019, 5, 25, 0, 0, 0, 0, time.UTC)

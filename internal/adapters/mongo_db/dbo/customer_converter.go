@@ -51,22 +51,22 @@ func adults(adults []Adult) []model.Adult {
 }
 
 func adult(adult Adult) model.Adult {
-	return model.Adult{
-		Name:             adult.Name,
-		Surname:          adult.Surname,
-		SecondSurname:    adult.SecondSurname,
-		TaxID:            model.NewTaxIdOrEmpty(adult.TaxID),
-		Role:             adult_role.NewAdultRole(adult.Role),
-		Address:          address(adult.Address),
-		Email:            adult.Email,
-		MobilePhone:      adult.MobilePhone,
-		HomePhone:        adult.HomePhone,
-		GrandMotherPhone: adult.GrandMotherPhone,
-		GrandParentPhone: adult.GrandParentPhone,
-		WorkPhone:        adult.WorkPhone,
-		BirthDate:        adult.BirthDate,
-		Nationality:      model.NewNationalityOrEmpty(adult.Nationality),
-	}
+	return model.NewAdult(
+		adult.Name,
+		adult.Surname,
+		adult.SecondSurname,
+		model.NewTaxIdOrEmpty(adult.TaxID),
+		adult_role.NewAdultRole(adult.Role),
+		address(adult.Address),
+		adult.Email,
+		adult.MobilePhone,
+		adult.HomePhone,
+		adult.GrandMotherPhone,
+		adult.GrandParentPhone,
+		adult.WorkPhone,
+		adult.BirthDate,
+		model.NewNationalityOrEmpty(adult.Nationality),
+	)
 }
 
 func address(address Address) model.Address {
@@ -144,20 +144,20 @@ func adultsToDbo(adults []model.Adult) []Adult {
 
 func adultToDbo(adult model.Adult) Adult {
 	return Adult{
-		Name:             adult.Name,
-		Surname:          adult.Surname,
-		SecondSurname:    adult.SecondSurname,
-		TaxID:            adult.TaxID.String(),
-		Role:             adult.Role.String(),
-		Address:          addressToDbo(adult.Address),
-		Email:            adult.Email,
-		MobilePhone:      adult.MobilePhone,
-		HomePhone:        adult.HomePhone,
-		GrandMotherPhone: adult.GrandMotherPhone,
-		GrandParentPhone: adult.GrandParentPhone,
-		WorkPhone:        adult.WorkPhone,
-		BirthDate:        adult.BirthDate,
-		Nationality:      adult.Nationality.String(),
+		Name:             adult.Name(),
+		Surname:          adult.Surname(),
+		SecondSurname:    adult.SecondSurname(),
+		TaxID:            adult.TaxID().String(),
+		Role:             adult.Role().String(),
+		Address:          addressToDbo(adult.Address()),
+		Email:            adult.Email(),
+		MobilePhone:      adult.MobilePhone(),
+		HomePhone:        adult.HomePhone(),
+		GrandMotherPhone: adult.GrandMotherPhone(),
+		GrandParentPhone: adult.GrandParentPhone(),
+		WorkPhone:        adult.WorkPhone(),
+		BirthDate:        adult.BirthDate(),
+		Nationality:      adult.Nationality().String(),
 	}
 }
 

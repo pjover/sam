@@ -1,6 +1,7 @@
 package dto
 
 import (
+	"github.com/pjover/sam/internal/domain"
 	"github.com/pjover/sam/internal/domain/model"
 	"github.com/pjover/sam/test/test_data"
 	"github.com/stretchr/testify/assert"
@@ -41,30 +42,58 @@ func TestCustomerToModel(t *testing.T) {
 				},
 				Adults: []Adult{
 					{
-						Name:          "Nom de la mare",
-						Surname:       "1er llinatge_mare",
-						SecondSurname: "2on llinatge_mare",
+						Name:          "Cara",
+						Surname:       "Santamaria",
+						SecondSurname: "Novella",
 						TaxID:         "36361882D",
 						Role:          "MOTHER",
+						Address: Address{
+							Street:  "Carrer Ucraïna 2022, 1st",
+							ZipCode: "07007",
+							City:    "Palma",
+							State:   "Illes Balears",
+						},
+						Email:            "cara@sgu.org",
+						MobilePhone:      "654321098",
+						HomePhone:        "987654321",
+						GrandMotherPhone: "685698789",
+						GrandParentPhone: "658785478",
+						WorkPhone:        "987525444",
+						BirthDate:        test_data.TestDate.Format(domain.YearMonthDayLayout),
+						Nationality:      "US",
 					},
 					{
-						Name:          "Nom de la pare",
-						Surname:       "1er llinatge_pare",
-						SecondSurname: "2on llinatge_pare",
+						Name:          "Bob",
+						Surname:       "Novella",
+						SecondSurname: "Sagan",
 						TaxID:         "71032204Q",
 						Role:          "FATHER",
+						Address: Address{
+							Street:  "Carrer Ucraïna 2022, 1st",
+							ZipCode: "07007",
+							City:    "Palma",
+							State:   "Illes Balears",
+						},
+						Email:            "bob@sgu.org",
+						MobilePhone:      "654321097",
+						HomePhone:        "987654322",
+						GrandMotherPhone: "685698788",
+						GrandParentPhone: "658785477",
+						WorkPhone:        "987525446",
+						BirthDate:        test_data.TestDate.Format(domain.YearMonthDayLayout),
+						Nationality:      "UK",
 					},
 				},
 				InvoiceHolder: InvoiceHolder{
-					Name:  "Nom de la mare 1er llinatge_mare 2on llinatge_mare",
+					Name:  "Cara Santamaria Novella",
 					TaxID: "36361882D",
 					Address: Address{
-						Street:  "Address first line",
+						Street:  "Carrer Ucraïna 2022, 1st",
 						ZipCode: "07007",
 						City:    "Palma",
 						State:   "Illes Balears",
 					},
-					Email:       "email@gmail.com",
+					Email:       "cara@sgu.org",
 					PaymentType: "BANK_DIRECT_DEBIT",
 					Iban:        "ES2830668859978258529057",
 				},

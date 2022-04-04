@@ -176,7 +176,7 @@ func (c CustomerCardsReports) adultsSubReports(adults []model.Adult) []SubReport
 
 func (c CustomerCardsReports) adultSubReport(adult model.Adult) SubReport {
 	return CardSubReport{
-		Title: adult.Role.Format(),
+		Title: adult.Role().Format(),
 		Align: consts.Left,
 		Captions: []string{
 			"Nom",
@@ -199,20 +199,20 @@ func (c CustomerCardsReports) adultSubReport(adult model.Adult) SubReport {
 			15,
 		},
 		Data: [][]string{
-			{adult.Name},
-			{adult.Surname},
-			{adult.SecondSurname},
-			{adult.TaxID.String()},
-			{adult.BirthDate.Format(domain.YearMonthDayLayout)},
-			{adult.Nationality.String()},
-			{adult.Role.Format()},
-			{adult.Email},
-			{adult.Address.CompleteAddress()},
-			{adult.MobilePhone},
-			{adult.HomePhone},
-			{adult.WorkPhone},
-			{adult.GrandParentPhone},
-			{adult.GrandMotherPhone},
+			{adult.Name()},
+			{adult.Surname()},
+			{adult.SecondSurname()},
+			{adult.TaxID().String()},
+			{adult.BirthDate().Format(domain.YearMonthDayLayout)},
+			{adult.Nationality().String()},
+			{adult.Role().Format()},
+			{adult.Email()},
+			{adult.Address().CompleteAddress()},
+			{adult.MobilePhone()},
+			{adult.HomePhone()},
+			{adult.WorkPhone()},
+			{adult.GrandParentPhone()},
+			{adult.GrandMotherPhone()},
 		},
 	}
 }

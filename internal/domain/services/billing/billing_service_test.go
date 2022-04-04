@@ -110,10 +110,7 @@ var sequences = []model.Sequence{
 var customer185 = model.Customer{
 	Id: 185,
 	Adults: []model.Adult{
-		{
-			Name:    "Cara",
-			Surname: "Santamaria",
-		},
+		test_data.AdultMother,
 	},
 	InvoiceHolder: model.InvoiceHolder{
 		PaymentType: payment_type.BankDirectDebit,
@@ -123,10 +120,7 @@ var customer185 = model.Customer{
 var customer186 = model.Customer{
 	Id: 186,
 	Adults: []model.Adult{
-		{
-			Name:    "Bob",
-			Surname: "Novella",
-		},
+		test_data.AdultFather,
 	},
 	InvoiceHolder: model.InvoiceHolder{
 		PaymentType: payment_type.BankDirectDebit,

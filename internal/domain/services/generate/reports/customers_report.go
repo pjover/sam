@@ -103,7 +103,7 @@ func (c CustomerReport) buildContents(customers []model.Customer) [][]string {
 				child.BirthDate.Format("2006-02-01"),
 				adult.NameAndSurname(),
 				adult.MobilePhoneFmt(),
-				adult.Email,
+				adult.Email(),
 				customer.InvoiceHolder.PaymentInfoFmt(),
 			}
 			contents = append(contents, line)
@@ -129,7 +129,7 @@ func (c CustomerReport) buildData(customers []model.Customer) [][]string {
 				child.BirthDate.Format("2006-02-01"),
 				adult.NameAndSurname(),
 				adult.MobilePhoneFmt(),
-				adult.Email,
+				adult.Email(),
 				customer.InvoiceHolder.PaymentInfoFmt(),
 			}
 			data = append(data, dataLine)

@@ -32,7 +32,7 @@ var lines = []model.InvoiceLine{
 var InvoiceF100 = model.Invoice{
 	Id:          "F-100",
 	CustomerId:  148,
-	Date:        Date,
+	Date:        TestDate,
 	YearMonth:   model.NewYearMonth(2019, 5),
 	ChildrenIds: []int{1800, 1801},
 	Lines:       lines,
@@ -46,7 +46,7 @@ var InvoiceF100 = model.Invoice{
 var InvoiceF101 = model.Invoice{
 	Id:          "F-101",
 	CustomerId:  148,
-	Date:        Date,
+	Date:        TestDate,
 	YearMonth:   model.NewYearMonth(2019, 5),
 	ChildrenIds: []int{1801, 1802},
 	Lines:       lines,
@@ -60,7 +60,7 @@ var InvoiceF101 = model.Invoice{
 var InvoiceF102 = model.Invoice{
 	Id:          "F-102",
 	CustomerId:  149,
-	Date:        Date,
+	Date:        TestDate,
 	YearMonth:   model.NewYearMonth(2019, 5),
 	ChildrenIds: []int{1800, 1801, 1802},
 	Lines:       lines,
@@ -74,7 +74,7 @@ var InvoiceF102 = model.Invoice{
 var InvoiceF103 = model.Invoice{
 	Id:          "F-103",
 	CustomerId:  149,
-	Date:        Date,
+	Date:        TestDate,
 	YearMonth:   model.NewYearMonth(2019, 5),
 	ChildrenIds: []int{1800},
 	Lines:       lines,
