@@ -105,7 +105,7 @@ func (l listService) ListMails() (string, error) {
 
 	var buffer bytes.Buffer
 	for _, customer := range customers {
-		buffer.WriteString(customer.InvoiceHolder.Mail() + ", ")
+		buffer.WriteString(customer.InvoiceHolder().Mail() + ", ")
 	}
 	return buffer.String(), nil
 }
@@ -120,10 +120,10 @@ func (l listService) ListMailsByLanguage() (string, error) {
 	caBuffer.WriteString("CA:\n")
 	esBuffer.WriteString("ES:\n")
 	for _, customer := range customers {
-		if customer.Language == language.Catalan {
-			caBuffer.WriteString(customer.InvoiceHolder.Mail() + ", ")
+		if customer.Language() == language.Catalan {
+			caBuffer.WriteString(customer.InvoiceHolder().Mail() + ", ")
 		} else {
-			esBuffer.WriteString(customer.InvoiceHolder.Mail() + ", ")
+			esBuffer.WriteString(customer.InvoiceHolder().Mail() + ", ")
 		}
 	}
 	return caBuffer.String() + "\n" + esBuffer.String(), nil
@@ -139,14 +139,14 @@ func (l listService) ListGroupMails(groupType group_type.GroupType) (string, err
 	buffer.WriteString(groupType.Format() + ":\n")
 	for _, customer := range customers {
 		var in bool
-		for _, child := range customer.Children {
+		for _, child := range customer.Children() {
 			if child.Group == groupType {
 				in = true
 				break
 			}
 		}
 		if in {
-			buffer.WriteString(customer.InvoiceHolder.Mail() + ", ")
+			buffer.WriteString(customer.InvoiceHolder().Mail() + ", ")
 		}
 	}
 	return buffer.String(), nil

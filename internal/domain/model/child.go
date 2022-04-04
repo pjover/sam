@@ -30,3 +30,13 @@ func (c Child) NameAndSurname() string {
 func (c Child) NameWithId() string {
 	return fmt.Sprintf("%s %s (%d)", c.Name, c.Surname, c.Id)
 }
+
+type TransientChild struct {
+	Name          string
+	Surname       string
+	SecondSurname string
+	TaxID         TaxId
+	BirthDate     time.Time
+	Group         group_type.GroupType
+	Note          string
+}

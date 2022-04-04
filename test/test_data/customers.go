@@ -8,8 +8,8 @@ import (
 	"github.com/pjover/sam/internal/domain/model/payment_type"
 )
 
-var Child1850 = model.Child{
-	Id:            1850,
+var Child1480 = model.Child{
+	Id:            1480,
 	Name:          "Laura",
 	Surname:       "Llull",
 	SecondSurname: "Bibiloni",
@@ -18,8 +18,8 @@ var Child1850 = model.Child{
 	Active:        true,
 }
 
-var Child1851 = model.Child{
-	Id:            1851,
+var Child1481 = model.Child{
+	Id:            1481,
 	Name:          "Aina",
 	Surname:       "Llull",
 	SecondSurname: "Bibiloni",
@@ -29,7 +29,7 @@ var Child1851 = model.Child{
 	Active:        true,
 }
 
-var AdultMother = model.NewAdult(
+var AdultMother148 = model.NewAdult(
 	"Cara",
 	"Santamaria",
 	"Novella",
@@ -51,7 +51,7 @@ var AdultMother = model.NewAdult(
 	model.NewNationalityOrEmpty("US"),
 )
 
-var AdultFather = model.NewAdult(
+var AdultFather148 = model.NewAdult(
 	"Bob",
 	"Novella",
 	"Sagan",
@@ -87,6 +87,89 @@ var InvoiceHolder148 = model.InvoiceHolder{
 	Iban:        model.NewIbanOrEmpty("ES2830668859978258529057"),
 }
 
+var Customer148 = model.NewCustomer(
+	148,
+	true,
+	[]model.Child{
+		Child1480,
+		Child1481,
+	},
+	[]model.Adult{
+		AdultMother148,
+		AdultFather148,
+	},
+	InvoiceHolder148,
+	"Nota del client 148",
+	language.Catalan,
+	TestDate,
+)
+
+var Child1490 = model.Child{
+	Id:            1480,
+	Name:          "Antònia",
+	Surname:       "Petit",
+	SecondSurname: "Petita",
+	TaxID:         model.NewTaxIdOrEmpty("81620787C"),
+	BirthDate:     TestDate,
+	Group:         group_type.EI_2,
+	Active:        true,
+}
+
+var Child1491 = model.Child{
+	Id:            1481,
+	Name:          "Antoni",
+	Surname:       "Petit",
+	SecondSurname: "Petita",
+	TaxID:         model.NewTaxIdOrEmpty("51389353Q"),
+	BirthDate:     TestDate,
+	Group:         group_type.EI_3,
+	Active:        true,
+}
+
+var AdultMother149 = model.NewAdult(
+	"Joana",
+	"Petita",
+	"Puig",
+	model.NewTaxIdOrEmpty("80587890F"),
+	adult_role.Mother,
+	model.NewAddress(
+		"Carrer de sa Tanca 2, 1er",
+		"07192",
+		"Estellencs",
+		"Illes Balears",
+	),
+	"joana@cameva.org",
+	"654521098",
+	"987674321",
+	"695698789",
+	"657785478",
+	"987524444",
+	TestDate,
+	model.NewNationalityOrEmpty("ES"),
+)
+
+var AdultFather149 = model.NewAdult(
+	"Joan",
+	"Petit",
+	"Galatzó",
+	model.NewTaxIdOrEmpty("91071996T"),
+	adult_role.Father,
+	model.NewAddress(
+		"Carrer de sa Tanca 2, 1er",
+		"07192",
+		"Estellencs",
+		"Illes Balears",
+	),
+	"joan@cameva.org",
+	"654321099",
+	"987654329",
+	"685698789",
+	"658785479",
+	"987525449",
+	TestDate,
+	model.NewNationalityOrEmpty("ES"),
+)
+
 var InvoiceHolder149 = model.InvoiceHolder{
 	Name:  "Nom empresa",
 	TaxID: model.NewTaxIdOrEmpty("37866397W"),
@@ -102,34 +185,19 @@ var InvoiceHolder149 = model.InvoiceHolder{
 	IsBusiness:  true,
 }
 
-var Customer148 = model.Customer{
-	Id:     148,
-	Active: true,
-	Children: []model.Child{
-		Child1850,
-		Child1851,
+var Customer149 = model.NewCustomer(
+	149,
+	true,
+	[]model.Child{
+		Child1490,
+		Child1491,
 	},
-	Adults: []model.Adult{
-		AdultMother,
-		AdultFather,
+	[]model.Adult{
+		AdultMother149,
+		AdultFather149,
 	},
-	InvoiceHolder: InvoiceHolder148,
-	Note:          "Nota del client",
-	Language:      language.Catalan,
-}
-
-var Customer149 = model.Customer{
-	Id:     149,
-	Active: true,
-	Children: []model.Child{
-		Child1850,
-		Child1851,
-	},
-	Adults: []model.Adult{
-		AdultMother,
-		AdultFather,
-	},
-	InvoiceHolder: InvoiceHolder149,
-	Note:          "Nota del client",
-	Language:      language.Catalan,
-}
+	InvoiceHolder149,
+	"Nota del client 149",
+	language.Catalan,
+	TestDate,
+)

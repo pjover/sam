@@ -71,7 +71,7 @@ func (b bulkLoader) LoadCustomers() (customers map[int]model.Customer, err error
 
 	customers = make(map[int]model.Customer)
 	for _, customer := range customersList {
-		customers[customer.Id] = customer
+		customers[customer.Id()] = customer
 	}
 	return customers, nil
 }

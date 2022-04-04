@@ -62,19 +62,19 @@ func (c CustomerCardsReports) revertLastCustomersCardsUpdated(changedSince time.
 
 func (c CustomerCardsReports) run(dirPath string, customer model.Customer) (string, error) {
 	var buffer bytes.Buffer
-	buffer.WriteString(fmt.Sprintf("Generant la fitxa del client %d, %s ...\n", customer.Id, customer.InvoiceHolder.Name))
+	buffer.WriteString(fmt.Sprintf("Generant la fitxa del client %d, %s ...\n", customer.Id(), customer.InvoiceHolder().Name))
 
 	childrenNames := customer.ChildrenNamesWithSurname(", ")
 	reportDefinition := ReportDefinition{
 		PageOrientation: consts.Portrait,
-		Title:           fmt.Sprintf("Fitxa del client %d: %s", customer.Id, childrenNames),
+		Title:           fmt.Sprintf("Fitxa del client %d: %s", customer.Id(), childrenNames),
 		Footer:          c.osService.Now().Format(domain.YearMonthDayLayout),
 		SubReports:      c.subReports(customer),
 	}
 
 	filePath := path.Join(
 		dirPath,
-		fmt.Sprintf("%d-%s.pdf", customer.Id, childrenNames),
+		fmt.Sprintf("%d-%s.pdf", customer.Id(), childrenNames),
 	)
 
 	reportService := NewReportService(c.configService)
@@ -90,9 +90,9 @@ func (c CustomerCardsReports) run(dirPath string, customer model.Customer) (stri
 func (c CustomerCardsReports) subReports(customer model.Customer) []SubReport {
 	var subReports []SubReport
 	subReports = append(subReports, c.headerSubReport(customer))
-	subReports = append(subReports, c.childrenSubReports(customer.Children)...)
-	subReports = append(subReports, c.adultsSubReports(customer.Adults)...)
-	subReports = append(subReports, c.holderSubReport(customer.InvoiceHolder))
+	subReports = append(subReports, c.childrenSubReports(customer.Children())...)
+	subReports = append(subReports, c.adultsSubReports(customer.Adults())...)
+	subReports = append(subReports, c.holderSubReport(customer.InvoiceHolder()))
 	return subReports
 }
 
@@ -110,9 +110,9 @@ func (c CustomerCardsReports) headerSubReport(customer model.Customer) SubReport
 			15,
 		},
 		Data: [][]string{
-			{customer.Language.Format()},
-			{customer.Note},
-			{c.boolToYesNo(customer.Active)},
+			{customer.Language().Format()},
+			{customer.Note()},
+			{c.boolToYesNo(customer.Active())},
 		},
 	}
 }

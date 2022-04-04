@@ -110,16 +110,16 @@ func (i invoicesToBddConverter) getDetailDateOfSignature(now time.Time) string {
 }
 
 func (i invoicesToBddConverter) getDetailName(customer model.Customer) string {
-	return customer.InvoiceHolder.Name
+	return customer.InvoiceHolder().Name
 }
 
 func (i invoicesToBddConverter) getDetailIdentification(customer model.Customer) string {
 	country := i.configService.GetString("bdd.country")
-	return i.getSepaIndentifier(customer.InvoiceHolder.TaxID.String(), country, "000")
+	return i.getSepaIndentifier(customer.InvoiceHolder().TaxID.String(), country, "000")
 }
 
 func (i invoicesToBddConverter) getDetailCustomerBankAccount(customer model.Customer) string {
-	return customer.InvoiceHolder.Iban.String()
+	return customer.InvoiceHolder().Iban.String()
 }
 
 func (i invoicesToBddConverter) getDetailRemittanceInformation(invoice model.Invoice, products map[string]model.Product) string {
@@ -143,7 +143,7 @@ func (i invoicesToBddConverter) getShortNameInvoiceDescription(invoice model.Inv
 }
 
 func (i invoicesToBddConverter) getDetailIsBusiness(customer model.Customer) bool {
-	return customer.InvoiceHolder.IsBusiness
+	return customer.InvoiceHolder().IsBusiness
 }
 
 func (i invoicesToBddConverter) getSepaIndentifier(taxID string, country string, suffix string) string {

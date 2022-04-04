@@ -46,7 +46,7 @@ func (d dbService) FindChild(id int) (model.Child, error) {
 	}
 
 	var child model.Child
-	for _, value := range customer.Children {
+	for _, value := range customer.Children() {
 		if value.Id == id {
 			child = value
 			break
@@ -208,7 +208,7 @@ func (d dbService) FindActiveChildren() ([]model.Child, error) {
 
 	var children []model.Child
 	for _, customer := range customers {
-		for _, child := range customer.Children {
+		for _, child := range customer.Children() {
 			if child.Active {
 				children = append(children, child)
 			}

@@ -93,7 +93,7 @@ func (c CustomerReport) buildContents(customers []model.Customer) [][]string {
 	var contents [][]string
 	for _, customer := range customers {
 		adult := customer.FirstAdult()
-		for _, child := range customer.Children {
+		for _, child := range customer.Children() {
 			if !child.Active {
 				continue
 			}
@@ -104,7 +104,7 @@ func (c CustomerReport) buildContents(customers []model.Customer) [][]string {
 				adult.NameAndSurname(),
 				adult.MobilePhoneFmt(),
 				adult.Email(),
-				customer.InvoiceHolder.PaymentInfoFmt(),
+				customer.InvoiceHolder().PaymentInfoFmt(),
 			}
 			contents = append(contents, line)
 		}
@@ -119,7 +119,7 @@ func (c CustomerReport) buildData(customers []model.Customer) [][]string {
 	var data [][]string
 	for _, customer := range customers {
 		adult := customer.FirstAdult()
-		for _, child := range customer.Children {
+		for _, child := range customer.Children() {
 			if !child.Active {
 				continue
 			}
@@ -130,7 +130,7 @@ func (c CustomerReport) buildData(customers []model.Customer) [][]string {
 				adult.NameAndSurname(),
 				adult.MobilePhoneFmt(),
 				adult.Email(),
-				customer.InvoiceHolder.PaymentInfoFmt(),
+				customer.InvoiceHolder().PaymentInfoFmt(),
 			}
 			data = append(data, dataLine)
 		}

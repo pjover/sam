@@ -3,41 +3,37 @@ package dto
 import (
 	"github.com/pjover/sam/internal/domain"
 	"github.com/pjover/sam/internal/domain/model"
+	"github.com/pjover/sam/internal/domain/model/group_type"
+	"github.com/pjover/sam/internal/domain/model/language"
 	"github.com/pjover/sam/test/test_data"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
-func TestCustomerToModel(t *testing.T) {
+func TestTransientCustomerToModel(t *testing.T) {
 	tests := []struct {
 		name     string
-		customer Customer
-		want     model.Customer
+		customer TransientCustomer
+		want     model.TransientCustomer
 	}{
 		{
 			name: "customer DTO to model",
-			customer: Customer{
-				Id:     148,
-				Active: true,
-				Children: []Child{
+			customer: TransientCustomer{
+				Children: []TransientChild{
 					{
-						Id:            1850,
 						Name:          "Laura",
 						Surname:       "Llull",
 						SecondSurname: "Bibiloni",
 						BirthDate:     "2019-05-25",
 						Group:         "EI_1",
-						Active:        true,
 					},
 					{
-						Id:            1851,
 						Name:          "Aina",
 						Surname:       "Llull",
 						SecondSurname: "Bibiloni",
 						TaxID:         "60235657Z",
 						BirthDate:     "2019-05-25",
 						Group:         "EI_1",
-						Active:        true,
 					},
 				},
 				Adults: []Adult{
@@ -97,15 +93,43 @@ func TestCustomerToModel(t *testing.T) {
 					PaymentType: "BANK_DIRECT_DEBIT",
 					Iban:        "ES2830668859978258529057",
 				},
-				Note:     "Nota del client",
+				Note:     "Nota del client 148",
 				Language: "CA",
 			},
-			want: test_data.Customer148,
+			want: model.TransientCustomer{
+				Children: []model.TransientChild{
+					{
+						Name:          "Laura",
+						Surname:       "Llull",
+						SecondSurname: "Bibiloni",
+						TaxID:         model.NewTaxIdOrEmpty(""),
+						BirthDate:     test_data.TestDate,
+						Group:         group_type.EI_1,
+						Note:          "",
+					},
+					{
+						Name:          "Aina",
+						Surname:       "Llull",
+						SecondSurname: "Bibiloni",
+						TaxID:         model.NewTaxIdOrEmpty("60235657Z"),
+						BirthDate:     test_data.TestDate,
+						Group:         group_type.EI_1,
+						Note:          "",
+					},
+				},
+				Adults: []model.Adult{
+					test_data.AdultMother148,
+					test_data.AdultFather148,
+				},
+				InvoiceHolder: test_data.InvoiceHolder148,
+				Note:          "Nota del client 148",
+				Language:      language.Catalan,
+			},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := CustomerToModel(tt.customer)
+			got := TransientCustomerToModel(tt.customer)
 			assert.Equal(t, tt.want, got)
 		})
 	}

@@ -58,21 +58,21 @@ func (c createCustomerCmd) Cmd() *cobra.Command {
 	}
 }
 
-func (c createCustomerCmd) loadCustomer(filename string) (customer model.Customer, err error) {
+func (c createCustomerCmd) loadCustomer(filename string) (customer model.TransientCustomer, err error) {
 	workingDir := c.configService.GetWorkingDirectory()
 	filePath := path.Join(workingDir, filename)
 
 	content, err := c.osService.ReadFile(filePath)
 	if err != nil {
-		return model.Customer{}, err
+		return model.TransientCustomer{}, err
 	}
 
-	var customerDto dto.Customer
+	var customerDto dto.TransientCustomer
 	err = json.Unmarshal(content, &customerDto)
 	if err != nil {
-		return model.Customer{}, fmt.Errorf("error llegint el JSON del nou client: %s", err)
+		return model.TransientCustomer{}, fmt.Errorf("error llegint el JSON del nou client: %s", err)
 	}
 
-	customer = dto.CustomerToModel(customerDto)
+	customer = dto.TransientCustomerToModel(customerDto)
 	return customer, nil
 }

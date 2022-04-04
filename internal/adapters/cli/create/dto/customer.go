@@ -11,6 +11,14 @@ import (
 	"time"
 )
 
+type TransientCustomer struct {
+	Children      []TransientChild
+	Adults        []Adult
+	InvoiceHolder InvoiceHolder
+	Note          string
+	Language      string
+}
+
 type Customer struct {
 	Id            int
 	Active        bool
@@ -19,7 +27,17 @@ type Customer struct {
 	InvoiceHolder InvoiceHolder
 	Note          string
 	Language      string
-	ChangedOn     time.Time // TODO Not used
+	ChangedOn     time.Time
+}
+
+type TransientChild struct {
+	Name          string
+	Surname       string
+	SecondSurname string
+	TaxID         string
+	BirthDate     string
+	Group         string
+	Note          string
 }
 
 type Child struct {
@@ -69,29 +87,26 @@ type InvoiceHolder struct {
 	IsBusiness  bool
 }
 
-func CustomerToModel(customer Customer) model.Customer {
-	return model.Customer{
-		Id:            customer.Id,
-		Active:        customer.Active,
-		Children:      childrenToModel(customer.Children),
-		Adults:        adultsToModel(customer.Adults),
-		InvoiceHolder: holderToModel(customer.InvoiceHolder),
-		Note:          customer.Note,
-		Language:      language.NewLanguage(customer.Language),
+func TransientCustomerToModel(customer TransientCustomer) model.TransientCustomer {
+	return model.TransientCustomer{
+		transientChildrenToModel(customer.Children),
+		adultsToModel(customer.Adults),
+		holderToModel(customer.InvoiceHolder),
+		customer.Note,
+		language.NewLanguage(customer.Language),
 	}
 }
 
-func childrenToModel(children []Child) []model.Child {
-	var out []model.Child
+func transientChildrenToModel(children []TransientChild) []model.TransientChild {
+	var out []model.TransientChild
 	for _, c := range children {
 		out = append(out, childToModel(c))
 	}
 	return out
 }
 
-func childToModel(child Child) model.Child {
-	return model.Child{
-		Id:            child.Id,
+func childToModel(child TransientChild) model.TransientChild {
+	return model.TransientChild{
 		Name:          child.Name,
 		Surname:       child.Surname,
 		SecondSurname: child.SecondSurname,
@@ -99,7 +114,6 @@ func childToModel(child Child) model.Child {
 		BirthDate:     stringToTime(child.BirthDate),
 		Group:         group_type.NewGroupType(child.Group),
 		Note:          child.Note,
-		Active:        child.Active,
 	}
 }
 

@@ -9,27 +9,74 @@ import (
 )
 
 type Customer struct {
-	Id            int
-	Active        bool
-	Children      []Child
-	Adults        []Adult
-	InvoiceHolder InvoiceHolder
-	Note          string
-	Language      language.Language
-	ChangedOn     time.Time
+	id            int
+	active        bool
+	children      []Child
+	adults        []Adult
+	invoiceHolder InvoiceHolder
+	note          string
+	language      language.Language
+	changedOn     time.Time
+}
+
+func NewCustomer(
+	id int,
+	active bool,
+	children []Child,
+	adults []Adult,
+	invoiceHolder InvoiceHolder,
+	note string,
+	language language.Language,
+	changedOn time.Time,
+) Customer {
+	return Customer{
+		id:            id,
+		active:        active,
+		children:      children,
+		adults:        adults,
+		invoiceHolder: invoiceHolder,
+		note:          note,
+		language:      language,
+		changedOn:     changedOn,
+	}
+}
+
+func (c Customer) Id() int {
+	return c.id
+}
+func (c Customer) Active() bool {
+	return c.active
+}
+func (c Customer) Children() []Child {
+	return c.children
+}
+func (c Customer) Adults() []Adult {
+	return c.adults
+}
+func (c Customer) InvoiceHolder() InvoiceHolder {
+	return c.invoiceHolder
+}
+func (c Customer) Note() string {
+	return c.note
+}
+func (c Customer) Language() language.Language {
+	return c.language
+}
+func (c Customer) ChangedOn() time.Time {
+	return c.changedOn
 }
 
 func (c Customer) String() string {
-	return fmt.Sprintf("%d  %-25s  %-55s  %s", c.Id, c.FirstAdultName(), c.ChildrenNamesWithId(", "), c.InvoiceHolder.PaymentInfoFmt())
+	return fmt.Sprintf("%d  %-25s  %-55s  %s", c.id, c.FirstAdultName(), c.ChildrenNamesWithId(", "), c.invoiceHolder.PaymentInfoFmt())
 }
 
 func (c Customer) FirstAdult() Adult {
-	for _, adult := range c.Adults {
+	for _, adult := range c.Adults() {
 		if adult.Role() == adult_role.Mother {
 			return adult
 		}
 	}
-	return c.Adults[0]
+	return c.Adults()[0]
 }
 
 func (c Customer) FirstAdultName() string {
@@ -39,12 +86,12 @@ func (c Customer) FirstAdultName() string {
 
 func (c Customer) FirstAdultNameWithId() string {
 	adult := c.FirstAdult()
-	return fmt.Sprintf("%s %s (%d)", adult.Name(), adult.Surname(), c.Id)
+	return fmt.Sprintf("%s %s (%d)", adult.Name(), adult.Surname(), c.Id())
 }
 
 func (c Customer) ChildrenNamesWithId(joinWith string) string {
 	var names []string
-	for _, child := range c.Children {
+	for _, child := range c.Children() {
 		names = append(names, child.NameWithId())
 	}
 	return strings.Join(names, joinWith)
@@ -52,12 +99,20 @@ func (c Customer) ChildrenNamesWithId(joinWith string) string {
 
 func (c Customer) ChildrenNames(joinWith string) string {
 	var names []string
-	for _, child := range c.Children {
+	for _, child := range c.Children() {
 		names = append(names, child.Name)
 	}
 	return strings.Join(names, joinWith)
 }
 
 func (c Customer) ChildrenNamesWithSurname(joinWith string) string {
-	return fmt.Sprintf("%s %s", c.ChildrenNames(joinWith), c.Children[0].Surname)
+	return fmt.Sprintf("%s %s", c.ChildrenNames(joinWith), c.Children()[0].Surname)
+}
+
+type TransientCustomer struct {
+	Children      []TransientChild
+	Adults        []Adult
+	InvoiceHolder InvoiceHolder
+	Note          string
+	Language      language.Language
 }

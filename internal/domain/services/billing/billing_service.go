@@ -48,7 +48,7 @@ func (b billingService) insertConsumptions(childId int, consumptions map[string]
 	if err != nil {
 		return "", err
 	}
-	if !customer.Active {
+	if !customer.Active() {
 		return "", fmt.Errorf("el client %s no està activat, edita'l per activar-lo abans d'insertar consums", customer.FirstAdultNameWithId())
 	}
 
@@ -205,12 +205,12 @@ func (b billingService) consumptionsToInvoice(customer model.Customer, consumpti
 	}
 
 	return model.Invoice{
-		CustomerId:  customer.Id,
+		CustomerId:  customer.Id(),
 		Date:        today,
 		YearMonth:   yearMonth,
 		ChildrenIds: childrenIds,
 		Lines:       lines,
-		PaymentType: customer.InvoiceHolder.PaymentType,
+		PaymentType: customer.InvoiceHolder().PaymentType,
 		Note:        b.notes(consumptions),
 	}, nil
 }
@@ -327,7 +327,7 @@ func (b billingService) getSequenceType(invoice model.Invoice, customer model.Cu
 	if invoice.Id == "TMP_ID_RECTIFICATION=true" {
 		return sequence_type.RectificationInvoice
 	} else {
-		return customer.InvoiceHolder.PaymentType.SequenceType()
+		return customer.InvoiceHolder().PaymentType.SequenceType()
 	}
 }
 

@@ -9,15 +9,16 @@ import (
 )
 
 func ConvertCustomerToModel(customer Customer) model.Customer {
-	return model.Customer{
-		Id:            customer.Id,
-		Active:        customer.Active,
-		Children:      children(customer.Children),
-		Adults:        adults(customer.Adults),
-		InvoiceHolder: holderToModel(customer.InvoiceHolder),
-		Note:          customer.Note,
-		Language:      language.NewLanguage(customer.Language),
-	}
+	return model.NewCustomer(
+		customer.Id,
+		customer.Active,
+		children(customer.Children),
+		adults(customer.Adults),
+		holderToModel(customer.InvoiceHolder),
+		customer.Note,
+		language.NewLanguage(customer.Language),
+		customer.ChangedOn,
+	)
 }
 
 func children(children []Child) []model.Child {
@@ -101,14 +102,14 @@ func CustomerToModel(customers []Customer) []model.Customer {
 
 func ConvertCustomerToDbo(customer model.Customer) Customer {
 	return Customer{
-		Id:            customer.Id,
-		Active:        customer.Active,
-		Children:      childrenToDbo(customer.Children),
-		Adults:        adultsToDbo(customer.Adults),
-		InvoiceHolder: invoiceHolderToDbo(customer.InvoiceHolder),
-		Note:          customer.Note,
-		Language:      customer.Language.String(),
-		ChangedOn:     customer.ChangedOn,
+		Id:            customer.Id(),
+		Active:        customer.Active(),
+		Children:      childrenToDbo(customer.Children()),
+		Adults:        adultsToDbo(customer.Adults()),
+		InvoiceHolder: invoiceHolderToDbo(customer.InvoiceHolder()),
+		Note:          customer.Note(),
+		Language:      customer.Language().String(),
+		ChangedOn:     customer.ChangedOn(),
 	}
 }
 
