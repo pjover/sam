@@ -21,12 +21,15 @@ func NewAddress(street string, zipCode string, city string, state string) Addres
 func (a Address) Street() string {
 	return a.street
 }
+
 func (a Address) ZipCode() string {
 	return a.zipCode
 }
+
 func (a Address) City() string {
 	return a.city
 }
+
 func (a Address) State() string {
 	return a.state
 }

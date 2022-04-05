@@ -46,27 +46,35 @@ func NewChild(
 func (c Child) Id() int {
 	return c.id
 }
+
 func (c Child) Name() string {
 	return c.name
 }
+
 func (c Child) Surname() string {
 	return c.surname
 }
+
 func (c Child) SecondSurname() string {
 	return c.secondSurname
 }
+
 func (c Child) TaxID() TaxId {
 	return c.taxID
 }
+
 func (c Child) BirthDate() time.Time {
 	return c.birthDate
 }
+
 func (c Child) Group() group_type.GroupType {
 	return c.group
 }
+
 func (c Child) Note() string {
 	return c.note
 }
+
 func (c Child) Active() bool {
 	return c.active
 }

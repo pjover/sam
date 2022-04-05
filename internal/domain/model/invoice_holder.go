@@ -41,24 +41,31 @@ func NewInvoiceHolder(
 func (i InvoiceHolder) Name() string {
 	return i.name
 }
+
 func (i InvoiceHolder) TaxID() TaxId {
 	return i.taxID
 }
+
 func (i InvoiceHolder) Address() Address {
 	return i.address
 }
+
 func (i InvoiceHolder) Email() string {
 	return i.email
 }
+
 func (i InvoiceHolder) SendEmail() bool {
 	return i.sendEmail
 }
+
 func (i InvoiceHolder) PaymentType() payment_type.PaymentType {
 	return i.paymentType
 }
+
 func (i InvoiceHolder) Iban() IBAN {
 	return i.iban
 }
+
 func (i InvoiceHolder) IsBusiness() bool {
 	return i.isBusiness
 }

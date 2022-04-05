@@ -44,24 +44,31 @@ func NewCustomer(
 func (c Customer) Id() int {
 	return c.id
 }
+
 func (c Customer) Active() bool {
 	return c.active
 }
+
 func (c Customer) Children() []Child {
 	return c.children
 }
+
 func (c Customer) Adults() []Adult {
 	return c.adults
 }
+
 func (c Customer) InvoiceHolder() InvoiceHolder {
 	return c.invoiceHolder
 }
+
 func (c Customer) Note() string {
 	return c.note
 }
+
 func (c Customer) Language() language.Language {
 	return c.language
 }
+
 func (c Customer) ChangedOn() time.Time {
 	return c.changedOn
 }

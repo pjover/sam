@@ -60,42 +60,55 @@ func NewAdult(
 func (a Adult) Name() string {
 	return a.name
 }
+
 func (a Adult) Surname() string {
 	return a.surname
 }
+
 func (a Adult) SecondSurname() string {
 	return a.secondSurname
 }
+
 func (a Adult) TaxID() TaxId {
 	return a.taxID
 }
+
 func (a Adult) Role() adult_role.AdultRole {
 	return a.role
 }
+
 func (a Adult) Address() Address {
 	return a.address
 }
+
 func (a Adult) Email() string {
 	return a.email
 }
+
 func (a Adult) MobilePhone() string {
 	return a.mobilePhone
 }
+
 func (a Adult) HomePhone() string {
 	return a.homePhone
 }
+
 func (a Adult) GrandMotherPhone() string {
 	return a.grandMotherPhone
 }
+
 func (a Adult) GrandParentPhone() string {
 	return a.grandParentPhone
 }
+
 func (a Adult) WorkPhone() string {
 	return a.workPhone
 }
+
 func (a Adult) BirthDate() time.Time {
 	return a.birthDate
 }
+
 func (a Adult) Nationality() Nationality {
 	return a.nationality
 }
