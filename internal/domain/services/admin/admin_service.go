@@ -97,7 +97,12 @@ func (a adminService) CreateDirectories() (string, error) {
 	if err := a.createDirectory(a.configService.GetReportsDirectory()); err != nil {
 		return "", err
 	}
+
 	if err := a.createDirectory(a.configService.GetCustomersCardsDirectory()); err != nil {
+		return "", err
+	}
+
+	if err := a.createDirectory(a.configService.GetString("dirs.backup")); err != nil {
 		return "", err
 	}
 
