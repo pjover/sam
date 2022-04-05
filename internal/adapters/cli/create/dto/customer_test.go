@@ -104,7 +104,7 @@ func TestTransientCustomerToModel(t *testing.T) {
 						SecondSurname: "Bibiloni",
 						TaxID:         model.NewTaxIdOrEmpty(""),
 						BirthDate:     test_data.TestDate,
-						Group:         group_type.EI_1,
+						Group:         group_type.Ei1,
 						Note:          "",
 					},
 					{
@@ -113,7 +113,7 @@ func TestTransientCustomerToModel(t *testing.T) {
 						SecondSurname: "Bibiloni",
 						TaxID:         model.NewTaxIdOrEmpty("60235657Z"),
 						BirthDate:     test_data.TestDate,
-						Group:         group_type.EI_1,
+						Group:         group_type.Ei1,
 						Note:          "",
 					},
 				},

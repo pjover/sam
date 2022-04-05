@@ -69,11 +69,11 @@ func (l listMailsCmd) callListMails() (string, error) {
 		return l.listService.ListMailsByLanguage()
 	} else {
 		if l.ei1 {
-			return l.listService.ListGroupMails(group_type.EI_1)
+			return l.listService.ListGroupMails(group_type.Ei1)
 		} else if l.ei2 {
-			return l.listService.ListGroupMails(group_type.EI_2)
+			return l.listService.ListGroupMails(group_type.Ei2)
 		} else if l.ei3 {
-			return l.listService.ListGroupMails(group_type.EI_3)
+			return l.listService.ListGroupMails(group_type.Ei3)
 		} else {
 			return l.listService.ListMails()
 		}

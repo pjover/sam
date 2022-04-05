@@ -6,9 +6,9 @@ type GroupType uint
 
 const (
 	Undefined GroupType = iota
-	EI_1
-	EI_2
-	EI_3
+	Ei1
+	Ei2
+	Ei3
 )
 
 var stringValues = []string{

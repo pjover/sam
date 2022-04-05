@@ -15,7 +15,7 @@ var Child1480 = model.NewChild(
 	"Bibiloni",
 	model.NewTaxIdOrEmpty(""),
 	TestDate,
-	group_type.EI_1,
+	group_type.Ei1,
 	"Note child 1480",
 	true,
 )
@@ -27,7 +27,7 @@ var Child1481 = model.NewChild(
 	"Bibiloni",
 	model.NewTaxIdOrEmpty("60235657Z"),
 	TestDate,
-	group_type.EI_1,
+	group_type.Ei1,
 	"Note child 1481",
 	true,
 )
@@ -116,7 +116,7 @@ var Child1490 = model.NewChild(
 	"Petita",
 	model.NewTaxIdOrEmpty("81620787C"),
 	TestDate,
-	group_type.EI_2,
+	group_type.Ei2,
 	"Note child 1490",
 	true,
 )
@@ -128,7 +128,7 @@ var Child1491 = model.NewChild(
 	"Petita",
 	model.NewTaxIdOrEmpty("51389353Q"),
 	TestDate,
-	group_type.EI_3,
+	group_type.Ei3,
 	"Note child 1491",
 	true,
 )
