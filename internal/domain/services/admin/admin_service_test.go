@@ -17,6 +17,8 @@ func commonMocks() (*mocks.ConfigService, *mocks.OsService) {
 	mockedConfigService.On("GetHomeDirectory").Return("/fake/dir")
 	mockedConfigService.On("GetInvoicesDirectory").Return("/fake/dir/211000-Factures del mes d'Octubre/factures")
 	mockedConfigService.On("GetReportsDirectory").Return("/fake/dir/reports")
+	mockedConfigService.On("GetBackupDirectory").Return("/fake/dir/reports")
+	mockedConfigService.On("GetCustomersCardsDirectory").Return("/fake/dir/reports")
 	mockedConfigService.On("SetCurrentYearMonth", mock.Anything).Return(nil)
 	mockedConfigService.On("SetString", mock.Anything, mock.Anything).Return(nil)
 

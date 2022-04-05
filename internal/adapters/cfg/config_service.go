@@ -143,3 +143,7 @@ func (c configService) GetReportsDirectory() string {
 func (c configService) GetCustomersCardsDirectory() string {
 	return path.Join(c.GetReportsDirectory(), c.GetString("reports.customersCardsFolderName"))
 }
+
+func (c configService) GetBackupDirectory() string {
+	return c.GetString("dirs.backup")
+}

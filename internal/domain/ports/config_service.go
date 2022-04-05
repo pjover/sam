@@ -19,4 +19,5 @@ type ConfigService interface {
 	GetInvoicesDirectory() string
 	GetReportsDirectory() string
 	GetCustomersCardsDirectory() string
+	GetBackupDirectory() string
 }

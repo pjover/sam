@@ -102,7 +102,7 @@ func (a adminService) CreateDirectories() (string, error) {
 		return "", err
 	}
 
-	if err := a.createDirectory(a.configService.GetString("dirs.backup")); err != nil {
+	if err := a.createDirectory(a.configService.GetBackupDirectory()); err != nil {
 		return "", err
 	}
 
