@@ -94,7 +94,10 @@ func (a adminService) CreateDirectories() (string, error) {
 		return "", err
 	}
 
-	if err := a.createReportsDirectory(); err != nil {
+	if err := a.createDirectory(a.configService.GetReportsDirectory()); err != nil {
+		return "", err
+	}
+	if err := a.createDirectory(a.configService.GetCustomersCardsDirectory()); err != nil {
 		return "", err
 	}
 
@@ -185,14 +188,13 @@ func (a adminService) updateConfig(yearMonth model.YearMonth, dirName string) er
 	return nil
 }
 
-func (a adminService) createReportsDirectory() error {
-	reportsDir := a.configService.GetReportsDirectory()
-	exists, err := a.osService.ItemExists(reportsDir)
+func (a adminService) createDirectory(dir string) error {
+	exists, err := a.osService.ItemExists(dir)
 	if err != nil {
 		return err
 	}
 	if !exists {
-		return a.osService.CreateDirectory(a.configService.GetReportsDirectory())
+		return a.osService.CreateDirectory(dir)
 	}
 	return nil
 }
