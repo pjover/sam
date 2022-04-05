@@ -8,26 +8,29 @@ import (
 	"github.com/pjover/sam/internal/domain/model/payment_type"
 )
 
-var Child1480 = model.Child{
-	Id:            1480,
-	Name:          "Laura",
-	Surname:       "Llull",
-	SecondSurname: "Bibiloni",
-	BirthDate:     TestDate,
-	Group:         group_type.EI_1,
-	Active:        true,
-}
+var Child1480 = model.NewChild(
+	1480,
+	"Laura",
+	"Llull",
+	"Bibiloni",
+	model.NewTaxIdOrEmpty(""),
+	TestDate,
+	group_type.EI_1,
+	"Note child 1480",
+	true,
+)
 
-var Child1481 = model.Child{
-	Id:            1481,
-	Name:          "Aina",
-	Surname:       "Llull",
-	SecondSurname: "Bibiloni",
-	TaxID:         model.NewTaxIdOrEmpty("60235657Z"),
-	BirthDate:     TestDate,
-	Group:         group_type.EI_1,
-	Active:        true,
-}
+var Child1481 = model.NewChild(
+	1481,
+	"Aina",
+	"Llull",
+	"Bibiloni",
+	model.NewTaxIdOrEmpty("60235657Z"),
+	TestDate,
+	group_type.EI_1,
+	"Note child 1481",
+	true,
+)
 
 var AdultMother148 = model.NewAdult(
 	"Cara",
@@ -104,27 +107,29 @@ var Customer148 = model.NewCustomer(
 	TestDate,
 )
 
-var Child1490 = model.Child{
-	Id:            1480,
-	Name:          "Antònia",
-	Surname:       "Petit",
-	SecondSurname: "Petita",
-	TaxID:         model.NewTaxIdOrEmpty("81620787C"),
-	BirthDate:     TestDate,
-	Group:         group_type.EI_2,
-	Active:        true,
-}
+var Child1490 = model.NewChild(
+	1490,
+	"Antònia",
+	"Petit",
+	"Petita",
+	model.NewTaxIdOrEmpty("81620787C"),
+	TestDate,
+	group_type.EI_2,
+	"Note child 1490",
+	true,
+)
 
-var Child1491 = model.Child{
-	Id:            1481,
-	Name:          "Antoni",
-	Surname:       "Petit",
-	SecondSurname: "Petita",
-	TaxID:         model.NewTaxIdOrEmpty("51389353Q"),
-	BirthDate:     TestDate,
-	Group:         group_type.EI_3,
-	Active:        true,
-}
+var Child1491 = model.NewChild(
+	1491,
+	"Antoni",
+	"Petit",
+	"Petita",
+	model.NewTaxIdOrEmpty("51389353Q"),
+	TestDate,
+	group_type.EI_3,
+	"Note child 1491",
+	true,
+)
 
 var AdultMother149 = model.NewAdult(
 	"Joana",

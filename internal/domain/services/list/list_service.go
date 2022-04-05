@@ -140,7 +140,7 @@ func (l listService) ListGroupMails(groupType group_type.GroupType) (string, err
 	for _, customer := range customers {
 		var in bool
 		for _, child := range customer.Children() {
-			if child.Group == groupType {
+			if child.Group() == groupType {
 				in = true
 				break
 			}
@@ -173,7 +173,7 @@ func (l listService) ListConsumptions() (string, error) {
 	for _, child := range children {
 		var cons []model.Consumption
 		for _, c := range consumptions {
-			if c.ChildId == child.Id {
+			if c.ChildId == child.Id() {
 				cons = append(cons, c)
 			}
 		}

@@ -76,17 +76,17 @@ func (c createService) completeCustomer(customer model.TransientCustomer, sequen
 
 	var newChildren []model.Child
 	for i, child := range customer.Children {
-		newChild := model.Child{
-			Id:            newCustomerId*10 + i,
-			Name:          child.Name,
-			Surname:       child.Surname,
-			SecondSurname: child.SecondSurname,
-			TaxID:         child.TaxID,
-			BirthDate:     child.BirthDate,
-			Group:         child.Group,
-			Note:          child.Note,
-			Active:        true,
-		}
+		newChild := model.NewChild(
+			newCustomerId*10+i,
+			child.Name,
+			child.Surname,
+			child.SecondSurname,
+			child.TaxID,
+			child.BirthDate,
+			child.Group,
+			child.Note,
+			true,
+		)
 		newChildren = append(newChildren, newChild)
 	}
 

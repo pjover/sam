@@ -94,13 +94,13 @@ func (c CustomerReport) buildContents(customers []model.Customer) [][]string {
 	for _, customer := range customers {
 		adult := customer.FirstAdult()
 		for _, child := range customer.Children() {
-			if !child.Active {
+			if !child.Active() {
 				continue
 			}
 			var line = []string{
 				child.NameWithId(),
-				child.Group.Format(),
-				child.BirthDate.Format("2006-02-01"),
+				child.Group().Format(),
+				child.BirthDate().Format("2006-02-01"),
 				adult.NameAndSurname(),
 				adult.MobilePhoneFmt(),
 				adult.Email(),
@@ -120,13 +120,13 @@ func (c CustomerReport) buildData(customers []model.Customer) [][]string {
 	for _, customer := range customers {
 		adult := customer.FirstAdult()
 		for _, child := range customer.Children() {
-			if !child.Active {
+			if !child.Active() {
 				continue
 			}
 			var dataLine = []string{
 				child.NameWithId(),
-				child.Group.Format(),
-				child.BirthDate.Format("2006-02-01"),
+				child.Group().Format(),
+				child.BirthDate().Format("2006-02-01"),
 				adult.NameAndSurname(),
 				adult.MobilePhoneFmt(),
 				adult.Email(),

@@ -30,17 +30,17 @@ func children(children []Child) []model.Child {
 }
 
 func child(child Child) model.Child {
-	return model.Child{
-		Id:            child.Id,
-		Name:          child.Name,
-		Surname:       child.Surname,
-		SecondSurname: child.SecondSurname,
-		TaxID:         model.NewTaxIdOrEmpty(child.TaxID),
-		BirthDate:     child.BirthDate,
-		Group:         group_type.NewGroupType(child.Group),
-		Note:          child.Note,
-		Active:        child.Active,
-	}
+	return model.NewChild(
+		child.Id,
+		child.Name,
+		child.Surname,
+		child.SecondSurname,
+		model.NewTaxIdOrEmpty(child.TaxID),
+		child.BirthDate,
+		group_type.NewGroupType(child.Group),
+		child.Note,
+		child.Active,
+	)
 }
 
 func adults(adults []Adult) []model.Adult {
@@ -123,15 +123,15 @@ func childrenToDbo(children []model.Child) []Child {
 
 func childToDbo(child model.Child) Child {
 	return Child{
-		Id:            child.Id,
-		Name:          child.Name,
-		Surname:       child.Surname,
-		SecondSurname: child.SecondSurname,
-		TaxID:         child.TaxID.String(),
-		BirthDate:     child.BirthDate,
-		Group:         child.Group.String(),
-		Note:          child.Note,
-		Active:        child.Active,
+		Id:            child.Id(),
+		Name:          child.Name(),
+		Surname:       child.Surname(),
+		SecondSurname: child.SecondSurname(),
+		TaxID:         child.TaxID().String(),
+		BirthDate:     child.BirthDate(),
+		Group:         child.Group().String(),
+		Note:          child.Note(),
+		Active:        child.Active(),
 	}
 }
 

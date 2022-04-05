@@ -26,7 +26,7 @@ func ConsumptionListToString(consumptions []Consumption, child Child, products m
 	var total float64
 	var buffer bytes.Buffer
 	for _, c := range consumptions {
-		if c.ChildId != child.Id {
+		if c.ChildId != child.Id() {
 			continue
 		}
 		product := products[c.ProductId]

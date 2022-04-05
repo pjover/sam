@@ -100,13 +100,13 @@ func (c Customer) ChildrenNamesWithId(joinWith string) string {
 func (c Customer) ChildrenNames(joinWith string) string {
 	var names []string
 	for _, child := range c.Children() {
-		names = append(names, child.Name)
+		names = append(names, child.Name())
 	}
 	return strings.Join(names, joinWith)
 }
 
 func (c Customer) ChildrenNamesWithSurname(joinWith string) string {
-	return fmt.Sprintf("%s %s", c.ChildrenNames(joinWith), c.Children()[0].Surname)
+	return fmt.Sprintf("%s %s", c.ChildrenNames(joinWith), c.Children()[0].Surname())
 }
 
 type TransientCustomer struct {

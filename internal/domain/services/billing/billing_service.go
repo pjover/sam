@@ -39,7 +39,7 @@ func (b billingService) insertConsumptions(childId int, consumptions map[string]
 	if err != nil {
 		return "", err
 	}
-	if !child.Active {
+	if !child.Active() {
 		return "", fmt.Errorf("l'infant %s no està activat, edita'l per activar-lo abans d'insertar consums", child.NameWithId())
 	}
 
