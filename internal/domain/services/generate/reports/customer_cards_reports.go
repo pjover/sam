@@ -62,7 +62,7 @@ func (c CustomerCardsReports) revertLastCustomersCardsUpdated(changedSince time.
 
 func (c CustomerCardsReports) run(dirPath string, customer model.Customer) (string, error) {
 	var buffer bytes.Buffer
-	buffer.WriteString(fmt.Sprintf("Generant la fitxa del client %d, %s ...\n", customer.Id(), customer.InvoiceHolder().Name))
+	buffer.WriteString(fmt.Sprintf("Generant la fitxa del client %d, %s ...\n", customer.Id(), customer.InvoiceHolder().Name()))
 
 	childrenNames := customer.ChildrenNamesWithSurname(", ")
 	reportDefinition := ReportDefinition{
@@ -236,14 +236,14 @@ func (c CustomerCardsReports) holderSubReport(holder model.InvoiceHolder) SubRep
 			15,
 		},
 		Data: [][]string{
-			{holder.Name},
-			{holder.TaxID.String()},
-			{holder.Email},
-			{holder.Address.CompleteAddress()},
-			{holder.PaymentType.Format()},
-			{holder.Iban.Format()},
-			{c.boolToYesNo(holder.SendEmail)},
-			{c.boolToYesNo(holder.IsBusiness)},
+			{holder.Name()},
+			{holder.TaxID().String()},
+			{holder.Email()},
+			{holder.Address().CompleteAddress()},
+			{holder.PaymentType().Format()},
+			{holder.Iban().Format()},
+			{c.boolToYesNo(holder.SendEmail())},
+			{c.boolToYesNo(holder.IsBusiness())},
 		},
 	}
 }

@@ -80,16 +80,16 @@ func address(address Address) model.Address {
 }
 
 func holderToModel(holder InvoiceHolder) model.InvoiceHolder {
-	return model.InvoiceHolder{
-		Name:        holder.Name,
-		TaxID:       model.NewTaxIdOrEmpty(holder.TaxID),
-		Address:     address(holder.Address),
-		Email:       holder.Email,
-		SendEmail:   holder.SendEmail,
-		PaymentType: payment_type.NewPaymentType(holder.PaymentType),
-		Iban:        model.NewIbanOrEmpty(holder.Iban),
-		IsBusiness:  holder.IsBusiness,
-	}
+	return model.NewInvoiceHolder(
+		holder.Name,
+		model.NewTaxIdOrEmpty(holder.TaxID),
+		address(holder.Address),
+		holder.Email,
+		holder.SendEmail,
+		payment_type.NewPaymentType(holder.PaymentType),
+		model.NewIbanOrEmpty(holder.Iban),
+		holder.IsBusiness,
+	)
 }
 
 func CustomerToModel(customers []Customer) []model.Customer {
@@ -164,14 +164,14 @@ func adultToDbo(adult model.Adult) Adult {
 
 func invoiceHolderToDbo(invoiceHolder model.InvoiceHolder) InvoiceHolder {
 	return InvoiceHolder{
-		Name:        invoiceHolder.Name,
-		TaxID:       invoiceHolder.TaxID.String(),
-		Address:     addressToDbo(invoiceHolder.Address),
-		Email:       invoiceHolder.Email,
-		SendEmail:   invoiceHolder.SendEmail,
-		PaymentType: invoiceHolder.PaymentType.String(),
-		Iban:        invoiceHolder.Iban.String(),
-		IsBusiness:  invoiceHolder.IsBusiness,
+		Name:        invoiceHolder.Name(),
+		TaxID:       invoiceHolder.TaxID().String(),
+		Address:     addressToDbo(invoiceHolder.Address()),
+		Email:       invoiceHolder.Email(),
+		SendEmail:   invoiceHolder.SendEmail(),
+		PaymentType: invoiceHolder.PaymentType().String(),
+		Iban:        invoiceHolder.Iban().String(),
+		IsBusiness:  invoiceHolder.IsBusiness(),
 	}
 }
 

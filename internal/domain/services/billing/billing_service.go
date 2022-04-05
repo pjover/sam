@@ -210,7 +210,7 @@ func (b billingService) consumptionsToInvoice(customer model.Customer, consumpti
 		YearMonth:   yearMonth,
 		ChildrenIds: childrenIds,
 		Lines:       lines,
-		PaymentType: customer.InvoiceHolder().PaymentType,
+		PaymentType: customer.InvoiceHolder().PaymentType(),
 		Note:        b.notes(consumptions),
 	}, nil
 }
@@ -327,7 +327,7 @@ func (b billingService) getSequenceType(invoice model.Invoice, customer model.Cu
 	if invoice.Id == "TMP_ID_RECTIFICATION=true" {
 		return sequence_type.RectificationInvoice
 	} else {
-		return customer.InvoiceHolder().PaymentType.SequenceType()
+		return customer.InvoiceHolder().PaymentType().SequenceType()
 	}
 }
 

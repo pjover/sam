@@ -76,19 +76,21 @@ var AdultFather148 = model.NewAdult(
 	model.NewNationalityOrEmpty("UK"),
 )
 
-var InvoiceHolder148 = model.InvoiceHolder{
-	Name:  "Cara Santamaria Novella",
-	TaxID: model.NewTaxIdOrEmpty("36361882D"),
-	Address: model.NewAddress(
+var InvoiceHolder148 = model.NewInvoiceHolder(
+	"Cara Santamaria Novella",
+	model.NewTaxIdOrEmpty("36361882D"),
+	model.NewAddress(
 		"Carrer Ucraïna 2022, 1st",
 		"07007",
 		"Palma",
 		"Illes Balears",
 	),
-	Email:       "cara@sgu.org",
-	PaymentType: payment_type.BankDirectDebit,
-	Iban:        model.NewIbanOrEmpty("ES2830668859978258529057"),
-}
+	"cara@sgu.org",
+	false,
+	payment_type.BankDirectDebit,
+	model.NewIbanOrEmpty("ES2830668859978258529057"),
+	false,
+)
 
 var Customer148 = model.NewCustomer(
 	148,
@@ -175,20 +177,21 @@ var AdultFather149 = model.NewAdult(
 	model.NewNationalityOrEmpty("ES"),
 )
 
-var InvoiceHolder149 = model.InvoiceHolder{
-	Name:  "Nom empresa",
-	TaxID: model.NewTaxIdOrEmpty("37866397W"),
-	Address: model.NewAddress(
+var InvoiceHolder149 = model.NewInvoiceHolder(
+	"Nom empresa",
+	model.NewTaxIdOrEmpty("37866397W"),
+	model.NewAddress(
 		"Address first line",
 		"07007",
 		"Palma",
 		"Illes Balears",
 	),
-	Email:       "email@gmail.com",
-	PaymentType: payment_type.BankTransfer,
-	Iban:        model.NewIbanOrEmpty("ES2830668859978258529057"),
-	IsBusiness:  true,
-}
+	"email@gmail.com",
+	false,
+	payment_type.BankTransfer,
+	model.NewIbanOrEmpty("ES2830668859978258529057"),
+	true,
+)
 
 var Customer149 = model.NewCustomer(
 	149,

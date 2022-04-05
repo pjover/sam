@@ -177,9 +177,9 @@ func (i InvoiceReport) headerData(invoice model.Invoice, customer model.Customer
 	var data = [][]string{
 		{invoice.Id},
 		{invoice.DateFmt()},
-		{customer.InvoiceHolder().TaxID.String()},
-		{customer.InvoiceHolder().Name},
-		{customer.InvoiceHolder().Address.CompleteAddress()},
+		{customer.InvoiceHolder().TaxID().String()},
+		{customer.InvoiceHolder().Name()},
+		{customer.InvoiceHolder().Address().CompleteAddress()},
 		{customer.ChildrenNames(",")},
 	}
 	return data
@@ -244,7 +244,7 @@ func (i InvoiceReport) getNotes(invoice model.Invoice, customer model.Customer) 
 func (i InvoiceReport) getPaymentType(invoice model.Invoice, customer model.Customer) string {
 	paymentType := invoice.PaymentType
 	if paymentType == payment_type.Invalid {
-		paymentType = customer.InvoiceHolder().PaymentType
+		paymentType = customer.InvoiceHolder().PaymentType()
 	}
 	return fmt.Sprintf("- Tipus de pagament: %s", paymentType.Format())
 }

@@ -89,11 +89,11 @@ type InvoiceHolder struct {
 
 func TransientCustomerToModel(customer TransientCustomer) model.TransientCustomer {
 	return model.TransientCustomer{
-		transientChildrenToModel(customer.Children),
-		adultsToModel(customer.Adults),
-		holderToModel(customer.InvoiceHolder),
-		customer.Note,
-		language.NewLanguage(customer.Language),
+		Children:      transientChildrenToModel(customer.Children),
+		Adults:        adultsToModel(customer.Adults),
+		InvoiceHolder: holderToModel(customer.InvoiceHolder),
+		Note:          customer.Note,
+		Language:      language.NewLanguage(customer.Language),
 	}
 }
 
@@ -165,14 +165,14 @@ func addressToModel(address Address) model.Address {
 }
 
 func holderToModel(holder InvoiceHolder) model.InvoiceHolder {
-	return model.InvoiceHolder{
-		Name:        holder.Name,
-		TaxID:       model.NewTaxIdOrEmpty(holder.TaxID),
-		Address:     addressToModel(holder.Address),
-		Email:       holder.Email,
-		SendEmail:   holder.SendEmail,
-		PaymentType: payment_type.NewPaymentType(holder.PaymentType),
-		Iban:        model.NewIbanOrEmpty(holder.Iban),
-		IsBusiness:  holder.IsBusiness,
-	}
+	return model.NewInvoiceHolder(
+		holder.Name,
+		model.NewTaxIdOrEmpty(holder.TaxID),
+		addressToModel(holder.Address),
+		holder.Email,
+		holder.SendEmail,
+		payment_type.NewPaymentType(holder.PaymentType),
+		model.NewIbanOrEmpty(holder.Iban),
+		holder.IsBusiness,
+	)
 }
