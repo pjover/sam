@@ -24,7 +24,7 @@ type Invoice struct {
 }
 
 func (i Invoice) String() string {
-	return fmt.Sprintf("%d  %s  %s  % 7.2f  %s  %s", i.CustomerId, i.Id, i.YearMonth.String(), i.Amount(), i.PaymentType.Format(), i.LinesFmt(","))
+	return fmt.Sprintf("%d  %s  %s  %7.2f  %s  %s", i.CustomerId, i.Id, i.YearMonth.String(), i.Amount(), i.PaymentType.Format(), i.LinesFmt(","))
 
 }
 

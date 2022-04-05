@@ -32,7 +32,7 @@ func ConsumptionListToString(consumptions []Consumption, child Child, products m
 		product := products[c.ProductId]
 		price := c.Units * product.Price()
 		total += price
-		buffer.WriteString(fmt.Sprintf("  [%s]  %4.1f x %s : % 7.2f\n",
+		buffer.WriteString(fmt.Sprintf("  [%s]  %4.1f x %s : %7.2f\n",
 			c.YearMonth.String(),
 			c.Units,
 			c.ProductId,

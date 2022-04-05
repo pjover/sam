@@ -40,7 +40,7 @@ func (p Product) IsSubsidy() bool {
 }
 
 func (p Product) String() string {
-	return fmt.Sprintf("%s  % 7.2f  %s", p.id, p.price, p.name)
+	return fmt.Sprintf("%s  %7.2f  %s", p.id, p.price, p.name)
 }
 
 func (p Product) validate() error {
