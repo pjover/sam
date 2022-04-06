@@ -173,7 +173,7 @@ func (l listService) ListConsumptions() (string, error) {
 	for _, child := range children {
 		var cons []model.Consumption
 		for _, c := range consumptions {
-			if c.ChildId == child.Id() {
+			if c.ChildId() == child.Id() {
 				cons = append(cons, c)
 			}
 		}

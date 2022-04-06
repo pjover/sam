@@ -84,18 +84,31 @@ func (b billingService) completeConsumptions(consumptions map[string]float64, ch
 		if err := b.checkIfProductExists(id, products); err != nil {
 			return nil, err
 		}
-		c := model.Consumption{
-			Id:              common.RandString(model.ConsumptionIdLength),
-			ChildId:         childId,
-			ProductId:       id,
-			Units:           units,
-			YearMonth:       yearMonth,
-			IsRectification: isRectification,
-			InvoiceId:       "NONE",
-		}
+
+		var c model.Consumption
 		if first {
-			c.Note = note
+			c = model.NewConsumption(
+				common.RandString(model.ConsumptionIdLength),
+				childId,
+				id,
+				units,
+				yearMonth,
+				note,
+				isRectification,
+				"NONE",
+			)
 			first = false
+		} else {
+			c = model.NewConsumption(
+				common.RandString(model.ConsumptionIdLength),
+				childId,
+				id,
+				units,
+				yearMonth,
+				"",
+				isRectification,
+				"NONE",
+			)
 		}
 		completeConsumptions = append(completeConsumptions, c)
 	}
@@ -186,7 +199,7 @@ func (b billingService) addInvoiceIfHasConsumptions(invoices []model.Invoice, cu
 
 func (b billingService) splitConsumptions(consumptions []model.Consumption) (consumptionsWithoutRectification []model.Consumption, consumptionsWithRectification []model.Consumption) {
 	for _, consumption := range consumptions {
-		if consumption.IsRectification {
+		if consumption.IsRectification() {
 			consumptionsWithRectification = append(consumptionsWithRectification, consumption)
 		} else {
 			consumptionsWithoutRectification = append(consumptionsWithoutRectification, consumption)
@@ -239,7 +252,7 @@ func (b billingService) productLines(consumptions []model.Consumption) (lines []
 
 		var units float64
 		for _, con := range cons {
-			units += con.Units
+			units += con.Units()
 		}
 		if units == 0 {
 			continue
@@ -250,7 +263,7 @@ func (b billingService) productLines(consumptions []model.Consumption) (lines []
 			Units:         units,
 			ProductPrice:  product.Price(),
 			TaxPercentage: product.TaxPercentage(),
-			ChildId:       cons[0].ChildId,
+			ChildId:       cons[0].ChildId(),
 		}
 		lines = append(lines, line)
 	}
@@ -260,10 +273,10 @@ func (b billingService) productLines(consumptions []model.Consumption) (lines []
 func (b billingService) notes(consumptions []model.Consumption) string {
 	var notes []string
 	for _, consumption := range consumptions {
-		if consumption.Note == "" {
+		if consumption.Note() == "" {
 			continue
 		}
-		notes = append(notes, consumption.Note)
+		notes = append(notes, consumption.Note())
 	}
 	return strings.Join(notes, ", ")
 }
@@ -280,15 +293,15 @@ func (b billingService) groupConsumptions(groupBy func(consumption model.Consump
 }
 
 func (b billingService) groupConsumptionsByCustomer(consumption model.Consumption) string {
-	return strconv.Itoa(consumption.ChildId / 10)
+	return strconv.Itoa(consumption.ChildId() / 10)
 }
 
 func (b billingService) groupConsumptionsByChild(consumption model.Consumption) string {
-	return strconv.Itoa(consumption.ChildId)
+	return strconv.Itoa(consumption.ChildId())
 }
 
 func (b billingService) groupConsumptionsByProduct(consumption model.Consumption) string {
-	return consumption.ProductId
+	return consumption.ProductId()
 }
 
 func (b billingService) addSequencesToInvoices(invoices []model.Invoice, customers map[string]model.Customer) ([]model.Invoice, []model.Sequence, error) {
@@ -370,15 +383,15 @@ func (b billingService) addInvoiceIdToConsumptions(consumptions []model.Consumpt
 		if invoiceId == "" {
 			log.Fatalf("no s'ha trobat cap factura per al consum %s", consumption.String())
 		}
-		consumption.InvoiceId = invoiceId
-		outConsumptions = append(outConsumptions, consumption)
+		newConsumption := consumption.CopyWithNewInvoiceId(invoiceId)
+		outConsumptions = append(outConsumptions, newConsumption)
 	}
 
 	return outConsumptions
 }
 
 func (b billingService) findInvoiceId(consumption model.Consumption, invoices []model.Invoice) string {
-	customerId := consumption.ChildId / 10
+	customerId := consumption.ChildId() / 10
 	for _, invoice := range invoices {
 		if invoice.CustomerId == customerId {
 			return invoice.Id
