@@ -112,14 +112,8 @@ var rectificationConsumptions = []model.Consumption{
 }
 
 var sequences = []model.Sequence{
-	{
-		sequence_type.StandardInvoice,
-		188,
-	},
-	{
-		sequence_type.RectificationInvoice,
-		10,
-	},
+	model.NewSequence(sequence_type.StandardInvoice, 188),
+	model.NewSequence(sequence_type.RectificationInvoice, 10),
 }
 
 func Test_BillConsumptions_without_rectification(t *testing.T) {

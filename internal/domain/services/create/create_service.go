@@ -64,15 +64,12 @@ func (c createService) getNextCustomerSequence() (model.Sequence, error) {
 		return model.Sequence{}, err
 	}
 
-	newSequence := model.Sequence{
-		Id:      sequence_type.Customer,
-		Counter: sequence.Counter + 1,
-	}
+	newSequence := model.NewSequence(sequence_type.Customer, sequence.Counter()+1)
 	return newSequence, nil
 }
 
 func (c createService) completeCustomer(customer model.TransientCustomer, sequence model.Sequence) model.Customer {
-	newCustomerId := sequence.Counter
+	newCustomerId := sequence.Counter()
 
 	var newChildren []model.Child
 	for i, child := range customer.Children {

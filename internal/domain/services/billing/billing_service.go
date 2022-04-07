@@ -364,11 +364,8 @@ func (b billingService) addSequencesToInvoices(invoices []transientInvoice, cust
 		customer := customers[customerIdStr]
 		sequenceType := b.getSequenceType(invoice, customer)
 		sequence := sequencesMap[sequenceType.Format()]
-		newSequence := model.Sequence{
-			Id:      sequenceType,
-			Counter: sequence.Counter + 1,
-		}
-		newInvoiceId := fmt.Sprintf("%s-%d", newSequence.Id.Prefix(), newSequence.Counter)
+		newSequence := model.NewSequence(sequenceType, sequence.Counter()+1)
+		newInvoiceId := fmt.Sprintf("%s-%d", newSequence.Id().Prefix(), newSequence.Counter())
 		newInvoice := b.newInvoice(invoice, newInvoiceId)
 		outInvoices = append(outInvoices, newInvoice)
 		sequencesMap[sequenceType.Format()] = newSequence
@@ -413,7 +410,7 @@ func (b billingService) getSequences() (sequences map[string]model.Sequence, err
 
 	sequences = make(map[string]model.Sequence)
 	for _, sequence := range allSequences {
-		sequences[sequence.Id.Format()] = sequence
+		sequences[sequence.Id().Format()] = sequence
 	}
 	return sequences, nil
 }
