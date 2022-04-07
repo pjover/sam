@@ -109,11 +109,11 @@ func (m MonthReport) buildData(invoices []model.Invoice) ([][]string, error) {
 	for _, invoice := range invoices {
 		customer, err := m.customer(invoice)
 		if err != nil {
-			return nil, fmt.Errorf("error al recuperar el client %d de la factura %s: %s", invoice.CustomerId, invoice.Id, err)
+			return nil, fmt.Errorf("error al recuperar el client %d de la factura %s: %s", invoice.CustomerId(), invoice.Id(), err)
 		}
 
 		var line = []string{
-			invoice.Id,
+			invoice.Id(),
 			invoice.DateFmt(),
 			customer.FirstAdultNameWithId(),
 			customer.ChildrenNamesWithId("\n"),
@@ -166,7 +166,7 @@ func (m MonthReport) summaryCard(invoices map[payment_type.PaymentType][]model.I
 }
 
 func (m MonthReport) customer(invoice model.Invoice) (model.Customer, error) {
-	customer, err := m.dbService.FindCustomer(invoice.CustomerId)
+	customer, err := m.dbService.FindCustomer(invoice.CustomerId())
 	if err != nil {
 		return model.Customer{}, err
 	}

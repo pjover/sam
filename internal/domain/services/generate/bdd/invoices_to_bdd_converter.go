@@ -77,7 +77,7 @@ func (i invoicesToBddConverter) getRequestedCollectionDate(now time.Time) string
 func (i invoicesToBddConverter) getDetails(now time.Time, invoices []model.Invoice, customers map[int]model.Customer, products map[string]model.Product) []BddDetail {
 	var details []BddDetail
 	for _, invoice := range invoices {
-		detail := i.getDetail(now, invoice, customers[invoice.CustomerId], products)
+		detail := i.getDetail(now, invoice, customers[invoice.CustomerId()], products)
 		details = append(details, detail)
 	}
 	return details
@@ -98,7 +98,7 @@ func (i invoicesToBddConverter) getDetail(now time.Time, invoice model.Invoice, 
 }
 
 func (i invoicesToBddConverter) getDetailEndToEndIdentifier(now time.Time, invoice model.Invoice) string {
-	return fmt.Sprintf("%s.%s", i.getMessageIdentification(now), invoice.Id)
+	return fmt.Sprintf("%s.%s", i.getMessageIdentification(now), invoice.Id())
 }
 
 func (i invoicesToBddConverter) getDetailInstructedAmount(invoice model.Invoice) string {
@@ -134,7 +134,7 @@ func (i invoicesToBddConverter) getDetailRemittanceInformation(invoice model.Inv
 
 func (i invoicesToBddConverter) getShortNameInvoiceDescription(invoice model.Invoice, products map[string]model.Product) string {
 	var lines []string
-	for _, line := range invoice.Lines {
+	for _, line := range invoice.Lines() {
 		units := strconv.FormatFloat(line.Units, 'f', -1, 64)
 		desc := fmt.Sprintf("%sx%s", units, products[line.ProductId].ShortName())
 		lines = append(lines, desc)

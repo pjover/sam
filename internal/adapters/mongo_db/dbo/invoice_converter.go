@@ -7,19 +7,19 @@ import (
 )
 
 func ConvertInvoiceToModel(invoice Invoice) model.Invoice {
-	return model.Invoice{
-		Id:          invoice.Id,
-		CustomerId:  invoice.CustomerID,
-		Date:        invoice.Date,
-		YearMonth:   convertInvoiceYearMonth(invoice.YearMonth, invoice.Id),
-		ChildrenIds: invoice.ChildrenIds,
-		Lines:       lines(invoice.Lines),
-		PaymentType: payment_type.NewPaymentType(invoice.PaymentType),
-		Note:        invoice.Note,
-		Emailed:     invoice.Emailed,
-		Printed:     invoice.Printed,
-		SentToBank:  invoice.SentToBank,
-	}
+	return model.NewInvoice(
+		invoice.Id,
+		invoice.CustomerID,
+		invoice.Date,
+		convertInvoiceYearMonth(invoice.YearMonth, invoice.Id),
+		invoice.ChildrenIds,
+		lines(invoice.Lines),
+		payment_type.NewPaymentType(invoice.PaymentType),
+		invoice.Note,
+		invoice.Emailed,
+		invoice.Printed,
+		invoice.SentToBank,
+	)
 }
 
 func convertInvoiceYearMonth(yearMonth string, invoiceId string) model.YearMonth {
@@ -66,7 +66,7 @@ func ConvertInvoicesToDbo(invoices []model.Invoice) []interface{} {
 
 func ConvertInvoiceToDbo(invoice model.Invoice) Invoice {
 	var lines []Line
-	for _, line := range invoice.Lines {
+	for _, line := range invoice.Lines() {
 		_line := Line{
 			ProductID:     line.ProductId,
 			Units:         Float64ToDecimal128(line.Units),
@@ -77,16 +77,16 @@ func ConvertInvoiceToDbo(invoice model.Invoice) Invoice {
 		lines = append(lines, _line)
 	}
 	return Invoice{
-		Id:          invoice.Id,
-		CustomerID:  invoice.CustomerId,
-		Date:        invoice.Date,
-		YearMonth:   invoice.YearMonth.String(),
-		ChildrenIds: invoice.ChildrenIds,
+		Id:          invoice.Id(),
+		CustomerID:  invoice.CustomerId(),
+		Date:        invoice.Date(),
+		YearMonth:   invoice.YearMonth().String(),
+		ChildrenIds: invoice.ChildrenIds(),
 		Lines:       lines,
-		PaymentType: invoice.PaymentType.String(),
-		Note:        invoice.Note,
-		Emailed:     invoice.Emailed,
-		Printed:     invoice.Printed,
-		SentToBank:  invoice.SentToBank,
+		PaymentType: invoice.PaymentType().String(),
+		Note:        invoice.Note(),
+		Emailed:     invoice.Emailed(),
+		Printed:     invoice.Printed(),
+		SentToBank:  invoice.SentToBank(),
 	}
 }

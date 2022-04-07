@@ -29,58 +29,58 @@ var lines = []model.InvoiceLine{
 	},
 }
 
-var InvoiceF100 = model.Invoice{
-	Id:          "F-100",
-	CustomerId:  148,
-	Date:        TestDate,
-	YearMonth:   model.NewYearMonth(2019, 5),
-	ChildrenIds: []int{1800, 1801},
-	Lines:       lines,
-	PaymentType: payment_type.BankDirectDebit,
-	Note:        "Invoice note",
-	Emailed:     false,
-	Printed:     false,
-	SentToBank:  false,
-}
+var InvoiceF100 = model.NewInvoice(
+	"F-100",
+	148,
+	TestDate,
+	model.NewYearMonth(2019, 5),
+	[]int{1800, 1801},
+	lines,
+	payment_type.BankDirectDebit,
+	"Invoice note",
+	false,
+	false,
+	false,
+)
 
-var InvoiceF101 = model.Invoice{
-	Id:          "F-101",
-	CustomerId:  148,
-	Date:        TestDate,
-	YearMonth:   model.NewYearMonth(2019, 5),
-	ChildrenIds: []int{1801, 1802},
-	Lines:       lines,
-	PaymentType: payment_type.BankDirectDebit,
-	Note:        "Invoice note",
-	Emailed:     false,
-	Printed:     false,
-	SentToBank:  false,
-}
+var InvoiceF101 = model.NewInvoice(
+	"F-101",
+	148,
+	TestDate,
+	model.NewYearMonth(2019, 5),
+	[]int{1801, 1802},
+	lines,
+	payment_type.BankDirectDebit,
+	"Invoice note",
+	false,
+	false,
+	false,
+)
 
-var InvoiceF102 = model.Invoice{
-	Id:          "F-102",
-	CustomerId:  149,
-	Date:        TestDate,
-	YearMonth:   model.NewYearMonth(2019, 5),
-	ChildrenIds: []int{1800, 1801, 1802},
-	Lines:       lines,
-	PaymentType: payment_type.BankDirectDebit,
-	Note:        "Invoice note",
-	Emailed:     false,
-	Printed:     false,
-	SentToBank:  false,
-}
+var InvoiceF102 = model.NewInvoice(
+	"F-102",
+	149,
+	TestDate,
+	model.NewYearMonth(2019, 5),
+	[]int{1800, 1801, 1802},
+	lines,
+	payment_type.BankDirectDebit,
+	"Invoice note",
+	false,
+	false,
+	false,
+)
 
-var InvoiceF103 = model.Invoice{
-	Id:          "F-103",
-	CustomerId:  149,
-	Date:        TestDate,
-	YearMonth:   model.NewYearMonth(2019, 5),
-	ChildrenIds: []int{1800},
-	Lines:       lines,
-	PaymentType: payment_type.BankDirectDebit,
-	Note:        "Invoice note",
-	Emailed:     false,
-	Printed:     false,
-	SentToBank:  false,
-}
+var InvoiceF103 = model.NewInvoice(
+	"F-103",
+	149,
+	TestDate,
+	model.NewYearMonth(2019, 5),
+	[]int{1800},
+	lines,
+	payment_type.BankDirectDebit,
+	"Invoice note",
+	false,
+	false,
+	false,
+)

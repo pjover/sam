@@ -45,7 +45,7 @@ func (b bulkLoader) LoadMonthInvoicesByPaymentType() (invoices map[payment_type.
 
 	invoices = make(map[payment_type.PaymentType][]model.Invoice)
 	for _, invoice := range monthInvoices {
-		invoices[invoice.PaymentType] = append(invoices[invoice.PaymentType], invoice)
+		invoices[invoice.PaymentType()] = append(invoices[invoice.PaymentType()], invoice)
 	}
 	return invoices, nil
 }

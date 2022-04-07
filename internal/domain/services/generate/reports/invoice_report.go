@@ -33,9 +33,9 @@ func (i InvoiceReport) SingleInvoice(id string) (string, error) {
 		return "", fmt.Errorf("no s'ha pogut la factura %s: %s", id, err)
 	}
 
-	customer, err := i.dbService.FindCustomer(invoice.CustomerId)
+	customer, err := i.dbService.FindCustomer(invoice.CustomerId())
 	if err != nil {
-		return "", fmt.Errorf("no s'ha pogut trobar el client %d de la factura %s: %s", invoice.CustomerId, id, err)
+		return "", fmt.Errorf("no s'ha pogut trobar el client %d de la factura %s: %s", invoice.CustomerId(), id, err)
 	}
 
 	bulkLoader := loader.NewBulkLoader(i.configService, i.dbService)
@@ -56,7 +56,7 @@ func (i InvoiceReport) MonthInvoices() (string, error) {
 	}
 
 	for _, invoice := range invoices {
-		customer := customers[invoice.CustomerId]
+		customer := customers[invoice.CustomerId()]
 		_, err = i.run(invoice, customer, products)
 		if err != nil {
 			return "", err
@@ -69,7 +69,7 @@ func (i InvoiceReport) MonthInvoices() (string, error) {
 func (i InvoiceReport) run(invoice model.Invoice, customer model.Customer, products map[string]model.Product) (string, error) {
 
 	var buffer bytes.Buffer
-	buffer.WriteString(fmt.Sprintf("Generant l'informe de la factura %s ...\n", invoice.Id))
+	buffer.WriteString(fmt.Sprintf("Generant l'informe de la factura %s ...\n", invoice.Id()))
 
 	reportDefinition := ReportDefinition{
 		PageOrientation: consts.Portrait,
@@ -149,7 +149,7 @@ func (i InvoiceReport) run(invoice model.Invoice, customer model.Customer, produ
 	dirPath := i.configService.GetInvoicesDirectory()
 	filePath := path.Join(
 		dirPath,
-		fmt.Sprintf("%s (%d).pdf", invoice.Id, invoice.CustomerId),
+		fmt.Sprintf("%s (%d).pdf", invoice.Id(), invoice.CustomerId()),
 	)
 
 	reportService := NewReportService(i.configService)
@@ -166,16 +166,16 @@ func (i InvoiceReport) run(invoice model.Invoice, customer model.Customer, produ
 func (i InvoiceReport) footer(invoice model.Invoice) string {
 
 	var ids []string
-	for _, id := range invoice.ChildrenIds {
+	for _, id := range invoice.ChildrenIds() {
 		ids = append(ids, strconv.Itoa(id))
 	}
-	return fmt.Sprintf("%d: %s [%s]", invoice.CustomerId, strings.Join(ids, ","), invoice.YearMonth)
+	return fmt.Sprintf("%d: %s [%s]", invoice.CustomerId(), strings.Join(ids, ","), invoice.YearMonth())
 }
 
 func (i InvoiceReport) headerData(invoice model.Invoice, customer model.Customer) [][]string {
 
 	var data = [][]string{
-		{invoice.Id},
+		{invoice.Id()},
 		{invoice.DateFmt()},
 		{customer.InvoiceHolder().TaxID().String()},
 		{customer.InvoiceHolder().Name()},
@@ -187,7 +187,7 @@ func (i InvoiceReport) headerData(invoice model.Invoice, customer model.Customer
 
 func (i InvoiceReport) linesData(invoice model.Invoice, products map[string]model.Product) [][]string {
 	var data [][]string
-	for _, line := range invoice.Lines {
+	for _, line := range invoice.Lines() {
 		price := line.Units * line.ProductPrice
 		vat := price * line.TaxPercentage
 		var row = []string{
@@ -209,7 +209,7 @@ func (i InvoiceReport) linesData(invoice model.Invoice, products map[string]mode
 
 func (i InvoiceReport) summaryData(invoice model.Invoice) [][]string {
 	var price, vat float64
-	for _, line := range invoice.Lines {
+	for _, line := range invoice.Lines() {
 		price += line.Units * line.ProductPrice
 		vat += price * line.TaxPercentage
 	}
@@ -235,14 +235,14 @@ func (i InvoiceReport) getNotes(invoice model.Invoice, customer model.Customer) 
 	if customer.Note() != "" {
 		buffer.WriteString(fmt.Sprintf("- %s\n", customer.Note()))
 	}
-	if invoice.Note != "" {
+	if invoice.Note() != "" {
 		buffer.WriteString(fmt.Sprintf("- %s\n", customer.Note()))
 	}
 	return buffer.String()
 }
 
 func (i InvoiceReport) getPaymentType(invoice model.Invoice, customer model.Customer) string {
-	paymentType := invoice.PaymentType
+	paymentType := invoice.PaymentType()
 	if paymentType == payment_type.Invalid {
 		paymentType = customer.InvoiceHolder().PaymentType()
 	}

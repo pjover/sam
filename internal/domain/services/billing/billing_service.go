@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"github.com/pjover/sam/internal/domain/model"
+	"github.com/pjover/sam/internal/domain/model/payment_type"
 	"github.com/pjover/sam/internal/domain/model/sequence_type"
 	"github.com/pjover/sam/internal/domain/ports"
 	"github.com/pjover/sam/internal/domain/services/common"
@@ -12,6 +13,7 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"time"
 )
 
 type billingService struct {
@@ -128,6 +130,17 @@ func (b billingService) RectifyConsumptions(childId int, consumptions map[string
 	return b.insertConsumptions(childId, consumptions, note, true)
 }
 
+type transientInvoice struct {
+	isRectification bool
+	customerId      int
+	date            time.Time
+	yearMonth       model.YearMonth
+	childrenIds     []int
+	lines           []model.InvoiceLine
+	paymentType     payment_type.PaymentType
+	note            string
+}
+
 func (b billingService) BillConsumptions() (string, error) {
 	fmt.Println("Facturant els consums pendents de facturar de tots els infants")
 
@@ -144,19 +157,19 @@ func (b billingService) BillConsumptions() (string, error) {
 		return "", err
 	}
 
-	invoices, sequences, err := b.addSequencesToInvoices(invoices, customers)
+	newInvoices, sequences, err := b.addSequencesToInvoices(invoices, customers)
 	if err != nil {
 		return "", err
 	}
 
-	consumptions = b.addInvoiceIdToConsumptions(consumptions, invoices)
+	consumptions = b.addInvoiceIdToConsumptions(consumptions, newInvoices)
 
-	err = b.updateDatabase(consumptions, invoices, sequences)
+	err = b.updateDatabase(consumptions, newInvoices, sequences)
 
-	return b.formatInvoicesGroupedByPaymentType(invoices, customers)
+	return b.formatInvoicesGroupedByPaymentType(newInvoices, customers)
 }
 
-func (b billingService) consumptionsToInvoices(consumptions []model.Consumption) (invoices []model.Invoice, customers map[string]model.Customer, err error) {
+func (b billingService) consumptionsToInvoices(consumptions []model.Consumption) (invoices []transientInvoice, customers map[string]model.Customer, err error) {
 	groupedByCustomer := b.groupConsumptions(b.groupConsumptionsByCustomer, consumptions)
 	customers = make(map[string]model.Customer)
 	for customerIdStr, cons := range groupedByCustomer {
@@ -185,10 +198,9 @@ func (b billingService) consumptionsToInvoices(consumptions []model.Consumption)
 	return invoices, customers, nil
 }
 
-func (b billingService) addInvoiceIfHasConsumptions(invoices []model.Invoice, customer model.Customer, consumptions []model.Consumption, isRectification bool) ([]model.Invoice, error) {
+func (b billingService) addInvoiceIfHasConsumptions(invoices []transientInvoice, customer model.Customer, consumptions []model.Consumption, isRectification bool) ([]transientInvoice, error) {
 	if len(consumptions) > 0 {
-		invoice, err := b.consumptionsToInvoice(customer, consumptions)
-		invoice.Id = fmt.Sprintf("TMP_ID_RECTIFICATION=%v", isRectification)
+		invoice, err := b.consumptionsToInvoice(customer, consumptions, isRectification)
 		if err != nil {
 			return nil, err
 		}
@@ -208,23 +220,24 @@ func (b billingService) splitConsumptions(consumptions []model.Consumption) (con
 	return consumptionsWithoutRectification, consumptionsWithRectification
 }
 
-func (b billingService) consumptionsToInvoice(customer model.Customer, consumptions []model.Consumption) (model.Invoice, error) {
+func (b billingService) consumptionsToInvoice(customer model.Customer, consumptions []model.Consumption, isRectification bool) (transientInvoice, error) {
 	yearMonth := b.configService.GetCurrentYearMonth()
 	today := b.osService.Now()
 
 	lines, childrenIds, err := b.childrenLines(consumptions)
 	if err != nil {
-		return model.Invoice{}, err
+		return transientInvoice{}, err
 	}
 
-	return model.Invoice{
-		CustomerId:  customer.Id(),
-		Date:        today,
-		YearMonth:   yearMonth,
-		ChildrenIds: childrenIds,
-		Lines:       lines,
-		PaymentType: customer.InvoiceHolder().PaymentType(),
-		Note:        b.notes(consumptions),
+	return transientInvoice{
+		isRectification,
+		customer.Id(),
+		today,
+		yearMonth,
+		childrenIds,
+		lines,
+		customer.InvoiceHolder().PaymentType(),
+		b.notes(consumptions),
 	}, nil
 }
 
@@ -304,19 +317,19 @@ func (b billingService) groupConsumptionsByProduct(consumption model.Consumption
 	return consumption.ProductId()
 }
 
-func (b billingService) addSequencesToInvoices(invoices []model.Invoice, customers map[string]model.Customer) ([]model.Invoice, []model.Sequence, error) {
+func (b billingService) addSequencesToInvoices(invoices []transientInvoice, customers map[string]model.Customer) ([]model.Invoice, []model.Sequence, error) {
 	sequencesMap, err := b.getSequences()
 	if err != nil {
 		return nil, nil, err
 	}
 
 	sort.Slice(invoices, func(i, j int) bool {
-		return invoices[i].CustomerId < invoices[j].CustomerId
+		return invoices[i].customerId < invoices[j].customerId
 	})
 
 	var outInvoices []model.Invoice
 	for _, invoice := range invoices {
-		customerIdStr := strconv.Itoa(invoice.CustomerId)
+		customerIdStr := strconv.Itoa(invoice.customerId)
 		customer := customers[customerIdStr]
 		sequenceType := b.getSequenceType(invoice, customer)
 		sequence := sequencesMap[sequenceType.Format()]
@@ -324,8 +337,9 @@ func (b billingService) addSequencesToInvoices(invoices []model.Invoice, custome
 			Id:      sequenceType,
 			Counter: sequence.Counter + 1,
 		}
-		invoice.Id = fmt.Sprintf("%s-%d", newSequence.Id.Prefix(), newSequence.Counter)
-		outInvoices = append(outInvoices, invoice)
+		newInvoiceId := fmt.Sprintf("%s-%d", newSequence.Id.Prefix(), newSequence.Counter)
+		newInvoice := b.newInvoice(invoice, newInvoiceId)
+		outInvoices = append(outInvoices, newInvoice)
 		sequencesMap[sequenceType.Format()] = newSequence
 	}
 
@@ -336,8 +350,24 @@ func (b billingService) addSequencesToInvoices(invoices []model.Invoice, custome
 	return outInvoices, outSequences, nil
 }
 
-func (b billingService) getSequenceType(invoice model.Invoice, customer model.Customer) sequence_type.SequenceType {
-	if invoice.Id == "TMP_ID_RECTIFICATION=true" {
+func (b billingService) newInvoice(invoice transientInvoice, id string) model.Invoice {
+	return model.NewInvoice(
+		id,
+		invoice.customerId,
+		invoice.date,
+		invoice.yearMonth,
+		invoice.childrenIds,
+		invoice.lines,
+		invoice.paymentType,
+		invoice.note,
+		false,
+		false,
+		false,
+	)
+}
+
+func (b billingService) getSequenceType(invoice transientInvoice, customer model.Customer) sequence_type.SequenceType {
+	if invoice.isRectification {
 		return sequence_type.RectificationInvoice
 	} else {
 		return customer.InvoiceHolder().PaymentType().SequenceType()
@@ -369,11 +399,11 @@ func (b billingService) groupInvoices(groupBy func(invoice model.Invoice) string
 }
 
 func (b billingService) groupInvoicesByPaymentType(invoice model.Invoice) string {
-	return invoice.PaymentType.Format()
+	return invoice.PaymentType().Format()
 }
 
 func (b billingService) groupInvoicesByCustomer(invoice model.Invoice) string {
-	return strconv.Itoa(invoice.CustomerId)
+	return strconv.Itoa(invoice.CustomerId())
 }
 
 func (b billingService) addInvoiceIdToConsumptions(consumptions []model.Consumption, invoices []model.Invoice) []model.Consumption {
@@ -393,8 +423,8 @@ func (b billingService) addInvoiceIdToConsumptions(consumptions []model.Consumpt
 func (b billingService) findInvoiceId(consumption model.Consumption, invoices []model.Invoice) string {
 	customerId := consumption.ChildId() / 10
 	for _, invoice := range invoices {
-		if invoice.CustomerId == customerId {
-			return invoice.Id
+		if invoice.CustomerId() == customerId {
+			return invoice.Id()
 		}
 	}
 	return ""
@@ -406,7 +436,7 @@ func (b billingService) formatInvoicesGroupedByPaymentType(invoices []model.Invo
 	for paymentType, groupedInvoices := range b.groupInvoices(b.groupInvoicesByPaymentType, invoices) {
 		subtotal := 0.0
 		for i, invoice := range groupedInvoices {
-			customerId := strconv.Itoa(invoice.CustomerId)
+			customerId := strconv.Itoa(invoice.CustomerId())
 			customer := customers[customerId]
 			buffer.WriteString(fmt.Sprintf(" %d. %s %s\n", i+1, customer.FirstAdultName(), invoice.String()))
 			subtotal += invoice.Amount()
