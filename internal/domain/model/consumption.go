@@ -76,19 +76,6 @@ func (c Consumption) String() string {
 	return fmt.Sprintf("%d  %s  %4.1f  %s  %-5v  %s  %s", c.ChildId(), c.YearMonth(), c.Units(), c.ProductId(), c.IsRectification(), c.InvoiceId(), c.Note())
 }
 
-func (c Consumption) CopyWithNewInvoiceId(invoiceId string) Consumption {
-	return Consumption{
-		id:              c.id,
-		childId:         c.childId,
-		productId:       c.productId,
-		units:           c.units,
-		yearMonth:       c.yearMonth,
-		note:            c.note,
-		isRectification: c.isRectification,
-		invoiceId:       invoiceId,
-	}
-}
-
 func ConsumptionListToString(consumptions []Consumption, child Child, products map[string]Product) string {
 	var total float64
 	var buffer bytes.Buffer
