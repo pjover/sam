@@ -188,14 +188,14 @@ func (i InvoiceReport) headerData(invoice model.Invoice, customer model.Customer
 func (i InvoiceReport) linesData(invoice model.Invoice, products map[string]model.Product) [][]string {
 	var data [][]string
 	for _, line := range invoice.Lines() {
-		price := line.Units * line.ProductPrice
-		vat := price * line.TaxPercentage
+		price := line.Units() * line.ProductPrice()
+		vat := price * line.TaxPercentage()
 		var row = []string{
-			fmt.Sprintf("%.2f", line.Units),
-			products[line.ProductId].Name(),
-			fmt.Sprintf("%.2f", line.ProductPrice),
+			fmt.Sprintf("%.2f", line.Units()),
+			products[line.ProductId()].Name(),
+			fmt.Sprintf("%.2f", line.ProductPrice()),
 			fmt.Sprintf("%.2f", price),
-			fmt.Sprintf("%.2f", line.TaxPercentage),
+			fmt.Sprintf("%.2f", line.TaxPercentage()),
 			fmt.Sprintf("%.2f", vat),
 			fmt.Sprintf("%.2f", price+vat),
 		}
@@ -210,8 +210,8 @@ func (i InvoiceReport) linesData(invoice model.Invoice, products map[string]mode
 func (i InvoiceReport) summaryData(invoice model.Invoice) [][]string {
 	var price, vat float64
 	for _, line := range invoice.Lines() {
-		price += line.Units * line.ProductPrice
-		vat += price * line.TaxPercentage
+		price += line.Units() * line.ProductPrice()
+		vat += price * line.TaxPercentage()
 	}
 
 	var data = [][]string{

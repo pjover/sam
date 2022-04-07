@@ -6,27 +6,9 @@ import (
 )
 
 var lines = []model.InvoiceLine{
-	{
-		ProductId:     "TST",
-		Units:         1,
-		ProductPrice:  11,
-		TaxPercentage: 0,
-		ChildId:       1850,
-	},
-	{
-		ProductId:     "XXX",
-		Units:         3,
-		ProductPrice:  5.5,
-		TaxPercentage: 0.1,
-		ChildId:       1850,
-	},
-	{
-		ProductId:     "YYY",
-		Units:         1.5,
-		ProductPrice:  5,
-		TaxPercentage: 0,
-		ChildId:       1850,
-	},
+	model.NewInvoiceLine("TST", 1, 11, 0, 1850),
+	model.NewInvoiceLine("XXX", 3, 5.5, 0.1, 1850),
+	model.NewInvoiceLine("YYY", 1.5, 5, 0, 1850),
 }
 
 var InvoiceF100 = model.NewInvoice(

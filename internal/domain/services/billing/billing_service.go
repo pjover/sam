@@ -302,13 +302,13 @@ func (b billingService) productLines(consumptions []transientConsumption) (lines
 			continue
 		}
 
-		line := model.InvoiceLine{
-			ProductId:     productId,
-			Units:         units,
-			ProductPrice:  product.Price(),
-			TaxPercentage: product.TaxPercentage(),
-			ChildId:       cons[0].childId,
-		}
+		line := model.NewInvoiceLine(
+			productId,
+			units,
+			product.Price(),
+			product.TaxPercentage(),
+			cons[0].childId,
+		)
 		lines = append(lines, line)
 	}
 	return lines, nil

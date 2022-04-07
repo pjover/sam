@@ -107,8 +107,8 @@ func (i Invoice) DateFmt() string {
 func (i Invoice) Amount() float64 {
 	var amount float64
 	for _, line := range i.lines {
-		gross := line.Units * line.ProductPrice
-		tax := gross * line.TaxPercentage
+		gross := line.Units() * line.ProductPrice()
+		tax := gross * line.TaxPercentage()
 		amount += gross + tax
 	}
 	return amount

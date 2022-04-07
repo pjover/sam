@@ -39,13 +39,13 @@ func lines(lines []Line) []model.InvoiceLine {
 }
 
 func line(line Line) model.InvoiceLine {
-	return model.InvoiceLine{
-		ProductId:     line.ProductID,
-		Units:         Decimal128ToFloat64(line.Units),
-		ProductPrice:  Decimal128ToFloat64(line.ProductPrice),
-		TaxPercentage: Decimal128ToFloat64(line.TaxPercentage),
-		ChildId:       line.ChildId,
-	}
+	return model.NewInvoiceLine(
+		line.ProductID,
+		Decimal128ToFloat64(line.Units),
+		Decimal128ToFloat64(line.ProductPrice),
+		Decimal128ToFloat64(line.TaxPercentage),
+		line.ChildId,
+	)
 }
 
 func ConvertInvoicesToModel(invoices []Invoice) []model.Invoice {
@@ -68,11 +68,11 @@ func ConvertInvoiceToDbo(invoice model.Invoice) Invoice {
 	var lines []Line
 	for _, line := range invoice.Lines() {
 		_line := Line{
-			ProductID:     line.ProductId,
-			Units:         Float64ToDecimal128(line.Units),
-			ProductPrice:  Float64ToDecimal128(line.ProductPrice),
-			TaxPercentage: Float64ToDecimal128(line.TaxPercentage),
-			ChildId:       line.ChildId,
+			ProductID:     line.ProductId(),
+			Units:         Float64ToDecimal128(line.Units()),
+			ProductPrice:  Float64ToDecimal128(line.ProductPrice()),
+			TaxPercentage: Float64ToDecimal128(line.TaxPercentage()),
+			ChildId:       line.ChildId(),
 		}
 		lines = append(lines, _line)
 	}
