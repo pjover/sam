@@ -90,19 +90,23 @@ func (a adminService) CreateDirectories() (string, error) {
 	dirName := a.langService.WorkingDir(workingTime)
 	workingDirPath := path.Join(a.configService.GetHomeDirectory(), dirName)
 
-	if err := a.createWorkingDir(workingDirPath); err != nil {
+	if err := a.createWorkingDirectory(workingDirPath); err != nil {
+		return "", err
+	}
+
+	if err := a.createDirectory(a.configService.GetReportsDirectory()); err != nil {
+		return "", err
+	}
+
+	if err := a.createDirectory(a.configService.GetCustomersCardsDirectory()); err != nil {
+		return "", err
+	}
+
+	if err := a.createDirectory(a.configService.GetBackupDirectory()); err != nil {
 		return "", err
 	}
 
 	if err := a.updateConfig(yearMonth, dirName); err != nil {
-		return "", err
-	}
-
-	if err := a.createReportsDir(); err != nil {
-		return "", err
-	}
-
-	if err := a.osService.OpenUrlInBrowser(workingDirPath); err != nil {
 		return "", err
 	}
 
@@ -134,8 +138,7 @@ func (a adminService) numberOfDaysUntilEndOfMonth() int {
 	return int(endOfMonth.Sub(now).Hours() / 24)
 }
 
-func (a adminService) createWorkingDir(workingDirPath string) error {
-
+func (a adminService) createWorkingDirectory(workingDirPath string) error {
 	exists, err := a.osService.ItemExists(workingDirPath)
 	if err != nil {
 		return err
@@ -155,6 +158,11 @@ func (a adminService) createWorkingDir(workingDirPath string) error {
 	if err := a.copyDefaultEntitiesFiles(workingDirPath); err != nil {
 		return err
 	}
+
+	if err := a.osService.OpenUrlInBrowser(workingDirPath); err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -185,6 +193,13 @@ func (a adminService) updateConfig(yearMonth model.YearMonth, dirName string) er
 	return nil
 }
 
-func (a adminService) createReportsDir() error {
-	return a.osService.CreateDirectory(a.configService.GetReportsDirectory())
+func (a adminService) createDirectory(dir string) error {
+	exists, err := a.osService.ItemExists(dir)
+	if err != nil {
+		return err
+	}
+	if !exists {
+		return a.osService.CreateDirectory(dir)
+	}
+	return nil
 }

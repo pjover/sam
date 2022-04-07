@@ -5,10 +5,19 @@ import (
 	"github.com/pjover/sam/internal/domain/model"
 	"github.com/pjover/sam/internal/domain/model/adult_role"
 	"github.com/pjover/sam/internal/domain/model/group_type"
+	"github.com/pjover/sam/internal/domain/model/language"
 	"github.com/pjover/sam/internal/domain/model/payment_type"
 	"log"
 	"time"
 )
+
+type TransientCustomer struct {
+	Children      []TransientChild
+	Adults        []Adult
+	InvoiceHolder InvoiceHolder
+	Note          string
+	Language      string
+}
 
 type Customer struct {
 	Id            int
@@ -18,7 +27,17 @@ type Customer struct {
 	InvoiceHolder InvoiceHolder
 	Note          string
 	Language      string
-	ChangedOn     time.Time // TODO Not used
+	ChangedOn     time.Time
+}
+
+type TransientChild struct {
+	Name          string
+	Surname       string
+	SecondSurname string
+	TaxID         string
+	BirthDate     string
+	Group         string
+	Note          string
 }
 
 type Child struct {
@@ -64,41 +83,37 @@ type InvoiceHolder struct {
 	Email       string
 	SendEmail   bool
 	PaymentType string
-	BankAccount string
+	Iban        string
 	IsBusiness  bool
 }
 
-func CustomerToModel(customer Customer) model.Customer {
-	return model.Customer{
-		Id:            customer.Id,
-		Active:        customer.Active,
-		Children:      childrenToModel(customer.Children),
+func TransientCustomerToModel(customer TransientCustomer) model.TransientCustomer {
+	return model.TransientCustomer{
+		Children:      transientChildrenToModel(customer.Children),
 		Adults:        adultsToModel(customer.Adults),
 		InvoiceHolder: holderToModel(customer.InvoiceHolder),
 		Note:          customer.Note,
-		Language:      model.NewLanguage(customer.Language),
+		Language:      language.NewLanguage(customer.Language),
 	}
 }
 
-func childrenToModel(children []Child) []model.Child {
-	var out []model.Child
+func transientChildrenToModel(children []TransientChild) []model.TransientChild {
+	var out []model.TransientChild
 	for _, c := range children {
 		out = append(out, childToModel(c))
 	}
 	return out
 }
 
-func childToModel(child Child) model.Child {
-	return model.Child{
-		Id:            child.Id,
+func childToModel(child TransientChild) model.TransientChild {
+	return model.TransientChild{
 		Name:          child.Name,
 		Surname:       child.Surname,
 		SecondSurname: child.SecondSurname,
-		TaxID:         child.TaxID,
+		TaxID:         model.NewTaxIdOrEmpty(child.TaxID),
 		BirthDate:     stringToTime(child.BirthDate),
 		Group:         group_type.NewGroupType(child.Group),
 		Note:          child.Note,
-		Active:        child.Active,
 	}
 }
 
@@ -122,42 +137,42 @@ func adultsToModel(adults []Adult) []model.Adult {
 }
 
 func adultToModel(adult Adult) model.Adult {
-	return model.Adult{
-		Name:             adult.Name,
-		Surname:          adult.Surname,
-		SecondSurname:    adult.SecondSurname,
-		TaxID:            adult.TaxID,
-		Role:             adult_role.NewAdultRole(adult.Role),
-		Address:          addressToModel(adult.Address),
-		Email:            adult.Email,
-		MobilePhone:      adult.MobilePhone,
-		HomePhone:        adult.HomePhone,
-		GrandMotherPhone: adult.GrandMotherPhone,
-		GrandParentPhone: adult.GrandParentPhone,
-		WorkPhone:        adult.WorkPhone,
-		BirthDate:        stringToTime(adult.BirthDate),
-		Nationality:      adult.Nationality,
-	}
+	return model.NewAdult(
+		adult.Name,
+		adult.Surname,
+		adult.SecondSurname,
+		model.NewTaxIdOrEmpty(adult.TaxID),
+		adult_role.NewAdultRole(adult.Role),
+		addressToModel(adult.Address),
+		adult.Email,
+		adult.MobilePhone,
+		adult.HomePhone,
+		adult.GrandMotherPhone,
+		adult.GrandParentPhone,
+		adult.WorkPhone,
+		stringToTime(adult.BirthDate),
+		model.NewNationalityOrEmpty(adult.Nationality),
+	)
 }
 
 func addressToModel(address Address) model.Address {
-	return model.Address{
-		Street:  address.Street,
-		ZipCode: address.ZipCode,
-		City:    address.City,
-		State:   address.State,
-	}
+	return model.NewAddress(
+		address.Street,
+		address.ZipCode,
+		address.City,
+		address.State,
+	)
 }
 
 func holderToModel(holder InvoiceHolder) model.InvoiceHolder {
-	return model.InvoiceHolder{
-		Name:        holder.Name,
-		TaxID:       holder.TaxID,
-		Address:     addressToModel(holder.Address),
-		Email:       holder.Email,
-		SendEmail:   holder.SendEmail,
-		PaymentType: payment_type.NewPaymentType(holder.PaymentType),
-		BankAccount: holder.BankAccount,
-		IsBusiness:  holder.IsBusiness,
-	}
+	return model.NewInvoiceHolder(
+		holder.Name,
+		model.NewTaxIdOrEmpty(holder.TaxID),
+		addressToModel(holder.Address),
+		holder.Email,
+		holder.SendEmail,
+		payment_type.NewPaymentType(holder.PaymentType),
+		model.NewIbanOrEmpty(holder.Iban),
+		holder.IsBusiness,
+	)
 }

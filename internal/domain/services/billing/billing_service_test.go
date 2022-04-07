@@ -2,9 +2,9 @@ package billing
 
 import (
 	"github.com/pjover/sam/internal/domain/model"
-	"github.com/pjover/sam/internal/domain/model/payment_type"
 	"github.com/pjover/sam/internal/domain/model/sequence_type"
 	"github.com/pjover/sam/internal/domain/ports/mocks"
+	"github.com/pjover/sam/test/test_data"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"testing"
@@ -16,138 +16,104 @@ var yearMonth, _ = model.StringToYearMonth("2022-02")
 var today = time.Date(2022, 2, 16, 20, 33, 59, 0, time.Local)
 
 var noRectificationConsumptions = []model.Consumption{
-	{
-		Id:        "AA1",
-		ChildId:   1850,
-		ProductId: "TST",
-		Units:     2,
-		YearMonth: yearMonth,
-		Note:      "Note 1",
-	},
-	{
-		Id:        "AA2",
-		ChildId:   1850,
-		ProductId: "TST",
-		Units:     2,
-		YearMonth: yearMonth,
-		Note:      "Note 2",
-	},
-	{
-		Id:        "AA3",
-		ChildId:   1851,
-		ProductId: "TST",
-		Units:     2,
-		YearMonth: yearMonth,
-		Note:      "Note 3",
-	},
-	{
-		Id:        "AA4",
-		ChildId:   1851,
-		ProductId: "XXX",
-		Units:     2,
-		YearMonth: yearMonth,
-		Note:      "Note 4",
-	},
-	{
-		Id:        "AA5",
-		ChildId:   1860,
-		ProductId: "TST",
-		Units:     2,
-		YearMonth: yearMonth,
-		Note:      "Note 5",
-	},
-	{
-		Id:        "AA7",
-		ChildId:   1860,
-		ProductId: "YYY",
-		Units:     2,
-		YearMonth: yearMonth,
-		Note:      "",
-	},
-	{
-		Id:        "AA8",
-		ChildId:   1860,
-		ProductId: "YYY",
-		Units:     -2,
-		YearMonth: yearMonth,
-		Note:      "",
-	},
+	model.NewConsumption(
+		"AA1",
+		1480,
+		"TST",
+		2,
+		yearMonth,
+		"Note 1",
+		false,
+		"NONE",
+	),
+	model.NewConsumption(
+		"AA2",
+		1480,
+		"TST",
+		2,
+		yearMonth,
+		"Note 2",
+		false,
+		"NONE",
+	),
+	model.NewConsumption(
+		"AA3",
+		1481,
+		"TST",
+		2,
+		yearMonth,
+		"Note 3",
+		false,
+		"NONE",
+	),
+	model.NewConsumption(
+		"AA4",
+		1481,
+		"XXX",
+		2,
+		yearMonth,
+		"Note 4",
+		false,
+		"NONE",
+	),
+	model.NewConsumption(
+		"AA5",
+		1490,
+		"TST",
+		2,
+		yearMonth,
+		"Note 5",
+		false,
+		"NONE",
+	),
+	model.NewConsumption(
+		"AA7",
+		1490,
+		"YYY",
+		2,
+		yearMonth,
+		"",
+		false,
+		"NONE",
+	),
+	model.NewConsumption(
+		"AA8",
+		1490,
+		"YYY",
+		-2,
+		yearMonth,
+		"",
+		false,
+		"NONE",
+	),
 }
 
 var rectificationConsumptions = []model.Consumption{
-	{
-		Id:              "AA1",
-		ChildId:         1850,
-		ProductId:       "TST",
-		Units:           -2,
-		YearMonth:       yearMonth,
-		Note:            "Note r1",
-		IsRectification: true,
-	},
-	{
-		Id:              "AA2",
-		ChildId:         1850,
-		ProductId:       "TST",
-		Units:           -2,
-		YearMonth:       yearMonth,
-		Note:            "Note r2",
-		IsRectification: true,
-	},
+	model.NewConsumption(
+		"AA1",
+		1480,
+		"TST",
+		-2,
+		yearMonth,
+		"Note r1",
+		true,
+		"NONE",
+	),
+	model.NewConsumption(
+		"AA2",
+		1480,
+		"TST",
+		-2,
+		yearMonth,
+		"Note r2",
+		true,
+		"NONE",
+	),
 }
 
 var sequences = []model.Sequence{
-	{
-		sequence_type.StandardInvoice,
-		188,
-	},
-	{
-		sequence_type.RectificationInvoice,
-		10,
-	},
-}
-
-var customer185 = model.Customer{
-	Id: 185,
-	Adults: []model.Adult{
-		{
-			Name:    "Cara",
-			Surname: "Santamaria",
-		},
-	},
-	InvoiceHolder: model.InvoiceHolder{
-		PaymentType: payment_type.BankDirectDebit,
-	},
-}
-
-var customer186 = model.Customer{
-	Id: 186,
-	Adults: []model.Adult{
-		{
-			Name:    "Bob",
-			Surname: "Novella",
-		},
-	},
-	InvoiceHolder: model.InvoiceHolder{
-		PaymentType: payment_type.BankDirectDebit,
-	},
-}
-
-var productTST = model.Product{
-	Id:            "TST",
-	Price:         10.9,
-	TaxPercentage: 0.0,
-}
-
-var productXXX = model.Product{
-	Id:            "XXX",
-	Price:         9.1,
-	TaxPercentage: 0.0,
-}
-
-var productYYY = model.Product{
-	Id:            "XXX",
-	Price:         9.1,
-	TaxPercentage: 0.0,
+	model.NewSequence(sequence_type.StandardInvoice, 188),
+	model.NewSequence(sequence_type.RectificationInvoice, 10),
 }
 
 func Test_BillConsumptions_without_rectification(t *testing.T) {
@@ -158,9 +124,10 @@ func Test_BillConsumptions_without_rectification(t *testing.T) {
 	}{
 		{
 			name: "BillConsumptions",
-			want: " 1. Cara Santamaria 185  F-189  2022-02    83.60  Rebut  2.0 TST (21.80),2.0 XXX (18.20),4.0 TST (43.60)\n" +
-				" 2. Bob Novella 186  F-190  2022-02    21.80  Rebut  2.0 TST (21.80)\n" +
-				"Total 2 Rebut: 105.40 €\n" +
+			want: " 1. Cara Santamaria 148  F-189  2022-02    83.60  Rebut  2.0 TST (21.80),2.0 XXX (18.20),4.0 TST (43.60)\n" +
+				"Total 1 Rebut: 83.60 €\n" +
+				" 1. Joana Petita 149  X-1  2022-02    21.80  Tranferència  2.0 TST (21.80)\n" +
+				"Total 1 Tranferència: 21.80 €\n" +
 				"TOTAL: 105.40 €\n",
 			wantErr: nil,
 		},
@@ -171,11 +138,11 @@ func Test_BillConsumptions_without_rectification(t *testing.T) {
 
 	mockedDbService := new(mocks.DbService)
 	mockedDbService.On("FindAllActiveConsumptions").Return(noRectificationConsumptions, nil)
-	mockedDbService.On("FindCustomer", 185).Return(customer185, nil)
-	mockedDbService.On("FindCustomer", 186).Return(customer186, nil)
-	mockedDbService.On("FindProduct", "TST").Return(productTST, nil)
-	mockedDbService.On("FindProduct", "XXX").Return(productXXX, nil)
-	mockedDbService.On("FindProduct", "YYY").Return(productYYY, nil)
+	mockedDbService.On("FindCustomer", 148).Return(test_data.Customer148, nil)
+	mockedDbService.On("FindCustomer", 149).Return(test_data.Customer149, nil)
+	mockedDbService.On("FindProduct", "TST").Return(test_data.ProductTST, nil)
+	mockedDbService.On("FindProduct", "XXX").Return(test_data.ProductXXX, nil)
+	mockedDbService.On("FindProduct", "YYY").Return(test_data.ProductYYY, nil)
 	mockedDbService.On("FindAllSequences").Return(sequences, nil)
 	mockedDbService.On("InsertInvoices", mock.Anything).Return(nil)
 	mockedDbService.On("UpdateConsumptions", mock.Anything).Return(nil)
@@ -206,10 +173,11 @@ func Test_BillConsumptions_with_rectification(t *testing.T) {
 	}{
 		{
 			name: "BillConsumptions",
-			want: " 1. Cara Santamaria 185  F-189  2022-02    83.60  Rebut  2.0 TST (21.80),2.0 XXX (18.20),4.0 TST (43.60)\n" +
-				" 2. Cara Santamaria 185  R-11  2022-02   -43.60  Rebut  -4.0 TST (-43.60)\n" +
-				" 3. Bob Novella 186  F-190  2022-02    21.80  Rebut  2.0 TST (21.80)\n" +
-				"Total 3 Rebut: 61.80 €\n" +
+			want: " 1. Cara Santamaria 148  F-189  2022-02    83.60  Rebut  2.0 TST (21.80),2.0 XXX (18.20),4.0 TST (43.60)\n" +
+				" 2. Cara Santamaria 148  R-11  2022-02   -43.60  Rebut  -4.0 TST (-43.60)\n" +
+				"Total 2 Rebut: 40.00 €\n" +
+				" 1. Joana Petita 149  X-1  2022-02    21.80  Tranferència  2.0 TST (21.80)\n" +
+				"Total 1 Tranferència: 21.80 €\n" +
 				"TOTAL: 61.80 €\n",
 			wantErr: nil,
 		},
@@ -220,11 +188,11 @@ func Test_BillConsumptions_with_rectification(t *testing.T) {
 
 	mockedDbService := new(mocks.DbService)
 	mockedDbService.On("FindAllActiveConsumptions").Return(append(noRectificationConsumptions, rectificationConsumptions...), nil)
-	mockedDbService.On("FindCustomer", 185).Return(customer185, nil)
-	mockedDbService.On("FindCustomer", 186).Return(customer186, nil)
-	mockedDbService.On("FindProduct", "TST").Return(productTST, nil)
-	mockedDbService.On("FindProduct", "XXX").Return(productXXX, nil)
-	mockedDbService.On("FindProduct", "YYY").Return(productYYY, nil)
+	mockedDbService.On("FindCustomer", 148).Return(test_data.Customer148, nil)
+	mockedDbService.On("FindCustomer", 149).Return(test_data.Customer149, nil)
+	mockedDbService.On("FindProduct", "TST").Return(test_data.ProductTST, nil)
+	mockedDbService.On("FindProduct", "XXX").Return(test_data.ProductXXX, nil)
+	mockedDbService.On("FindProduct", "YYY").Return(test_data.ProductYYY, nil)
 	mockedDbService.On("FindAllSequences").Return(sequences, nil)
 	mockedDbService.On("InsertInvoices", mock.Anything).Return(nil)
 	mockedDbService.On("UpdateConsumptions", mock.Anything).Return(nil)

@@ -58,7 +58,7 @@ type InvoiceHolder struct {
 	Email       string  `bson:"email"`
 	SendEmail   bool    `bson:"sendEmail"`
 	PaymentType string  `bson:"paymentType"`
-	BankAccount string  `bson:"bankAccount"`
+	Iban        string  `bson:"bankAccount"`
 	IsBusiness  bool    `bson:"isBusiness"`
 }
 

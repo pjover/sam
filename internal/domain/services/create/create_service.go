@@ -20,9 +20,9 @@ func NewCreateService(dbService ports.DbService, osService ports.OsService) port
 }
 
 func (c createService) CreateProduct(product model.Product) (string, error) {
-	storedProduct, err := c.dbService.FindProduct(product.Id)
+	storedProduct, err := c.dbService.FindProduct(product.Id())
 	if err == nil {
-		return "", fmt.Errorf("el producte amb codi '%s' ja existeix: %s", product.Id, storedProduct.String())
+		return "", fmt.Errorf("el producte amb codi '%s' ja existeix: %s", product.Id(), storedProduct.String())
 	}
 
 	err = c.dbService.InsertProduct(product)
@@ -33,7 +33,7 @@ func (c createService) CreateProduct(product model.Product) (string, error) {
 	return fmt.Sprintf("Creat el producte %s", product.String()), nil
 }
 
-func (c createService) CreateCustomer(customer model.Customer) (string, error) {
+func (c createService) CreateCustomer(customer model.TransientCustomer) (string, error) {
 	err := c.validateCustomer(customer)
 	if err != nil {
 		return "", err
@@ -44,18 +44,18 @@ func (c createService) CreateCustomer(customer model.Customer) (string, error) {
 		return "", err
 	}
 
-	customer = c.completeCustomer(customer, sequence)
+	newCustomer := c.completeCustomer(customer, sequence)
 
-	err = c.updateDatabase(customer, sequence)
+	err = c.updateDatabase(newCustomer, sequence)
 	if err != nil {
 		return "", fmt.Errorf("error guardant el nou producte: %s", err)
 	}
 
-	return fmt.Sprintf("Creat el client %s\n", customer.String()), nil
+	return fmt.Sprintf("Creat el client %s\n", newCustomer.String()), nil
 }
 
-func (c createService) validateCustomer(customer model.Customer) error {
-	return nil // TODO Validate mandatory fields, TaxIds & BankAccount
+func (c createService) validateCustomer(customer model.TransientCustomer) error {
+	return nil // TODO validate mandatory fields, TaxIds & Iban
 }
 
 func (c createService) getNextCustomerSequence() (model.Sequence, error) {
@@ -64,22 +64,40 @@ func (c createService) getNextCustomerSequence() (model.Sequence, error) {
 		return model.Sequence{}, err
 	}
 
-	newSequence := model.Sequence{
-		Id:      sequence_type.Customer,
-		Counter: sequence.Counter + 1,
-	}
+	newSequence := model.NewSequence(sequence_type.Customer, sequence.Counter()+1)
 	return newSequence, nil
 }
 
-func (c createService) completeCustomer(customer model.Customer, sequence model.Sequence) model.Customer {
-	customer.Id = sequence.Counter
+func (c createService) completeCustomer(customer model.TransientCustomer, sequence model.Sequence) model.Customer {
+	newCustomerId := sequence.Counter()
 
-	for i := 0; i < len(customer.Children); i++ {
-		customer.Children[i].Id = customer.Id*10 + i
+	var newChildren []model.Child
+	for i, child := range customer.Children {
+		newChild := model.NewChild(
+			newCustomerId*10+i,
+			child.Name,
+			child.Surname,
+			child.SecondSurname,
+			child.TaxID,
+			child.BirthDate,
+			child.Group,
+			child.Note,
+			true,
+		)
+		newChildren = append(newChildren, newChild)
 	}
 
-	customer.ChangedOn = c.osService.Now()
-	return customer
+	newCustomer := model.NewCustomer(
+		newCustomerId,
+		true,
+		newChildren,
+		customer.Adults,
+		customer.InvoiceHolder,
+		customer.Note,
+		customer.Language,
+		c.osService.Now(),
+	)
+	return newCustomer
 }
 
 func (c createService) updateDatabase(customer model.Customer, sequence model.Sequence) error {

@@ -5,16 +5,20 @@ import (
 	"fmt"
 	"github.com/pjover/sam/internal/domain/model"
 	"github.com/pjover/sam/internal/domain/model/group_type"
+	"github.com/pjover/sam/internal/domain/model/language"
 	"github.com/pjover/sam/internal/domain/ports"
+	"github.com/pjover/sam/internal/domain/services/loader"
 )
 
 type listService struct {
-	dbService ports.DbService
+	configService ports.ConfigService
+	dbService     ports.DbService
 }
 
-func NewListService(dbService ports.DbService) ports.ListService {
+func NewListService(configService ports.ConfigService, dbService ports.DbService) ports.ListService {
 	return listService{
-		dbService: dbService,
+		configService: configService,
+		dbService:     dbService,
 	}
 }
 
@@ -101,7 +105,7 @@ func (l listService) ListMails() (string, error) {
 
 	var buffer bytes.Buffer
 	for _, customer := range customers {
-		buffer.WriteString(customer.InvoiceHolder.Mail() + ", ")
+		buffer.WriteString(customer.InvoiceHolder().Mail() + ", ")
 	}
 	return buffer.String(), nil
 }
@@ -116,10 +120,10 @@ func (l listService) ListMailsByLanguage() (string, error) {
 	caBuffer.WriteString("CA:\n")
 	esBuffer.WriteString("ES:\n")
 	for _, customer := range customers {
-		if customer.Language == model.Catalan {
-			caBuffer.WriteString(customer.InvoiceHolder.Mail() + ", ")
+		if customer.Language() == language.Catalan {
+			caBuffer.WriteString(customer.InvoiceHolder().Mail() + ", ")
 		} else {
-			esBuffer.WriteString(customer.InvoiceHolder.Mail() + ", ")
+			esBuffer.WriteString(customer.InvoiceHolder().Mail() + ", ")
 		}
 	}
 	return caBuffer.String() + "\n" + esBuffer.String(), nil
@@ -135,14 +139,14 @@ func (l listService) ListGroupMails(groupType group_type.GroupType) (string, err
 	buffer.WriteString(groupType.Format() + ":\n")
 	for _, customer := range customers {
 		var in bool
-		for _, child := range customer.Children {
-			if child.Group == groupType {
+		for _, child := range customer.Children() {
+			if child.Group() == groupType {
 				in = true
 				break
 			}
 		}
 		if in {
-			buffer.WriteString(customer.InvoiceHolder.Mail() + ", ")
+			buffer.WriteString(customer.InvoiceHolder().Mail() + ", ")
 		}
 	}
 	return buffer.String(), nil
@@ -158,7 +162,9 @@ func (l listService) ListConsumptions() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	products, err := l.dbService.FindAllProducts()
+
+	bulkLoader := loader.NewBulkLoader(l.configService, l.dbService)
+	products, err := bulkLoader.LoadProducts()
 	if err != nil {
 		return "", err
 	}
@@ -167,7 +173,7 @@ func (l listService) ListConsumptions() (string, error) {
 	for _, child := range children {
 		var cons []model.Consumption
 		for _, c := range consumptions {
-			if c.ChildId == child.Id {
+			if c.ChildId() == child.Id() {
 				cons = append(cons, c)
 			}
 		}
@@ -188,7 +194,9 @@ func (l listService) ListChildConsumptions(childId int) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	products, err := l.dbService.FindAllProducts()
+
+	bulkLoader := loader.NewBulkLoader(l.configService, l.dbService)
+	products, err := bulkLoader.LoadProducts()
 	if err != nil {
 		return "", err
 	}

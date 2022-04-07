@@ -62,14 +62,24 @@ func (o osService) CopyFile(sourceFilePath string, destinationFilePath string) e
 	if err != nil {
 		return fmt.Errorf("cannot open source file '%s': %s", sourceFilePath, err)
 	}
-	defer source.Close()
+	defer func(source *os.File) {
+		err := source.Close()
+		if err != nil {
+			log.Printf("error closing source file '%s': %s", sourceFilePath, err)
+		}
+	}(source)
 
 	destination, err := os.Create(destinationFilePath)
 	if err != nil {
 		return fmt.Errorf("cannot create destination file '%s': %s", destinationFilePath, err)
 	}
 
-	defer destination.Close()
+	defer func(destination *os.File) {
+		err := destination.Close()
+		if err != nil {
+			log.Printf("error closing destination file '%s': %s", destinationFilePath, err)
+		}
+	}(destination)
 	_, err = io.Copy(destination, source)
 	return err
 }

@@ -19,7 +19,7 @@ var stringValues = []string{
 }
 
 func (p AdultRole) String() string {
-	return formatValues[p]
+	return stringValues[p]
 }
 
 func NewAdultRole(value string) AdultRole {

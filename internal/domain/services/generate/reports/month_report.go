@@ -6,8 +6,10 @@ import (
 	"github.com/johnfercher/maroto/pkg/consts"
 	"github.com/pjover/sam/internal/domain"
 	"github.com/pjover/sam/internal/domain/model"
+	"github.com/pjover/sam/internal/domain/model/payment_type"
 	"github.com/pjover/sam/internal/domain/ports"
 	"github.com/pjover/sam/internal/domain/services/lang"
+	"github.com/pjover/sam/internal/domain/services/loader"
 	"path"
 	"sort"
 )
@@ -33,45 +35,24 @@ func (m MonthReport) Run() (string, error) {
 	var buffer bytes.Buffer
 	buffer.WriteString(fmt.Sprintf("Generant l'informe de factures del mes %s ...\n", yearMonth))
 
-	invoices, err := m.getInvoices(yearMonth)
+	bulkLoader := loader.NewBulkLoader(m.configService, m.dbService)
+	invoices, err := bulkLoader.LoadMonthInvoicesByPaymentType()
 	if err != nil {
 		return "", err
 	}
-	buffer.WriteString(fmt.Sprintf("Recuperades %d factures del mes %s\n", len(invoices), yearMonth))
 
-	data, err := m.buildData(invoices)
+	subReports, err := m.paymentTypeTables(invoices)
 	if err != nil {
 		return "", err
 	}
+	cardSubReport := m.summaryCard(invoices)
+	subReports = append(subReports, cardSubReport)
 
 	reportDefinition := ReportDefinition{
 		PageOrientation: consts.Landscape,
 		Title:           fmt.Sprintf("Factures %s", m.langService.MonthName(yearMonth.Month())),
 		Footer:          m.osService.Now().Format(domain.YearMonthDayLayout),
-		SubReports: []SubReport{
-			TableSubReport{
-				Align: consts.Left,
-				Captions: []string{
-					"Factura",
-					"Data",
-					"Client",
-					"Infants",
-					"Concepte",
-					"Import",
-					"Pagament",
-				},
-				Widths: []uint{
-					1,
-					1,
-					2,
-					2,
-					4,
-					1,
-					1,
-				},
-				Data: data,
-			},
-		},
+		SubReports:      subReports,
 	}
 
 	wd := m.configService.GetWorkingDirectory()
@@ -90,15 +71,37 @@ func (m MonthReport) Run() (string, error) {
 	return buffer.String(), nil
 }
 
-func (m MonthReport) getInvoices(yearMonth model.YearMonth) ([]model.Invoice, error) {
-	invoices, err := m.dbService.FindInvoicesByYearMonth(yearMonth)
-	if err != nil {
-		return nil, fmt.Errorf("error recuperant les factures del mes %s: %s", yearMonth, err)
+func (m MonthReport) paymentTypeTables(invoices map[payment_type.PaymentType][]model.Invoice) ([]SubReport, error) {
+	var subReports []SubReport
+	for paymentType, paymentInvoices := range invoices {
+		data, err := m.buildData(paymentInvoices)
+		if err != nil {
+			return nil, err
+		}
+		subReport := TableSubReport{
+			Title: paymentType.Format(),
+			Align: consts.Left,
+			Captions: []string{
+				"Factura",
+				"Data",
+				"Client",
+				"Infants",
+				"Concepte",
+				"Import",
+			},
+			Widths: []uint{
+				1,
+				1,
+				2,
+				2,
+				5,
+				1,
+			},
+			Data: data,
+		}
+		subReports = append(subReports, subReport)
 	}
-	if len(invoices) == 0 {
-		return nil, fmt.Errorf("no s'han trobat factures al mes %s", yearMonth)
-	}
-	return invoices, nil
+	return subReports, nil
 }
 
 func (m MonthReport) buildData(invoices []model.Invoice) ([][]string, error) {
@@ -106,17 +109,16 @@ func (m MonthReport) buildData(invoices []model.Invoice) ([][]string, error) {
 	for _, invoice := range invoices {
 		customer, err := m.customer(invoice)
 		if err != nil {
-			return nil, fmt.Errorf("error al recuperar el client %d de la factura %s: %s", invoice.CustomerId, invoice.Id, err)
+			return nil, fmt.Errorf("error al recuperar el client %d de la factura %s: %s", invoice.CustomerId(), invoice.Id(), err)
 		}
 
 		var line = []string{
-			invoice.Id,
+			invoice.Id(),
 			invoice.DateFmt(),
 			customer.FirstAdultNameWithId(),
 			customer.ChildrenNamesWithId("\n"),
 			invoice.LinesFmt(", "),
 			fmt.Sprintf("%.2f", invoice.Amount()),
-			invoice.PaymentType.Format(),
 		}
 		data = append(data, line)
 	}
@@ -126,8 +128,45 @@ func (m MonthReport) buildData(invoices []model.Invoice) ([][]string, error) {
 	return data, nil
 }
 
+func (m MonthReport) summaryCard(invoices map[payment_type.PaymentType][]model.Invoice) SubReport {
+
+	var amountsByPaymentType = make(map[payment_type.PaymentType]float64)
+	for paymentType, paymentInvoices := range invoices {
+		var amountSum float64
+		for _, invoice := range paymentInvoices {
+			amountSum += invoice.Amount()
+		}
+		amountsByPaymentType[paymentType] = amountSum
+	}
+
+	var captions []string
+	var data [][]string
+	var total float64
+	for paymentType, sum := range amountsByPaymentType {
+		total += sum
+		captions = append(captions, paymentType.Format())
+		datum := []string{fmt.Sprintf("%.2f", sum)}
+		data = append(data, datum)
+	}
+
+	captions = append(captions, "TOTAL")
+	datum := []string{fmt.Sprintf("%.2f", total)}
+	data = append(data, datum)
+	cardSubReport := CardSubReport{
+		Title:    "Resum",
+		Align:    consts.Left,
+		Captions: captions,
+		Widths: []uint{
+			2,
+			6,
+		},
+		Data: data,
+	}
+	return cardSubReport
+}
+
 func (m MonthReport) customer(invoice model.Invoice) (model.Customer, error) {
-	customer, err := m.dbService.FindCustomer(invoice.CustomerId)
+	customer, err := m.dbService.FindCustomer(invoice.CustomerId())
 	if err != nil {
 		return model.Customer{}, err
 	}

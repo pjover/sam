@@ -7,19 +7,19 @@ import (
 )
 
 func ConvertInvoiceToModel(invoice Invoice) model.Invoice {
-	return model.Invoice{
-		Id:          invoice.Id,
-		CustomerId:  invoice.CustomerID,
-		Date:        invoice.Date,
-		YearMonth:   convertInvoiceYearMonth(invoice.YearMonth, invoice.Id),
-		ChildrenIds: invoice.ChildrenIds,
-		Lines:       lines(invoice.Lines),
-		PaymentType: payment_type.NewPaymentType(invoice.PaymentType),
-		Note:        invoice.Note,
-		Emailed:     invoice.Emailed,
-		Printed:     invoice.Printed,
-		SentToBank:  invoice.SentToBank,
-	}
+	return model.NewInvoice(
+		invoice.Id,
+		invoice.CustomerID,
+		invoice.Date,
+		convertInvoiceYearMonth(invoice.YearMonth, invoice.Id),
+		invoice.ChildrenIds,
+		lines(invoice.Lines),
+		payment_type.NewPaymentType(invoice.PaymentType),
+		invoice.Note,
+		invoice.Emailed,
+		invoice.Printed,
+		invoice.SentToBank,
+	)
 }
 
 func convertInvoiceYearMonth(yearMonth string, invoiceId string) model.YearMonth {
@@ -30,22 +30,22 @@ func convertInvoiceYearMonth(yearMonth string, invoiceId string) model.YearMonth
 	return ym
 }
 
-func lines(lines []Line) []model.Line {
-	var out []model.Line
+func lines(lines []Line) []model.InvoiceLine {
+	var out []model.InvoiceLine
 	for _, l := range lines {
 		out = append(out, line(l))
 	}
 	return out
 }
 
-func line(line Line) model.Line {
-	return model.Line{
-		ProductId:     line.ProductID,
-		Units:         Decimal128ToFloat64(line.Units),
-		ProductPrice:  Decimal128ToFloat64(line.ProductPrice),
-		TaxPercentage: Decimal128ToFloat64(line.TaxPercentage),
-		ChildId:       line.ChildId,
-	}
+func line(line Line) model.InvoiceLine {
+	return model.NewInvoiceLine(
+		line.ProductID,
+		Decimal128ToFloat64(line.Units),
+		Decimal128ToFloat64(line.ProductPrice),
+		Decimal128ToFloat64(line.TaxPercentage),
+		line.ChildId,
+	)
 }
 
 func ConvertInvoicesToModel(invoices []Invoice) []model.Invoice {
@@ -66,27 +66,27 @@ func ConvertInvoicesToDbo(invoices []model.Invoice) []interface{} {
 
 func ConvertInvoiceToDbo(invoice model.Invoice) Invoice {
 	var lines []Line
-	for _, line := range invoice.Lines {
+	for _, line := range invoice.Lines() {
 		_line := Line{
-			ProductID:     line.ProductId,
-			Units:         Float64ToDecimal128(line.Units),
-			ProductPrice:  Float64ToDecimal128(line.ProductPrice),
-			TaxPercentage: Float64ToDecimal128(line.TaxPercentage),
-			ChildId:       line.ChildId,
+			ProductID:     line.ProductId(),
+			Units:         Float64ToDecimal128(line.Units()),
+			ProductPrice:  Float64ToDecimal128(line.ProductPrice()),
+			TaxPercentage: Float64ToDecimal128(line.TaxPercentage()),
+			ChildId:       line.ChildId(),
 		}
 		lines = append(lines, _line)
 	}
 	return Invoice{
-		Id:          invoice.Id,
-		CustomerID:  invoice.CustomerId,
-		Date:        invoice.Date,
-		YearMonth:   invoice.YearMonth.String(),
-		ChildrenIds: invoice.ChildrenIds,
+		Id:          invoice.Id(),
+		CustomerID:  invoice.CustomerId(),
+		Date:        invoice.Date(),
+		YearMonth:   invoice.YearMonth().String(),
+		ChildrenIds: invoice.ChildrenIds(),
 		Lines:       lines,
-		PaymentType: invoice.PaymentType.String(),
-		Note:        invoice.Note,
-		Emailed:     invoice.Emailed,
-		Printed:     invoice.Printed,
-		SentToBank:  invoice.SentToBank,
+		PaymentType: invoice.PaymentType().String(),
+		Note:        invoice.Note(),
+		Emailed:     invoice.Emailed(),
+		Printed:     invoice.Printed(),
+		SentToBank:  invoice.SentToBank(),
 	}
 }

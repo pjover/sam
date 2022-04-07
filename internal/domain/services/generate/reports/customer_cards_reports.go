@@ -62,19 +62,19 @@ func (c CustomerCardsReports) revertLastCustomersCardsUpdated(changedSince time.
 
 func (c CustomerCardsReports) run(dirPath string, customer model.Customer) (string, error) {
 	var buffer bytes.Buffer
-	buffer.WriteString(fmt.Sprintf("Generant la fitxa del client %d, %s ...\n", customer.Id, customer.InvoiceHolder.Name))
+	buffer.WriteString(fmt.Sprintf("Generant la fitxa del client %d, %s ...\n", customer.Id(), customer.InvoiceHolder().Name()))
 
 	childrenNames := customer.ChildrenNamesWithSurname(", ")
 	reportDefinition := ReportDefinition{
 		PageOrientation: consts.Portrait,
-		Title:           fmt.Sprintf("Fitxa del client %d: %s", customer.Id, childrenNames),
+		Title:           fmt.Sprintf("Fitxa del client %d: %s", customer.Id(), childrenNames),
 		Footer:          c.osService.Now().Format(domain.YearMonthDayLayout),
 		SubReports:      c.subReports(customer),
 	}
 
 	filePath := path.Join(
 		dirPath,
-		fmt.Sprintf("%d-%s.pdf", customer.Id, childrenNames),
+		fmt.Sprintf("%d-%s.pdf", customer.Id(), childrenNames),
 	)
 
 	reportService := NewReportService(c.configService)
@@ -90,9 +90,9 @@ func (c CustomerCardsReports) run(dirPath string, customer model.Customer) (stri
 func (c CustomerCardsReports) subReports(customer model.Customer) []SubReport {
 	var subReports []SubReport
 	subReports = append(subReports, c.headerSubReport(customer))
-	subReports = append(subReports, c.childrenSubReports(customer.Children)...)
-	subReports = append(subReports, c.adultsSubReports(customer.Adults)...)
-	subReports = append(subReports, c.holderSubReport(customer.InvoiceHolder))
+	subReports = append(subReports, c.childrenSubReports(customer.Children())...)
+	subReports = append(subReports, c.adultsSubReports(customer.Adults())...)
+	subReports = append(subReports, c.holderSubReport(customer.InvoiceHolder()))
 	return subReports
 }
 
@@ -110,9 +110,9 @@ func (c CustomerCardsReports) headerSubReport(customer model.Customer) SubReport
 			15,
 		},
 		Data: [][]string{
-			{customer.Language.Format()},
-			{customer.Note},
-			{c.boolToYesNo(customer.Active)},
+			{customer.Language().Format()},
+			{customer.Note()},
+			{c.boolToYesNo(customer.Active())},
 		},
 	}
 }
@@ -153,15 +153,15 @@ func (c CustomerCardsReports) childSubReport(child model.Child) SubReport {
 			15,
 		},
 		Data: [][]string{
-			{strconv.Itoa(child.Id)},
-			{child.Name},
-			{child.Surname},
-			{child.SecondSurname},
-			{child.TaxID},
-			{child.BirthDate.Format(domain.YearMonthDayLayout)},
-			{child.Group.Format()},
-			{child.Note},
-			{c.boolToYesNo(child.Active)},
+			{strconv.Itoa(child.Id())},
+			{child.Name()},
+			{child.Surname()},
+			{child.SecondSurname()},
+			{child.TaxID().String()},
+			{child.BirthDate().Format(domain.YearMonthDayLayout)},
+			{child.Group().Format()},
+			{child.Note()},
+			{c.boolToYesNo(child.Active())},
 		},
 	}
 }
@@ -176,7 +176,7 @@ func (c CustomerCardsReports) adultsSubReports(adults []model.Adult) []SubReport
 
 func (c CustomerCardsReports) adultSubReport(adult model.Adult) SubReport {
 	return CardSubReport{
-		Title: adult.Role.Format(),
+		Title: adult.Role().Format(),
 		Align: consts.Left,
 		Captions: []string{
 			"Nom",
@@ -199,20 +199,20 @@ func (c CustomerCardsReports) adultSubReport(adult model.Adult) SubReport {
 			15,
 		},
 		Data: [][]string{
-			{adult.Name},
-			{adult.Surname},
-			{adult.SecondSurname},
-			{adult.TaxID},
-			{adult.BirthDate.Format(domain.YearMonthDayLayout)},
-			{adult.Nationality},
-			{adult.Role.Format()},
-			{adult.Email},
-			{adult.Address.CompleteAddress()},
-			{adult.MobilePhone},
-			{adult.HomePhone},
-			{adult.WorkPhone},
-			{adult.GrandParentPhone},
-			{adult.GrandMotherPhone},
+			{adult.Name()},
+			{adult.Surname()},
+			{adult.SecondSurname()},
+			{adult.TaxID().String()},
+			{adult.BirthDate().Format(domain.YearMonthDayLayout)},
+			{adult.Nationality().String()},
+			{adult.Role().Format()},
+			{adult.Email()},
+			{adult.Address().CompleteAddress()},
+			{adult.MobilePhone()},
+			{adult.HomePhone()},
+			{adult.WorkPhone()},
+			{adult.GrandParentPhone()},
+			{adult.GrandMotherPhone()},
 		},
 	}
 }
@@ -236,14 +236,14 @@ func (c CustomerCardsReports) holderSubReport(holder model.InvoiceHolder) SubRep
 			15,
 		},
 		Data: [][]string{
-			{holder.Name},
-			{holder.TaxID},
-			{holder.Email},
-			{holder.Address.CompleteAddress()},
-			{holder.PaymentType.Format()},
-			{holder.BankAccount},
-			{c.boolToYesNo(holder.SendEmail)},
-			{c.boolToYesNo(holder.IsBusiness)},
+			{holder.Name()},
+			{holder.TaxID().String()},
+			{holder.Email()},
+			{holder.Address().CompleteAddress()},
+			{holder.PaymentType().Format()},
+			{holder.Iban().Format()},
+			{c.boolToYesNo(holder.SendEmail())},
+			{c.boolToYesNo(holder.IsBusiness())},
 		},
 	}
 }

@@ -46,8 +46,8 @@ func (d dbService) FindChild(id int) (model.Child, error) {
 	}
 
 	var child model.Child
-	for _, value := range customer.Children {
-		if value.Id == id {
+	for _, value := range customer.Children() {
+		if value.Id() == id {
 			child = value
 			break
 		}
@@ -71,7 +71,7 @@ func (d dbService) FindProduct(id string) (model.Product, error) {
 	if err := d.findOne("product", id, &result, "el producte"); err != nil {
 		return model.Product{}, err
 	}
-	return dbo.ConvertProductToModel(result), nil
+	return dbo.ConvertProductToModel(result)
 }
 
 func (d dbService) FindSequence(sequenceType sequence_type.SequenceType) (model.Sequence, error) {
@@ -118,7 +118,7 @@ func (d dbService) FindAllProducts() ([]model.Product, error) {
 	if err := d.findMany("product", filter, findOptions, &results, "tots els productes"); err != nil {
 		return nil, err
 	}
-	return dbo.ConvertProductsToModel(results), nil
+	return dbo.ConvertProductsToModel(results)
 }
 
 func (d dbService) FindInvoicesByYearMonth(yearMonth model.YearMonth) ([]model.Invoice, error) {
@@ -186,7 +186,7 @@ func (d dbService) FindActiveCustomers() ([]model.Customer, error) {
 	if err := d.findMany("customer", filter, findOptions, &results, "clients actius"); err != nil {
 		return nil, err
 	}
-	return dbo.ConvertCustomersToModel(results), nil
+	return dbo.CustomerToModel(results), nil
 }
 
 func (d dbService) FindChangedCustomers(changedSince time.Time) ([]model.Customer, error) {
@@ -197,7 +197,7 @@ func (d dbService) FindChangedCustomers(changedSince time.Time) ([]model.Custome
 	if err := d.findMany("customer", filter, findOptions, &results, "tots els clients"); err != nil {
 		return nil, err
 	}
-	return dbo.ConvertCustomersToModel(results), nil
+	return dbo.CustomerToModel(results), nil
 }
 
 func (d dbService) FindActiveChildren() ([]model.Child, error) {
@@ -208,8 +208,8 @@ func (d dbService) FindActiveChildren() ([]model.Child, error) {
 
 	var children []model.Child
 	for _, customer := range customers {
-		for _, child := range customer.Children {
-			if child.Active {
+		for _, child := range customer.Children() {
+			if child.Active() {
 				children = append(children, child)
 			}
 		}

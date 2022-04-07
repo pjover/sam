@@ -15,8 +15,8 @@ func ConvertSequencesToDbo(sequences []model.Sequence) []interface{} {
 
 func ConvertSequenceToDbo(sequence model.Sequence) Sequence {
 	return Sequence{
-		Id:      sequence.Id.String(),
-		Counter: sequence.Counter,
+		Id:      sequence.Id().String(),
+		Counter: sequence.Counter(),
 	}
 }
 
@@ -29,8 +29,5 @@ func ConvertSequencesToModel(sequences []Sequence) []model.Sequence {
 }
 
 func ConvertSequenceToModel(sequence Sequence) model.Sequence {
-	return model.Sequence{
-		Id:      sequence_type.NewSequenceType(sequence.Id),
-		Counter: sequence.Counter,
-	}
+	return model.NewSequence(sequence_type.NewSequenceType(sequence.Id), sequence.Counter)
 }

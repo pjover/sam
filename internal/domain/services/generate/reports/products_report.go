@@ -81,11 +81,11 @@ func (p ProductsReport) buildContents(products []model.Product) [][]string {
 	var data [][]string
 	for _, product := range products {
 		var line = []string{
-			product.Id,
-			product.Name,
-			strconv.FormatFloat(product.Price, 'f', 2, 64),
-			strconv.FormatFloat(product.TaxPercentage, 'f', 2, 64),
-			p.formatIsSubsidy(product.IsSubsidy),
+			product.Id(),
+			product.Name(),
+			strconv.FormatFloat(product.Price(), 'f', 2, 64),
+			strconv.FormatFloat(product.TaxPercentage(), 'f', 2, 64),
+			p.formatIsSubsidy(product.IsSubsidy()),
 		}
 		data = append(data, line)
 	}

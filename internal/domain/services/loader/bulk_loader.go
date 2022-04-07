@@ -1,13 +1,15 @@
-package common
+package loader
 
 import (
 	"fmt"
 	"github.com/pjover/sam/internal/domain/model"
+	"github.com/pjover/sam/internal/domain/model/payment_type"
 	"github.com/pjover/sam/internal/domain/ports"
 )
 
 type BulkLoader interface {
 	LoadMonthInvoices() (invoices []model.Invoice, err error)
+	LoadMonthInvoicesByPaymentType() (invoices map[payment_type.PaymentType][]model.Invoice, err error)
 	LoadProducts() (products map[string]model.Product, err error)
 	LoadCustomers() (customers map[int]model.Customer, err error)
 	LoadCustomersAndProducts() (customers map[int]model.Customer, products map[string]model.Product, err error)
@@ -35,6 +37,19 @@ func (b bulkLoader) LoadMonthInvoices() (invoices []model.Invoice, err error) {
 	return invoices, nil
 }
 
+func (b bulkLoader) LoadMonthInvoicesByPaymentType() (invoices map[payment_type.PaymentType][]model.Invoice, err error) {
+	monthInvoices, err := b.LoadMonthInvoices()
+	if err != nil {
+		return nil, err
+	}
+
+	invoices = make(map[payment_type.PaymentType][]model.Invoice)
+	for _, invoice := range monthInvoices {
+		invoices[invoice.PaymentType()] = append(invoices[invoice.PaymentType()], invoice)
+	}
+	return invoices, nil
+}
+
 func (b bulkLoader) LoadProducts() (products map[string]model.Product, err error) {
 	productsList, err := b.dbService.FindAllProducts()
 	if err != nil {
@@ -43,7 +58,7 @@ func (b bulkLoader) LoadProducts() (products map[string]model.Product, err error
 
 	products = make(map[string]model.Product)
 	for _, product := range productsList {
-		products[product.Id] = product
+		products[product.Id()] = product
 	}
 	return products, nil
 }
@@ -56,7 +71,7 @@ func (b bulkLoader) LoadCustomers() (customers map[int]model.Customer, err error
 
 	customers = make(map[int]model.Customer)
 	for _, customer := range customersList {
-		customers[customer.Id] = customer
+		customers[customer.Id()] = customer
 	}
 	return customers, nil
 }

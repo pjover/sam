@@ -70,7 +70,7 @@ func generateServiceDI(cmdManager cli.CmdManager, configService ports.ConfigServ
 }
 
 func listServiceDI(cmdManager cli.CmdManager, configService ports.ConfigService, dbService ports.DbService) {
-	listService := list.NewListService(dbService)
+	listService := list.NewListService(configService, dbService)
 	cmdManager.AddCommand(listCli.NewListProductsCmd(listService))
 	cmdManager.AddCommand(listCli.NewListInvoicesCmd(configService, listService))
 	cmdManager.AddCommand(listCli.NewListCustomersCmd(listService))

@@ -25,22 +25,22 @@ var lightTests = [][]string{
 	{"insertConsumptions", "2460", "1", "QME", "1", "MME"},
 	{"rectifyConsumptions", "2460", "1", "MME"},
 	{"billConsumptions"},
+	{"createCustomer", "nou_client.json"},
+	{"generateProductsReport"},
+	{"generateCustomersReport"},
+	{"generateMonthReport"},
+	{"generateBddFile"},
+	{"generateSingleInvoice", "f-3945"},
 }
 
 var heavyTests = [][]string{
+	{"createProduct", "nou_producte.json"},
 	{"backup"},
+	{"generateCustomerCards"},
+	{"generateMonthInvoices"},
 	{"editCustomer", "246"},
 	{"editInvoice", "f-3945"},
 	{"editProduct", "age"},
-	{"generateSingleInvoice", "f-3945"},
-	{"generateBddFile"},
-	{"generateCustomersReport"},
-	{"generateMonthInvoices"},
-	{"generateMonthReport"},
-	{"createProduct", "nou_producte.json"},
-	{"createCustomer", "nou_client.json"},
-	{"generateProductsReport"},
-	{"generateCustomerCards"},
 }
 
 var osService = os.NewOsService()
