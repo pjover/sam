@@ -19,6 +19,16 @@ func TestAddress_validate(t *testing.T) {
 		want   error
 	}{
 		{
+			"Valid",
+			fields{
+				"Some street",
+				"77777",
+				"Some city",
+				"SOme state",
+			},
+			nil,
+		},
+		{
 			"All empty",
 			fields{
 				"",
@@ -29,7 +39,7 @@ func TestAddress_validate(t *testing.T) {
 			nil,
 		},
 		{
-			"Street empty, with ZIP",
+			"Empty street with ZIP",
 			fields{
 				"",
 				"Not empty",
@@ -39,7 +49,7 @@ func TestAddress_validate(t *testing.T) {
 			errors.New("si el carrer (Street) és buit, la resta de camps han d'esser buits"),
 		},
 		{
-			"Street empty, with city",
+			"Empty street with city",
 			fields{
 				"",
 				"",
@@ -49,7 +59,7 @@ func TestAddress_validate(t *testing.T) {
 			errors.New("si el carrer (Street) és buit, la resta de camps han d'esser buits"),
 		},
 		{
-			"Street empty, with state",
+			"Empty street with state",
 			fields{
 				"",
 				"",
@@ -59,7 +69,7 @@ func TestAddress_validate(t *testing.T) {
 			errors.New("si el carrer (Street) és buit, la resta de camps han d'esser buits"),
 		},
 		{
-			"Zip code empty",
+			"Empty zip code",
 			fields{
 				"Some street",
 				"",
@@ -69,7 +79,7 @@ func TestAddress_validate(t *testing.T) {
 			errors.New("el codi postal (ZipCode) no pot estar buit"),
 		},
 		{
-			"Zip code with more numbers",
+			"Long zip code",
 			fields{
 				"Some street",
 				"777777",
@@ -79,7 +89,7 @@ func TestAddress_validate(t *testing.T) {
 			errors.New("el codi postal (ZipCode) ha de tenir 5 números"),
 		},
 		{
-			"Zip code with less numbers",
+			"Short zip code",
 			fields{
 				"Some street",
 				"7777",
@@ -99,7 +109,7 @@ func TestAddress_validate(t *testing.T) {
 			errors.New("el codi postal (ZipCode) només pot tenir números"),
 		},
 		{
-			"City empty",
+			"Empty city",
 			fields{
 				"Some street",
 				"77777",
@@ -109,7 +119,7 @@ func TestAddress_validate(t *testing.T) {
 			errors.New("la ciutat (City) no pot estar buida"),
 		},
 		{
-			"State empty",
+			"Empty state",
 			fields{
 				"Some street",
 				"77777",

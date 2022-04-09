@@ -1,6 +1,7 @@
 package model
 
 import (
+	"errors"
 	"fmt"
 	"github.com/pjover/sam/internal/domain"
 	"github.com/pjover/sam/internal/domain/model/group_type"
@@ -77,6 +78,27 @@ func (c Child) Note() string {
 
 func (c Child) Active() bool {
 	return c.active
+}
+
+func (c Child) validate() error {
+	if c.name == "" {
+		return errors.New("el nom de l'infant (Name) no pot estar buit")
+	}
+
+	if c.surname == "" {
+		return errors.New("el primer llinatge de l'infant (Surname) no pot estar buit")
+	}
+
+	var emptyBirthDate = time.Time{}
+	if c.birthDate == emptyBirthDate {
+		return errors.New("la data de naixement de l'infant (BirthDate) no pot estar buida")
+	}
+
+	if c.group == group_type.Undefined {
+		return errors.New("el grup de l'infant (Group) és incorrecte, ha d'esser EI_1, EI_2 o EI_3")
+	}
+
+	return nil
 }
 
 func (c Child) String() string {

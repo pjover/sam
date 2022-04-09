@@ -1,8 +1,10 @@
 package model
 
 import (
+	"errors"
 	"fmt"
 	"github.com/pjover/sam/internal/domain/model/adult_role"
+	"net/mail"
 	"time"
 )
 
@@ -111,6 +113,45 @@ func (a Adult) BirthDate() time.Time {
 
 func (a Adult) Nationality() Nationality {
 	return a.nationality
+}
+
+func (a Adult) validate() error {
+	if a.name == "" {
+		return errors.New("el nom de l'adult (Name) no pot estar buit")
+	}
+
+	if a.surname == "" {
+		return errors.New("el primer llinatge de l'adult (Surname) no pot estar buit")
+	}
+
+	if a.taxID == emptyTaxId {
+		return errors.New("el DNI/NIE de l'adult (TaxId) no pot estar buit")
+	}
+
+	if a.role == adult_role.Invalid {
+		return fmt.Errorf("el rol de l'adult (Role) no és vàlid, ha d'esser MOTHER, FATHER o TUTOR")
+	}
+
+	_, err := mail.ParseAddress(a.email)
+	if err != nil {
+		return fmt.Errorf("el correu electrònic de l'adult (Email) no és vàlid")
+	}
+
+	err = a.address.validate()
+	if err != nil {
+		return err
+	}
+
+	var emptyBirthDate = time.Time{}
+	if a.birthDate == emptyBirthDate {
+		return errors.New("la data de naixement de l'adult (BirthDate) no pot estar buida")
+	}
+
+	if a.nationality == emptyNationality {
+		return errors.New("la nacionalitat de l'adult (Nationality) no pot estar buida")
+	}
+
+	return nil
 }
 
 func (a Adult) MobilePhoneFmt() string {

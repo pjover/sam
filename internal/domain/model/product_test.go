@@ -21,7 +21,19 @@ func TestProduct_validate(t *testing.T) {
 		want   error
 	}{
 		{
-			"ID empty",
+			"Valid",
+			fields{
+				"TST",
+				"Some name",
+				"ShortName",
+				10,
+				0.16,
+				false,
+			},
+			nil,
+		},
+		{
+			"Empty ID",
 			fields{
 				"",
 				"Some name",
@@ -69,7 +81,7 @@ func TestProduct_validate(t *testing.T) {
 			errors.New("el id del producte ha de tenir 3 caràcters"),
 		},
 		{
-			"ShortName empty",
+			"Empty shortName",
 			fields{
 				"ABC",
 				"Some name",
@@ -81,7 +93,7 @@ func TestProduct_validate(t *testing.T) {
 			errors.New("el nom curt del producte (ShortName) no pot estar buit"),
 		},
 		{
-			"Name empty",
+			"Empty name",
 			fields{
 				"ABC",
 				"",
@@ -93,7 +105,7 @@ func TestProduct_validate(t *testing.T) {
 			errors.New("el nom del producte (Name) no pot estar buit"),
 		},
 		{
-			"Price 0",
+			"Zero price",
 			fields{
 				"ABC",
 				"Some name",
