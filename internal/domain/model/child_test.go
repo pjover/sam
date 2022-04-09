@@ -33,13 +33,23 @@ func TestChild_validate(t *testing.T) {
 				birthDate: testDate,
 				group:     group_type.Ei1,
 			},
+			nil,
+		},
+		{
+			"Empty Name",
+			fields{
+				name:      "",
+				surname:   "Some surname",
+				birthDate: testDate,
+				group:     group_type.Ei1,
+			},
 			errors.New("el nom de l'infant (Name) no pot estar buit"),
 		},
 		{
-			"Empty name",
+			"Empty Surname",
 			fields{
 				name:      "Some name",
-				surname:   "Some surname",
+				surname:   "",
 				birthDate: testDate,
 				group:     group_type.Ei1,
 			},
@@ -50,7 +60,7 @@ func TestChild_validate(t *testing.T) {
 			fields{
 				name:      "Some name",
 				surname:   "Some surname",
-				birthDate: testDate,
+				birthDate: time.Time{},
 				group:     group_type.Ei1,
 			},
 			errors.New("la data de naixement de l'infant (BirthDate) no pot estar buida"),
@@ -61,7 +71,7 @@ func TestChild_validate(t *testing.T) {
 				name:      "Some name",
 				surname:   "Some surname",
 				birthDate: testDate,
-				group:     group_type.Ei1,
+				group:     group_type.Undefined,
 			},
 			errors.New("el grup de l'infant (Group) és incorrecte, ha d'esser EI_1, EI_2 o EI_3"),
 		},
