@@ -124,3 +124,14 @@ func (i Invoice) LinesFmt(joinWith string) string {
 	})
 	return strings.Join(lines, joinWith)
 }
+
+type TransientInvoice struct {
+	IsRectification bool
+	CustomerId      int
+	Date            time.Time
+	YearMonth       YearMonth
+	ChildrenIds     []int
+	Lines           []InvoiceLine
+	PaymentType     payment_type.PaymentType
+	Note            string
+}

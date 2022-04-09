@@ -96,3 +96,13 @@ func ConsumptionListToString(consumptions []Consumption, child Child, products m
 	title := fmt.Sprintf("%s: %.02f €\n", child.NameWithId(), total)
 	return title + buffer.String()
 }
+
+type TransientConsumption struct {
+	Id              string
+	ChildId         int
+	ProductId       string
+	Units           float64
+	YearMonth       YearMonth
+	Note            string
+	IsRectification bool
+}
