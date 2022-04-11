@@ -4,7 +4,6 @@ import (
 	"github.com/pjover/sam/internal/domain/model"
 	"github.com/pjover/sam/internal/domain/model/sequence_type"
 	"github.com/pjover/sam/internal/domain/ports/mocks"
-	"github.com/pjover/sam/test/test_data"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"testing"
@@ -138,11 +137,11 @@ func Test_BillConsumptions_without_rectification(t *testing.T) {
 
 	mockedDbService := new(mocks.DbService)
 	mockedDbService.On("FindAllActiveConsumptions").Return(noRectificationConsumptions, nil)
-	mockedDbService.On("FindCustomer", 148).Return(test_data.Customer148, nil)
-	mockedDbService.On("FindCustomer", 149).Return(test_data.Customer149, nil)
-	mockedDbService.On("FindProduct", "TST").Return(test_data.ProductTST, nil)
-	mockedDbService.On("FindProduct", "XXX").Return(test_data.ProductXXX, nil)
-	mockedDbService.On("FindProduct", "YYY").Return(test_data.ProductYYY, nil)
+	mockedDbService.On("FindCustomer", 148).Return(model.TestCustomer148, nil)
+	mockedDbService.On("FindCustomer", 149).Return(model.TestCustomer149, nil)
+	mockedDbService.On("FindProduct", "TST").Return(model.ProductTST, nil)
+	mockedDbService.On("FindProduct", "XXX").Return(model.ProductXXX, nil)
+	mockedDbService.On("FindProduct", "YYY").Return(model.ProductYYY, nil)
 	mockedDbService.On("FindAllSequences").Return(sequences, nil)
 	mockedDbService.On("InsertInvoices", mock.Anything).Return(nil)
 	mockedDbService.On("UpdateConsumptions", mock.Anything).Return(nil)
@@ -188,11 +187,11 @@ func Test_BillConsumptions_with_rectification(t *testing.T) {
 
 	mockedDbService := new(mocks.DbService)
 	mockedDbService.On("FindAllActiveConsumptions").Return(append(noRectificationConsumptions, rectificationConsumptions...), nil)
-	mockedDbService.On("FindCustomer", 148).Return(test_data.Customer148, nil)
-	mockedDbService.On("FindCustomer", 149).Return(test_data.Customer149, nil)
-	mockedDbService.On("FindProduct", "TST").Return(test_data.ProductTST, nil)
-	mockedDbService.On("FindProduct", "XXX").Return(test_data.ProductXXX, nil)
-	mockedDbService.On("FindProduct", "YYY").Return(test_data.ProductYYY, nil)
+	mockedDbService.On("FindCustomer", 148).Return(model.TestCustomer148, nil)
+	mockedDbService.On("FindCustomer", 149).Return(model.TestCustomer149, nil)
+	mockedDbService.On("FindProduct", "TST").Return(model.ProductTST, nil)
+	mockedDbService.On("FindProduct", "XXX").Return(model.ProductXXX, nil)
+	mockedDbService.On("FindProduct", "YYY").Return(model.ProductYYY, nil)
 	mockedDbService.On("FindAllSequences").Return(sequences, nil)
 	mockedDbService.On("InsertInvoices", mock.Anything).Return(nil)
 	mockedDbService.On("UpdateConsumptions", mock.Anything).Return(nil)

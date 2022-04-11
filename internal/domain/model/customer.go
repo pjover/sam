@@ -1,6 +1,7 @@
 package model
 
 import (
+	"errors"
 	"fmt"
 	"github.com/pjover/sam/internal/domain/model/adult_role"
 	"github.com/pjover/sam/internal/domain/model/language"
@@ -122,4 +123,32 @@ type TransientCustomer struct {
 	InvoiceHolder InvoiceHolder
 	Note          string
 	Language      language.Language
+}
+
+func (t TransientCustomer) Validate() error {
+
+	for _, child := range t.Children {
+		err := child.Validate()
+		if err != nil {
+			return err
+		}
+	}
+
+	for _, adult := range t.Adults {
+		err := adult.validate()
+		if err != nil {
+			return err
+		}
+	}
+
+	err := t.InvoiceHolder.Validate()
+	if err != nil {
+		return err
+	}
+
+	if t.Language == language.Undefined {
+		return errors.New("el llenguatge del client (Language) és incorrecte, ha d'esser CA, EN o ES")
+	}
+
+	return nil
 }

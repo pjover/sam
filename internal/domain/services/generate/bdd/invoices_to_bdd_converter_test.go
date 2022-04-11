@@ -3,7 +3,6 @@ package bdd
 import (
 	"github.com/pjover/sam/internal/domain/model"
 	"github.com/pjover/sam/internal/domain/ports/mocks"
-	"github.com/pjover/sam/test/test_data"
 	"github.com/stretchr/testify/assert"
 	"testing"
 	"time"
@@ -124,19 +123,19 @@ func Test_invoicesToBddConverter_Convert(t *testing.T) {
 			name: "returns the complete Bdd object",
 			args: args{
 				invoices: []model.Invoice{
-					test_data.InvoiceF100,
-					test_data.InvoiceF101,
-					test_data.InvoiceF102,
-					test_data.InvoiceF103,
+					model.InvoiceF100,
+					model.InvoiceF101,
+					model.InvoiceF102,
+					model.InvoiceF103,
 				},
 				customers: map[int]model.Customer{
-					148: test_data.Customer148,
-					149: test_data.Customer149,
+					148: model.TestCustomer148,
+					149: model.TestCustomer149,
 				},
 				products: map[string]model.Product{
-					"TST": test_data.ProductTST,
-					"XXX": test_data.ProductXXX,
-					"YYY": test_data.ProductYYY,
+					"TST": model.ProductTST,
+					"XXX": model.ProductXXX,
+					"YYY": model.ProductYYY,
 				},
 			},
 			want: testBdd,

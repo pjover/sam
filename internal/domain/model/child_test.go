@@ -8,17 +8,15 @@ import (
 	"time"
 )
 
-func TestChild_validate(t *testing.T) {
+func TestTransientChild_validate(t *testing.T) {
 	type fields struct {
-		id            int
-		name          string
-		surname       string
-		secondSurname string
-		taxID         TaxId
-		birthDate     time.Time
-		group         group_type.GroupType
-		note          string
-		active        bool
+		Name          string
+		Surname       string
+		SecondSurname string
+		TaxID         TaxId
+		BirthDate     time.Time
+		Group         group_type.GroupType
+		Note          string
 	}
 	tests := []struct {
 		name    string
@@ -28,68 +26,66 @@ func TestChild_validate(t *testing.T) {
 		{
 			"Valid",
 			fields{
-				name:      "Some name",
-				surname:   "Some surname",
-				birthDate: testDate,
-				group:     group_type.Ei1,
+				Name:      "Some name",
+				Surname:   "Some surname",
+				BirthDate: testDate,
+				Group:     group_type.Ei1,
 			},
 			nil,
 		},
 		{
 			"Empty Name",
 			fields{
-				name:      "",
-				surname:   "Some surname",
-				birthDate: testDate,
-				group:     group_type.Ei1,
+				Name:      "",
+				Surname:   "Some surname",
+				BirthDate: testDate,
+				Group:     group_type.Ei1,
 			},
 			errors.New("el nom de l'infant (Name) no pot estar buit"),
 		},
 		{
 			"Empty Surname",
 			fields{
-				name:      "Some name",
-				surname:   "",
-				birthDate: testDate,
-				group:     group_type.Ei1,
+				Name:      "Some name",
+				Surname:   "",
+				BirthDate: testDate,
+				Group:     group_type.Ei1,
 			},
 			errors.New("el primer llinatge de l'infant (Surname) no pot estar buit"),
 		},
 		{
 			"Empty BirthDate",
 			fields{
-				name:      "Some name",
-				surname:   "Some surname",
-				birthDate: time.Time{},
-				group:     group_type.Ei1,
+				Name:      "Some name",
+				Surname:   "Some surname",
+				BirthDate: time.Time{},
+				Group:     group_type.Ei1,
 			},
 			errors.New("la data de naixement de l'infant (BirthDate) no pot estar buida"),
 		},
 		{
 			"Empty Group",
 			fields{
-				name:      "Some name",
-				surname:   "Some surname",
-				birthDate: testDate,
-				group:     group_type.Undefined,
+				Name:      "Some name",
+				Surname:   "Some surname",
+				BirthDate: testDate,
+				Group:     group_type.Undefined,
 			},
 			errors.New("el grup de l'infant (Group) és incorrecte, ha d'esser EI_1, EI_2 o EI_3"),
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			sut := Child{
-				id:            tt.fields.id,
-				name:          tt.fields.name,
-				surname:       tt.fields.surname,
-				secondSurname: tt.fields.secondSurname,
-				taxID:         tt.fields.taxID,
-				birthDate:     tt.fields.birthDate,
-				group:         tt.fields.group,
-				note:          tt.fields.note,
-				active:        tt.fields.active,
+		t.Run(tt.name, func(t1 *testing.T) {
+			sut := TransientChild{
+				Name:          tt.fields.Name,
+				Surname:       tt.fields.Surname,
+				SecondSurname: tt.fields.SecondSurname,
+				TaxID:         tt.fields.TaxID,
+				BirthDate:     tt.fields.BirthDate,
+				Group:         tt.fields.Group,
+				Note:          tt.fields.Note,
 			}
-			got := sut.validate()
+			got := sut.Validate()
 			assert.Equal(t, tt.wantErr, got)
 		})
 	}
