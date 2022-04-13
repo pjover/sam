@@ -88,7 +88,7 @@ func (i InvoiceHolder) Validate() error {
 
 	_, err = mail.ParseAddress(i.email)
 	if err != nil {
-		return fmt.Errorf("l'adreça del titular (InvoiceHolder.Address) no és vàlida")
+		return fmt.Errorf("el email del titular (InvoiceHolder.Email) no és vàlid")
 	}
 
 	if i.paymentType == payment_type.Invalid {
