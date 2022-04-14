@@ -5,7 +5,6 @@ import (
 	"github.com/pjover/sam/internal/domain/model"
 	"github.com/pjover/sam/internal/domain/model/group_type"
 	"github.com/pjover/sam/internal/domain/model/language"
-	"github.com/pjover/sam/test/test_data"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -55,7 +54,7 @@ func TestTransientCustomerToModel(t *testing.T) {
 						GrandMotherPhone: "685698789",
 						GrandParentPhone: "658785478",
 						WorkPhone:        "987525444",
-						BirthDate:        test_data.TestDate.Format(domain.YearMonthDayLayout),
+						BirthDate:        model.TestDate.Format(domain.YearMonthDayLayout),
 						Nationality:      "US",
 					},
 					{
@@ -76,7 +75,7 @@ func TestTransientCustomerToModel(t *testing.T) {
 						GrandMotherPhone: "685698788",
 						GrandParentPhone: "658785477",
 						WorkPhone:        "987525446",
-						BirthDate:        test_data.TestDate.Format(domain.YearMonthDayLayout),
+						BirthDate:        model.TestDate.Format(domain.YearMonthDayLayout),
 						Nationality:      "UK",
 					},
 				},
@@ -103,7 +102,7 @@ func TestTransientCustomerToModel(t *testing.T) {
 						Surname:       "Llull",
 						SecondSurname: "Bibiloni",
 						TaxID:         model.NewTaxIdOrEmpty(""),
-						BirthDate:     test_data.TestDate,
+						BirthDate:     model.TestDate,
 						Group:         group_type.Ei1,
 						Note:          "",
 					},
@@ -112,16 +111,16 @@ func TestTransientCustomerToModel(t *testing.T) {
 						Surname:       "Llull",
 						SecondSurname: "Bibiloni",
 						TaxID:         model.NewTaxIdOrEmpty("60235657Z"),
-						BirthDate:     test_data.TestDate,
+						BirthDate:     model.TestDate,
 						Group:         group_type.Ei1,
 						Note:          "",
 					},
 				},
 				Adults: []model.Adult{
-					test_data.AdultMother148,
-					test_data.AdultFather148,
+					model.TestAdultMother148,
+					model.TestAdultFather148,
 				},
-				InvoiceHolder: test_data.InvoiceHolder148,
+				InvoiceHolder: model.TestInvoiceHolder148,
 				Note:          "Nota del client 148",
 				Language:      language.Catalan,
 			},

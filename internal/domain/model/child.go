@@ -1,6 +1,7 @@
 package model
 
 import (
+	"errors"
 	"fmt"
 	"github.com/pjover/sam/internal/domain"
 	"github.com/pjover/sam/internal/domain/model/group_type"
@@ -99,4 +100,25 @@ type TransientChild struct {
 	BirthDate     time.Time
 	Group         group_type.GroupType
 	Note          string
+}
+
+func (t TransientChild) Validate() error {
+	if t.Name == "" {
+		return errors.New("el nom de l'infant (Name) no pot estar buit")
+	}
+
+	if t.Surname == "" {
+		return errors.New("el primer llinatge de l'infant (Surname) no pot estar buit")
+	}
+
+	var emptyBirthDate = time.Time{}
+	if t.BirthDate == emptyBirthDate {
+		return errors.New("la data de naixement de l'infant (BirthDate) no pot estar buida")
+	}
+
+	if t.Group == group_type.Undefined {
+		return errors.New("el grup de l'infant (Group) és incorrecte, ha d'esser EI_1, EI_2 o EI_3")
+	}
+
+	return nil
 }

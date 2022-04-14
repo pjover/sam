@@ -1,8 +1,10 @@
 package model
 
 import (
+	"errors"
 	"fmt"
 	"github.com/pjover/sam/internal/domain/model/payment_type"
+	"net/mail"
 )
 
 type InvoiceHolder struct {
@@ -68,6 +70,36 @@ func (i InvoiceHolder) Iban() IBAN {
 
 func (i InvoiceHolder) IsBusiness() bool {
 	return i.isBusiness
+}
+
+func (i InvoiceHolder) Validate() error {
+	if i.name == "" {
+		return errors.New("el nom del titular (InvoiceHolder.Name) no pot estar buit")
+	}
+
+	if i.taxID == emptyTaxId {
+		return errors.New("el DNI/NIE/NIF del titular (InvoiceHolder.TaxId) no pot estar buit")
+	}
+
+	err := i.address.validate()
+	if err != nil {
+		return err
+	}
+
+	_, err = mail.ParseAddress(i.email)
+	if err != nil {
+		return fmt.Errorf("el email del titular (InvoiceHolder.Email) no és vàlid")
+	}
+
+	if i.paymentType == payment_type.Invalid {
+		return errors.New("el tipus de pagament del titular (InvoiceHolder.Address) és incorrecte, ha d'esser BANK_DIRECT_DEBIT, BANK_TRANSFER, VOUCHER o CASH")
+	}
+
+	if i.iban.IsEmpty() {
+		return errors.New("el IBAN (InvoiceHolder.Iban) ha d'esser vàlid qual el tipus de pagament del titular és BANK_DIRECT_DEBIT")
+	}
+
+	return nil
 }
 
 func (i InvoiceHolder) PaymentInfoFmt() string {

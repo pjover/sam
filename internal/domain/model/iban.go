@@ -1,7 +1,6 @@
 package model
 
 import (
-	"errors"
 	"fmt"
 	"github.com/biter777/countries"
 	"github.com/pjover/sam/internal/domain/services/common"
@@ -46,9 +45,13 @@ func (i IBAN) Format() string {
 	)
 }
 
+func (i IBAN) IsEmpty() bool {
+	return i == emptyIban
+}
+
 func NewIban(iban string) (IBAN, error) {
 	if iban == "" {
-		return emptyIban, errors.New("invalid IBAN, és buit")
+		return emptyIban, nil
 	}
 	preparedCode := prepareIbanCode(iban)
 

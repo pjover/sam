@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"fmt"
 	"github.com/pjover/sam/internal/domain/model"
-	"github.com/pjover/sam/internal/domain/model/payment_type"
 	"github.com/pjover/sam/internal/domain/model/sequence_type"
 	"github.com/pjover/sam/internal/domain/ports"
 	"github.com/pjover/sam/internal/domain/services/common"
@@ -13,7 +12,6 @@ import (
 	"sort"
 	"strconv"
 	"strings"
-	"time"
 )
 
 type billingService struct {
@@ -130,27 +128,6 @@ func (b billingService) RectifyConsumptions(childId int, consumptions map[string
 	return b.insertConsumptions(childId, consumptions, note, true)
 }
 
-type transientConsumption struct {
-	id              string
-	childId         int
-	productId       string
-	units           float64
-	yearMonth       model.YearMonth
-	note            string
-	isRectification bool
-}
-
-type transientInvoice struct {
-	isRectification bool
-	customerId      int
-	date            time.Time
-	yearMonth       model.YearMonth
-	childrenIds     []int
-	lines           []model.InvoiceLine
-	paymentType     payment_type.PaymentType
-	note            string
-}
-
 func (b billingService) BillConsumptions() (string, error) {
 	fmt.Println("Facturant els consums pendents de facturar de tots els infants")
 
@@ -179,14 +156,14 @@ func (b billingService) BillConsumptions() (string, error) {
 	return b.formatInvoicesGroupedByPaymentType(newInvoices, customers)
 }
 
-func (b billingService) readConsumptionsFromDatabase() ([]transientConsumption, error) {
+func (b billingService) readConsumptionsFromDatabase() ([]model.TransientConsumption, error) {
 	consumptions, err := b.dbService.FindAllActiveConsumptions()
 	if err != nil {
-		return []transientConsumption{}, err
+		return []model.TransientConsumption{}, err
 	}
-	var transientConsumptions []transientConsumption
+	var transientConsumptions []model.TransientConsumption
 	for _, consumption := range consumptions {
-		transientConsumption := transientConsumption{
+		transientConsumption := model.TransientConsumption{
 			consumption.Id(),
 			consumption.ChildId(),
 			consumption.ProductId(),
@@ -200,7 +177,7 @@ func (b billingService) readConsumptionsFromDatabase() ([]transientConsumption, 
 	return transientConsumptions, nil
 }
 
-func (b billingService) consumptionsToInvoices(consumptions []transientConsumption) (invoices []transientInvoice, customers map[string]model.Customer, err error) {
+func (b billingService) consumptionsToInvoices(consumptions []model.TransientConsumption) (invoices []model.TransientInvoice, customers map[string]model.Customer, err error) {
 	groupedByCustomer := b.groupConsumptions(b.groupConsumptionsByCustomer, consumptions)
 	customers = make(map[string]model.Customer)
 	for customerIdStr, cons := range groupedByCustomer {
@@ -229,7 +206,7 @@ func (b billingService) consumptionsToInvoices(consumptions []transientConsumpti
 	return invoices, customers, nil
 }
 
-func (b billingService) addInvoiceIfHasConsumptions(invoices []transientInvoice, customer model.Customer, consumptions []transientConsumption, isRectification bool) ([]transientInvoice, error) {
+func (b billingService) addInvoiceIfHasConsumptions(invoices []model.TransientInvoice, customer model.Customer, consumptions []model.TransientConsumption, isRectification bool) ([]model.TransientInvoice, error) {
 	if len(consumptions) > 0 {
 		invoice, err := b.consumptionsToInvoice(customer, consumptions, isRectification)
 		if err != nil {
@@ -240,9 +217,9 @@ func (b billingService) addInvoiceIfHasConsumptions(invoices []transientInvoice,
 	return invoices, nil
 }
 
-func (b billingService) splitConsumptions(consumptions []transientConsumption) (consumptionsWithoutRectification []transientConsumption, consumptionsWithRectification []transientConsumption) {
+func (b billingService) splitConsumptions(consumptions []model.TransientConsumption) (consumptionsWithoutRectification []model.TransientConsumption, consumptionsWithRectification []model.TransientConsumption) {
 	for _, consumption := range consumptions {
-		if consumption.isRectification {
+		if consumption.IsRectification {
 			consumptionsWithRectification = append(consumptionsWithRectification, consumption)
 		} else {
 			consumptionsWithoutRectification = append(consumptionsWithoutRectification, consumption)
@@ -251,16 +228,16 @@ func (b billingService) splitConsumptions(consumptions []transientConsumption) (
 	return consumptionsWithoutRectification, consumptionsWithRectification
 }
 
-func (b billingService) consumptionsToInvoice(customer model.Customer, consumptions []transientConsumption, isRectification bool) (transientInvoice, error) {
+func (b billingService) consumptionsToInvoice(customer model.Customer, consumptions []model.TransientConsumption, isRectification bool) (model.TransientInvoice, error) {
 	yearMonth := b.configService.GetCurrentYearMonth()
 	today := b.osService.Now()
 
 	lines, childrenIds, err := b.childrenLines(consumptions)
 	if err != nil {
-		return transientInvoice{}, err
+		return model.TransientInvoice{}, err
 	}
 
-	return transientInvoice{
+	return model.TransientInvoice{
 		isRectification,
 		customer.Id(),
 		today,
@@ -272,7 +249,7 @@ func (b billingService) consumptionsToInvoice(customer model.Customer, consumpti
 	}, nil
 }
 
-func (b billingService) childrenLines(consumptions []transientConsumption) (lines []model.InvoiceLine, childrenIds []int, err error) {
+func (b billingService) childrenLines(consumptions []model.TransientConsumption) (lines []model.InvoiceLine, childrenIds []int, err error) {
 	groupedByChild := b.groupConsumptions(b.groupConsumptionsByChild, consumptions)
 	for childId, cons := range groupedByChild {
 		cid, _ := strconv.Atoi(childId)
@@ -286,7 +263,7 @@ func (b billingService) childrenLines(consumptions []transientConsumption) (line
 	return lines, childrenIds, nil
 }
 
-func (b billingService) productLines(consumptions []transientConsumption) (lines []model.InvoiceLine, err error) {
+func (b billingService) productLines(consumptions []model.TransientConsumption) (lines []model.InvoiceLine, err error) {
 	groupedByProduct := b.groupConsumptions(b.groupConsumptionsByProduct, consumptions)
 	for productId, cons := range groupedByProduct {
 		product, err := b.dbService.FindProduct(productId)
@@ -296,7 +273,7 @@ func (b billingService) productLines(consumptions []transientConsumption) (lines
 
 		var units float64
 		for _, con := range cons {
-			units += con.units
+			units += con.Units
 		}
 		if units == 0 {
 			continue
@@ -307,26 +284,26 @@ func (b billingService) productLines(consumptions []transientConsumption) (lines
 			units,
 			product.Price(),
 			product.TaxPercentage(),
-			cons[0].childId,
+			cons[0].ChildId,
 		)
 		lines = append(lines, line)
 	}
 	return lines, nil
 }
 
-func (b billingService) notes(consumptions []transientConsumption) string {
+func (b billingService) notes(consumptions []model.TransientConsumption) string {
 	var notes []string
 	for _, consumption := range consumptions {
-		if consumption.note == "" {
+		if consumption.Note == "" {
 			continue
 		}
-		notes = append(notes, consumption.note)
+		notes = append(notes, consumption.Note)
 	}
 	return strings.Join(notes, ", ")
 }
 
-func (b billingService) groupConsumptions(groupBy func(consumption transientConsumption) string, consumptions []transientConsumption) map[string][]transientConsumption {
-	var auxMap = make(map[string][]transientConsumption)
+func (b billingService) groupConsumptions(groupBy func(consumption model.TransientConsumption) string, consumptions []model.TransientConsumption) map[string][]model.TransientConsumption {
+	var auxMap = make(map[string][]model.TransientConsumption)
 	for _, consumption := range consumptions {
 		var group = groupBy(consumption)
 		groupedConsumptions := auxMap[group]
@@ -336,31 +313,31 @@ func (b billingService) groupConsumptions(groupBy func(consumption transientCons
 	return auxMap
 }
 
-func (b billingService) groupConsumptionsByCustomer(consumption transientConsumption) string {
-	return strconv.Itoa(consumption.childId / 10)
+func (b billingService) groupConsumptionsByCustomer(consumption model.TransientConsumption) string {
+	return strconv.Itoa(consumption.ChildId / 10)
 }
 
-func (b billingService) groupConsumptionsByChild(consumption transientConsumption) string {
-	return strconv.Itoa(consumption.childId)
+func (b billingService) groupConsumptionsByChild(consumption model.TransientConsumption) string {
+	return strconv.Itoa(consumption.ChildId)
 }
 
-func (b billingService) groupConsumptionsByProduct(consumption transientConsumption) string {
-	return consumption.productId
+func (b billingService) groupConsumptionsByProduct(consumption model.TransientConsumption) string {
+	return consumption.ProductId
 }
 
-func (b billingService) addSequencesToInvoices(invoices []transientInvoice, customers map[string]model.Customer) ([]model.Invoice, []model.Sequence, error) {
+func (b billingService) addSequencesToInvoices(invoices []model.TransientInvoice, customers map[string]model.Customer) ([]model.Invoice, []model.Sequence, error) {
 	sequencesMap, err := b.getSequences()
 	if err != nil {
 		return nil, nil, err
 	}
 
 	sort.Slice(invoices, func(i, j int) bool {
-		return invoices[i].customerId < invoices[j].customerId
+		return invoices[i].CustomerId < invoices[j].CustomerId
 	})
 
 	var outInvoices []model.Invoice
 	for _, invoice := range invoices {
-		customerIdStr := strconv.Itoa(invoice.customerId)
+		customerIdStr := strconv.Itoa(invoice.CustomerId)
 		customer := customers[customerIdStr]
 		sequenceType := b.getSequenceType(invoice, customer)
 		sequence := sequencesMap[sequenceType.Format()]
@@ -378,24 +355,24 @@ func (b billingService) addSequencesToInvoices(invoices []transientInvoice, cust
 	return outInvoices, outSequences, nil
 }
 
-func (b billingService) newInvoice(invoice transientInvoice, id string) model.Invoice {
+func (b billingService) newInvoice(invoice model.TransientInvoice, id string) model.Invoice {
 	return model.NewInvoice(
 		id,
-		invoice.customerId,
-		invoice.date,
-		invoice.yearMonth,
-		invoice.childrenIds,
-		invoice.lines,
-		invoice.paymentType,
-		invoice.note,
+		invoice.CustomerId,
+		invoice.Date,
+		invoice.YearMonth,
+		invoice.ChildrenIds,
+		invoice.Lines,
+		invoice.PaymentType,
+		invoice.Note,
 		false,
 		false,
 		false,
 	)
 }
 
-func (b billingService) getSequenceType(invoice transientInvoice, customer model.Customer) sequence_type.SequenceType {
-	if invoice.isRectification {
+func (b billingService) getSequenceType(invoice model.TransientInvoice, customer model.Customer) sequence_type.SequenceType {
+	if invoice.IsRectification {
 		return sequence_type.RectificationInvoice
 	} else {
 		return customer.InvoiceHolder().PaymentType().SequenceType()
@@ -434,28 +411,28 @@ func (b billingService) groupInvoicesByCustomer(invoice model.Invoice) string {
 	return strconv.Itoa(invoice.CustomerId())
 }
 
-func (b billingService) addInvoiceIdToConsumptions(consumptions []transientConsumption, invoices []model.Invoice) []model.Consumption {
+func (b billingService) addInvoiceIdToConsumptions(consumptions []model.TransientConsumption, invoices []model.Invoice) []model.Consumption {
 	var outConsumptions []model.Consumption
 	for _, consumption := range consumptions {
 		invoiceId := b.findInvoiceId(consumption, invoices)
 		if invoiceId == "" {
 			log.Fatalf(
 				"no s'ha trobat cap factura per al consum %d  %s  %4.1f  %s  %s",
-				consumption.childId,
-				consumption.yearMonth,
-				consumption.units,
-				consumption.productId,
-				consumption.note,
+				consumption.ChildId,
+				consumption.YearMonth,
+				consumption.Units,
+				consumption.ProductId,
+				consumption.Note,
 			)
 		}
 		newConsumption := model.NewConsumption(
-			consumption.id,
-			consumption.childId,
-			consumption.productId,
-			consumption.units,
-			consumption.yearMonth,
-			consumption.note,
-			consumption.isRectification,
+			consumption.Id,
+			consumption.ChildId,
+			consumption.ProductId,
+			consumption.Units,
+			consumption.YearMonth,
+			consumption.Note,
+			consumption.IsRectification,
 			invoiceId,
 		)
 		outConsumptions = append(outConsumptions, newConsumption)
@@ -463,8 +440,8 @@ func (b billingService) addInvoiceIdToConsumptions(consumptions []transientConsu
 	return outConsumptions
 }
 
-func (b billingService) findInvoiceId(consumption transientConsumption, invoices []model.Invoice) string {
-	customerId := consumption.childId / 10
+func (b billingService) findInvoiceId(consumption model.TransientConsumption, invoices []model.Invoice) string {
+	customerId := consumption.ChildId / 10
 	for _, invoice := range invoices {
 		if invoice.CustomerId() == customerId {
 			return invoice.Id()

@@ -43,7 +43,7 @@ func (p Product) String() string {
 	return fmt.Sprintf("%s  %7.2f  %s", p.id, p.price, p.name)
 }
 
-func (p Product) validate() error {
+func (p Product) Validate() error {
 	if p.id == "" {
 		return errors.New("el id del producte no pot estar buit")
 	}
@@ -79,5 +79,5 @@ func NewProduct(id string, name string, shortName string, price float64, taxPerc
 		taxPercentage: taxPercentage,
 		isSubsidy:     isSubsidy,
 	}
-	return product, product.validate()
+	return product, product.Validate()
 }
