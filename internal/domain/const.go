@@ -1,5 +1,6 @@
 package domain
 
+const Version = "0.22.0"
 const YearMonthDayLayout = "2006-01-02"
 
 const (
