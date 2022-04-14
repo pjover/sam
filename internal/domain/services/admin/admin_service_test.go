@@ -2,6 +2,7 @@ package admin
 
 import (
 	"fmt"
+	"github.com/pjover/sam/internal"
 	"github.com/pjover/sam/internal/domain"
 	"github.com/pjover/sam/internal/domain/ports/mocks"
 	"github.com/pjover/sam/internal/domain/services/lang"
@@ -41,7 +42,7 @@ func Test_CreateDirectory_exists(t *testing.T) {
 
 	t.Run("Should not create the directory if exists", func(t *testing.T) {
 		msg, err := sut.CreateDirectories()
-		assert.Equal(t, fmt.Sprintf("%sSam v%s    /fake/dir/211000-Factures del mes d'Octubre%s", domain.ColorRed, domain.Version, domain.ColorReset), msg)
+		assert.Equal(t, fmt.Sprintf("%sSam v%s    /fake/dir/211000-Factures del mes d'Octubre%s", domain.ColorRed, internal.Version, domain.ColorReset), msg)
 		assert.Equal(t, nil, err)
 	})
 }
@@ -53,7 +54,7 @@ func Test_CreateDirectory_does_not_exists(t *testing.T) {
 
 	t.Run("Should create the directory if does not exists", func(t *testing.T) {
 		msg, err := sut.CreateDirectories()
-		assert.Equal(t, fmt.Sprintf("\x1b[31mSam v%s    /fake/dir/211000-Factures del mes d'Octubre\x1b[0m", domain.Version), msg)
+		assert.Equal(t, fmt.Sprintf("\x1b[31mSam v%s    /fake/dir/211000-Factures del mes d'Octubre\x1b[0m", internal.Version), msg)
 		assert.Equal(t, nil, err)
 	})
 }

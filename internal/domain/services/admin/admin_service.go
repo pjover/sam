@@ -2,6 +2,7 @@ package admin
 
 import (
 	"fmt"
+	"github.com/pjover/sam/internal"
 	"github.com/pjover/sam/internal/domain"
 	"github.com/pjover/sam/internal/domain/model"
 	"github.com/pjover/sam/internal/domain/ports"
@@ -129,7 +130,7 @@ func (a adminService) getInfoText(dirPath string) string {
 		color = domain.ColorGreen
 	}
 
-	return fmt.Sprintf("%sSam v%s    %s%s", color, domain.Version, dirPath, domain.ColorReset)
+	return fmt.Sprintf("%sSam v%s    %s%s", color, internal.Version, dirPath, domain.ColorReset)
 }
 
 func (a adminService) numberOfDaysUntilEndOfMonth() int {
