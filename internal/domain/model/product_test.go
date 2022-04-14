@@ -127,7 +127,7 @@ func TestProduct_validate(t *testing.T) {
 				taxPercentage: tt.fields.taxPercentage,
 				isSubsidy:     tt.fields.isSubsidy,
 			}
-			got := sut.validate()
+			got := sut.Validate()
 			assert.Equal(t, tt.want, got)
 		})
 	}

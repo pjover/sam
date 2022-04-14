@@ -20,6 +20,12 @@ func NewCreateService(dbService ports.DbService, osService ports.OsService) port
 }
 
 func (c createService) CreateProduct(product model.Product) (string, error) {
+
+	err := product.Validate()
+	if err != nil {
+		return "", err
+	}
+
 	storedProduct, err := c.dbService.FindProduct(product.Id())
 	if err == nil {
 		return "", fmt.Errorf("el producte amb codi '%s' ja existeix: %s", product.Id(), storedProduct.String())
@@ -34,7 +40,7 @@ func (c createService) CreateProduct(product model.Product) (string, error) {
 }
 
 func (c createService) CreateCustomer(customer model.TransientCustomer) (string, error) {
-	err := c.validateCustomer(customer)
+	err := customer.Validate()
 	if err != nil {
 		return "", err
 	}
@@ -52,10 +58,6 @@ func (c createService) CreateCustomer(customer model.TransientCustomer) (string,
 	}
 
 	return fmt.Sprintf("Creat el client %s\n", newCustomer.String()), nil
-}
-
-func (c createService) validateCustomer(customer model.TransientCustomer) error {
-	return nil // TODO validate mandatory fields, TaxIds & Iban
 }
 
 func (c createService) getNextCustomerSequence() (model.Sequence, error) {
