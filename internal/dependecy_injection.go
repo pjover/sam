@@ -61,10 +61,10 @@ func displayServiceDI(cmdManager cli.CmdManager, dbService ports.DbService) {
 func generateServiceDI(cmdManager cli.CmdManager, configService ports.ConfigService, dbService ports.DbService, osService ports.OsService, langService lang.LangService) {
 	generateService := generate.NewGenerateService(configService, dbService, osService, langService)
 	cmdManager.AddCommand(generateCli.NewGenerateCustomerReportCmd(generateService))
-	cmdManager.AddCommand(generateCli.NewGenerateMonthReportCmd(generateService))
+	cmdManager.AddCommand(generateCli.NewGenerateMonthReportCmd(configService, generateService))
 	cmdManager.AddCommand(generateCli.NewGenerateProductReportCmd(generateService))
 	cmdManager.AddCommand(generateCli.NewGenerateSingleInvoice(generateService))
-	cmdManager.AddCommand(generateCli.NewGenerateMonthInvoices(generateService))
+	cmdManager.AddCommand(generateCli.NewGenerateMonthInvoices(configService, generateService))
 	cmdManager.AddCommand(generateCli.NewGenerateBddFileCmd(generateService))
 	cmdManager.AddCommand(generateCli.NewGenerateCustomerCardsReportsCmd(generateService))
 }

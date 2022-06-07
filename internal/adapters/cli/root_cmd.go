@@ -1,7 +1,7 @@
 package cli
 
 import (
-	"github.com/pjover/sam/internal"
+	"github.com/pjover/sam/internal/domain"
 	"github.com/pjover/sam/internal/domain/ports"
 	"github.com/spf13/cobra"
 )
@@ -33,7 +33,7 @@ El cicle normal es:
   6. generaRebuts: per generar el fitxer de rebuts que després pujarem a CaixaBank
   7. pujar el fitxer de rebuts a CaixaBanc i signar l'operació amb CaixaSign
 `,
-		Version: internal.Version,
+		Version: domain.Version,
 	}
 	cobra.OnInitialize(configService.Init)
 	return cmdManager{configService, rootCmd}

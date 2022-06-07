@@ -16,11 +16,13 @@ type ReportService interface {
 
 type reportService struct {
 	configService ports.ConfigService
+	osService     ports.OsService
 }
 
-func NewReportService(configService ports.ConfigService) ReportService {
+func NewReportService(configService ports.ConfigService, osService ports.OsService) ReportService {
 	return reportService{
 		configService: configService,
+		osService:     osService,
 	}
 }
 
@@ -183,7 +185,13 @@ func (r reportService) subTitle(subTitle string, maroto pdf.Maroto) {
 }
 
 func (r reportService) saveToFile(filePath string, maroto pdf.Maroto) error {
-	err := maroto.OutputFileAndClose(filePath)
+	dirPath, _ := path.Split(filePath)
+	err := r.osService.CreateDirectory(dirPath)
+	if err != nil {
+		return err
+	}
+
+	err = maroto.OutputFileAndClose(filePath)
 	if err != nil {
 		return fmt.Errorf("error while saving report to file '%s': %s", filePath, err)
 	}

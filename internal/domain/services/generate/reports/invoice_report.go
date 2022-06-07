@@ -16,12 +16,14 @@ import (
 
 type InvoiceReport struct {
 	configService ports.ConfigService
+	osService     ports.OsService
 	dbService     ports.DbService
 }
 
-func NewInvoiceReport(configService ports.ConfigService, dbService ports.DbService) InvoiceReport {
+func NewInvoiceReport(configService ports.ConfigService, osService ports.OsService, dbService ports.DbService) InvoiceReport {
 	return InvoiceReport{
 		configService: configService,
+		osService:     osService,
 		dbService:     dbService,
 	}
 }
@@ -47,10 +49,9 @@ func (i InvoiceReport) SingleInvoice(id string) (string, error) {
 	return i.run(invoice, customer, products)
 }
 
-func (i InvoiceReport) MonthInvoices() (string, error) {
-
+func (i InvoiceReport) MonthInvoices(yearMonth model.YearMonth) (string, error) {
 	bulkLoader := loader.NewBulkLoader(i.configService, i.dbService)
-	invoices, customers, products, err := bulkLoader.LoadMonthInvoicesCustomersAndProducts()
+	invoices, customers, products, err := bulkLoader.LoadMonthInvoicesCustomersAndProducts(yearMonth)
 	if err != nil {
 		return "", err
 	}
@@ -152,7 +153,7 @@ func (i InvoiceReport) run(invoice model.Invoice, customer model.Customer, produ
 		fmt.Sprintf("%s (%d).pdf", invoice.Id(), invoice.CustomerId()),
 	)
 
-	reportService := NewReportService(i.configService)
+	reportService := NewReportService(i.configService, i.osService)
 	err := reportService.SaveToFile(reportDefinition, filePath)
 	if err != nil {
 		return "", err
