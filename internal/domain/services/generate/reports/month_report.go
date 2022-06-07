@@ -58,7 +58,7 @@ func (m MonthReport) Run(yearMonth model.YearMonth) (string, error) {
 	filename := fmt.Sprintf(m.configService.GetString("files.invoicesReport"), m.langService.MonthName(yearMonth.Month()))
 	filePath := path.Join(wd, filename)
 
-	reportService := NewReportService(m.configService)
+	reportService := NewReportService(m.configService, m.osService)
 	err = reportService.SaveToFile(reportDefinition, filePath)
 	if err != nil {
 		return "", err

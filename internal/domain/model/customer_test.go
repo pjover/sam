@@ -2,7 +2,7 @@ package model
 
 import (
 	"github.com/pjover/sam/internal/domain/model/group_type"
-	language "github.com/pjover/sam/internal/domain/model/language"
+	"github.com/pjover/sam/internal/domain/model/language"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )

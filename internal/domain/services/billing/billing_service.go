@@ -164,13 +164,13 @@ func (b billingService) readConsumptionsFromDatabase() ([]model.TransientConsump
 	var transientConsumptions []model.TransientConsumption
 	for _, consumption := range consumptions {
 		transientConsumption := model.TransientConsumption{
-			consumption.Id(),
-			consumption.ChildId(),
-			consumption.ProductId(),
-			consumption.Units(),
-			consumption.YearMonth(),
-			consumption.Note(),
-			consumption.IsRectification(),
+			Id:              consumption.Id(),
+			ChildId:         consumption.ChildId(),
+			ProductId:       consumption.ProductId(),
+			Units:           consumption.Units(),
+			YearMonth:       consumption.YearMonth(),
+			Note:            consumption.Note(),
+			IsRectification: consumption.IsRectification(),
 		}
 		transientConsumptions = append(transientConsumptions, transientConsumption)
 	}
@@ -238,14 +238,14 @@ func (b billingService) consumptionsToInvoice(customer model.Customer, consumpti
 	}
 
 	return model.TransientInvoice{
-		isRectification,
-		customer.Id(),
-		today,
-		yearMonth,
-		childrenIds,
-		lines,
-		customer.InvoiceHolder().PaymentType(),
-		b.notes(consumptions),
+		IsRectification: isRectification,
+		CustomerId:      customer.Id(),
+		Date:            today,
+		YearMonth:       yearMonth,
+		ChildrenIds:     childrenIds,
+		Lines:           lines,
+		PaymentType:     customer.InvoiceHolder().PaymentType(),
+		Note:            b.notes(consumptions),
 	}, nil
 }
 

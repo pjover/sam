@@ -40,12 +40,12 @@ func (g generateService) ProductReport() (string, error) {
 }
 
 func (g generateService) SingleInvoice(invoiceId string) (string, error) {
-	generator := reports.NewInvoiceReport(g.configService, g.dbService)
+	generator := reports.NewInvoiceReport(g.configService, g.osService, g.dbService)
 	return generator.SingleInvoice(invoiceId)
 }
 
 func (g generateService) MonthInvoices(yearMonth model.YearMonth) (string, error) {
-	generator := reports.NewInvoiceReport(g.configService, g.dbService)
+	generator := reports.NewInvoiceReport(g.configService, g.osService, g.dbService)
 	return generator.MonthInvoices(yearMonth)
 }
 

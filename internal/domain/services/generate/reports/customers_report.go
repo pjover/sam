@@ -71,7 +71,7 @@ func (c CustomerReport) Run() (string, error) {
 		c.configService.GetString("files.customersReport"),
 	)
 
-	reportService := NewReportService(c.configService)
+	reportService := NewReportService(c.configService, c.osService)
 	err = reportService.SaveToFile(reportDefinition, filePath)
 	if err != nil {
 		return "", err

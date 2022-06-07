@@ -77,7 +77,7 @@ func (c CustomerCardsReports) run(dirPath string, customer model.Customer) (stri
 		fmt.Sprintf("%d-%s.pdf", customer.Id(), childrenNames),
 	)
 
-	reportService := NewReportService(c.configService)
+	reportService := NewReportService(c.configService, c.osService)
 	err := reportService.SaveToFile(reportDefinition, filePath)
 	if err != nil {
 		return "", err

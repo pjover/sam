@@ -16,12 +16,14 @@ import (
 
 type InvoiceReport struct {
 	configService ports.ConfigService
+	osService     ports.OsService
 	dbService     ports.DbService
 }
 
-func NewInvoiceReport(configService ports.ConfigService, dbService ports.DbService) InvoiceReport {
+func NewInvoiceReport(configService ports.ConfigService, osService ports.OsService, dbService ports.DbService) InvoiceReport {
 	return InvoiceReport{
 		configService: configService,
+		osService:     osService,
 		dbService:     dbService,
 	}
 }
@@ -151,7 +153,7 @@ func (i InvoiceReport) run(invoice model.Invoice, customer model.Customer, produ
 		fmt.Sprintf("%s (%d).pdf", invoice.Id(), invoice.CustomerId()),
 	)
 
-	reportService := NewReportService(i.configService)
+	reportService := NewReportService(i.configService, i.osService)
 	err := reportService.SaveToFile(reportDefinition, filePath)
 	if err != nil {
 		return "", err
