@@ -43,6 +43,21 @@ var heavyTests = [][]string{
 	{"editProduct", "age"},
 }
 
+var cycleTest = [][]string{
+	{"insertConsumptions", "2630", "1", "QME", "2", "MME", "1", "AGE"},
+	{"insertConsumptions", "2640", "1", "QME", "1", "MME"},
+	{"insertConsumptions", "2460", "1", "QME", "1", "MME"},
+	{"insertConsumptions", "2470", "1", "QME", "1", "MME"},
+	{"insertConsumptions", "2480", "1", "QME", "1", "MME"},
+	{"insertConsumptions", "2460", "1", "QME", "1", "MME"},
+	{"rectifyConsumptions", "2460", "1", "MME"},
+	{"insertConsumptions", "2051", "1", "QME", "1", "MME"},
+	{"insertConsumptions", "2320", "1", "QME", "1", "MME"},
+	{"insertConsumptions", "2520", "1", "QME", "1", "MME"},
+	{"insertConsumptions", "2550", "1", "QME", "1", "MME"},
+	{"listConsumptions"},
+}
+
 var osService = os.NewOsService()
 
 func main() {
@@ -55,8 +70,12 @@ func main() {
 		test(lightTests)
 	case "heavy":
 		test(heavyTests)
+	case "cycle":
+		test(cycleTest)
 	case "all":
-		test(append(lightTests, heavyTests...))
+		tst := append(lightTests, cycleTest...)
+		tst = append(tst, heavyTests...)
+		test(tst)
 	}
 }
 
