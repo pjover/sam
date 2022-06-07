@@ -8,12 +8,12 @@ import (
 )
 
 type BulkLoader interface {
-	LoadMonthInvoices() (invoices []model.Invoice, err error)
-	LoadMonthInvoicesByPaymentType() (invoices map[payment_type.PaymentType][]model.Invoice, err error)
+	LoadMonthInvoices(yearMonth model.YearMonth) (invoices []model.Invoice, err error)
+	LoadMonthInvoicesByPaymentType(yearMonth model.YearMonth) (invoices map[payment_type.PaymentType][]model.Invoice, err error)
 	LoadProducts() (products map[string]model.Product, err error)
 	LoadCustomers() (customers map[int]model.Customer, err error)
 	LoadCustomersAndProducts() (customers map[int]model.Customer, products map[string]model.Product, err error)
-	LoadMonthInvoicesCustomersAndProducts() (invoices []model.Invoice, customers map[int]model.Customer, products map[string]model.Product, err error)
+	LoadMonthInvoicesCustomersAndProducts(yearMonth model.YearMonth) (invoices []model.Invoice, customers map[int]model.Customer, products map[string]model.Product, err error)
 }
 
 type bulkLoader struct {
@@ -28,8 +28,7 @@ func NewBulkLoader(configService ports.ConfigService, dbService ports.DbService)
 	}
 }
 
-func (b bulkLoader) LoadMonthInvoices() (invoices []model.Invoice, err error) {
-	yearMonth := b.configService.GetCurrentYearMonth()
+func (b bulkLoader) LoadMonthInvoices(yearMonth model.YearMonth) (invoices []model.Invoice, err error) {
 	invoices, err = b.dbService.FindInvoicesByYearMonth(yearMonth)
 	if err != nil {
 		return nil, fmt.Errorf("no s'ha pogut carregar les factures des de la base de dades: %s", err)
@@ -37,8 +36,8 @@ func (b bulkLoader) LoadMonthInvoices() (invoices []model.Invoice, err error) {
 	return invoices, nil
 }
 
-func (b bulkLoader) LoadMonthInvoicesByPaymentType() (invoices map[payment_type.PaymentType][]model.Invoice, err error) {
-	monthInvoices, err := b.LoadMonthInvoices()
+func (b bulkLoader) LoadMonthInvoicesByPaymentType(yearMonth model.YearMonth) (invoices map[payment_type.PaymentType][]model.Invoice, err error) {
+	monthInvoices, err := b.LoadMonthInvoices(yearMonth)
 	if err != nil {
 		return nil, err
 	}
@@ -90,9 +89,9 @@ func (b bulkLoader) LoadCustomersAndProducts() (customers map[int]model.Customer
 	return customers, products, nil
 }
 
-func (b bulkLoader) LoadMonthInvoicesCustomersAndProducts() (invoices []model.Invoice, customers map[int]model.Customer, products map[string]model.Product, err error) {
+func (b bulkLoader) LoadMonthInvoicesCustomersAndProducts(yearMonth model.YearMonth) (invoices []model.Invoice, customers map[int]model.Customer, products map[string]model.Product, err error) {
 
-	invoices, err = b.LoadMonthInvoices()
+	invoices, err = b.LoadMonthInvoices(yearMonth)
 	if err != nil {
 		return nil, nil, nil, err
 	}

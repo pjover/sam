@@ -30,13 +30,12 @@ func NewMonthReport(configService ports.ConfigService, dbService ports.DbService
 	}
 }
 
-func (m MonthReport) Run() (string, error) {
-	yearMonth := m.configService.GetCurrentYearMonth()
+func (m MonthReport) Run(yearMonth model.YearMonth) (string, error) {
 	var buffer bytes.Buffer
 	buffer.WriteString(fmt.Sprintf("Generant l'informe de factures del mes %s ...\n", yearMonth))
 
 	bulkLoader := loader.NewBulkLoader(m.configService, m.dbService)
-	invoices, err := bulkLoader.LoadMonthInvoicesByPaymentType()
+	invoices, err := bulkLoader.LoadMonthInvoicesByPaymentType(yearMonth)
 	if err != nil {
 		return "", err
 	}
@@ -56,10 +55,8 @@ func (m MonthReport) Run() (string, error) {
 	}
 
 	wd := m.configService.GetWorkingDirectory()
-	filePath := path.Join(
-		wd,
-		m.configService.GetString("files.invoicesReport"),
-	)
+	filename := fmt.Sprintf(m.configService.GetString("files.invoicesReport"), m.langService.MonthName(yearMonth.Month()))
+	filePath := path.Join(wd, filename)
 
 	reportService := NewReportService(m.configService)
 	err = reportService.SaveToFile(reportDefinition, filePath)

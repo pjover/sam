@@ -88,7 +88,7 @@ func (c configService) loadDefaultConfig(home string) {
 
 	viper.SetDefault("files.customersReport", "Llistat de clients.pdf")
 	viper.SetDefault("files.productsReport", "Llistat de productes.pdf")
-	viper.SetDefault("files.invoicesReport", "Llistat de factures.pdf")
+	viper.SetDefault("files.invoicesReport", "Llistat de factures %s.pdf")
 	viper.SetDefault("files.logo", "logo.png")
 
 	viper.SetDefault("business.name", "BusinessName")

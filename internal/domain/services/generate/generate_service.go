@@ -1,6 +1,7 @@
 package generate
 
 import (
+	"github.com/pjover/sam/internal/domain/model"
 	"github.com/pjover/sam/internal/domain/ports"
 	"github.com/pjover/sam/internal/domain/services/generate/bdd"
 	"github.com/pjover/sam/internal/domain/services/generate/reports"
@@ -28,9 +29,9 @@ func (g generateService) CustomerReport() (string, error) {
 	return generator.Run()
 }
 
-func (g generateService) MonthReport() (string, error) {
+func (g generateService) MonthReport(yearMonth model.YearMonth) (string, error) {
 	generator := reports.NewMonthReport(g.configService, g.dbService, g.osService, g.langService)
-	return generator.Run()
+	return generator.Run(yearMonth)
 }
 
 func (g generateService) ProductReport() (string, error) {
@@ -43,9 +44,9 @@ func (g generateService) SingleInvoice(invoiceId string) (string, error) {
 	return generator.SingleInvoice(invoiceId)
 }
 
-func (g generateService) MonthInvoices() (string, error) {
+func (g generateService) MonthInvoices(yearMonth model.YearMonth) (string, error) {
 	generator := reports.NewInvoiceReport(g.configService, g.dbService)
-	return generator.MonthInvoices()
+	return generator.MonthInvoices(yearMonth)
 }
 
 func (g generateService) BddFile() (string, error) {

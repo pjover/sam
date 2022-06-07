@@ -47,10 +47,9 @@ func (i InvoiceReport) SingleInvoice(id string) (string, error) {
 	return i.run(invoice, customer, products)
 }
 
-func (i InvoiceReport) MonthInvoices() (string, error) {
-
+func (i InvoiceReport) MonthInvoices(yearMonth model.YearMonth) (string, error) {
 	bulkLoader := loader.NewBulkLoader(i.configService, i.dbService)
-	invoices, customers, products, err := bulkLoader.LoadMonthInvoicesCustomersAndProducts()
+	invoices, customers, products, err := bulkLoader.LoadMonthInvoicesCustomersAndProducts(yearMonth)
 	if err != nil {
 		return "", err
 	}
