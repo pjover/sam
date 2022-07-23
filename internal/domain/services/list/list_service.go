@@ -13,12 +13,14 @@ import (
 type listService struct {
 	configService ports.ConfigService
 	dbService     ports.DbService
+	bulkLoader    loader.BulkLoader
 }
 
-func NewListService(configService ports.ConfigService, dbService ports.DbService) ports.ListService {
+func NewListService(configService ports.ConfigService, dbService ports.DbService, bulkLoader loader.BulkLoader) ports.ListService {
 	return listService{
 		configService: configService,
 		dbService:     dbService,
+		bulkLoader:    bulkLoader,
 	}
 }
 
@@ -163,8 +165,7 @@ func (l listService) ListConsumptions() (string, error) {
 		return "", err
 	}
 
-	bulkLoader := loader.NewBulkLoader(l.configService, l.dbService)
-	products, err := bulkLoader.LoadProducts()
+	products, err := l.bulkLoader.LoadProducts()
 	if err != nil {
 		return "", err
 	}
@@ -195,8 +196,7 @@ func (l listService) ListChildConsumptions(childId int) (string, error) {
 		return "", err
 	}
 
-	bulkLoader := loader.NewBulkLoader(l.configService, l.dbService)
-	products, err := bulkLoader.LoadProducts()
+	products, err := l.bulkLoader.LoadProducts()
 	if err != nil {
 		return "", err
 	}
