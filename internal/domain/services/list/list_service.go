@@ -6,6 +6,7 @@ import (
 	"github.com/pjover/sam/internal/domain/model"
 	"github.com/pjover/sam/internal/domain/model/group_type"
 	"github.com/pjover/sam/internal/domain/model/language"
+	"github.com/pjover/sam/internal/domain/model/payment_type"
 	"github.com/pjover/sam/internal/domain/ports"
 	"github.com/pjover/sam/internal/domain/services/loader"
 )
@@ -170,18 +171,47 @@ func (l listService) ListConsumptions() (string, error) {
 		return "", err
 	}
 
+	customers, err := l.bulkLoader.LoadCustomers()
+	if err != nil {
+		return "", err
+	}
+
 	var buffer bytes.Buffer
-	for _, child := range children {
-		var cons []model.Consumption
-		for _, c := range consumptions {
-			if c.ChildId() == child.Id() {
-				cons = append(cons, c)
+
+	var totalAmount float64
+	for paymentType := payment_type.Invalid; paymentType <= payment_type.Rectification; paymentType++ {
+		var childCounter int
+		var parcialAmount float64
+		for _, customer := range customers {
+			if customer.InvoiceHolder().PaymentType() != paymentType {
+				continue
+			}
+
+			for _, child := range children {
+				if child.CustomerId() != customer.Id() {
+					continue
+				}
+				var cons []model.Consumption
+				for _, c := range consumptions {
+					if c.ChildId() == child.Id() {
+						cons = append(cons, c)
+					}
+				}
+				if len(cons) > 0 {
+					text, total := model.ConsumptionListFormatValues(consumptions, child, products, "  ")
+					buffer.WriteString(text)
+					childCounter += 1
+					parcialAmount += total
+					totalAmount += total
+				}
 			}
 		}
-		if len(cons) > 0 {
-			buffer.WriteString(model.ConsumptionListToString(consumptions, child, products))
+		if parcialAmount != 0.0 {
+			buffer.WriteString(fmt.Sprintf("\n%d infant(s) amb %s: %.02f €\n\n", childCounter, paymentType.Format(), parcialAmount))
 		}
 	}
+	buffer.WriteString(fmt.Sprintf("TOTAL: %.02f €", totalAmount))
+
 	return buffer.String(), nil
 }
 
@@ -201,5 +231,6 @@ func (l listService) ListChildConsumptions(childId int) (string, error) {
 		return "", err
 	}
 
-	return model.ConsumptionListToString(consumptions, child, products), nil
+	text, _ := model.ConsumptionListFormatValues(consumptions, child, products, "")
+	return text, nil
 }

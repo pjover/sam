@@ -76,7 +76,7 @@ func (c Consumption) String() string {
 	return fmt.Sprintf("%d  %s  %4.1f  %s  %-5v  %s  %s", c.ChildId(), c.YearMonth(), c.Units(), c.ProductId(), c.IsRectification(), c.InvoiceId(), c.Note())
 }
 
-func ConsumptionListToString(consumptions []Consumption, child Child, products map[string]Product) string {
+func ConsumptionListFormatValues(consumptions []Consumption, child Child, products map[string]Product, indentText string) (string, float64) {
 	var total float64
 	var buffer bytes.Buffer
 	for _, c := range consumptions {
@@ -86,15 +86,16 @@ func ConsumptionListToString(consumptions []Consumption, child Child, products m
 		product := products[c.ProductId()]
 		price := c.Units() * product.Price()
 		total += price
-		buffer.WriteString(fmt.Sprintf("  [%s]  %4.1f x %s : %7.2f\n",
+		buffer.WriteString(fmt.Sprintf("%s  [%s]  %4.1f x %s : %7.2f\n",
+			indentText,
 			c.YearMonth().String(),
 			c.Units(),
 			c.ProductId(),
 			price,
 		))
 	}
-	title := fmt.Sprintf("%s: %.02f €\n", child.NameWithId(), total)
-	return title + buffer.String()
+	title := fmt.Sprintf("%s%s: %.02f €\n", indentText, child.NameWithId(), total)
+	return title + buffer.String(), total
 }
 
 type TransientConsumption struct {
