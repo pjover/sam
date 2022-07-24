@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"fmt"
 	"github.com/pjover/sam/internal/domain"
 	"github.com/pjover/sam/internal/domain/ports"
 	"github.com/spf13/cobra"
@@ -19,10 +20,11 @@ type cmdManager struct {
 
 func NewCmdManager(configService ports.ConfigService) CmdManager {
 	// RootCmd represents the base command when called without any subcommands
+	title := fmt.Sprintf("sam v%s, Gestor de facturació de Hobbiton", domain.Version)
 	rootCmd := &cobra.Command{
 		Use:   "sam",
-		Short: "Gestor de facturació de Hobbiton",
-		Long: `Gestor de facturació de Hobbiton (+ info: https://github.com/pjover/sam)
+		Short: title,
+		Long: title + ` (+ info: https://github.com/pjover/sam)
 
 El cicle normal es:
   1. insertaConsums: insertar consums
