@@ -13,7 +13,7 @@ business:
   name: Xxxxxxxxxxx Inc.
   taxidline: 'NIF: X12345678'
 db:
-  name: xxxxxx
+  name: sam
   server: mongodb://localhost:27017
 dirs:
   backup: /Users/xxxx/Sam/backups
@@ -36,5 +36,5 @@ reports:
   lastcustomerscardsupdated: "2022-06-07T19:20:13.553982+02:00"
 urls:
   hobbit: http://localhost:8080
-  mongoexpress: http://localhost:8081/db/xxxxxx
+  mongoexpress: http://localhost:8081/db/sam
 yearmonth: 2022-07
