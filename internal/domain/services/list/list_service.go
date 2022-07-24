@@ -176,6 +176,10 @@ func (l listService) ListConsumptions() (string, error) {
 		return "", err
 	}
 
+	return l.getConsumptionsText(consumptions, children, products, customers), nil
+}
+
+func (l listService) getConsumptionsText(consumptions []model.Consumption, children []model.Child, products map[string]model.Product, customers map[int]model.Customer) string {
 	var buffer bytes.Buffer
 
 	var totalAmount float64
@@ -186,24 +190,18 @@ func (l listService) ListConsumptions() (string, error) {
 			if customer.InvoiceHolder().PaymentType() != paymentType {
 				continue
 			}
-
 			for _, child := range children {
 				if child.CustomerId() != customer.Id() {
 					continue
 				}
-				var cons []model.Consumption
-				for _, c := range consumptions {
-					if c.ChildId() == child.Id() {
-						cons = append(cons, c)
-					}
+				text, total := l.getChildValues(child, consumptions, products)
+				if text == "" {
+					continue
 				}
-				if len(cons) > 0 {
-					text, total := model.ConsumptionListFormatValues(consumptions, child, products, "  ")
-					buffer.WriteString(text)
-					childCounter += 1
-					parcialAmount += total
-					totalAmount += total
-				}
+				buffer.WriteString(text)
+				childCounter += 1
+				parcialAmount += total
+				totalAmount += total
 			}
 		}
 		if parcialAmount != 0.0 {
@@ -211,8 +209,20 @@ func (l listService) ListConsumptions() (string, error) {
 		}
 	}
 	buffer.WriteString(fmt.Sprintf("TOTAL: %.02f €", totalAmount))
+	return buffer.String()
+}
 
-	return buffer.String(), nil
+func (l listService) getChildValues(child model.Child, consumptions []model.Consumption, products map[string]model.Product) (string, float64) {
+	var cons []model.Consumption
+	for _, c := range consumptions {
+		if c.ChildId() == child.Id() {
+			cons = append(cons, c)
+		}
+	}
+	if len(cons) > 0 {
+		return model.ConsumptionListFormatValues(consumptions, child, products, "  ")
+	}
+	return "", 0
 }
 
 func (l listService) ListChildConsumptions(childId int) (string, error) {
