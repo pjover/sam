@@ -1,0 +1,8 @@
+{
+  "Id": "XYZ",
+  "Name": "Nom del nou producte",
+  "ShortName": "NomCurt",
+  "Price": 1.00,
+  "TaxPercentage": 0.0,
+  "IsSubsidy": false
+}

@@ -25,7 +25,7 @@ var lightTests = [][]string{
 	{"insertConsumptions", "2460", "1", "QME", "1", "MME"},
 	{"rectifyConsumptions", "2460", "1", "MME"},
 	{"billConsumptions"},
-	{"createCustomer", "nou_client.json"},
+	{"createCustomer", "new_customer.json"},
 	{"generateProductsReport"},
 	{"generateCustomersReport"},
 	{"generateMonthReport"},
@@ -34,7 +34,7 @@ var lightTests = [][]string{
 }
 
 var heavyTests = [][]string{
-	{"createProduct", "nou_producte.json"},
+	{"createProduct", "new_product.json"},
 	{"backup"},
 	{"generateCustomerCards"},
 	{"generateMonthInvoices"},

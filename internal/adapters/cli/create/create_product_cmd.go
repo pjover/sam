@@ -30,7 +30,7 @@ func (c createProductCmd) Cmd() *cobra.Command {
 		Use:         "createProducte fitxerJsonDelProducte",
 		Short:       "Crea un producte nou",
 		Long:        "Crea un producte nou carregant la definició des d'un fitxer JSON situat el directori de treball",
-		Example:     `   creaaProducte fitxerJsonDelProducte     Crea un producte nou`,
+		Example:     `   creaaProducte new_product.json     Crea un producte nou`,
 		Annotations: map[string]string{"CRE": "Comandes de creació d'entitats"},
 		Aliases: []string{
 			"cpro",

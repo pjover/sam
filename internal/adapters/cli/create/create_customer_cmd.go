@@ -30,7 +30,7 @@ func (c createCustomerCmd) Cmd() *cobra.Command {
 		Use:         "crearClient fitxerJsonDelClient",
 		Short:       "Crea un client nou",
 		Long:        "Crea un client nou carregant la definició des d'un fitxer JSON situat el directori de treball",
-		Example:     `   crearClient fitxerJsonDelClient     Crea un client nou`,
+		Example:     `   crearClient new_customer.json     Crea un client nou`,
 		Annotations: map[string]string{"CRE": "Comandes de creació d'entitats"},
 		Aliases: []string{
 			"ccli",

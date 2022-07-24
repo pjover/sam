@@ -1,0 +1,40 @@
+bdd:
+  bankbic: XXXXXXXXXXX
+  country: XX
+  iban: XX1234567890123456789012
+  id: XX12345678901234
+  prefix: XXXX
+  purposecode: XXXX
+business:
+  addressline1: Somewhere street 666
+  addressline2: 0000 Xxxxxx, Xxxxxx
+  addressline3: 'Tel.: 123 456 789'
+  addressline4: www.xxxxxxx.com . xxxxx@xxxxxxx.com
+  name: Xxxxxxxxxxx Inc.
+  taxidline: 'NIF: X12345678'
+db:
+  name: xxxxxx
+  server: mongodb://localhost:27017
+dirs:
+  backup: /Users/xxxx/Sam/backups
+  config: /Users/xxxx/.sam
+  current: 220700-Factures del mes de Juliol
+  home: /Users/xxxx/Sam
+  invoicesname: invoices
+  reports: /Users/xxxx/Sam
+entities:
+  newcustomerfilename: new_customer.json
+  newproductfilename: new_product.json
+files:
+  customersreport: Llistat de clients.pdf
+  invoicesreport: Llistat de factures %s.pdf
+  logo: logo.png
+  productsreport: Llistat de productes.pdf
+reports:
+  customerscardsfoldername: clients
+  invoicesfoldername: factures
+  lastcustomerscardsupdated: "2022-06-07T19:20:13.553982+02:00"
+urls:
+  hobbit: http://localhost:8080
+  mongoexpress: http://localhost:8081/db/xxxxxx
+yearmonth: 2022-07

@@ -33,3 +33,10 @@ Format
 go fmt ./...
 ```
 
+## Sample config
+
+Copy and adapt these files to `~/.ssm/`:
+
+- docs/sam.yaml
+- docs/new_customer.json
+- docs/new_product.json
