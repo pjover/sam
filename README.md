@@ -12,7 +12,27 @@ Sam will:
 1. Control the monthly workflow with Hobbit
 1. Generate the files locally, invoices (PDFs) and reports (Excel)
 
-## How to
+## Install
+
+### Database
+
+To install and run a MongoDb server and a mongo-express web interface run one of these scripts depending on your
+architecture:
+
+- For AMD-64 architecture: `docker compose -f docker-compose-amd64.yaml up --detach`
+- For ARM-64 architecture: `docker compose -f docker-compose-arm64.yaml up --detach`
+
+mongo-express will be accessible from http://localhost:8081
+
+### Config
+
+Copy and adapt these files to `~/.sam/`:
+
+- ./configs/sam.yaml
+- ./configs/new_customer.json
+- ./configs/new_product.json
+
+## Sam
 
 Install
 
@@ -33,10 +53,4 @@ Format
 go fmt ./...
 ```
 
-## Sample config
 
-Copy and adapt these files to `~/.ssm/`:
-
-- docs/sam.yaml
-- docs/new_customer.json
-- docs/new_product.json
