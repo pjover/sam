@@ -21,6 +21,7 @@ import (
 	"github.com/pjover/sam/internal/domain/services/generate"
 	"github.com/pjover/sam/internal/domain/services/lang"
 	"github.com/pjover/sam/internal/domain/services/list"
+	"github.com/pjover/sam/internal/domain/services/loader"
 )
 
 func MainDI(cmdManager cli.CmdManager, configService ports.ConfigService) {
@@ -70,7 +71,8 @@ func generateServiceDI(cmdManager cli.CmdManager, configService ports.ConfigServ
 }
 
 func listServiceDI(cmdManager cli.CmdManager, configService ports.ConfigService, dbService ports.DbService) {
-	listService := list.NewListService(configService, dbService)
+	bulkLoader := loader.NewBulkLoader(configService, dbService)
+	listService := list.NewListService(configService, dbService, bulkLoader)
 	cmdManager.AddCommand(listCli.NewListProductsCmd(listService))
 	cmdManager.AddCommand(listCli.NewListInvoicesCmd(configService, listService))
 	cmdManager.AddCommand(listCli.NewListCustomersCmd(listService))

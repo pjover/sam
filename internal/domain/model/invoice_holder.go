@@ -95,7 +95,7 @@ func (i InvoiceHolder) Validate() error {
 		return errors.New("el tipus de pagament del titular (InvoiceHolder.Address) és incorrecte, ha d'esser BANK_DIRECT_DEBIT, BANK_TRANSFER, VOUCHER o CASH")
 	}
 
-	if i.iban.IsEmpty() {
+	if i.iban.IsEmpty() && i.paymentType == payment_type.BankDirectDebit {
 		return errors.New("el IBAN (InvoiceHolder.Iban) ha d'esser vàlid qual el tipus de pagament del titular és BANK_DIRECT_DEBIT")
 	}
 

@@ -6,6 +6,7 @@ import (
 	"github.com/pjover/sam/internal/domain/model"
 	"github.com/pjover/sam/internal/domain/model/group_type"
 	"github.com/pjover/sam/internal/domain/model/language"
+	"github.com/pjover/sam/internal/domain/model/payment_type"
 	"github.com/pjover/sam/internal/domain/ports"
 	"github.com/pjover/sam/internal/domain/services/loader"
 )
@@ -13,12 +14,14 @@ import (
 type listService struct {
 	configService ports.ConfigService
 	dbService     ports.DbService
+	bulkLoader    loader.BulkLoader
 }
 
-func NewListService(configService ports.ConfigService, dbService ports.DbService) ports.ListService {
+func NewListService(configService ports.ConfigService, dbService ports.DbService, bulkLoader loader.BulkLoader) ports.ListService {
 	return listService{
 		configService: configService,
 		dbService:     dbService,
+		bulkLoader:    bulkLoader,
 	}
 }
 
@@ -163,25 +166,63 @@ func (l listService) ListConsumptions() (string, error) {
 		return "", err
 	}
 
-	bulkLoader := loader.NewBulkLoader(l.configService, l.dbService)
-	products, err := bulkLoader.LoadProducts()
+	products, err := l.bulkLoader.LoadProducts()
 	if err != nil {
 		return "", err
 	}
 
+	customers, err := l.bulkLoader.LoadCustomers()
+	if err != nil {
+		return "", err
+	}
+
+	return l.getConsumptionsText(consumptions, children, products, customers), nil
+}
+
+func (l listService) getConsumptionsText(consumptions []model.Consumption, children []model.Child, products map[string]model.Product, customers map[int]model.Customer) string {
 	var buffer bytes.Buffer
-	for _, child := range children {
-		var cons []model.Consumption
-		for _, c := range consumptions {
-			if c.ChildId() == child.Id() {
-				cons = append(cons, c)
+
+	var totalAmount float64
+	for paymentType := payment_type.Invalid; paymentType <= payment_type.Rectification; paymentType++ {
+		var childCounter int
+		var parcialAmount float64
+		for _, customer := range customers {
+			if customer.InvoiceHolder().PaymentType() != paymentType {
+				continue
+			}
+			for _, child := range children {
+				if child.CustomerId() != customer.Id() {
+					continue
+				}
+				text, total := l.getChildValues(child, consumptions, products)
+				if text == "" {
+					continue
+				}
+				buffer.WriteString(text)
+				childCounter += 1
+				parcialAmount += total
+				totalAmount += total
 			}
 		}
-		if len(cons) > 0 {
-			buffer.WriteString(model.ConsumptionListToString(consumptions, child, products))
+		if parcialAmount != 0.0 {
+			buffer.WriteString(fmt.Sprintf("\n%d infant(s) amb %s: %.02f €\n\n", childCounter, paymentType.Format(), parcialAmount))
 		}
 	}
-	return buffer.String(), nil
+	buffer.WriteString(fmt.Sprintf("TOTAL: %.02f €", totalAmount))
+	return buffer.String()
+}
+
+func (l listService) getChildValues(child model.Child, consumptions []model.Consumption, products map[string]model.Product) (string, float64) {
+	var cons []model.Consumption
+	for _, c := range consumptions {
+		if c.ChildId() == child.Id() {
+			cons = append(cons, c)
+		}
+	}
+	if len(cons) > 0 {
+		return model.ConsumptionListFormatValues(consumptions, child, products, "  ")
+	}
+	return "", 0
 }
 
 func (l listService) ListChildConsumptions(childId int) (string, error) {
@@ -195,11 +236,11 @@ func (l listService) ListChildConsumptions(childId int) (string, error) {
 		return "", err
 	}
 
-	bulkLoader := loader.NewBulkLoader(l.configService, l.dbService)
-	products, err := bulkLoader.LoadProducts()
+	products, err := l.bulkLoader.LoadProducts()
 	if err != nil {
 		return "", err
 	}
 
-	return model.ConsumptionListToString(consumptions, child, products), nil
+	text, _ := model.ConsumptionListFormatValues(consumptions, child, products, "")
+	return text, nil
 }

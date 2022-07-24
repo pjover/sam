@@ -132,12 +132,14 @@ func (a Adult) validate() error {
 		return fmt.Errorf("el rol de l'adult (Role) no és vàlid, ha d'esser MOTHER, FATHER o TUTOR")
 	}
 
-	_, err := mail.ParseAddress(a.email)
-	if err != nil {
-		return fmt.Errorf("el correu electrònic de l'adult (Email) no és vàlid")
+	if a.email != "" {
+		_, err := mail.ParseAddress(a.email)
+		if err != nil {
+			return fmt.Errorf("el correu electrònic de l'adult (Email) no és vàlid")
+		}
 	}
 
-	err = a.address.validate()
+	err := a.address.validate()
 	if err != nil {
 		return err
 	}

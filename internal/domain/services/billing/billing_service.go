@@ -71,7 +71,8 @@ func (b billingService) insertConsumptions(childId int, consumptions map[string]
 		return "", err
 	}
 
-	buffer.WriteString(model.ConsumptionListToString(completeConsumptions, child, products))
+	text, _ := model.ConsumptionListFormatValues(completeConsumptions, child, products, "")
+	buffer.WriteString(text)
 
 	return buffer.String(), nil
 }

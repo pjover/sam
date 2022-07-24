@@ -1,0 +1,76 @@
+{
+  "Children": [
+    {
+      "Name": "Nom_infant",
+      "Surname": "1er_llinatgeinfant",
+      "SecondSurname": "2on_llinatgeinfant",
+      "TaxId": "21928580N",
+      "BirthDate": "2021-12-06",
+      "Group": "EI_1",
+      "Note": "Nota del nin (surt a les factures)",
+      "Active": true
+    }
+  ],
+  "Adults": [
+    {
+      "Name": "Nom_mare",
+      "Surname": "1er_llinatge_mare",
+      "SecondSurname": "2on_llinatge_mare",
+      "TaxId": "36361882D",
+      "Role": "MOTHER",
+      "Address": {
+        "Street": "Carrer Qualsevol, 666",
+        "ZipCode": "07004",
+        "City": "Palma",
+        "State": "Illes Balears"
+      },
+      "Email": "xxx@gmail.com",
+      "MobilePhone": "666666666",
+      "HomePhone": "666666667",
+      "GrandMotherPhone": "666666668",
+      "GrandParentPhone": "666666669",
+      "WorkPhone": "666666660",
+      "BirthDate": "1988-06-25",
+      "Nationality": "ES"
+    },
+    {
+      "Name": "Nom_pare",
+      "Surname": "1er_llinatge_pare",
+      "SecondSurname": "2on_llinatge_pare",
+      "TaxId": "71032204Q",
+      "Role": "FATHER",
+      "Address": {
+        "Street": "Carrer Qualsevol, 666",
+        "ZipCode": "07004",
+        "City": "Palma",
+        "State": "Illes Balears"
+      },
+      "Email": "yyy@gmail.com",
+      "MobilePhone": "677777777",
+      "HomePhone": "677777776",
+      "GrandMotherPhone": "677777775",
+      "GrandParentPhone": "677777774",
+      "WorkPhone": "677777773",
+      "BirthDate": "1979-11-06",
+      "Nationality": "ES"
+    }
+  ],
+  "InvoiceHolder": {
+    "Name": "Nom_mare 1er_llinatge_mare 2on_llinatge_mare",
+    "TaxId": "36361882D",
+    "Address": {
+      "Street": "Carrer Qualsevol, 666",
+      "ZipCode": "07004",
+      "City": "Palma",
+      "State": "Illes Balears"
+    },
+    "Email": "xxx@gmail.com",
+    "SendEmail": false,
+    "PaymentType": "BANK_DIRECT_DEBIT",
+    "Iban": "ES0414650100981725491972",
+    "IsBusiness": false
+  },
+  "Note": "Nota del client (surt a les factures)",
+  "Language": "CA",
+  "Active": true
+}

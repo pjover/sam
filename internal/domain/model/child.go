@@ -84,6 +84,10 @@ func (c Child) String() string {
 	return fmt.Sprintf("%d  %-30s  %s  %s", c.id, c.NameAndSurname(), c.group, c.birthDate.Format(domain.YearMonthDayLayout))
 }
 
+func (c Child) CustomerId() int {
+	return c.id / 10
+}
+
 func (c Child) NameAndSurname() string {
 	return fmt.Sprintf("%s %s", c.name, c.surname)
 }
