@@ -7,8 +7,8 @@ func ConvertProductToModel(product Product) (model.Product, error) {
 		product.Id,
 		product.Name,
 		product.ShortName,
-		Decimal128ToFloat64(product.Price),
-		Decimal128ToFloat64(product.TaxPercentage),
+		product.Price,
+		product.TaxPercentage,
 		product.IsSubsidy,
 	)
 }
@@ -30,8 +30,8 @@ func ConvertProductToDbo(product model.Product) Product {
 		Id:            product.Id(),
 		Name:          product.Name(),
 		ShortName:     product.ShortName(),
-		Price:         Float64ToDecimal128(product.Price()),
-		TaxPercentage: Float64ToDecimal128(product.TaxPercentage()),
+		Price:         product.Price(),
+		TaxPercentage: product.TaxPercentage(),
 		IsSubsidy:     product.IsSubsidy(),
 	}
 }

@@ -41,9 +41,9 @@ func lines(lines []Line) []model.InvoiceLine {
 func line(line Line) model.InvoiceLine {
 	return model.NewInvoiceLine(
 		line.ProductID,
-		Decimal128ToFloat64(line.Units),
-		Decimal128ToFloat64(line.ProductPrice),
-		Decimal128ToFloat64(line.TaxPercentage),
+		line.Units,
+		line.ProductPrice,
+		line.TaxPercentage,
 		line.ChildId,
 	)
 }
@@ -69,9 +69,9 @@ func ConvertInvoiceToDbo(invoice model.Invoice) Invoice {
 	for _, line := range invoice.Lines() {
 		_line := Line{
 			ProductID:     line.ProductId(),
-			Units:         Float64ToDecimal128(line.Units()),
-			ProductPrice:  Float64ToDecimal128(line.ProductPrice()),
-			TaxPercentage: Float64ToDecimal128(line.TaxPercentage()),
+			Units:         line.Units(),
+			ProductPrice:  line.ProductPrice(),
+			TaxPercentage: line.TaxPercentage(),
 			ChildId:       line.ChildId(),
 		}
 		lines = append(lines, _line)
