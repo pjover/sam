@@ -446,6 +446,20 @@ func (_m *DbService) UpdateConsumptions(consumptions []model.Consumption) error 
 	return r0
 }
 
+// UpdateInvoices provides a mock function with given fields: invoices
+func (_m *DbService) UpdateInvoices(invoices []model.Invoice) error {
+	ret := _m.Called(invoices)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func([]model.Invoice) error); ok {
+		r0 = rf(invoices)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
 // UpdateSequence provides a mock function with given fields: sequences
 func (_m *DbService) UpdateSequence(sequences model.Sequence) error {
 	ret := _m.Called(sequences)

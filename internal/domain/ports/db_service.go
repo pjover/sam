@@ -31,4 +31,5 @@ type DbService interface {
 	UpdateConsumptions(consumptions []model.Consumption) error
 	UpdateSequences(sequences []model.Sequence) error
 	UpdateSequence(sequences model.Sequence) error
+	UpdateInvoices(invoices []model.Invoice) error
 }

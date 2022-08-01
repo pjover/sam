@@ -58,6 +58,8 @@ func (b bddService) Run() (string, error) {
 		return "", err
 	}
 
+	err = b.updateInvoices(invoices)
+
 	return fmt.Sprintf("S'ha generat el fitxer '%s' amb %d rebuts", filePath, len(invoices)), nil
 }
 
@@ -114,4 +116,12 @@ func (b bddService) buildBddFilename(sequence int) string {
 
 func (b bddService) saveToFile(dirPath string, filename string, content string) (filePath string, err error) {
 	return b.osService.WriteFile(dirPath, filename, []byte(content))
+}
+
+func (b bddService) updateInvoices(invoices []model.Invoice) error {
+	var updatedInvoices []model.Invoice
+	for _, invoice := range invoices {
+		updatedInvoices = append(updatedInvoices, invoice.SendToBank())
+	}
+	return b.dbService.UpdateInvoices(updatedInvoices)
 }
