@@ -370,6 +370,11 @@ func (d dbService) UpdateConsumptions(consumptions []model.Consumption) error {
 	return d.updateMany("consumption", documents, "consums")
 }
 
+func (d dbService) UpdateInvoices(invoices []model.Invoice) error {
+	documents := dbo.ConvertInvoicesToDbo(invoices)
+	return d.updateMany("invoice", documents, "factures")
+}
+
 func (d dbService) updateMany(collection string, documents []interface{}, name string) error {
 	client, err := d.open()
 	defer d.close(client)

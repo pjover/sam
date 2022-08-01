@@ -125,6 +125,12 @@ func (i Invoice) LinesFmt(joinWith string) string {
 	return strings.Join(lines, joinWith)
 }
 
+// SendToBank sets sentToBank to true
+func (i Invoice) SendToBank() Invoice {
+	i.sentToBank = true
+	return i
+}
+
 type TransientInvoice struct {
 	IsRectification bool
 	CustomerId      int
