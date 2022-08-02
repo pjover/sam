@@ -9,6 +9,7 @@ import (
 	"github.com/pjover/sam/internal/domain/model/payment_type"
 	"github.com/pjover/sam/internal/domain/ports"
 	"github.com/pjover/sam/internal/domain/services/loader"
+	"sort"
 )
 
 type listService struct {
@@ -171,7 +172,7 @@ func (l listService) ListConsumptions() (string, error) {
 		return "", err
 	}
 
-	customers, err := l.bulkLoader.LoadCustomers()
+	customers, err := l.loadSortedCustomers()
 	if err != nil {
 		return "", err
 	}
@@ -179,7 +180,25 @@ func (l listService) ListConsumptions() (string, error) {
 	return l.getConsumptionsText(consumptions, children, products, customers), nil
 }
 
-func (l listService) getConsumptionsText(consumptions []model.Consumption, children []model.Child, products map[string]model.Product, customers map[int]model.Customer) string {
+func (l listService) loadSortedCustomers() ([]model.Customer, error) {
+	customers, err := l.bulkLoader.LoadCustomers()
+	if err != nil {
+		return nil, err
+	}
+
+	var customersList []model.Customer
+	for _, customer := range customers {
+		customersList = append(customersList, customer)
+	}
+
+	sort.Slice(customersList, func(i, j int) bool {
+		return customersList[i].Id() < customersList[j].Id()
+	})
+
+	return customersList, nil
+}
+
+func (l listService) getConsumptionsText(consumptions []model.Consumption, children []model.Child, products map[string]model.Product, customers []model.Customer) string {
 	var buffer bytes.Buffer
 
 	var totalAmount float64
