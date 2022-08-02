@@ -105,7 +105,7 @@ func Test_listService_ListConsumptions_all_children(t *testing.T) {
 		[]model.Consumption{
 			model.NewConsumption(
 				"1",
-				1480,
+				1491,
 				"TST",
 				1,
 				model.NewYearMonth(2022, 7),
@@ -114,9 +114,9 @@ func Test_listService_ListConsumptions_all_children(t *testing.T) {
 				""),
 			model.NewConsumption(
 				"2",
-				1480,
+				1491,
 				"XXX",
-				2,
+				0.5,
 				model.NewYearMonth(2022, 7),
 				"Note 2",
 				false,
@@ -141,7 +141,7 @@ func Test_listService_ListConsumptions_all_children(t *testing.T) {
 				""),
 			model.NewConsumption(
 				"5",
-				1491,
+				1480,
 				"TST",
 				1,
 				model.NewYearMonth(2022, 7),
@@ -150,9 +150,9 @@ func Test_listService_ListConsumptions_all_children(t *testing.T) {
 				""),
 			model.NewConsumption(
 				"6",
-				1491,
+				1480,
 				"XXX",
-				0.5,
+				2,
 				model.NewYearMonth(2022, 7),
 				"Note 2",
 				false,
