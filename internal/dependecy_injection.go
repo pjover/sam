@@ -25,7 +25,7 @@ import (
 	"github.com/pjover/sam/internal/domain/services/loader"
 )
 
-func MainDI() ports.CommandManager {
+func InjectDependencies() ports.CommandManager {
 
 	configService := cfg.NewConfigService()
 	cmdManager := cli.NewCommandManager(configService)
