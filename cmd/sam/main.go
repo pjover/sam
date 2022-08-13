@@ -21,6 +21,6 @@ import (
 )
 
 func main() {
-	cmdManager := internal.MainDI()
-	cmdManager.Execute()
+	commandManager := internal.MainDI()
+	commandManager.Execute()
 }
