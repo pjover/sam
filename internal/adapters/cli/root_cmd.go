@@ -7,18 +7,12 @@ import (
 	"github.com/spf13/cobra"
 )
 
-type CmdManager interface {
-	AddCommand(cmd Cmd)
-	AddTmpCommand(cmd *cobra.Command) //TODO remove
-	Execute()
-}
-
-type cmdManager struct {
+type commandManager struct {
 	configService ports.ConfigService
 	rootCmd       *cobra.Command
 }
 
-func NewCmdManager(configService ports.ConfigService) CmdManager {
+func NewCommandManager(configService ports.ConfigService) ports.CommandManager {
 	// RootCmd represents the base command when called without any subcommands
 	title := fmt.Sprintf("sam v%s, Gestor de facturació de Hobbiton", domain.Version)
 	rootCmd := &cobra.Command{
@@ -38,23 +32,24 @@ El cicle normal es:
 		Version: domain.Version,
 	}
 	cobra.OnInitialize(configService.Init)
-	return cmdManager{configService, rootCmd}
+	return commandManager{configService, rootCmd}
 }
 
-func (c cmdManager) GetRootCmd() *cobra.Command {
+func (c commandManager) GetRootCmd() *cobra.Command {
 	return c.rootCmd
 }
 
-func (c cmdManager) AddCommand(cmd Cmd) {
-	c.rootCmd.AddCommand(cmd.Cmd())
+func (c commandManager) AddCommand(cmd interface{}) {
+	command := cmd.(Cmd)
+	c.rootCmd.AddCommand(command.Cmd())
 }
 
-func (c cmdManager) AddTmpCommand(cmd *cobra.Command) { //TODO Remove
+func (c commandManager) AddTmpCommand(cmd *cobra.Command) { //TODO Remove
 	c.rootCmd.AddCommand(cmd)
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
 // It only needs to happen once to the RootCmd.
-func (c cmdManager) Execute() {
+func (c commandManager) Execute() {
 	cobra.CheckErr(c.rootCmd.Execute())
 }
