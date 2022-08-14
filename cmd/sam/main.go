@@ -18,23 +18,9 @@ package main
 
 import (
 	"github.com/pjover/sam/internal"
-	"github.com/pjover/sam/internal/domain/ports"
-	"github.com/pjover/sam/test/e2e"
-	"os"
-	"strings"
 )
 
 func main() {
-	var commandManager ports.CommandManager
-	if runEndToEndTest() {
-		commandManager = e2e.InjectDependencies()
-	} else {
-		commandManager = internal.InjectDependencies()
-	}
+	commandManager := internal.InjectDependencies()
 	commandManager.Execute()
-}
-
-func runEndToEndTest() bool {
-	runEndToEndTest := os.Getenv("SAM_E2E_TEST")
-	return strings.ToLower(runEndToEndTest) == "true"
 }

@@ -50,6 +50,7 @@ func (c commandManager) AddTmpCommand(cmd *cobra.Command) { //TODO Remove
 
 // Execute adds all child commands to the root command and sets flags appropriately.
 // It only needs to happen once to the RootCmd.
-func (c commandManager) Execute() {
+func (c commandManager) Execute() []string {
 	cobra.CheckErr(c.rootCmd.Execute())
+	return []string{}
 }

@@ -2,7 +2,9 @@ package e2e
 
 import (
 	"fmt"
+	"github.com/pjover/sam/internal/adapters/cli/billing"
 	"github.com/pjover/sam/internal/domain/ports"
+	"log"
 	"strings"
 )
 
@@ -34,49 +36,61 @@ func (c CommandType) String() string {
 
 type Arguments []string
 
+type Expected string
+
 type Command struct {
-	service     interface{}
 	commandType CommandType
 	arguments   Arguments
 }
 
-func NewCommand(service interface{}, commandType CommandType, arguments []string) Command {
-	return Command{
-		service:     service,
-		commandType: commandType,
-		arguments:   arguments,
+type e2eCommandManager struct {
+	commands       []Command
+	billingService ports.BillingService
+}
+
+func NewE2eCommandManager(billingService ports.BillingService) ports.CommandManager {
+	return &e2eCommandManager{
+		billingService: billingService,
 	}
 }
 
-type FakeCommandManager struct {
-	commands []Command
-}
-
-func NewFakeCommandManager() ports.CommandManager {
-	return &FakeCommandManager{}
-}
-
-func (f *FakeCommandManager) AddCommand(cmd interface{}) {
+func (f *e2eCommandManager) AddCommand(cmd interface{}) {
 	command := cmd.(Command)
 	f.commands = append(f.commands, command)
-	fmt.Printf("Added '%s' command (%d commands so far)\n", command.commandType.String(), len(f.commands))
 }
 
-func (f FakeCommandManager) Execute() {
+func (f e2eCommandManager) Execute() []string {
 	if len(f.commands) == 0 {
-		fmt.Println("NO COMMANDS TO RUN")
-		return
+		return []string{"NO COMMANDS TO RUN"}
 	}
+
+	var result []string
 	for i, command := range f.commands {
 		fmt.Printf("%d. Running command '%s %s'\n", i+1, command.commandType.String(), strings.Join(command.arguments, " "))
-		fmt.Println(f.run(command))
+		msg := f.run(command)
+		fmt.Println(msg)
+		result = append(result, msg)
 	}
+	return result
 }
 
-func (f FakeCommandManager) run(command Command) string {
+func (f e2eCommandManager) run(command Command) string {
 	switch command.commandType {
 	case InsertConsumptions:
-		return f.insertConsumptions(command)
+		return f.runInsertConsumptions(command)
 	}
 	return "NO COMMAND RAN"
+}
+
+func (f e2eCommandManager) runInsertConsumptions(command Command) string {
+	id, consumptions, _, err := billing.ParseConsumptionsArgs(command.arguments, "")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	msg, err := f.billingService.InsertConsumptions(id, consumptions, "")
+	if err != nil {
+		return err.Error()
+	}
+	return msg
 }
