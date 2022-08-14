@@ -5,7 +5,7 @@ import (
 	"github.com/pjover/sam/internal/adapters/cli"
 )
 
-func parseConsumptionsArgs(args []string, noteArg string) (id int, consumptions map[string]float64, note string, err error) {
+func ParseConsumptionsArgs(args []string, noteArg string) (id int, consumptions map[string]float64, note string, err error) {
 	id, err = cli.ParseInteger(args[0], "d'infant")
 	if err != nil {
 		return 0, nil, "", err

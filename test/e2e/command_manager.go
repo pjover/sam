@@ -9,8 +9,7 @@ import (
 type CommandType uint
 
 const (
-	Invalid CommandType = iota
-	InsertConsumptions
+	InsertConsumptions CommandType = iota
 	ListConsumptions
 	GenerateMonthInvoices
 	GenerateBddFile
@@ -20,7 +19,6 @@ const (
 )
 
 var stringValues = []string{
-	"",
 	"insertConsumptions",
 	"listConsumptions",
 	"generateMonthInvoices",
@@ -37,12 +35,14 @@ func (c CommandType) String() string {
 type Arguments []string
 
 type Command struct {
+	service     interface{}
 	commandType CommandType
 	arguments   Arguments
 }
 
-func NewCommand(commandType CommandType, arguments []string) Command {
+func NewCommand(service interface{}, commandType CommandType, arguments []string) Command {
 	return Command{
+		service:     service,
 		commandType: commandType,
 		arguments:   arguments,
 	}
@@ -76,11 +76,7 @@ func (f FakeCommandManager) Execute() {
 func (f FakeCommandManager) run(command Command) string {
 	switch command.commandType {
 	case InsertConsumptions:
-		return f.insertConsumptions(command.arguments)
+		return f.insertConsumptions(command)
 	}
 	return "NO COMMAND RAN"
-}
-
-func (f FakeCommandManager) insertConsumptions(arguments Arguments) string {
-	return "  insertConsumptions FAKE OUTPUT"
 }

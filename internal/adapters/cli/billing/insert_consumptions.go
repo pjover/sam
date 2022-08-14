@@ -42,7 +42,7 @@ func (i insertConsumptionsCmd) Cmd() *cobra.Command {
 		},
 		Args: cli.MinimumNArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			id, consumptions, note, err := parseConsumptionsArgs(args, iconNote)
+			id, consumptions, note, err := ParseConsumptionsArgs(args, iconNote)
 			if err != nil {
 				return err
 			}
