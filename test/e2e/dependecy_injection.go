@@ -1,7 +1,6 @@
 package e2e
 
 import (
-	"github.com/pjover/sam/internal/adapters/cfg"
 	"github.com/pjover/sam/internal/domain/ports"
 	"github.com/pjover/sam/internal/domain/services/billing"
 	"github.com/pjover/sam/internal/domain/services/list"
@@ -11,7 +10,7 @@ import (
 
 func InjectDependencies() ports.CommandManager {
 
-	configService := cfg.NewConfigService() // TODO Fake it!
+	configService := fakes.FakeConfigService()
 	dbService := fakes.FakeDbService()
 	osService := fakes.FakeOsService()
 
