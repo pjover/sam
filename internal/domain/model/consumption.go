@@ -82,7 +82,11 @@ func ConsumptionListFormatValues(consumptions []Consumption, child Child, produc
 	var buffer bytes.Buffer
 
 	sort.Slice(consumptions, func(i, j int) bool {
-		return consumptions[i].productId < consumptions[j].productId
+		if consumptions[i].childId != consumptions[j].childId {
+			return consumptions[i].childId < consumptions[j].childId
+		} else {
+			return consumptions[i].productId < consumptions[j].productId
+		}
 	})
 
 	for _, c := range consumptions {
