@@ -63,7 +63,7 @@ func Test_e2eMain(t *testing.T) {
 					" 1. Joana Petita 149  X-23  2022-08   116.60  Tranferència  2.0 TST (21.80),2.0 TST (21.80),5.0 XXX (45.50),5.0 YYY (27.50)\n" +
 					"Total 1 Tranferència: 116.60 €\n" +
 					"TOTAL: 192.15 €\n",
-				"S'ha generat el fitxer '/Users/pere/bdd-1.qx1' amb 1 rebuts",
+				"S'ha generat el fitxer '/Users/pere/bdd-1.qx1' amb 1 rebuts i import 75.55",
 			},
 		},
 	}
