@@ -94,7 +94,7 @@ func ConsumptionListFormatValues(consumptions []Consumption, child Child, produc
 			continue
 		}
 		product := products[c.ProductId()]
-		price := c.Units() * product.Price()
+		price := c.Units() * product.Price() * (1 + product.taxPercentage)
 		total += price
 		buffer.WriteString(fmt.Sprintf("%s  [%s]  %4.1f x %s : %7.2f\n",
 			indentText,

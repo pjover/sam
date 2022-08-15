@@ -13,6 +13,7 @@ type CommandType uint
 const (
 	InsertConsumptions CommandType = iota
 	ListConsumptions
+	BillConsumptions
 	GenerateMonthInvoices
 	GenerateBddFile
 	GenerateMonthReport
@@ -23,6 +24,7 @@ const (
 var stringValues = []string{
 	"insertConsumptions",
 	"listConsumptions",
+	"billConsumptions",
 	"generateMonthInvoices",
 	"generateBddFile",
 	"generateMonthReport",
@@ -44,15 +46,19 @@ type Command struct {
 }
 
 type e2eCommandManager struct {
-	commands       []Command
-	billingService ports.BillingService
-	listService    ports.ListService
+	commands        []Command
+	configService   ports.ConfigService
+	billingService  ports.BillingService
+	listService     ports.ListService
+	generateService ports.GenerateService
 }
 
-func NewE2eCommandManager(billingService ports.BillingService, listService ports.ListService) ports.CommandManager {
+func NewE2eCommandManager(configService ports.ConfigService, billingService ports.BillingService, listService ports.ListService, generateService ports.GenerateService) ports.CommandManager {
 	return &e2eCommandManager{
-		billingService: billingService,
-		listService:    listService,
+		configService:   configService,
+		billingService:  billingService,
+		listService:     listService,
+		generateService: generateService,
 	}
 }
 
@@ -82,6 +88,8 @@ func (f e2eCommandManager) run(command Command) string {
 		return f.runInsertConsumptions(command)
 	case ListConsumptions:
 		return f.runListConsumptions()
+	case BillConsumptions:
+		return f.runBillConsumptions()
 	}
 	return "NO COMMAND RAN"
 }
@@ -101,6 +109,14 @@ func (f e2eCommandManager) runInsertConsumptions(command Command) string {
 
 func (f e2eCommandManager) runListConsumptions() string {
 	msg, err := f.listService.ListConsumptions()
+	if err != nil {
+		return err.Error()
+	}
+	return msg
+}
+
+func (f e2eCommandManager) runBillConsumptions() string {
+	msg, err := f.billingService.BillConsumptions()
 	if err != nil {
 		return err.Error()
 	}

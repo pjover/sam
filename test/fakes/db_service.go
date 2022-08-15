@@ -13,15 +13,18 @@ type dbService struct {
 	customers    map[int]model.Customer
 	children     map[int]model.Child
 	products     map[string]model.Product
-	consumptions []model.Consumption
+	sequences    map[sequence_type.SequenceType]model.Sequence
+	consumptions map[string]model.Consumption
 }
 
 func FakeDbService() ports.DbService {
 	customers := loadCustomers()
 	return &dbService{
-		customers: customers,
-		children:  loadChildren(customers),
-		products:  loadProducts(),
+		customers:    customers,
+		children:     loadChildren(customers),
+		products:     loadProducts(),
+		sequences:    loadSequences(),
+		consumptions: loadConsumptions(),
 	}
 }
 
@@ -50,6 +53,19 @@ func loadProducts() map[string]model.Product {
 	return products
 }
 
+func loadSequences() map[sequence_type.SequenceType]model.Sequence {
+	var sequences = make(map[sequence_type.SequenceType]model.Sequence)
+	sequences[sequence_type.Customer] = model.NewSequence(sequence_type.Customer, 150)
+	sequences[sequence_type.RectificationInvoice] = model.NewSequence(sequence_type.RectificationInvoice, 11)
+	sequences[sequence_type.SpecialInvoice] = model.NewSequence(sequence_type.SpecialInvoice, 22)
+	sequences[sequence_type.StandardInvoice] = model.NewSequence(sequence_type.StandardInvoice, 33)
+	return sequences
+}
+
+func loadConsumptions() map[string]model.Consumption {
+	return make(map[string]model.Consumption)
+}
+
 func (d dbService) FindActiveChildConsumptions(id int) ([]model.Consumption, error) {
 	//TODO implement me
 	panic("implement me")
@@ -72,7 +88,14 @@ func (d dbService) FindActiveCustomers() ([]model.Customer, error) {
 }
 
 func (d dbService) FindAllActiveConsumptions() ([]model.Consumption, error) {
-	return d.consumptions, nil
+	var consumptions []model.Consumption
+	for _, consumption := range d.consumptions {
+		if consumption.InvoiceId() == "" {
+			continue
+		}
+		consumptions = append(consumptions, consumption)
+	}
+	return consumptions, nil
 }
 
 func (d dbService) FindAllProducts() ([]model.Product, error) {
@@ -84,8 +107,11 @@ func (d dbService) FindAllProducts() ([]model.Product, error) {
 }
 
 func (d dbService) FindAllSequences() ([]model.Sequence, error) {
-	//TODO implement me
-	panic("implement me")
+	var sequences []model.Sequence
+	for _, sequence := range d.sequences {
+		sequences = append(sequences, sequence)
+	}
+	return sequences, nil
 }
 
 func (d dbService) FindChangedCustomers(changedSince time.Time) ([]model.Customer, error) {
@@ -135,8 +161,11 @@ func (d dbService) FindInvoicesByYearMonthAndPaymentTypeAndSentToBank(yearMonth 
 }
 
 func (d dbService) FindProduct(id string) (model.Product, error) {
-	//TODO implement me
-	panic("implement me")
+	product, exists := d.products[id]
+	if !exists {
+		return model.Product{}, fmt.Errorf("no s'ha trobat el producte amb codi %s", id)
+	}
+	return product, nil
 }
 
 func (d dbService) FindSequence(sequenceType sequence_type.SequenceType) (model.Sequence, error) {
@@ -145,7 +174,9 @@ func (d dbService) FindSequence(sequenceType sequence_type.SequenceType) (model.
 }
 
 func (d *dbService) InsertConsumptions(consumptions []model.Consumption) error {
-	d.consumptions = append(d.consumptions, consumptions...)
+	for _, consumption := range consumptions {
+		d.consumptions[consumption.Id()] = consumption
+	}
 	return nil
 }
 
@@ -155,8 +186,8 @@ func (d dbService) InsertCustomer(customer model.Customer) error {
 }
 
 func (d dbService) InsertInvoices(invoices []model.Invoice) error {
-	//TODO implement me
-	panic("implement me")
+	fmt.Printf("inserted %d invoices", len(invoices))
+	return nil
 }
 
 func (d dbService) InsertProduct(product model.Product) error {
@@ -165,13 +196,17 @@ func (d dbService) InsertProduct(product model.Product) error {
 }
 
 func (d dbService) UpdateConsumptions(consumptions []model.Consumption) error {
-	//TODO implement me
-	panic("implement me")
+	for _, consumption := range consumptions {
+		d.consumptions[consumption.Id()] = consumption
+	}
+	return nil
 }
 
 func (d dbService) UpdateSequences(sequences []model.Sequence) error {
-	//TODO implement me
-	panic("implement me")
+	for _, sequence := range sequences {
+		d.sequences[sequence.Id()] = sequence
+	}
+	return nil
 }
 
 func (d dbService) UpdateSequence(sequences model.Sequence) error {

@@ -192,7 +192,7 @@ func (l listService) loadSortedCustomers() ([]model.Customer, error) {
 	}
 
 	sort.Slice(customersList, func(i, j int) bool {
-		return customersList[i].Id() < customersList[j].Id()
+		return customersList[i].Id() > customersList[j].Id()
 	})
 
 	return customersList, nil
