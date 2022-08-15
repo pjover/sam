@@ -51,6 +51,6 @@ func (i InvoiceLine) Format() string {
 		"%.1f %s (%.2f)",
 		i.units,
 		i.productId,
-		i.units*i.productPrice,
+		i.units*i.productPrice*(1+i.taxPercentage),
 	)
 }

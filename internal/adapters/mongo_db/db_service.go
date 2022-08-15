@@ -93,7 +93,7 @@ func (d dbService) findOne(collection string, id interface{}, result interface{}
 	err = coll.FindOne(context.TODO(), bson.D{{"_id", id}}).Decode(result)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
-			return fmt.Errorf("no s'ha trobat %s amb codi %s", name, id)
+			return fmt.Errorf("no s'ha trobat %s amb codi %v", name, id)
 		}
 		return fmt.Errorf("llegint %s amb codi %s des de la base de dades: %s", name, id, err)
 	}

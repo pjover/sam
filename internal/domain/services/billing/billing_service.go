@@ -457,7 +457,7 @@ func (b billingService) formatInvoicesGroupedByPaymentType(invoices []model.Invo
 	for paymentType, groupedInvoices := range b.groupInvoices(b.groupInvoicesByPaymentType, invoices) {
 		subtotal := 0.0
 		sort.Slice(groupedInvoices, func(i, j int) bool {
-			return groupedInvoices[i].CustomerId() < groupedInvoices[j].CustomerId()
+			return groupedInvoices[i].CustomerId() > groupedInvoices[j].CustomerId()
 		})
 		for i, invoice := range groupedInvoices {
 			customerId := strconv.Itoa(invoice.CustomerId())

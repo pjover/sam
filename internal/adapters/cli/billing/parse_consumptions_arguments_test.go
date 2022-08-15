@@ -64,7 +64,7 @@ func Test_parseConsumptionsArgs(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			id, con, note, err := parseConsumptionsArgs(tt.args.args, tt.args.noteArg)
+			id, con, note, err := ParseConsumptionsArgs(tt.args.args, tt.args.noteArg)
 			assert.Equal(t, tt.want.id, id)
 			assert.Equal(t, tt.want.consumptions, con)
 			assert.Equal(t, tt.want.note, note)

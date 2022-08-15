@@ -77,7 +77,8 @@ func (i invoicesToBddConverter) getRequestedCollectionDate(now time.Time) string
 func (i invoicesToBddConverter) getDetails(now time.Time, invoices []model.Invoice, customers map[int]model.Customer, products map[string]model.Product) []BddDetail {
 	var details []BddDetail
 	for _, invoice := range invoices {
-		detail := i.getDetail(now, invoice, customers[invoice.CustomerId()], products)
+		customer := customers[invoice.CustomerId()]
+		detail := i.getDetail(now, invoice, customer, products)
 		details = append(details, detail)
 	}
 	return details
