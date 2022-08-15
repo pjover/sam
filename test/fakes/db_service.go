@@ -16,7 +16,7 @@ type dbService struct {
 	consumptions []model.Consumption
 }
 
-func NewE2eDbService() ports.DbService {
+func FakeDbService() ports.DbService {
 	customers := loadCustomers()
 	return &dbService{
 		customers: customers,

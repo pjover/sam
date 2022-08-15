@@ -29,7 +29,7 @@ func InjectDependencies() ports.CommandManager {
 
 	configService := cfg.NewConfigService()
 	cmdManager := cli.NewCommandManager(configService)
-	dbService := fakes.NewE2eDbService()
+	dbService := fakes.FakeDbService()
 	osService := os.NewOsService()
 	langService := lang.NewCatLangService()
 
