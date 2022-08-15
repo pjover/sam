@@ -14,22 +14,14 @@ const (
 	InsertConsumptions CommandType = iota
 	ListConsumptions
 	BillConsumptions
-	GenerateMonthInvoices
 	GenerateBddFile
-	GenerateMonthReport
-	GenerateCustomersReport
-	GenerateCustomerCardsReport
 )
 
 var stringValues = []string{
 	"insertConsumptions",
 	"listConsumptions",
 	"billConsumptions",
-	"generateMonthInvoices",
 	"generateBddFile",
-	"generateMonthReport",
-	"generateCustomersReport",
-	"generateCustomerCardsReport",
 }
 
 func (c CommandType) String() string {
@@ -90,6 +82,8 @@ func (f e2eCommandManager) run(command Command) string {
 		return f.runListConsumptions()
 	case BillConsumptions:
 		return f.runBillConsumptions()
+	case GenerateBddFile:
+		return f.runGenerateBddFile()
 	}
 	return "NO COMMAND RAN"
 }
@@ -117,6 +111,14 @@ func (f e2eCommandManager) runListConsumptions() string {
 
 func (f e2eCommandManager) runBillConsumptions() string {
 	msg, err := f.billingService.BillConsumptions()
+	if err != nil {
+		return err.Error()
+	}
+	return msg
+}
+
+func (f *e2eCommandManager) runGenerateBddFile() string {
+	msg, err := f.generateService.BddFile()
 	if err != nil {
 		return err.Error()
 	}

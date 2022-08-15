@@ -2,6 +2,7 @@ package fakes
 
 import (
 	"github.com/pjover/sam/internal/domain/ports"
+	"path"
 	"time"
 )
 
@@ -52,8 +53,7 @@ func (o osService) Now() time.Time {
 }
 
 func (o osService) ListFiles(dir string, ext string) (filenames []string, err error) {
-	//TODO implement me
-	panic("implement me")
+	return []string{}, nil
 }
 
 func (o osService) ReadFile(filePath string) (content []byte, err error) {
@@ -62,6 +62,5 @@ func (o osService) ReadFile(filePath string) (content []byte, err error) {
 }
 
 func (o osService) WriteFile(dirPath string, filename string, content []byte) (filePath string, err error) {
-	//TODO implement me
-	panic("implement me")
+	return path.Join(dirPath, filename), nil
 }

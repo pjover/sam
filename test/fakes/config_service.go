@@ -1,8 +1,11 @@
 package fakes
 
 import (
+	"fmt"
 	"github.com/pjover/sam/internal/domain/model"
 	"github.com/pjover/sam/internal/domain/ports"
+	"log"
+	"os"
 	"time"
 )
 
@@ -19,8 +22,13 @@ func (c configService) Init() {
 }
 
 func (c configService) GetString(key string) string {
-	//TODO implement me
-	panic("implement me")
+	switch key {
+	case "bdd.prefix":
+		return "E2E-"
+	case "bdd.country":
+		return "IB"
+	}
+	return fmt.Sprintf("E2E.%s", key)
 }
 
 func (c configService) SetString(key string, value string) error {
@@ -58,8 +66,11 @@ func (c configService) GetHomeDirectory() string {
 }
 
 func (c configService) GetWorkingDirectory() string {
-	//TODO implement me
-	panic("implement me")
+	home, err := os.UserHomeDir()
+	if err != nil {
+		log.Fatalf("cannot find home directory: %s", err)
+	}
+	return home
 }
 
 func (c configService) GetInvoicesDirectory() string {

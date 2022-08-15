@@ -12,7 +12,7 @@ func Test_e2eMain(t *testing.T) {
 		want     []string
 	}{
 		{
-			"Usual complete monthly cycle",
+			"Normal monthly cycle",
 			[]Command{
 				{InsertConsumptions, Arguments{"1480", "1", "TST", "2", "XXX", "1", "YYY"}},
 				{InsertConsumptions, Arguments{"1481", "1", "TST", "3", "XXX", "0.5", "YYY"}},
@@ -20,6 +20,7 @@ func Test_e2eMain(t *testing.T) {
 				{InsertConsumptions, Arguments{"1491", "2", "TST", "5", "YYY"}},
 				{ListConsumptions, Arguments{}},
 				{BillConsumptions, Arguments{}},
+				{GenerateBddFile, Arguments{}},
 			},
 			[]string{
 				"Laura Llull (1480): 34.60 €\n" +
@@ -62,6 +63,7 @@ func Test_e2eMain(t *testing.T) {
 					" 1. Joana Petita 149  X-23  2022-08   116.60  Tranferència  2.0 TST (21.80),2.0 TST (21.80),5.0 XXX (45.50),5.0 YYY (27.50)\n" +
 					"Total 1 Tranferència: 116.60 €\n" +
 					"TOTAL: 192.15 €\n",
+				"S'ha generat el fitxer '/Users/pere/bdd-1.qx1' amb 1 rebuts",
 			},
 		},
 	}

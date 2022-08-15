@@ -15,6 +15,7 @@ type dbService struct {
 	products     map[string]model.Product
 	sequences    map[sequence_type.SequenceType]model.Sequence
 	consumptions map[string]model.Consumption
+	invoices     map[string]model.Invoice
 }
 
 func FakeDbService() ports.DbService {
@@ -25,6 +26,7 @@ func FakeDbService() ports.DbService {
 		products:     loadProducts(),
 		sequences:    loadSequences(),
 		consumptions: loadConsumptions(),
+		invoices:     loadInvoices(),
 	}
 }
 
@@ -64,6 +66,10 @@ func loadSequences() map[sequence_type.SequenceType]model.Sequence {
 
 func loadConsumptions() map[string]model.Consumption {
 	return make(map[string]model.Consumption)
+}
+
+func loadInvoices() map[string]model.Invoice {
+	return make(map[string]model.Invoice)
 }
 
 func (d dbService) FindActiveChildConsumptions(id int) ([]model.Consumption, error) {
@@ -156,8 +162,13 @@ func (d dbService) FindInvoicesByYearMonth(yearMonth model.YearMonth) ([]model.I
 }
 
 func (d dbService) FindInvoicesByYearMonthAndPaymentTypeAndSentToBank(yearMonth model.YearMonth, paymentType payment_type.PaymentType, sentToBank bool) ([]model.Invoice, error) {
-	//TODO implement me
-	panic("implement me")
+	var invoices []model.Invoice
+	for _, invoice := range d.invoices {
+		if invoice.YearMonth() == yearMonth && invoice.PaymentType() == paymentType && invoice.SentToBank() == sentToBank {
+			invoices = append(invoices, invoice)
+		}
+	}
+	return invoices, nil
 }
 
 func (d dbService) FindProduct(id string) (model.Product, error) {
@@ -185,8 +196,10 @@ func (d dbService) InsertCustomer(customer model.Customer) error {
 	panic("implement me")
 }
 
-func (d dbService) InsertInvoices(invoices []model.Invoice) error {
-	fmt.Printf("inserted %d invoices", len(invoices))
+func (d *dbService) InsertInvoices(invoices []model.Invoice) error {
+	for _, invoice := range invoices {
+		d.invoices[invoice.Id()] = invoice
+	}
 	return nil
 }
 
@@ -215,6 +228,8 @@ func (d dbService) UpdateSequence(sequences model.Sequence) error {
 }
 
 func (d dbService) UpdateInvoices(invoices []model.Invoice) error {
-	//TODO implement me
-	panic("implement me")
+	for _, invoice := range invoices {
+		d.invoices[invoice.Id()] = invoice
+	}
+	return nil
 }
