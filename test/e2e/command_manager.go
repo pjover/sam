@@ -46,11 +46,13 @@ type Command struct {
 type e2eCommandManager struct {
 	commands       []Command
 	billingService ports.BillingService
+	listService    ports.ListService
 }
 
-func NewE2eCommandManager(billingService ports.BillingService) ports.CommandManager {
+func NewE2eCommandManager(billingService ports.BillingService, listService ports.ListService) ports.CommandManager {
 	return &e2eCommandManager{
 		billingService: billingService,
+		listService:    listService,
 	}
 }
 
@@ -78,6 +80,8 @@ func (f e2eCommandManager) run(command Command) string {
 	switch command.commandType {
 	case InsertConsumptions:
 		return f.runInsertConsumptions(command)
+	case ListConsumptions:
+		return f.runListConsumptions()
 	}
 	return "NO COMMAND RAN"
 }
@@ -89,6 +93,14 @@ func (f e2eCommandManager) runInsertConsumptions(command Command) string {
 	}
 
 	msg, err := f.billingService.InsertConsumptions(id, consumptions, "")
+	if err != nil {
+		return err.Error()
+	}
+	return msg
+}
+
+func (f e2eCommandManager) runListConsumptions() string {
+	msg, err := f.listService.ListConsumptions()
 	if err != nil {
 		return err.Error()
 	}

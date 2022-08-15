@@ -18,7 +18,7 @@ type dbService struct {
 
 func NewE2eDbService() ports.DbService {
 	customers := loadCustomers()
-	return dbService{
+	return &dbService{
 		customers: customers,
 		children:  loadChildren(customers),
 		products:  loadProducts(),
@@ -56,13 +56,19 @@ func (d dbService) FindActiveChildConsumptions(id int) ([]model.Consumption, err
 }
 
 func (d dbService) FindActiveChildren() ([]model.Child, error) {
-	//TODO implement me
-	panic("implement me")
+	var children []model.Child
+	for _, child := range d.children {
+		children = append(children, child)
+	}
+	return children, nil
 }
 
 func (d dbService) FindActiveCustomers() ([]model.Customer, error) {
-	//TODO implement me
-	panic("implement me")
+	var customers []model.Customer
+	for _, customer := range d.customers {
+		customers = append(customers, customer)
+	}
+	return customers, nil
 }
 
 func (d dbService) FindAllActiveConsumptions() ([]model.Consumption, error) {
@@ -138,7 +144,7 @@ func (d dbService) FindSequence(sequenceType sequence_type.SequenceType) (model.
 	panic("implement me")
 }
 
-func (d dbService) InsertConsumptions(consumptions []model.Consumption) error {
+func (d *dbService) InsertConsumptions(consumptions []model.Consumption) error {
 	d.consumptions = append(d.consumptions, consumptions...)
 	return nil
 }
