@@ -10,7 +10,6 @@ import (
 	editCli "github.com/pjover/sam/internal/adapters/cli/edit"
 	generateCli "github.com/pjover/sam/internal/adapters/cli/generate"
 	listCli "github.com/pjover/sam/internal/adapters/cli/list"
-	"github.com/pjover/sam/internal/adapters/mongo_db"
 	"github.com/pjover/sam/internal/adapters/mongo_express"
 	"github.com/pjover/sam/internal/adapters/os"
 	"github.com/pjover/sam/internal/domain/ports"
@@ -23,13 +22,14 @@ import (
 	"github.com/pjover/sam/internal/domain/services/lang"
 	"github.com/pjover/sam/internal/domain/services/list"
 	"github.com/pjover/sam/internal/domain/services/loader"
+	"github.com/pjover/sam/test/fakes"
 )
 
 func InjectDependencies() ports.CommandManager {
 
 	configService := cfg.NewConfigService()
 	cmdManager := cli.NewCommandManager(configService)
-	dbService := mongo_db.NewDbService(configService)
+	dbService := fakes.NewE2eDbService()
 	osService := os.NewOsService()
 	langService := lang.NewCatLangService()
 
