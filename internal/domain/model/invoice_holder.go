@@ -96,7 +96,7 @@ func (i InvoiceHolder) Validate() error {
 	}
 
 	if i.iban.IsEmpty() && i.paymentType == payment_type.BankDirectDebit {
-		return errors.New("el IBAN (InvoiceHolder.Iban) ha d'esser vàlid qual el tipus de pagament del titular és BANK_DIRECT_DEBIT")
+		return errors.New("el IBAN (InvoiceHolder.Iban) ha d'esser vàlid quan el tipus de pagament del titular és BANK_DIRECT_DEBIT")
 	}
 
 	return nil

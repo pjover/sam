@@ -156,7 +156,7 @@ func TestInvoiceHolder_Validate(t *testing.T) {
 				NewIbanOrEmpty(""),
 				false,
 			},
-			errors.New("el IBAN (InvoiceHolder.Iban) ha d'esser vàlid qual el tipus de " +
+			errors.New("el IBAN (InvoiceHolder.Iban) ha d'esser vàlid quan el tipus de " +
 				"pagament del titular és BANK_DIRECT_DEBIT"),
 		},
 		{
@@ -176,7 +176,7 @@ func TestInvoiceHolder_Validate(t *testing.T) {
 				NewIbanOrEmpty("ES3830668859978258529057"),
 				false,
 			},
-			errors.New("el IBAN (InvoiceHolder.Iban) ha d'esser vàlid qual el tipus de " +
+			errors.New("el IBAN (InvoiceHolder.Iban) ha d'esser vàlid quan el tipus de " +
 				"pagament del titular és BANK_DIRECT_DEBIT"),
 		},
 	}
