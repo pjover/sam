@@ -21,7 +21,7 @@ type DbService interface {
 	FindInvoicesByCustomer(customerId int) ([]model.Invoice, error)
 	FindInvoicesByCustomerAndYearMonth(customerId int, yearMonth model.YearMonth) ([]model.Invoice, error)
 	FindInvoicesByYearMonth(yearMonth model.YearMonth) ([]model.Invoice, error)
-	FindInvoicesByYearMonthAndPaymentTypeAndSentToBank(yearMonth model.YearMonth, paymentType payment_type.PaymentType, sentToBank bool) ([]model.Invoice, error)
+	FindInvoicesByPaymentTypeAndSentToBank(paymentType payment_type.PaymentType, sentToBank bool) ([]model.Invoice, error)
 	FindProduct(id string) (model.Product, error)
 	FindSequence(sequenceType sequence_type.SequenceType) (model.Sequence, error)
 	InsertConsumptions(consumptions []model.Consumption) error

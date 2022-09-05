@@ -160,19 +160,18 @@ func (d dbService) FindInvoicesByCustomerAndYearMonth(customerId int, yearMonth 
 	return dbo.ConvertInvoicesToModel(results), nil
 }
 
-func (d dbService) FindInvoicesByYearMonthAndPaymentTypeAndSentToBank(yearMonth model.YearMonth, paymentType payment_type.PaymentType, sentToBank bool) ([]model.Invoice, error) {
+func (d dbService) FindInvoicesByPaymentTypeAndSentToBank(paymentType payment_type.PaymentType, sentToBank bool) ([]model.Invoice, error) {
 	var results []dbo.Invoice
 	filter := bson.D{
 		{"$and",
 			bson.A{
-				bson.D{{"yearMonth", yearMonth.String()}},
 				bson.D{{"paymentType", paymentType.String()}},
 				bson.D{{"sentToBank", sentToBank}},
 			}},
 	}
 	findOptions := options.Find()
 	findOptions.SetSort(bson.D{{"_id", 1}})
-	if err := d.findMany("invoice", filter, findOptions, &results, "factures per any i mes, tipus de pagament i enviades al bank"); err != nil {
+	if err := d.findMany("invoice", filter, findOptions, &results, "factures per tipus de pagament i enviades al bank"); err != nil {
 		return nil, err
 	}
 	return dbo.ConvertInvoicesToModel(results), nil

@@ -1,6 +1,7 @@
 package bdd
 
 import (
+	"errors"
 	"fmt"
 	"github.com/pjover/sam/internal/domain/model"
 	"github.com/pjover/sam/internal/domain/model/payment_type"
@@ -70,11 +71,11 @@ func (b bddService) Run() (string, error) {
 }
 
 func (b bddService) loadInvoices() (invoices []model.Invoice, err error) {
-	yearMonth := b.configService.GetCurrentYearMonth()
-	invoices, err = b.dbService.FindInvoicesByYearMonthAndPaymentTypeAndSentToBank(yearMonth, payment_type.BankDirectDebit, false)
+	invoices, err = b.dbService.FindInvoicesByPaymentTypeAndSentToBank(payment_type.BankDirectDebit, false)
 	if err != nil {
-		return nil, fmt.Errorf("no s'han pogut recuperar les factures de rebuts del mes %s pendents d'enviar al banc", yearMonth)
+		return nil, errors.New("no s'han pogut recuperar les factures de rebuts pendents d'enviar al banc")
 	}
+	fmt.Printf("recuperades %d factures sense enviar al banc\n", len(invoices))
 	return invoices, nil
 }
 
