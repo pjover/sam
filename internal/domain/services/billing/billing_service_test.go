@@ -11,8 +11,22 @@ import (
 )
 
 var yearMonth, _ = model.StringToYearMonth("2022-02")
+var prevYearMonth, _ = model.StringToYearMonth("2022-01")
 
 var today = time.Date(2022, 2, 16, 20, 33, 59, 0, time.Local)
+
+var prevYearMonthConsumptions = []model.Consumption{
+	model.NewConsumption(
+		"AA0",
+		1480,
+		"TST",
+		1,
+		prevYearMonth,
+		"Note previous month consumption",
+		false,
+		"NONE",
+	),
+}
 
 var noRectificationConsumptions = []model.Consumption{
 	model.NewConsumption(
@@ -172,8 +186,8 @@ func Test_BillConsumptions_with_rectification(t *testing.T) {
 	}{
 		{
 			name: "BillConsumptions",
-			want: " 1. Cara Santamaria 148  F-189  2022-02    83.60  Rebut  2.0 TST (21.80),2.0 XXX (18.20),4.0 TST (43.60)\n" +
-				" 2. Cara Santamaria 148  R-11  2022-02   -43.60  Rebut  -4.0 TST (-43.60)\n" +
+			want: " 1. Cara Santamaria 148  R-11  2022-02   -43.60  Rebut  -4.0 TST (-43.60)\n" +
+				" 2. Cara Santamaria 148  F-189  2022-02    83.60  Rebut  2.0 TST (21.80),2.0 XXX (18.20),4.0 TST (43.60)\n" +
 				"Total 2 Rebut: 40.00 €\n" +
 				" 1. Joana Petita 149  X-1  2022-02    21.80  Tranferència  2.0 TST (21.80)\n" +
 				"Total 1 Tranferència: 21.80 €\n" +
@@ -187,6 +201,56 @@ func Test_BillConsumptions_with_rectification(t *testing.T) {
 
 	mockedDbService := new(mocks.DbService)
 	mockedDbService.On("FindAllActiveConsumptions").Return(append(noRectificationConsumptions, rectificationConsumptions...), nil)
+	mockedDbService.On("FindCustomer", 148).Return(model.TestCustomer148, nil)
+	mockedDbService.On("FindCustomer", 149).Return(model.TestCustomer149, nil)
+	mockedDbService.On("FindProduct", "TST").Return(model.ProductTST, nil)
+	mockedDbService.On("FindProduct", "XXX").Return(model.ProductXXX, nil)
+	mockedDbService.On("FindProduct", "YYY").Return(model.ProductYYY, nil)
+	mockedDbService.On("FindAllSequences").Return(sequences, nil)
+	mockedDbService.On("InsertInvoices", mock.Anything).Return(nil)
+	mockedDbService.On("UpdateConsumptions", mock.Anything).Return(nil)
+	mockedDbService.On("UpdateSequences", mock.Anything).Return(nil)
+
+	mockedOsService := new(mocks.OsService)
+	mockedOsService.On("Now").Return(today)
+
+	sut := billingService{
+		configService: mockedConfigService,
+		osService:     mockedOsService,
+		dbService:     mockedDbService,
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := sut.BillConsumptions()
+			assert.Equal(t, tt.want, got)
+			assert.Equal(t, tt.wantErr, err)
+		})
+	}
+}
+
+func Test_BillConsumptions_prevYearMonthConsumptions(t *testing.T) {
+	tests := []struct {
+		name    string
+		want    string
+		wantErr error
+	}{
+		{
+			name: "BillConsumptions",
+			want: " 1. Cara Santamaria 148  F-190  2022-01    10.90  Rebut  1.0 TST (10.90)\n" +
+				" 2. Cara Santamaria 148  F-189  2022-02    83.60  Rebut  2.0 TST (21.80),2.0 XXX (18.20),4.0 TST (43.60)\n" +
+				"Total 2 Rebut: 94.50 €\n" +
+				" 1. Joana Petita 149  X-1  2022-02    21.80  Tranferència  2.0 TST (21.80)\n" +
+				"Total 1 Tranferència: 21.80 €\n" +
+				"TOTAL: 116.30 €\n",
+			wantErr: nil,
+		},
+	}
+
+	mockedConfigService := new(mocks.ConfigService)
+	mockedConfigService.On("GetCurrentYearMonth").Return(yearMonth)
+
+	mockedDbService := new(mocks.DbService)
+	mockedDbService.On("FindAllActiveConsumptions").Return(append(noRectificationConsumptions, prevYearMonthConsumptions...), nil)
 	mockedDbService.On("FindCustomer", 148).Return(model.TestCustomer148, nil)
 	mockedDbService.On("FindCustomer", 149).Return(model.TestCustomer149, nil)
 	mockedDbService.On("FindProduct", "TST").Return(model.ProductTST, nil)
