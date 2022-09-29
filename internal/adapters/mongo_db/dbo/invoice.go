@@ -14,7 +14,6 @@ type Invoice struct {
 	PaymentType string    `bson:"paymentType"`
 	Note        string    `bson:"note"`
 	Emailed     bool      `bson:"emailed"`
-	Printed     bool      `bson:"printed"`
 	SentToBank  bool      `bson:"sentToBank"`
 }
 

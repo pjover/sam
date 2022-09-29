@@ -19,7 +19,6 @@ type Invoice struct {
 	paymentType payment_type.PaymentType
 	note        string
 	emailed     bool
-	printed     bool
 	sentToBank  bool
 }
 
@@ -33,7 +32,6 @@ func NewInvoice(
 	paymentType payment_type.PaymentType,
 	note string,
 	emailed bool,
-	printed bool,
 	sentToBank bool,
 ) Invoice {
 	return Invoice{
@@ -46,7 +44,6 @@ func NewInvoice(
 		paymentType: paymentType,
 		note:        note,
 		emailed:     emailed,
-		printed:     printed,
 		sentToBank:  sentToBank,
 	}
 }
@@ -85,10 +82,6 @@ func (i Invoice) Note() string {
 
 func (i Invoice) Emailed() bool {
 	return i.emailed
-}
-
-func (i Invoice) Printed() bool {
-	return i.printed
 }
 
 func (i Invoice) SentToBank() bool {

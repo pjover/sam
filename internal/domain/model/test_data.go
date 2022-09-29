@@ -229,7 +229,6 @@ var InvoiceF100 = NewInvoice(
 	"Invoice note",
 	false,
 	false,
-	false,
 )
 
 var InvoiceF101 = NewInvoice(
@@ -241,7 +240,6 @@ var InvoiceF101 = NewInvoice(
 	lines,
 	payment_type.BankDirectDebit,
 	"Invoice note",
-	false,
 	false,
 	false,
 )
@@ -257,7 +255,6 @@ var InvoiceF102 = NewInvoice(
 	"Invoice note",
 	false,
 	false,
-	false,
 )
 
 var InvoiceF103 = NewInvoice(
@@ -269,7 +266,6 @@ var InvoiceF103 = NewInvoice(
 	lines,
 	payment_type.BankDirectDebit,
 	"Invoice note",
-	false,
 	false,
 	false,
 )

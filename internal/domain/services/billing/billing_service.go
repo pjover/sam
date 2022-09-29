@@ -385,7 +385,6 @@ func (b billingService) newInvoice(invoice model.TransientInvoice, id string) mo
 		invoice.Note,
 		false,
 		false,
-		false,
 	)
 }
 
