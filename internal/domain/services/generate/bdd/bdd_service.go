@@ -1,12 +1,19 @@
 package bdd
 
 import (
+	"errors"
 	"fmt"
 	"github.com/pjover/sam/internal/domain/model"
 	"github.com/pjover/sam/internal/domain/model/payment_type"
 	"github.com/pjover/sam/internal/domain/ports"
 	"github.com/pjover/sam/internal/domain/services/loader"
 )
+
+type BddContent struct {
+	xmlText              string
+	numberOfTransactions int
+	controlSum           string
+}
 
 type BddService interface {
 	Run() (string, error)
@@ -53,31 +60,36 @@ func (b bddService) Run() (string, error) {
 		return "", err
 	}
 
-	filePath, err := b.saveToFile(dirPath, filename, content)
+	filePath, err := b.saveToFile(dirPath, filename, content.xmlText)
 	if err != nil {
 		return "", err
 	}
 
 	err = b.updateInvoices(invoices)
 
-	return fmt.Sprintf("S'ha generat el fitxer '%s' amb %d rebuts", filePath, len(invoices)), nil
+	return fmt.Sprintf("S'ha generat el fitxer '%s' amb %d rebuts i import %s", filePath, content.numberOfTransactions, content.controlSum), nil
 }
 
 func (b bddService) loadInvoices() (invoices []model.Invoice, err error) {
-	yearMonth := b.configService.GetCurrentYearMonth()
-	invoices, err = b.dbService.FindInvoicesByYearMonthAndPaymentTypeAndSentToBank(yearMonth, payment_type.BankDirectDebit, false)
+	invoices, err = b.dbService.FindInvoicesByPaymentTypeAndSentToBank(payment_type.BankDirectDebit, false)
 	if err != nil {
-		return nil, fmt.Errorf("no s'han pogut recuperar les factures de rebuts del mes %s pendents d'enviar al banc", yearMonth)
+		return nil, errors.New("no s'han pogut recuperar les factures de rebuts pendents d'enviar al banc")
 	}
+	fmt.Printf("recuperades %d factures sense enviar al banc\n", len(invoices))
 	return invoices, nil
 }
 
-func (b bddService) generateContent(invoices []model.Invoice, customers map[int]model.Customer, products map[string]model.Product) string {
+func (b bddService) generateContent(invoices []model.Invoice, customers map[int]model.Customer, products map[string]model.Product) BddContent {
 	invoicesToBddConverter := NewInvoicesToBddConverter(b.configService, b.osService)
 	bdd := invoicesToBddConverter.Convert(invoices, customers, products)
 
 	bddBuilder := NewStringBddBuilder()
-	return bddBuilder.Build(bdd)
+
+	return BddContent{
+		xmlText:              bddBuilder.Build(bdd),
+		numberOfTransactions: bdd.numberOfTransactions,
+		controlSum:           bdd.controlSum,
+	}
 }
 
 func (b bddService) getFilePath() (dirPath string, filename string, err error) {

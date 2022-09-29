@@ -288,6 +288,29 @@ func (_m *DbService) FindInvoicesByCustomerAndYearMonth(customerId int, yearMont
 	return r0, r1
 }
 
+// FindInvoicesByPaymentTypeAndSentToBank provides a mock function with given fields: paymentType, sentToBank
+func (_m *DbService) FindInvoicesByPaymentTypeAndSentToBank(paymentType payment_type.PaymentType, sentToBank bool) ([]model.Invoice, error) {
+	ret := _m.Called(paymentType, sentToBank)
+
+	var r0 []model.Invoice
+	if rf, ok := ret.Get(0).(func(payment_type.PaymentType, bool) []model.Invoice); ok {
+		r0 = rf(paymentType, sentToBank)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]model.Invoice)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(payment_type.PaymentType, bool) error); ok {
+		r1 = rf(paymentType, sentToBank)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // FindInvoicesByYearMonth provides a mock function with given fields: yearMonth
 func (_m *DbService) FindInvoicesByYearMonth(yearMonth model.YearMonth) ([]model.Invoice, error) {
 	ret := _m.Called(yearMonth)
@@ -304,29 +327,6 @@ func (_m *DbService) FindInvoicesByYearMonth(yearMonth model.YearMonth) ([]model
 	var r1 error
 	if rf, ok := ret.Get(1).(func(model.YearMonth) error); ok {
 		r1 = rf(yearMonth)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// FindInvoicesByYearMonthAndPaymentTypeAndSentToBank provides a mock function with given fields: yearMonth, paymentType, sentToBank
-func (_m *DbService) FindInvoicesByYearMonthAndPaymentTypeAndSentToBank(yearMonth model.YearMonth, paymentType payment_type.PaymentType, sentToBank bool) ([]model.Invoice, error) {
-	ret := _m.Called(yearMonth, paymentType, sentToBank)
-
-	var r0 []model.Invoice
-	if rf, ok := ret.Get(0).(func(model.YearMonth, payment_type.PaymentType, bool) []model.Invoice); ok {
-		r0 = rf(yearMonth, paymentType, sentToBank)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]model.Invoice)
-		}
-	}
-
-	var r1 error
-	if rf, ok := ret.Get(1).(func(model.YearMonth, payment_type.PaymentType, bool) error); ok {
-		r1 = rf(yearMonth, paymentType, sentToBank)
 	} else {
 		r1 = ret.Error(1)
 	}

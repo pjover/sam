@@ -161,10 +161,10 @@ func (d dbService) FindInvoicesByYearMonth(yearMonth model.YearMonth) ([]model.I
 	panic("implement me")
 }
 
-func (d dbService) FindInvoicesByYearMonthAndPaymentTypeAndSentToBank(yearMonth model.YearMonth, paymentType payment_type.PaymentType, sentToBank bool) ([]model.Invoice, error) {
+func (d dbService) FindInvoicesByPaymentTypeAndSentToBank(paymentType payment_type.PaymentType, sentToBank bool) ([]model.Invoice, error) {
 	var invoices []model.Invoice
 	for _, invoice := range d.invoices {
-		if invoice.YearMonth() == yearMonth && invoice.PaymentType() == paymentType && invoice.SentToBank() == sentToBank {
+		if invoice.PaymentType() == paymentType && invoice.SentToBank() == sentToBank {
 			invoices = append(invoices, invoice)
 		}
 	}

@@ -26,7 +26,7 @@ func (g generateMonthInvoices) Cmd() *cobra.Command {
 		Short: "Genera els PDFs de les factures del mes actual o del indicat",
 		Long:  "Genera els PDFs de les factures del mes al directori 'factures' dedins del directori de treball",
 		Example: `   generaFactures      Genera els PDFs de les factures del mes actual
-   generaFactures  "04-2022"    Genera els PDFs de les factures d'abril de 2022`,
+   generaFactures  "2022-04"    Genera els PDFs de les factures d'abril de 2022`,
 		Annotations: map[string]string{"GEN": "Comandes de generació"},
 		Aliases: []string{
 			"gfacs",

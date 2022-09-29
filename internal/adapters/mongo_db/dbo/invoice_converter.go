@@ -17,7 +17,6 @@ func ConvertInvoiceToModel(invoice Invoice) model.Invoice {
 		payment_type.NewPaymentType(invoice.PaymentType),
 		invoice.Note,
 		invoice.Emailed,
-		invoice.Printed,
 		invoice.SentToBank,
 	)
 }
@@ -86,7 +85,6 @@ func ConvertInvoiceToDbo(invoice model.Invoice) Invoice {
 		PaymentType: invoice.PaymentType().String(),
 		Note:        invoice.Note(),
 		Emailed:     invoice.Emailed(),
-		Printed:     invoice.Printed(),
 		SentToBank:  invoice.SentToBank(),
 	}
 }

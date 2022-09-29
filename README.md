@@ -54,3 +54,7 @@ go fmt ./...
 ```
 
 
+## Generate mocks with mockery
+
+1. cd to the ports directory: `cd internal/domain/ports`
+2. Run mockery for the intercafe you want to mock `mockery --name=DbService`
