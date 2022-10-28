@@ -87,10 +87,9 @@ func listServiceDI(cmdManager ports.CommandManager, configService ports.ConfigSe
 
 func billingServiceDI(cmdManager ports.CommandManager, configService ports.ConfigService, dbService ports.DbService, osService ports.OsService) {
 	billingService := billing.NewBillingService(configService, dbService, osService)
-	cmdManager.AddCommand(billingCli.NewInsertConsumptionsCmd(billingService))
+	cmdManager.AddCommand(billingCli.NewInsertConsumptionsCmd(configService, billingService))
 	cmdManager.AddCommand(billingCli.NewBillConsumptionsCmd(billingService))
-	cmdManager.AddCommand(billingCli.NewRectifyConsumptionsCmd(billingService))
-	cmdManager.AddCommand(billingCli.NewRectifyConsumptionsCmd(billingService))
+	cmdManager.AddCommand(billingCli.NewRectifyConsumptionsCmd(configService, billingService))
 }
 
 func createServiceDI(cmdManager ports.CommandManager, configService ports.ConfigService, dbService ports.DbService, osService ports.OsService) {

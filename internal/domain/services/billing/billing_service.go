@@ -28,11 +28,11 @@ func NewBillingService(configService ports.ConfigService, dbService ports.DbServ
 	}
 }
 
-func (b billingService) InsertConsumptions(childId int, consumptions map[string]float64, note string) (string, error) {
-	return b.insertConsumptions(childId, consumptions, note, false)
+func (b billingService) InsertConsumptions(childId int, consumptions map[string]float64, yearMonth model.YearMonth, note string) (string, error) {
+	return b.insertConsumptions(childId, consumptions, yearMonth, note, false)
 }
 
-func (b billingService) insertConsumptions(childId int, consumptions map[string]float64, note string, isRectification bool) (string, error) {
+func (b billingService) insertConsumptions(childId int, consumptions map[string]float64, yearMonth model.YearMonth, note string, isRectification bool) (string, error) {
 	var buffer bytes.Buffer
 
 	child, err := b.dbService.FindChild(childId)
@@ -58,7 +58,7 @@ func (b billingService) insertConsumptions(childId int, consumptions map[string]
 		return "", err
 	}
 
-	completeConsumptions, err := b.completeConsumptions(consumptions, childId, note, isRectification, products)
+	completeConsumptions, err := b.completeConsumptions(consumptions, childId, yearMonth, note, isRectification, products)
 	if err != nil {
 		return "", err
 	}
@@ -77,8 +77,7 @@ func (b billingService) insertConsumptions(childId int, consumptions map[string]
 	return buffer.String(), nil
 }
 
-func (b billingService) completeConsumptions(consumptions map[string]float64, childId int, note string, isRectification bool, products map[string]model.Product) ([]model.Consumption, error) {
-	yearMonth := b.configService.GetCurrentYearMonth()
+func (b billingService) completeConsumptions(consumptions map[string]float64, childId int, yearMonth model.YearMonth, note string, isRectification bool, products map[string]model.Product) ([]model.Consumption, error) {
 	var first = true
 	var completeConsumptions []model.Consumption
 	for id, units := range consumptions {
@@ -125,8 +124,8 @@ func (b billingService) checkIfProductExists(productId string, products map[stri
 	return nil
 }
 
-func (b billingService) RectifyConsumptions(childId int, consumptions map[string]float64, note string) (string, error) {
-	return b.insertConsumptions(childId, consumptions, note, true)
+func (b billingService) RectifyConsumptions(childId int, consumptions map[string]float64, yearMonth model.YearMonth, note string) (string, error) {
+	return b.insertConsumptions(childId, consumptions, yearMonth, note, true)
 }
 
 func (b billingService) BillConsumptions() (string, error) {
