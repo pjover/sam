@@ -77,6 +77,7 @@ func (c configService) readConfigFile() {
 
 func (c configService) loadDefaultConfig(home string) {
 	viper.SetDefault("dirs.config", "$HOME/.sam")
+	log.Printf("Using config file %s", viper.ConfigFileUsed())
 
 	appDirectory := path.Join(home, "Sam")
 	viper.SetDefault("dirs.home", appDirectory)
