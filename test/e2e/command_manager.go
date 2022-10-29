@@ -3,6 +3,7 @@ package e2e
 import (
 	"fmt"
 	"github.com/pjover/sam/internal/adapters/cli/billing"
+	"github.com/pjover/sam/internal/domain/model"
 	"github.com/pjover/sam/internal/domain/ports"
 	"log"
 	"strings"
@@ -89,12 +90,12 @@ func (f e2eCommandManager) run(command Command) string {
 }
 
 func (f e2eCommandManager) runInsertConsumptions(command Command) string {
-	id, consumptions, _, err := billing.ParseConsumptionsArgs(command.arguments, "")
+	id, consumptions, _, _, err := billing.ParseConsumptionsArgs(command.arguments, "2022-08", "")
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	msg, err := f.billingService.InsertConsumptions(id, consumptions, "")
+	msg, err := f.billingService.InsertConsumptions(id, consumptions, model.NewYearMonth(2022, 8), "")
 	if err != nil {
 		return err.Error()
 	}
