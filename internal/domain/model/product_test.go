@@ -104,18 +104,6 @@ func TestProduct_validate(t *testing.T) {
 			},
 			errors.New("el nom del producte (Name) no pot estar buit"),
 		},
-		{
-			"Zero price",
-			fields{
-				"ABC",
-				"Some name",
-				"ShortName",
-				0,
-				0.16,
-				false,
-			},
-			errors.New("el preu del producte (Price) no pot ser 0.0"),
-		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

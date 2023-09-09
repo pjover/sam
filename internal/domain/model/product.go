@@ -64,9 +64,6 @@ func (p Product) Validate() error {
 		return errors.New("el nom del producte (Name) no pot estar buit")
 	}
 
-	if p.price == 0 {
-		return errors.New("el preu del producte (Price) no pot ser 0.0")
-	}
 	return nil
 }
 
